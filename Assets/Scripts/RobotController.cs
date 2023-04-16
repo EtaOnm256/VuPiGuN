@@ -114,11 +114,21 @@ public class RobotController : MonoBehaviour
 
     private bool _hasAnimator;
 
-    public MultiAimConstraint multiAimConstraint;
+    public MultiAimConstraint headmultiAimConstraint;
+    public MultiAimConstraint rarmmultiAimConstraint;
 
     public GameObject target;
 
     private float _headaimwait = 0.0f;
+
+    private float _rarmaimwait = 0.0f;
+
+    private float _fireanimwait = 0.0f;
+
+    public Animator animator;
+
+    public bool firing = false;
+
     private bool IsCurrentDeviceMouse
     {
         get
@@ -180,7 +190,32 @@ public class RobotController : MonoBehaviour
         else
             _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
 
-        multiAimConstraint.weight = _headaimwait;
+        headmultiAimConstraint.weight = _headaimwait;
+
+        if (firing)
+        {
+            _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.02f);
+
+            if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
+                firing = false;
+        }
+        else
+        {
+            if (_input.fire)
+            {
+                firing = true;
+                _input.fire = false;
+
+                animator.Play("Armature|Fire",1,0.0f);
+            }
+
+            _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
+        }
+            
+
+        rarmmultiAimConstraint.weight = _rarmaimwait;
+
+        animator.SetLayerWeight(1, _rarmaimwait);
     }
 
     private void LateUpdate()
