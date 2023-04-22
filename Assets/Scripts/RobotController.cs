@@ -178,10 +178,8 @@ public class RobotController : MonoBehaviour
         JumpAndGravity();
         GroundedCheck();
         Move();
-
+  
         float angle = Vector3.Angle(target.transform.position - transform.position, transform.forward);
-
-        Debug.Log(angle);
 
         if (angle > 60)
         {

@@ -32,26 +32,30 @@ AvatarMask:
   - m_Path: Armature/Weist
     m_Weight: 0
   - m_Path: Armature/Weist/Chest
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/Weist/Chest/ChestShoulder.L
     m_Weight: 0
-  - m_Path: Armature/Weist/Chest/ChestShoulder.L/Shoulder.L
+  - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L
     m_Weight: 0
-  - m_Path: Armature/Weist/Chest/ChestShoulder.L/Shoulder.L/UpArm.L
+  - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L
     m_Weight: 0
-  - m_Path: Armature/Weist/Chest/ChestShoulder.L/Shoulder.L/UpArm.L/DownArm.L
+  - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L/UpArm.L
     m_Weight: 0
-  - m_Path: Armature/Weist/Chest/ChestShoulder.L/Shoulder.L/UpArm.L/DownArm.L/DownArm.L_end
+  - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L/UpArm.L/DownArm.L
+    m_Weight: 0
+  - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L/UpArm.L/DownArm.L/DownArm.L_end
     m_Weight: 0
   - m_Path: Armature/Weist/Chest/ChestShoulder.R
-    m_Weight: 0
-  - m_Path: Armature/Weist/Chest/ChestShoulder.R/Shoulder.R
     m_Weight: 1
-  - m_Path: Armature/Weist/Chest/ChestShoulder.R/Shoulder.R/UpArm.R
+  - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R
     m_Weight: 1
-  - m_Path: Armature/Weist/Chest/ChestShoulder.R/Shoulder.R/UpArm.R/DownArm.R
+  - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R
     m_Weight: 1
-  - m_Path: Armature/Weist/Chest/ChestShoulder.R/Shoulder.R/UpArm.R/DownArm.R/DownArm.R_end
+  - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R/UpArm.R
+    m_Weight: 1
+  - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R/UpArm.R/DownArm.R
+    m_Weight: 1
+  - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R/UpArm.R/DownArm.R/DownArm.R_end
     m_Weight: 1
   - m_Path: Armature/Weist/Chest/Head
     m_Weight: 0
