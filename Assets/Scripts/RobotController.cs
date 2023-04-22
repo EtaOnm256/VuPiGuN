@@ -115,7 +115,11 @@ public class RobotController : MonoBehaviour
     private bool _hasAnimator;
 
     public MultiAimConstraint headmultiAimConstraint;
-    public MultiAimConstraint rarmmultiAimConstraint;
+
+    //public MultiAimConstraint rarmmultiAimConstraint;
+    public OverrideTransform overrideTransform;
+    public GameObject aimingBase;
+    public GameObject shoulder_hint;
 
     public GameObject target;
 
@@ -209,9 +213,24 @@ public class RobotController : MonoBehaviour
 
             _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
         }
-            
 
-        rarmmultiAimConstraint.weight = _rarmaimwait;
+
+        //rarmmultiAimConstraint.weight = _rarmaimwait;
+
+
+        Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
+
+        Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position-target.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+
+        Quaternion q_rotation_global = q_base_global * q_aim_global;
+
+        Quaternion q_base = Quaternion.Inverse(aimingBase.transform.rotation);
+        
+        Quaternion q_final = q_base * q_rotation_global * aimingBase.transform.rotation;
+
+        //overrideTransform.data.rotation = q_final.eulerAngles;
+        overrideTransform.data.position = shoulder_hint.transform.position;
+        overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
 
         animator.SetLayerWeight(1, _rarmaimwait);
     }
