@@ -133,6 +133,14 @@ public class RobotController : MonoBehaviour
 
     public bool firing = false;
 
+    enum UpperBodyState
+    {
+        STAND,
+        FIRE
+    }
+
+    UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
+
     private bool IsCurrentDeviceMouse
     {
         get
@@ -181,58 +189,9 @@ public class RobotController : MonoBehaviour
 
         JumpAndGravity();
         GroundedCheck();
-        Move();
+        UpperBodyMove();
+        LowerBodyMove();
   
-        float angle = Vector3.Angle(target.transform.position - transform.position, transform.forward);
-
-        if (angle > 60)
-        {
-            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f) ;
-        }
-        else
-            _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
-
-        headmultiAimConstraint.weight = _headaimwait;
-
-        if (firing)
-        {
-            _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.02f);
-
-            if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
-                firing = false;
-        }
-        else
-        {
-            if (_input.fire)
-            {
-                firing = true;
-                _input.fire = false;
-
-                animator.Play("Armature|Fire",1,0.0f);
-            }
-
-            _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
-        }
-
-
-        //rarmmultiAimConstraint.weight = _rarmaimwait;
-
-
-        Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
-
-        Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position-target.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
-
-        Quaternion q_rotation_global = q_base_global * q_aim_global;
-
-        Quaternion q_base = Quaternion.Inverse(aimingBase.transform.rotation);
-        
-        Quaternion q_final = q_base * q_rotation_global * aimingBase.transform.rotation;
-
-        //overrideTransform.data.rotation = q_final.eulerAngles;
-        overrideTransform.data.position = shoulder_hint.transform.position;
-        overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
-
-        animator.SetLayerWeight(1, _rarmaimwait);
     }
 
     private void LateUpdate()
@@ -286,7 +245,64 @@ public class RobotController : MonoBehaviour
             _cinemachineTargetYaw, 0.0f);
     }
 
-    private void Move()
+    private void UpperBodyMove()
+    {
+
+        float angle = Vector3.Angle(target.transform.position - transform.position, transform.forward);
+
+        if (angle > 60)
+        {
+            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
+        }
+        else
+            _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
+
+        headmultiAimConstraint.weight = _headaimwait;
+
+        if (firing)
+        {
+            _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.02f);
+
+            if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
+                firing = false;
+        }
+        else
+        {
+            if (_input.fire)
+            {
+                firing = true;
+                _input.fire = false;
+
+                animator.Play("Armature|Fire", 1, 0.0f);
+            }
+
+            _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
+        }
+
+
+        //rarmmultiAimConstraint.weight = _rarmaimwait;
+
+
+        Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
+
+        Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position - target.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+
+        Quaternion q_rotation_global = q_base_global * q_aim_global;
+
+        Quaternion q_base = Quaternion.Inverse(aimingBase.transform.rotation);
+
+        Quaternion q_final = q_base * q_rotation_global * aimingBase.transform.rotation;
+
+        //overrideTransform.data.rotation = q_final.eulerAngles;
+        overrideTransform.data.position = shoulder_hint.transform.position;
+        overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+
+        overrideTransform.weight = _rarmaimwait;
+
+        animator.SetLayerWeight(1, _rarmaimwait);
+    }
+
+    private void LowerBodyMove()
     {
         // set target speed based on move speed, sprint speed and if sprint is pressed
         float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
