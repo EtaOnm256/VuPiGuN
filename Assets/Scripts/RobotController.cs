@@ -131,7 +131,7 @@ public class RobotController : MonoBehaviour
 
     public Animator animator;
 
-    public bool firing = false;
+    //public bool firing = false;
 
     enum UpperBodyState
     {
@@ -139,7 +139,14 @@ public class RobotController : MonoBehaviour
         FIRE
     }
 
+    enum LowerBodyState
+    {
+        STAND,
+        FIRE
+    }
+
     UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
+    LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
 
     private bool IsCurrentDeviceMouse
     {
@@ -259,28 +266,42 @@ public class RobotController : MonoBehaviour
 
         headmultiAimConstraint.weight = _headaimwait;
 
-        if (firing)
+        switch(upperBodyState)
         {
-            _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.02f);
+            case UpperBodyState.FIRE:
+                {
+                    _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.02f);
 
-            if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
-                firing = false;
+                    if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
+                    {
+                        upperBodyState = UpperBodyState.STAND;
+                        lowerBodyState = LowerBodyState.STAND;
+                    }
+                }
+                break;
+            case UpperBodyState.STAND:
+                {
+                    if (_input.fire)
+                    {
+                        upperBodyState = UpperBodyState.FIRE;
+                        _input.fire = false;
+
+                        animator.Play("Armature|Fire", 1, 0.0f);
+
+                        float angle_aim = Vector3.Angle(target.transform.position - shoulder_hint.transform.position, transform.forward);
+
+                        if (angle > 60)
+                        {
+                            lowerBodyState = LowerBodyState.FIRE;
+                        }
+       
+                    }
+
+                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
+                }
+                break;
         }
-        else
-        {
-            if (_input.fire)
-            {
-                firing = true;
-                _input.fire = false;
 
-                animator.Play("Armature|Fire", 1, 0.0f);
-            }
-
-            _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
-        }
-
-
-        //rarmmultiAimConstraint.weight = _rarmaimwait;
 
 
         Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
@@ -304,57 +325,126 @@ public class RobotController : MonoBehaviour
 
     private void LowerBodyMove()
     {
-        // set target speed based on move speed, sprint speed and if sprint is pressed
-        float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+        float targetSpeed = 0.0f;
 
-        // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
-
-        // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-        // if there is no input, set the target speed to 0
-        if (_input.move == Vector2.zero) targetSpeed = 0.0f;
-
-        // a reference to the players current horizontal velocity
-        float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
-
-        float speedOffset = 0.1f;
-        float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
-
-        // accelerate or decelerate to target speed
-        if (currentHorizontalSpeed < targetSpeed - speedOffset ||
-            currentHorizontalSpeed > targetSpeed + speedOffset)
+        switch (lowerBodyState)
         {
-            // creates curved result rather than a linear one giving a more organic speed change
-            // note T in Lerp is clamped, so we don't need to clamp our speed
-            _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                Time.deltaTime * SpeedChangeRate);
+            case LowerBodyState.STAND:
+                {
 
-            // round speed to 3 decimal places
-            _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                    // set target speed based on move speed, sprint speed and if sprint is pressed
+                    targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+
+                    // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
+
+                    // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                    // if there is no input, set the target speed to 0
+                    if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+
+                    // a reference to the players current horizontal velocity
+                    float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+
+                    float speedOffset = 0.1f;
+                    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+
+                    // accelerate or decelerate to target speed
+                    if (currentHorizontalSpeed < targetSpeed - speedOffset ||
+                        currentHorizontalSpeed > targetSpeed + speedOffset)
+                    {
+                        // creates curved result rather than a linear one giving a more organic speed change
+                        // note T in Lerp is clamped, so we don't need to clamp our speed
+                        _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                            Time.deltaTime * SpeedChangeRate);
+
+                        // round speed to 3 decimal places
+                        _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                    }
+                    else
+                    {
+                        _speed = targetSpeed;
+                    }
+
+                    _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+                    if (_animationBlend < 0.01f) _animationBlend = 0f;
+
+                    // normalise input direction
+                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                    // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                    // if there is a move input rotate player when the player is moving
+                    if (_input.move != Vector2.zero)
+                    {
+                        _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                          _mainCamera.transform.eulerAngles.y;
+                        float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                            RotationSmoothTime);
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                    }
+
+                    // update animator if using character
+                    if (_hasAnimator)
+                    {
+                        _animator.SetFloat(_animIDSpeed, _animationBlend);
+                        _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+                    }
+                }
+                break;
+            case LowerBodyState.FIRE:
+                {
+                    targetSpeed = 0.0f;
+
+                    // a reference to the players current horizontal velocity
+                    float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+
+                    float speedOffset = 0.1f;
+                    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+
+                    // accelerate or decelerate to target speed
+                    if (currentHorizontalSpeed < targetSpeed - speedOffset ||
+                        currentHorizontalSpeed > targetSpeed + speedOffset)
+                    {
+                        // creates curved result rather than a linear one giving a more organic speed change
+                        // note T in Lerp is clamped, so we don't need to clamp our speed
+                        _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                            Time.deltaTime * SpeedChangeRate);
+
+                        // round speed to 3 decimal places
+                        _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                    }
+                    else
+                    {
+                        _speed = targetSpeed;
+                    }
+
+                    _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+                    if (_animationBlend < 0.01f) _animationBlend = 0f;
+
+                    // normalise input direction
+                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                   
+                        _targetRotation = Mathf.Atan2(0, 1.0f) * Mathf.Rad2Deg +
+                                          _mainCamera.transform.eulerAngles.y;
+                        float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                            RotationSmoothTime);
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                 
+
+                    // update animator if using character
+                    if (_hasAnimator)
+                    {
+                        _animator.SetFloat(_animIDSpeed, _animationBlend);
+                        _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+                    }
+                }
+                break;
         }
-        else
-        {
-            _speed = targetSpeed;
-        }
 
-        _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
-        if (_animationBlend < 0.01f) _animationBlend = 0f;
-
-        // normalise input direction
-        Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
-
-        // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-        // if there is a move input rotate player when the player is moving
-        if (_input.move != Vector2.zero)
-        {
-            _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                              _mainCamera.transform.eulerAngles.y;
-            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                RotationSmoothTime);
-
-            // rotate to face input direction relative to camera position
-            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-        }
-
+      
 
         Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
@@ -362,12 +452,7 @@ public class RobotController : MonoBehaviour
         _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                          new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
-        // update animator if using character
-        if (_hasAnimator)
-        {
-            _animator.SetFloat(_animIDSpeed, _animationBlend);
-            _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
-        }
+     
     }
 
     private void JumpAndGravity()
