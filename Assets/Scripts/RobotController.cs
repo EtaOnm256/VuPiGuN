@@ -339,7 +339,18 @@ public class RobotController : MonoBehaviour
 
                     // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
                     // if there is no input, set the target speed to 0
-                    if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+                    if (_input.move == Vector2.zero)
+                    {
+                        targetSpeed = 0.0f;
+
+                        _animationBlend = Mathf.Max(_animationBlend - 0.015f, 0.0f);
+
+                        if (_animationBlend < 0.01f) _animationBlend = 0f;
+                    }
+                    else
+                    {
+                        _animationBlend = Mathf.Min(_animationBlend + 0.015f, 1.0f);
+                    }
 
                     // a reference to the players current horizontal velocity
                     float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -364,8 +375,7 @@ public class RobotController : MonoBehaviour
                         _speed = targetSpeed;
                     }
 
-                    _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
-                    if (_animationBlend < 0.01f) _animationBlend = 0f;
+                   
 
                     // normalise input direction
                     Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
@@ -401,6 +411,21 @@ public class RobotController : MonoBehaviour
                     float speedOffset = 0.1f;
                     float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
+                    // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                    // if there is no input, set the target speed to 0
+                    if (_input.move == Vector2.zero)
+                    {
+                        targetSpeed = 0.0f;
+
+                        _animationBlend = Mathf.Max(_animationBlend - 0.015f, 0.0f);
+
+                        if (_animationBlend < 0.01f) _animationBlend = 0f;
+                    }
+                    else
+                    {
+                        _animationBlend = Mathf.Min(_animationBlend + 0.015f, 1.0f);
+                    }
+
                     // accelerate or decelerate to target speed
                     if (currentHorizontalSpeed < targetSpeed - speedOffset ||
                         currentHorizontalSpeed > targetSpeed + speedOffset)
@@ -418,21 +443,16 @@ public class RobotController : MonoBehaviour
                         _speed = targetSpeed;
                     }
 
-                    _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
-                    if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-                    // normalise input direction
-                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+                    Vector3 target_dir = target.transform.position - transform.position;
 
-                   
-                        _targetRotation = Mathf.Atan2(0, 1.0f) * Mathf.Rad2Deg +
-                                          _mainCamera.transform.eulerAngles.y;
-                        float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                            RotationSmoothTime);
+                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                        // rotate to face input direction relative to camera position
-                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-                 
+                   float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                        RotationSmoothTime);
+
+                    // rotate to face input direction relative to camera position
+                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
                     // update animator if using character
                     if (_hasAnimator)

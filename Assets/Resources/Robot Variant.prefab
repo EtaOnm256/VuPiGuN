@@ -812,8 +812,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3a333195176ecc41ab3fe4f6d1b4086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 20
-  SprintSpeed: 40
+  MoveSpeed: 15
+  SprintSpeed: 30
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 0}
@@ -841,7 +841,6 @@ MonoBehaviour:
   shoulder_hint: {fileID: 0}
   target: {fileID: 0}
   animator: {fileID: 7263584431591222758}
-  firing: 0
 --- !u!1 &4295871794672388304
 GameObject:
   m_ObjectHideFlags: 0
