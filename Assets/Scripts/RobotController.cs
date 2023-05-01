@@ -411,21 +411,13 @@ public class RobotController : MonoBehaviour
                     float speedOffset = 0.1f;
                     float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
-                    // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-                    // if there is no input, set the target speed to 0
-                    if (_input.move == Vector2.zero)
-                    {
-                        targetSpeed = 0.0f;
+                 
+                    targetSpeed = 0.0f;
 
-                        _animationBlend = Mathf.Max(_animationBlend - 0.015f, 0.0f);
+                    _animationBlend = Mathf.Max(_animationBlend - 0.015f, 0.0f);
 
-                        if (_animationBlend < 0.01f) _animationBlend = 0f;
-                    }
-                    else
-                    {
-                        _animationBlend = Mathf.Min(_animationBlend + 0.015f, 1.0f);
-                    }
-
+                    if (_animationBlend < 0.01f) _animationBlend = 0f;
+                 
                     // accelerate or decelerate to target speed
                     if (currentHorizontalSpeed < targetSpeed - speedOffset ||
                         currentHorizontalSpeed > targetSpeed + speedOffset)
