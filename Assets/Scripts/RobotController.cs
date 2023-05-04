@@ -97,10 +97,12 @@ public class RobotController : MonoBehaviour
 
     // animation IDs
     private int _animIDSpeed;
-    private int _animIDGrounded;
+    private int _animIDGround;
+    private int _animIDStand;
+    private int _animIDWalk;
     private int _animIDJump;
-    private int _animIDFreeFall;
-    private int _animIDMotionSpeed;
+   // private int _animIDFreeFall;
+
 
 #if ENABLE_INPUT_SYSTEM
     private PlayerInput _playerInput;
@@ -127,26 +129,29 @@ public class RobotController : MonoBehaviour
 
     private float _rarmaimwait = 0.0f;
 
-    private float _fireanimwait = 0.0f;
-
     public Animator animator;
 
     //public bool firing = false;
 
-    enum UpperBodyState
+    bool event_grounded = false;
+
+    public enum UpperBodyState
     {
         STAND,
         FIRE
     }
 
-    enum LowerBodyState
+    public enum LowerBodyState
     {
         STAND,
-        FIRE
+        WALK,
+        FIRE,
+        AIR,
+        GROUND
     }
 
-    UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
-    LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
+    public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
+    public LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
 
     private bool IsCurrentDeviceMouse
     {
@@ -194,8 +199,7 @@ public class RobotController : MonoBehaviour
     {
         _hasAnimator = TryGetComponent(out _animator);
 
-        JumpAndGravity();
-        GroundedCheck();
+       
         UpperBodyMove();
         LowerBodyMove();
   
@@ -210,10 +214,12 @@ public class RobotController : MonoBehaviour
     private void AssignAnimationIDs()
     {
         _animIDSpeed = Animator.StringToHash("Speed");
-        _animIDGrounded = Animator.StringToHash("Grounded");
+        _animIDGround = Animator.StringToHash("Ground");
+        _animIDStand = Animator.StringToHash("Stand");
+        _animIDWalk = Animator.StringToHash("Walk");
         _animIDJump = Animator.StringToHash("Jump");
-        _animIDFreeFall = Animator.StringToHash("FreeFall");
-        _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+        //_animIDFreeFall = Animator.StringToHash("FreeFall");
+
     }
 
     private void GroundedCheck()
@@ -224,11 +230,24 @@ public class RobotController : MonoBehaviour
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
             QueryTriggerInteraction.Ignore);
 
-        // update animator if using character
-        if (_hasAnimator)
+        switch(lowerBodyState)
         {
-            _animator.SetBool(_animIDGrounded, Grounded);
+            case LowerBodyState.AIR:
+                if(Grounded)
+                {
+                    _animator.Play(_animIDGround,0,0);
+                    lowerBodyState = LowerBodyState.GROUND;
+                }
+                break;
+            default:
+                if(!Grounded)
+                {
+                    lowerBodyState = LowerBodyState.AIR;
+                }
+                break;
         }
+
+      
     }
 
     private void CameraRotation()
@@ -330,6 +349,8 @@ public class RobotController : MonoBehaviour
         switch (lowerBodyState)
         {
             case LowerBodyState.STAND:
+            case LowerBodyState.WALK:
+            case LowerBodyState.AIR:
                 {
 
                     // set target speed based on move speed, sprint speed and if sprint is pressed
@@ -394,11 +415,32 @@ public class RobotController : MonoBehaviour
                     }
 
                     // update animator if using character
-                    if (_hasAnimator)
+                    //if (_hasAnimator)
                     {
-                        _animator.SetFloat(_animIDSpeed, _animationBlend);
-                        _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+                        //_animator.SetFloat(_animIDSpeed, _animationBlend);
+                        //_animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+
+                        switch(lowerBodyState)
+                        {
+                            case LowerBodyState.STAND:
+                                if (_input.move != Vector2.zero)
+                                {
+                                    lowerBodyState = LowerBodyState.WALK;
+                                    _animator.CrossFadeInFixedTime(_animIDWalk, 0.5f,0);
+                                }
+                                break;
+                            case LowerBodyState.WALK:
+                                if (_input.move == Vector2.zero)
+                                {
+                                    lowerBodyState = LowerBodyState.STAND;
+                                    _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                                }
+                                break;
+                        }
                     }
+
+                    JumpAndGravity();
+                    GroundedCheck();
                 }
                 break;
             case LowerBodyState.FIRE:
@@ -450,13 +492,66 @@ public class RobotController : MonoBehaviour
                     if (_hasAnimator)
                     {
                         _animator.SetFloat(_animIDSpeed, _animationBlend);
-                        _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+                    }
+
+                    JumpAndGravity();
+                    GroundedCheck();
+                }
+                break;
+            case LowerBodyState.GROUND:
+                {
+                   
+                    if (_input.move == Vector2.zero)
+                    {
+                        targetSpeed = 0.0f;
+
+                        _animationBlend = 0.0f;
+
+                    }
+               
+                    // a reference to the players current horizontal velocity
+                    float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+
+                    float speedOffset = 0.1f;
+                    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+
+                    // accelerate or decelerate to target speed
+                    if (currentHorizontalSpeed < targetSpeed - speedOffset ||
+                        currentHorizontalSpeed > targetSpeed + speedOffset)
+                    {
+                        // creates curved result rather than a linear one giving a more organic speed change
+                        // note T in Lerp is clamped, so we don't need to clamp our speed
+                        _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                            Time.deltaTime * SpeedChangeRate);
+
+                        // round speed to 3 decimal places
+                        _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                    }
+                    else
+                    {
+                        _speed = targetSpeed;
+                    }
+
+
+
+                
+
+                    // update animator if using character
+                    if (_hasAnimator)
+                    {
+                        _animator.SetFloat(_animIDSpeed, _animationBlend);
+                    }
+
+                    if(event_grounded)
+                    {
+                        event_grounded = false;
+                        lowerBodyState = LowerBodyState.STAND;
+                        _animator.CrossFadeInFixedTime(_animIDStand,0.5f, 0);
                     }
                 }
                 break;
         }
 
-      
 
         Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
@@ -478,7 +573,7 @@ public class RobotController : MonoBehaviour
             if (_hasAnimator)
             {
                 _animator.SetBool(_animIDJump, false);
-                _animator.SetBool(_animIDFreeFall, false);
+                //_animator.SetBool(_animIDFreeFall, false);
             }
 
             // stop our velocity dropping infinitely when grounded
@@ -521,7 +616,7 @@ public class RobotController : MonoBehaviour
                 // update animator if using character
                 if (_hasAnimator)
                 {
-                    _animator.SetBool(_animIDFreeFall, true);
+                    //_animator.SetBool(_animIDFreeFall, true);
                 }
             }
 
@@ -536,6 +631,10 @@ public class RobotController : MonoBehaviour
         }
     }
 
+    private void OnGrounded()
+    {
+        event_grounded = true;
+    }
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
         if (lfAngle < -360f) lfAngle += 360f;
