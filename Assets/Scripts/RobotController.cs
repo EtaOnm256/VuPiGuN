@@ -242,12 +242,14 @@ public class RobotController : MonoBehaviour
                     event_grounded = false;
                 }
                 break;
-          /*  default:
-                if(!Grounded)
+            case LowerBodyState.STAND:
+            case LowerBodyState.WALK:
+                if (!Grounded)
                 {
                     lowerBodyState = LowerBodyState.AIR;
+                    _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
                 }
-                break;*/
+                break;
         }
 
       
@@ -298,8 +300,12 @@ public class RobotController : MonoBehaviour
                     {
                         upperBodyState = UpperBodyState.STAND;
 
-                        if(lowerBodyState == LowerBodyState.AIRFIRE)
+                        if (lowerBodyState == LowerBodyState.AIRFIRE)
+                        {
                             lowerBodyState = LowerBodyState.AIR;
+                            _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                            Grounded = false;
+                        }
                         else if (lowerBodyState == LowerBodyState.FIRE)
                             lowerBodyState = LowerBodyState.STAND;
                     }
@@ -321,7 +327,6 @@ public class RobotController : MonoBehaviour
                             if (lowerBodyState == LowerBodyState.AIR)
                             {
                                 lowerBodyState = LowerBodyState.AIRFIRE;
-                                _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
                             }
                             else
                             {
@@ -535,7 +540,8 @@ public class RobotController : MonoBehaviour
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
-
+                    if (lowerBodyState == LowerBodyState.AIRFIRE)
+                        animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
 
                     JumpAndGravity();
                     GroundedCheck();
