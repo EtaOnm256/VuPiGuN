@@ -820,7 +820,7 @@ MonoBehaviour:
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5
   JumpHeight: 7
-  Gravity: -15
+  Gravity: -40
   JumpTimeout: 0.5
   FallTimeout: 0.15
   Grounded: 1
@@ -841,6 +841,8 @@ MonoBehaviour:
   shoulder_hint: {fileID: 0}
   target: {fileID: 0}
   animator: {fileID: 7263584431591222758}
+  upperBodyState: 0
+  lowerBodyState: 0
 --- !u!1 &4295871794672388304
 GameObject:
   m_ObjectHideFlags: 0
