@@ -147,7 +147,8 @@ public class RobotController : MonoBehaviour
         FIRE,
         AIR,
         GROUND,
-        JUMP
+        JUMP,
+        AIRFIRE
     }
 
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
@@ -233,7 +234,8 @@ public class RobotController : MonoBehaviour
         switch(lowerBodyState)
         {
             case LowerBodyState.AIR:
-                if(Grounded)
+            case LowerBodyState.AIRFIRE:
+                if (Grounded)
                 {
                     _animator.Play(_animIDGround,0,0);
                     lowerBodyState = LowerBodyState.GROUND;
@@ -295,7 +297,11 @@ public class RobotController : MonoBehaviour
                     if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
                     {
                         upperBodyState = UpperBodyState.STAND;
-                        lowerBodyState = LowerBodyState.STAND;
+
+                        if(lowerBodyState == LowerBodyState.AIRFIRE)
+                            lowerBodyState = LowerBodyState.AIR;
+                        else if (lowerBodyState == LowerBodyState.FIRE)
+                            lowerBodyState = LowerBodyState.STAND;
                     }
                 }
                 break;
@@ -312,7 +318,16 @@ public class RobotController : MonoBehaviour
 
                         if (angle > 60)
                         {
-                            lowerBodyState = LowerBodyState.FIRE;
+                            if (lowerBodyState == LowerBodyState.AIR)
+                            {
+                                lowerBodyState = LowerBodyState.AIRFIRE;
+                                _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                            }
+                            else
+                            {
+                                lowerBodyState = LowerBodyState.FIRE;
+                                _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                            }
                         }
        
                     }
@@ -475,6 +490,7 @@ public class RobotController : MonoBehaviour
                 }
                 break;
             case LowerBodyState.FIRE:
+            case LowerBodyState.AIRFIRE:
                 {
                     targetSpeed = 0.0f;
 
