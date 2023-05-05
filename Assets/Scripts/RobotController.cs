@@ -134,7 +134,7 @@ public class RobotController : MonoBehaviour
     //public bool firing = false;
 
     bool event_grounded = false;
-
+    bool event_jumped = false;
     public enum UpperBodyState
     {
         STAND,
@@ -147,7 +147,8 @@ public class RobotController : MonoBehaviour
         WALK,
         FIRE,
         AIR,
-        GROUND
+        GROUND,
+        JUMP
     }
 
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
@@ -237,14 +238,15 @@ public class RobotController : MonoBehaviour
                 {
                     _animator.Play(_animIDGround,0,0);
                     lowerBodyState = LowerBodyState.GROUND;
+                    event_grounded = false;
                 }
                 break;
-            default:
+          /*  default:
                 if(!Grounded)
                 {
                     lowerBodyState = LowerBodyState.AIR;
                 }
-                break;
+                break;*/
         }
 
       
@@ -428,6 +430,7 @@ public class RobotController : MonoBehaviour
                                     lowerBodyState = LowerBodyState.WALK;
                                     _animator.CrossFadeInFixedTime(_animIDWalk, 0.5f,0);
                                 }
+                               
                                 break;
                             case LowerBodyState.WALK:
                                 if (_input.move == Vector2.zero)
@@ -436,6 +439,24 @@ public class RobotController : MonoBehaviour
                                     _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                                 }
                                 break;
+                        }
+
+                        if(lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
+                        {
+                            if (_input.jump)
+                            {
+                                event_jumped = false;
+                                lowerBodyState = LowerBodyState.JUMP;
+                                _animator.CrossFadeInFixedTime(_animIDJump, 0.5f, 0);
+                            }
+                        }
+
+                        if(lowerBodyState == LowerBodyState.AIR)
+                        {
+                            if (_input.jump)
+                            {
+                                _verticalVelocity += 0.2f;
+                            }
                         }
                     }
 
@@ -499,8 +520,9 @@ public class RobotController : MonoBehaviour
                 }
                 break;
             case LowerBodyState.GROUND:
+            case LowerBodyState.JUMP:
                 {
-                   
+
                     if (_input.move == Vector2.zero)
                     {
                         targetSpeed = 0.0f;
@@ -508,7 +530,7 @@ public class RobotController : MonoBehaviour
                         _animationBlend = 0.0f;
 
                     }
-               
+
                     // a reference to the players current horizontal velocity
                     float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
@@ -534,7 +556,7 @@ public class RobotController : MonoBehaviour
 
 
 
-                
+
 
                     // update animator if using character
                     if (_hasAnimator)
@@ -542,11 +564,26 @@ public class RobotController : MonoBehaviour
                         _animator.SetFloat(_animIDSpeed, _animationBlend);
                     }
 
-                    if(event_grounded)
+                    if (lowerBodyState == LowerBodyState.GROUND)
                     {
-                        event_grounded = false;
-                        lowerBodyState = LowerBodyState.STAND;
-                        _animator.CrossFadeInFixedTime(_animIDStand,0.5f, 0);
+                        if (event_grounded)
+                        {
+                            lowerBodyState = LowerBodyState.STAND;
+                            _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                        }
+                    }
+
+                    if (lowerBodyState == LowerBodyState.JUMP)
+                    {
+                        if (event_jumped)
+                        {
+                            lowerBodyState = LowerBodyState.AIR;
+
+                            Grounded = false;
+                            _verticalVelocity = 10.0f;
+
+                            _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
+                        }
                     }
                 }
                 break;
@@ -566,62 +603,16 @@ public class RobotController : MonoBehaviour
     {
         if (Grounded)
         {
-            // reset the fall timeout timer
-            _fallTimeoutDelta = FallTimeout;
-
-            // update animator if using character
-            if (_hasAnimator)
-            {
-                _animator.SetBool(_animIDJump, false);
-                //_animator.SetBool(_animIDFreeFall, false);
-            }
-
             // stop our velocity dropping infinitely when grounded
             if (_verticalVelocity < 0.0f)
             {
                 _verticalVelocity = -2f;
             }
-
-            // Jump
-            if (_input.jump && _jumpTimeoutDelta <= 0.0f)
-            {
-                // the square root of H * -2 * G = how much velocity needed to reach desired height
-                _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-
-                // update animator if using character
-                if (_hasAnimator)
-                {
-                    _animator.SetBool(_animIDJump, true);
-                }
-            }
-
-            // jump timeout
-            if (_jumpTimeoutDelta >= 0.0f)
-            {
-                _jumpTimeoutDelta -= Time.deltaTime;
-            }
+ 
         }
         else
         {
-            // reset the jump timeout timer
-            _jumpTimeoutDelta = JumpTimeout;
-
-            // fall timeout
-            if (_fallTimeoutDelta >= 0.0f)
-            {
-                _fallTimeoutDelta -= Time.deltaTime;
-            }
-            else
-            {
-                // update animator if using character
-                if (_hasAnimator)
-                {
-                    //_animator.SetBool(_animIDFreeFall, true);
-                }
-            }
-
-            // if we are not grounded, do not jump
-            _input.jump = false;
+          
         }
 
         // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
@@ -634,6 +625,10 @@ public class RobotController : MonoBehaviour
     private void OnGrounded()
     {
         event_grounded = true;
+    }
+    private void OnJumped()
+    {
+        event_jumped = true;
     }
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
