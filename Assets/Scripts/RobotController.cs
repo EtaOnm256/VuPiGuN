@@ -23,6 +23,10 @@ public class RobotController : MonoBehaviour
     [Tooltip("Sprint speed of the character in m/s")]
     public float SprintSpeed = 5.335f;
 
+    [Header("Player")]
+    [Tooltip("Move speed of the character in m/s")]
+    public float AirMoveSpeed = 1.0f;
+
     [Tooltip("How fast the character turns to face movement direction")]
     [Range(0.0f, 0.3f)]
     public float RotationSmoothTime = 0.12f;
@@ -77,6 +81,8 @@ public class RobotController : MonoBehaviour
     [Tooltip("For locking the camera position on all axis")]
     public bool LockCameraPosition = false;
 
+    public float TerminalVelocity = 53.0f;
+    public float AscendingVelocity = 20.0f;
     public Vector3 offset;
 
     // cinemachine
@@ -89,7 +95,7 @@ public class RobotController : MonoBehaviour
     private float _targetRotation = 0.0f;
     private float _rotationVelocity;
     private float _verticalVelocity;
-    private float _terminalVelocity = 53.0f;
+
 
     // timeout deltatime
     private float _jumpTimeoutDelta;
@@ -377,7 +383,10 @@ public class RobotController : MonoBehaviour
                     if (lowerBodyState != LowerBodyState.AIR || _input.jump)
                     {
                         // set target speed based on move speed, sprint speed and if sprint is pressed
-                        targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+                        if (lowerBodyState == LowerBodyState.AIR)
+                            targetSpeed = AirMoveSpeed;
+                        else
+                            targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
                         // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -478,9 +487,9 @@ public class RobotController : MonoBehaviour
                         {
                             if (_input.jump)
                             {
-                                _verticalVelocity += 0.4f;
+                                _verticalVelocity = Mathf.Min(_verticalVelocity+0.4f, AscendingVelocity);
 
-                                
+
                             }
                             else
                             {
@@ -604,7 +613,7 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.AIR;
                             _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
                             Grounded = false;
-                            _verticalVelocity = 10.0f;
+                            _verticalVelocity = AscendingVelocity;
 
                             _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
                         }
@@ -640,9 +649,9 @@ public class RobotController : MonoBehaviour
         }
 
         // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
-        if (_verticalVelocity < _terminalVelocity)
+        //if (_verticalVelocity < _terminalVelocity)
         {
-            _verticalVelocity += Gravity * Time.deltaTime;
+            _verticalVelocity = Mathf.Max(_verticalVelocity+Gravity * Time.deltaTime, -TerminalVelocity);
         }
     }
 

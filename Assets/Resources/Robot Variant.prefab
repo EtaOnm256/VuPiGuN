@@ -814,6 +814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 15
   SprintSpeed: 30
+  AirMoveSpeed: 8
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 0}
@@ -834,6 +835,8 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  TerminalVelocity: 53
+  AscendingVelocity: 20
   offset: {x: 0, y: 10, z: -20}
   headmultiAimConstraint: {fileID: 0}
   overrideTransform: {fileID: 0}
