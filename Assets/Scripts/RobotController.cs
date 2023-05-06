@@ -109,6 +109,11 @@ public class RobotController : MonoBehaviour
     private int _animIDJump;
     private int _animIDAir;
 
+    private int _animIDStep_Left;
+    private int _animIDStep_Right;
+    private int _animIDStep_Front;
+    private int _animIDStep_Back;
+
 #if ENABLE_INPUT_SYSTEM
     private PlayerInput _playerInput;
 #endif
@@ -140,6 +145,8 @@ public class RobotController : MonoBehaviour
 
     bool event_grounded = false;
     bool event_jumped = false;
+    bool event_stepped = false;
+    bool event_stepbegin = false;
     public enum UpperBodyState
     {
         STAND,
@@ -154,8 +161,16 @@ public class RobotController : MonoBehaviour
         AIR,
         GROUND,
         JUMP,
-        AIRFIRE
+        AIRFIRE,
+        STEP
     }
+
+    public enum StepDirection
+    {
+        FORWARD,LEFT,BACKWARD,RIGHT
+    }
+
+    StepDirection stepDirection;
 
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
     public LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
@@ -226,7 +241,10 @@ public class RobotController : MonoBehaviour
         _animIDWalk = Animator.StringToHash("Walk");
         _animIDJump = Animator.StringToHash("Jump");
         _animIDAir = Animator.StringToHash("Air");
-
+        _animIDStep_Left = Animator.StringToHash("Step_Left");
+        _animIDStep_Right = Animator.StringToHash("Step_Right");
+        _animIDStep_Front = Animator.StringToHash("Step_Front");
+        _animIDStep_Back = Animator.StringToHash("Step_Back");
     }
 
     private void GroundedCheck()
@@ -250,6 +268,7 @@ public class RobotController : MonoBehaviour
                 break;
             case LowerBodyState.STAND:
             case LowerBodyState.WALK:
+            case LowerBodyState.STEP:
                 if (!Grounded)
                 {
                     lowerBodyState = LowerBodyState.AIR;
@@ -369,6 +388,9 @@ public class RobotController : MonoBehaviour
         animator.SetLayerWeight(1, _rarmaimwait);
     }
 
+    //return angle in range -180 to 180
+   
+
     private void LowerBodyMove()
     {
         float targetSpeed = 0.0f;
@@ -386,7 +408,7 @@ public class RobotController : MonoBehaviour
                         if (lowerBodyState == LowerBodyState.AIR)
                             targetSpeed = AirMoveSpeed;
                         else
-                            targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+                            targetSpeed = MoveSpeed;
 
                         // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -481,6 +503,54 @@ public class RobotController : MonoBehaviour
                                 lowerBodyState = LowerBodyState.JUMP;
                                 _animator.CrossFadeInFixedTime(_animIDJump, 0.5f, 0);
                             }
+                            else if( _input.sprint && upperBodyState == UpperBodyState.STAND)
+                            {
+                                event_stepped = false;
+                                event_stepbegin = false;
+                                lowerBodyState = LowerBodyState.STEP;
+
+                                // normalise input direction
+                                Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                                float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                             _mainCamera.transform.eulerAngles.y;
+
+           
+                                
+
+                                float stepmotiondegree = Mathf.Repeat(steptargetdegree- transform.eulerAngles.y+180.0f, 360.0f)-180.0f;
+
+                                Debug.Log($"{stepmotiondegree}");
+
+                                if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                                    stepDirection = StepDirection.RIGHT;
+                                else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                                    stepDirection = StepDirection.BACKWARD;
+                                else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                                    stepDirection = StepDirection.LEFT;
+                                else 
+                                    stepDirection = StepDirection.FORWARD;
+
+                                switch(stepDirection)
+                                {
+                                    case StepDirection.LEFT:
+                                        _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
+                                        transform.rotation = Quaternion.Euler(0.0f, steptargetdegree + 90.0f,0.0f);
+                                        break;
+                                    case StepDirection.BACKWARD:
+                                        _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
+                                        transform.rotation = Quaternion.Euler(0.0f, steptargetdegree + 180.0f, 0.0f);
+                                        break;
+                                    case StepDirection.RIGHT:
+                                        _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
+                                        transform.rotation = Quaternion.Euler(0.0f, steptargetdegree - 90.0f, 0.0f);
+                                        break;
+                                    case StepDirection.FORWARD:
+                                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
+                                        transform.rotation = Quaternion.Euler(0.0f, steptargetdegree, 0.0f);
+                                        break;
+                                }
+                            }
                         }
 
                         if(lowerBodyState == LowerBodyState.AIR)
@@ -559,16 +629,11 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.GROUND:
             case LowerBodyState.JUMP:
                 {
+                    targetSpeed = 0.0f;
 
-                    if (_input.move == Vector2.zero)
-                    {
-                        targetSpeed = 0.0f;
+                    _animationBlend = 0.0f;
 
-                        _animationBlend = 0.0f;
-
-                    }
-
-                    // a reference to the players current horizontal velocity
+                    /*// a reference to the players current horizontal velocity
                     float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
                     float speedOffset = 0.1f;
@@ -589,13 +654,14 @@ public class RobotController : MonoBehaviour
                     else
                     {
                         _speed = targetSpeed;
-                    }
+                    }*/
+
+
+                    _speed = 0.0f;
 
 
 
 
-
-  
 
                     if (lowerBodyState == LowerBodyState.GROUND)
                     {
@@ -620,14 +686,66 @@ public class RobotController : MonoBehaviour
                     }
                 }
                 break;
+            case LowerBodyState.STEP:
+                {
+
+
+                    _speed = targetSpeed = event_stepbegin ? SprintSpeed : 0.0f;
+
+                    _animationBlend = 0.0f;
+
+
+               
+                   
+                    if (event_stepped && !_input.sprint)
+                    {
+                        lowerBodyState = LowerBodyState.GROUND;
+
+                        event_grounded = false;
+
+                        _animator.CrossFadeInFixedTime(_animIDGround, 0.25f, 0,0.15f);
+                    }
+                }
+                break;
         }
 
 
-        Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+        if (lowerBodyState == LowerBodyState.STEP)
+        {
+            Vector3 targetDirection;
 
-        // move the player
-        _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                         new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            float stepangle = 0.0f;
+
+             switch (stepDirection)
+             {
+                case StepDirection.LEFT:
+                    stepangle = -90.0f;
+                    break;
+                case StepDirection.RIGHT:
+                    stepangle = 90.0f;
+                    break;
+                case StepDirection.BACKWARD:
+                    stepangle = -180.0f;
+                    break;
+                case StepDirection.FORWARD:
+                    stepangle = 0.0f;
+                    break;
+            }
+
+            targetDirection = Quaternion.Euler(0.0f, transform.eulerAngles.y + stepangle, 0.0f) * Vector3.forward;
+
+            // move the player
+            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+        }
+        else
+        {
+            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+
+            // move the player
+            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+        }
 
      
     }
@@ -663,12 +781,23 @@ public class RobotController : MonoBehaviour
     {
         event_jumped = true;
     }
+    
+    private void OnStepped()
+    {
+        event_stepped = true;
+    }
+
+    private void OnStepBegin()
+    {
+        event_stepbegin = true;
+    }
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
         if (lfAngle < -360f) lfAngle += 360f;
         if (lfAngle > 360f) lfAngle -= 360f;
         return Mathf.Clamp(lfAngle, lfMin, lfMax);
     }
+
 
     private void OnDrawGizmosSelected()
     {

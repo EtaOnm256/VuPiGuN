@@ -815,7 +815,7 @@ MonoBehaviour:
   MoveSpeed: 15
   SprintSpeed: 30
   AirMoveSpeed: 8
-  RotationSmoothTime: 0.12
+  RotationSmoothTime: 0.3
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []
