@@ -114,6 +114,8 @@ public class RobotController : MonoBehaviour
     private int _animIDStep_Front;
     private int _animIDStep_Back;
 
+    private int _animIDDash;
+
 #if ENABLE_INPUT_SYSTEM
     private PlayerInput _playerInput;
 #endif
@@ -162,7 +164,8 @@ public class RobotController : MonoBehaviour
         GROUND,
         JUMP,
         AIRFIRE,
-        STEP
+        STEP,
+        DASH
     }
 
     public enum StepDirection
@@ -246,6 +249,7 @@ public class RobotController : MonoBehaviour
         _animIDStep_Right = Animator.StringToHash("Step_Right");
         _animIDStep_Front = Animator.StringToHash("Step_Front");
         _animIDStep_Back = Animator.StringToHash("Step_Back");
+        _animIDDash = Animator.StringToHash("Dash");
     }
 
     private void GroundedCheck()
@@ -260,6 +264,7 @@ public class RobotController : MonoBehaviour
         {
             case LowerBodyState.AIR:
             case LowerBodyState.AIRFIRE:
+            case LowerBodyState.DASH:
                 if (Grounded)
                 {
                     _animator.Play(_animIDGround,0,0);
@@ -350,9 +355,10 @@ public class RobotController : MonoBehaviour
 
                         if (angle > 60)
                         {
-                            if (lowerBodyState == LowerBodyState.AIR)
+                            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH)
                             {
                                 lowerBodyState = LowerBodyState.AIRFIRE;
+                                _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
                             }
                             else
                             {
@@ -401,6 +407,7 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.STAND:
             case LowerBodyState.WALK:
             case LowerBodyState.AIR:
+            case LowerBodyState.DASH:
                 {
 
                     if (lowerBodyState != LowerBodyState.AIR || _input.jump)
@@ -408,6 +415,8 @@ public class RobotController : MonoBehaviour
                         // set target speed based on move speed, sprint speed and if sprint is pressed
                         if (lowerBodyState == LowerBodyState.AIR)
                             targetSpeed = AirMoveSpeed;
+                        else if (lowerBodyState == LowerBodyState.DASH)
+                            targetSpeed = SprintSpeed;
                         else
                             targetSpeed = MoveSpeed;
 
@@ -569,9 +578,24 @@ public class RobotController : MonoBehaviour
                             }
                             else
                             {
-                                
+                                if(_input.sprint)
+                                {
+                                    lowerBodyState = LowerBodyState.DASH;
+                                    _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
+                                }
                             }
                             _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
+                        }
+
+                        if(lowerBodyState == LowerBodyState.DASH)
+                        {
+                            _verticalVelocity = 0.0f;
+
+                            if (!_input.sprint)
+                            {
+                                lowerBodyState = LowerBodyState.AIR;
+                                _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
+                            }
                         }
                     }
 
