@@ -814,8 +814,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 15
   SprintSpeed: 30
+  RotateSpeed: 0.5
   AirMoveSpeed: 8
-  RotationSmoothTime: 0.3
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 0}
   FootstepAudioClips: []

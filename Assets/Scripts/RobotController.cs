@@ -23,14 +23,12 @@ public class RobotController : MonoBehaviour
     [Tooltip("Sprint speed of the character in m/s")]
     public float SprintSpeed = 5.335f;
 
+    public float RotateSpeed = 0.1f;
+
     [Header("Player")]
     [Tooltip("Move speed of the character in m/s")]
     public float AirMoveSpeed = 1.0f;
-
-    [Tooltip("How fast the character turns to face movement direction")]
-    [Range(0.0f, 0.3f)]
-    public float RotationSmoothTime = 0.12f;
-
+        
     [Tooltip("Acceleration and deceleration")]
     public float SpeedChangeRate = 10.0f;
 
@@ -472,8 +470,10 @@ public class RobotController : MonoBehaviour
                         {
                             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                               _mainCamera.transform.eulerAngles.y;
-                            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                                RotationSmoothTime);
+                            //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                            //    RotationSmoothTime);
+
+                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation,RotateSpeed);
 
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -582,7 +582,7 @@ public class RobotController : MonoBehaviour
                                 {
                                     lowerBodyState = LowerBodyState.DASH;
                                     _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
-                                }
+                            }
                             }
                             _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                         }
@@ -643,8 +643,7 @@ public class RobotController : MonoBehaviour
 
                     _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                   float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                        RotationSmoothTime);
+                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
 
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -764,17 +763,20 @@ public class RobotController : MonoBehaviour
 
             targetDirection = Quaternion.Euler(0.0f, transform.eulerAngles.y + stepangle, 0.0f) * Vector3.forward;
 
-            float degree_delta = (Mathf.Repeat(steptargetrotation - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f);
+            /*   float degree_delta = (Mathf.Repeat(steptargetrotation - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f);
 
-            if(degree_delta != 0.0f)
-                Debug.Log(degree_delta);
+               if(degree_delta != 0.0f)
+                   Debug.Log(degree_delta);
 
-            if(degree_delta < 1.0f && degree_delta > -1.0f)
-                transform.rotation = Quaternion.Euler(0.0f, steptargetrotation, 0.0f);
-            else if (degree_delta > 0.0f)
-                transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y + 1.0f, 0.0f);
-            else
-                transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y - 1.0f, 0.0f);
+               if(degree_delta < 1.0f && degree_delta > -1.0f)
+                   transform.rotation = Quaternion.Euler(0.0f, steptargetrotation, 0.0f);
+               else if (degree_delta > 0.0f)
+                   transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y + 1.0f, 0.0f);
+               else
+                   transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y - 1.0f, 0.0f);
+            */
+
+            transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, 1.0f), 0.0f);
 
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
@@ -782,7 +784,7 @@ public class RobotController : MonoBehaviour
         }
         else
         {
-            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+            Vector3 targetDirection = transform.rotation * Vector3.forward;
 
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
