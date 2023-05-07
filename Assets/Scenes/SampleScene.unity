@@ -243,6 +243,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1281739433}
     - target: {fileID: 9209227123616401360, guid: 3ca8aa5d61ada684684e15c0cd93b5bb, type: 3}
+      propertyPath: AirDashRotateSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9209227123616401360, guid: 3ca8aa5d61ada684684e15c0cd93b5bb, type: 3}
       propertyPath: headmultiAimConstraint
       value: 
       objectReference: {fileID: 1682865729}

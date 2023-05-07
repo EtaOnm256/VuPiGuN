@@ -23,7 +23,9 @@ public class RobotController : MonoBehaviour
     [Tooltip("Sprint speed of the character in m/s")]
     public float SprintSpeed = 5.335f;
 
-    public float RotateSpeed = 0.1f;
+    public float RotateSpeed = 0.2f;
+    public float DashRotateSpeed = 0.05f;
+    public float AirDashRotateSpeed = 0.05f;
 
     [Header("Player")]
     [Tooltip("Move speed of the character in m/s")]
@@ -147,6 +149,7 @@ public class RobotController : MonoBehaviour
     bool event_jumped = false;
     bool event_stepped = false;
     bool event_stepbegin = false;
+    bool event_dashed = false;
     public enum UpperBodyState
     {
         STAND,
@@ -163,7 +166,8 @@ public class RobotController : MonoBehaviour
         JUMP,
         AIRFIRE,
         STEP,
-        DASH
+        DASH,
+        AIRROTATE
     }
 
     public enum StepDirection
@@ -263,6 +267,8 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.AIR:
             case LowerBodyState.AIRFIRE:
             case LowerBodyState.DASH:
+            case LowerBodyState.AIRROTATE:
+
                 if (Grounded)
                 {
                     _animator.Play(_animIDGround,0,0);
@@ -353,7 +359,7 @@ public class RobotController : MonoBehaviour
 
                         if (angle > 60)
                         {
-                            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH)
+                            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                             {
                                 lowerBodyState = LowerBodyState.AIRFIRE;
                                 _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
@@ -422,7 +428,7 @@ public class RobotController : MonoBehaviour
 
                         // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
                         // if there is no input, set the target speed to 0
-                        if (_input.move == Vector2.zero)
+                        if (_input.move == Vector2.zero && lowerBodyState != LowerBodyState.DASH)
                         {
                             targetSpeed = 0.0f;
 
@@ -473,10 +479,33 @@ public class RobotController : MonoBehaviour
                             //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                             //    RotationSmoothTime);
 
-                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation,RotateSpeed);
+                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, lowerBodyState == LowerBodyState.DASH ? DashRotateSpeed  : RotateSpeed);
 
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                        }
+                    }
+                    else
+                    {
+                        // a reference to the players current horizontal velocity
+                        float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+                        float speedOffset = 0.1f;
+
+                        targetSpeed = AirMoveSpeed;
+
+                        // accelerate or decelerate to target speed
+                        if (
+                            //currentHorizontalSpeed < targetSpeed - speedOffset ||
+                            currentHorizontalSpeed > targetSpeed + speedOffset
+                            )
+                        {
+                            // creates curved result rather than a linear one giving a more organic speed change
+                            // note T in Lerp is clamped, so we don't need to clamp our speed
+                            _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed,
+                                Time.deltaTime * SpeedChangeRate);
+
+                            // round speed to 3 decimal places
+                            _speed = Mathf.Round(_speed * 1000f) / 1000f;
                         }
                     }
 
@@ -580,9 +609,30 @@ public class RobotController : MonoBehaviour
                             {
                                 if(_input.sprint)
                                 {
-                                    lowerBodyState = LowerBodyState.DASH;
-                                    _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
-                            }
+                                    // normalise input direction
+                                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                                    // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                                    // if there is a move input rotate player when the player is moving
+                                    if (_input.move != Vector2.zero)
+                                    {
+                                        _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                                          _mainCamera.transform.eulerAngles.y;
+                                    }
+
+                                    float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
+
+                                    if (degree < RotateSpeed && degree > -RotateSpeed)
+                                    {
+                                        lowerBodyState = LowerBodyState.DASH;
+                                        _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
+                                        event_dashed = false;
+                                    }
+                                    else
+                                    {
+                                        lowerBodyState = LowerBodyState.AIRROTATE;
+                                    }
+                                }
                             }
                             _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                         }
@@ -591,7 +641,7 @@ public class RobotController : MonoBehaviour
                         {
                             _verticalVelocity = 0.0f;
 
-                            if (!_input.sprint)
+                            if (!_input.sprint && event_dashed)
                             {
                                 lowerBodyState = LowerBodyState.AIR;
                                 _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
@@ -662,30 +712,7 @@ public class RobotController : MonoBehaviour
 
                     _animationBlend = 0.0f;
 
-                    /*// a reference to the players current horizontal velocity
-                    float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
-
-                    float speedOffset = 0.1f;
-                    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
-
-                    // accelerate or decelerate to target speed
-                    if (currentHorizontalSpeed < targetSpeed - speedOffset ||
-                        currentHorizontalSpeed > targetSpeed + speedOffset)
-                    {
-                        // creates curved result rather than a linear one giving a more organic speed change
-                        // note T in Lerp is clamped, so we don't need to clamp our speed
-                        _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                            Time.deltaTime * SpeedChangeRate);
-
-                        // round speed to 3 decimal places
-                        _speed = Mathf.Round(_speed * 1000f) / 1000f;
-                    }
-                    else
-                    {
-                        _speed = targetSpeed;
-                    }*/
-
-
+               
                     _speed = 0.0f;
 
 
@@ -712,6 +739,45 @@ public class RobotController : MonoBehaviour
 
                             _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
                         }
+                    }
+                }
+                break;
+            case LowerBodyState.AIRROTATE:
+                {
+                    _verticalVelocity = 0.0f;
+                    _speed = 0.0f;
+                    // normalise input direction
+
+                    // これを有効化すると、ダッシュ準備中に向きを修正できるようになるが、
+                    // 代わりに修正し続けてのホバリングができるようになってしまう。
+                    /*   Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                    // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                    // if there is a move input rotate player when the player is moving
+                    if (_input.move != Vector2.zero)
+                    {
+                        _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                          _mainCamera.transform.eulerAngles.y;
+                        //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                        //    RotationSmoothTime);
+                    }
+                    else
+                    {
+                        _targetRotation = transform.eulerAngles.y;
+                    }*/
+                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, AirDashRotateSpeed);
+
+                    // rotate to face input direction relative to camera position
+                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                   
+
+                    float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
+
+                    if (degree < RotateSpeed && degree > -RotateSpeed)
+                    {
+                        lowerBodyState = LowerBodyState.DASH;
+                        _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
+                        event_dashed = false;
                     }
                 }
                 break;
@@ -834,6 +900,10 @@ public class RobotController : MonoBehaviour
     private void OnStepBegin()
     {
         event_stepbegin = true;
+    }
+    private void OnDashed()
+    {
+        event_dashed = true;
     }
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {

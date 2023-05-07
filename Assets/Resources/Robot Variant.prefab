@@ -814,7 +814,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 15
   SprintSpeed: 30
-  RotateSpeed: 0.5
+  RotateSpeed: 1
+  DashRotateSpeed: 0.25
+  AirDashRotateSpeed: 2
   AirMoveSpeed: 8
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 0}
