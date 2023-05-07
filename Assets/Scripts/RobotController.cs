@@ -175,6 +175,7 @@ public class RobotController : MonoBehaviour
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
     public LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
 
+    float steptargetrotation;
     private bool IsCurrentDeviceMouse
     {
         get
@@ -520,7 +521,7 @@ public class RobotController : MonoBehaviour
 
                                 float stepmotiondegree = Mathf.Repeat(steptargetdegree- transform.eulerAngles.y+180.0f, 360.0f)-180.0f;
 
-                                Debug.Log($"{stepmotiondegree}");
+     
 
                                 if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
                                     stepDirection = StepDirection.RIGHT;
@@ -531,25 +532,30 @@ public class RobotController : MonoBehaviour
                                 else 
                                     stepDirection = StepDirection.FORWARD;
 
+                     
+
                                 switch(stepDirection)
                                 {
                                     case StepDirection.LEFT:
                                         _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
-                                        transform.rotation = Quaternion.Euler(0.0f, steptargetdegree + 90.0f,0.0f);
+                                        steptargetrotation = steptargetdegree + 90.0f;
                                         break;
                                     case StepDirection.BACKWARD:
                                         _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
-                                        transform.rotation = Quaternion.Euler(0.0f, steptargetdegree + 180.0f, 0.0f);
+                                        steptargetrotation = steptargetdegree + 180.0f;
                                         break;
                                     case StepDirection.RIGHT:
                                         _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
-                                        transform.rotation = Quaternion.Euler(0.0f, steptargetdegree - 90.0f, 0.0f);
+                                        steptargetrotation = steptargetdegree - 90.0f;
                                         break;
-                                    case StepDirection.FORWARD:
+                                    default:
+                                    //case StepDirection.FORWARD:
                                         _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
-                                        transform.rotation = Quaternion.Euler(0.0f, steptargetdegree, 0.0f);
+                                        steptargetrotation = steptargetdegree;
                                         break;
                                 }
+
+                 
                             }
                         }
 
@@ -733,6 +739,18 @@ public class RobotController : MonoBehaviour
             }
 
             targetDirection = Quaternion.Euler(0.0f, transform.eulerAngles.y + stepangle, 0.0f) * Vector3.forward;
+
+            float degree_delta = (Mathf.Repeat(steptargetrotation - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f);
+
+            if(degree_delta != 0.0f)
+                Debug.Log(degree_delta);
+
+            if(degree_delta < 1.0f && degree_delta > -1.0f)
+                transform.rotation = Quaternion.Euler(0.0f, steptargetrotation, 0.0f);
+            else if (degree_delta > 0.0f)
+                transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y + 1.0f, 0.0f);
+            else
+                transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y - 1.0f, 0.0f);
 
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
