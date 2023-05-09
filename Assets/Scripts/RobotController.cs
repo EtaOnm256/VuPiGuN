@@ -2,9 +2,10 @@
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
+using UnityEngine.UI;
 
 using UnityEngine.Animations.Rigging;
-
+using System;
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
  */
 
@@ -181,6 +182,23 @@ public class RobotController : MonoBehaviour
     public LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
 
     float steptargetrotation;
+
+    Canvas HUDCanvas;
+    Slider boostSlider;
+
+   
+    public int Boost_Max = 200;
+
+    int _boost;
+
+    int boost
+    {
+        get { return _boost; }
+        set {
+                        boostSlider.value = _boost = value;
+            }
+    }
+
     private bool IsCurrentDeviceMouse
     {
         get
@@ -200,7 +218,11 @@ public class RobotController : MonoBehaviour
         if (_mainCamera == null)
         {
             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        }        
+        }
+
+        HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+        boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
+     
     }
 
     private void Start()
@@ -221,6 +243,26 @@ public class RobotController : MonoBehaviour
         // reset our timeouts on start
         _jumpTimeoutDelta = JumpTimeout;
         _fallTimeoutDelta = FallTimeout;
+
+        boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
+    }
+
+    private bool ConsumeBoost()
+    {
+        if(boost > 0)
+        {
+            boost--;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void RegenBoost()
+    {
+        boost = Math.Min(boost+1, Boost_Max);
     }
 
     private void Update()
@@ -595,42 +637,49 @@ public class RobotController : MonoBehaviour
 
                  
                             }
+
+                            RegenBoost();
                         }
 
                         if(lowerBodyState == LowerBodyState.AIR)
                         {
                             if (_input.jump)
                             {
-                                _verticalVelocity = Mathf.Min(_verticalVelocity+0.4f, AscendingVelocity);
-
-
+                                if (ConsumeBoost())
+                                {
+                                    _verticalVelocity = Mathf.Min(_verticalVelocity + 0.4f, AscendingVelocity);
+                                }
                             }
                             else
                             {
                                 if(_input.sprint)
                                 {
-                                    // normalise input direction
-                                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
-
-                                    // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-                                    // if there is a move input rotate player when the player is moving
-                                    if (_input.move != Vector2.zero)
+                                    if (ConsumeBoost())
                                     {
-                                        _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                                          _mainCamera.transform.eulerAngles.y;
-                                    }
 
-                                    float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
+                                        // normalise input direction
+                                        Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-                                    if (degree < RotateSpeed && degree > -RotateSpeed)
-                                    {
-                                        lowerBodyState = LowerBodyState.DASH;
-                                        _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
-                                        event_dashed = false;
-                                    }
-                                    else
-                                    {
-                                        lowerBodyState = LowerBodyState.AIRROTATE;
+                                        // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                                        // if there is a move input rotate player when the player is moving
+                                        if (_input.move != Vector2.zero)
+                                        {
+                                            _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                                              _mainCamera.transform.eulerAngles.y;
+                                        }
+
+                                        float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
+
+                                        if (degree < RotateSpeed && degree > -RotateSpeed)
+                                        {
+                                            lowerBodyState = LowerBodyState.DASH;
+                                            _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
+                                            event_dashed = false;
+                                        }
+                                        else
+                                        {
+                                            lowerBodyState = LowerBodyState.AIRROTATE;
+                                        }
                                     }
                                 }
                             }
@@ -641,7 +690,9 @@ public class RobotController : MonoBehaviour
                         {
                             _verticalVelocity = 0.0f;
 
-                            if (!_input.sprint && event_dashed)
+                            bool boost_remain = ConsumeBoost();
+
+                            if ((!_input.sprint || !boost_remain) && event_dashed)
                             {
                                 lowerBodyState = LowerBodyState.AIR;
                                 _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
@@ -700,6 +751,11 @@ public class RobotController : MonoBehaviour
 
                     if (lowerBodyState == LowerBodyState.AIRFIRE)
                         animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
+
+                    if (lowerBodyState == LowerBodyState.FIRE)
+                    {
+                        RegenBoost();
+                    }
 
                     JumpAndGravity();
                     GroundedCheck();
@@ -933,7 +989,7 @@ public class RobotController : MonoBehaviour
         {
             if (FootstepAudioClips.Length > 0)
             {
-                var index = Random.Range(0, FootstepAudioClips.Length);
+                var index = UnityEngine.Random.Range(0, FootstepAudioClips.Length);
                 AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
         }
