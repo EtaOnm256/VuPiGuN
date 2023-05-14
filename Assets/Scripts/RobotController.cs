@@ -199,6 +199,12 @@ public class RobotController : MonoBehaviour
             }
     }
 
+    GameObject beam_prefab;
+
+    public GameObject Rhand;
+
+    GameObject gun;
+
     private bool IsCurrentDeviceMouse
     {
         get
@@ -222,7 +228,9 @@ public class RobotController : MonoBehaviour
 
         HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
         boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
-     
+
+        beam_prefab = Resources.Load<GameObject>("Beam");
+        gun = Rhand.transform.Find("BeamRifle").gameObject;
     }
 
     private void Start()
@@ -385,6 +393,12 @@ public class RobotController : MonoBehaviour
                         }
                         else if (lowerBodyState == LowerBodyState.FIRE)
                             lowerBodyState = LowerBodyState.STAND;
+
+                        GameObject beam_obj = GameObject.Instantiate(beam_prefab, gun.transform.position,gun.transform.rotation);
+
+                        Beam beam = beam_obj.GetComponent<Beam>();
+
+                        beam.direction = gun.transform.forward;
                     }
                 }
                 break;
