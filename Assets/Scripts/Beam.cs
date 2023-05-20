@@ -8,18 +8,30 @@ public class Beam : MonoBehaviour
 
     public Vector3 direction;
 
+    public float MaxLength = 15.0f;
+
+    Vector3 start_pos;
+
     // Start is called before the first frame update
     void Start()
     {
         lineRenderer.positionCount = 2;
 
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, transform.position);
+        start_pos = transform.position;
+
+        lineRenderer.SetPosition(0, start_pos);
+        lineRenderer.SetPosition(1, start_pos);
     }
 
     // Update is called once per frame
     void Update()
     {
-        lineRenderer.SetPosition(1, lineRenderer.GetPosition(1) + direction * 0.5f);
+        float length = (lineRenderer.GetPosition(1) - start_pos).magnitude;
+
+        length = Mathf.Min(length, MaxLength);
+
+        lineRenderer.SetPosition(1, lineRenderer.GetPosition(1) + direction * 0.3f);
+
+        lineRenderer.SetPosition(0, lineRenderer.GetPosition(1) - direction * length);
     }
 }
