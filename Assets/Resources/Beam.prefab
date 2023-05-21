@@ -151,3 +151,4 @@ MonoBehaviour:
   lineRenderer: {fileID: -3320835075645777373}
   direction: {x: 0, y: 0, z: 0}
   MaxLength: 30
+  hitEffect_prefab: {fileID: 3835462889935592433, guid: 9c34b8721a511ec4db92d131e72fe27a, type: 3}

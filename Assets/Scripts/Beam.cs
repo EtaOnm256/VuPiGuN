@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public class Beam : MonoBehaviour
 {
     public LineRenderer lineRenderer;
@@ -25,6 +25,12 @@ public class Beam : MonoBehaviour
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
 
+    public GameObject hitEffect_prefab;
+
+    GameObject[] hitHistory = new GameObject[8];
+    int hitHistoryCount = 0;
+
+
     // Update is called once per frame
     void Update()
     {
@@ -40,8 +46,12 @@ public class Beam : MonoBehaviour
 
         for (int i = 0; i < numhit; i++)
         {
-            GameObject.Destroy(gameObject);
-            return;
+            if (hitHistory.Contains(rayCastHit[i].collider.gameObject))
+                continue;
+
+            GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
+
+            hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;
         }
 
 
