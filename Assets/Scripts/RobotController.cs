@@ -130,6 +130,7 @@ public class RobotController : MonoBehaviour
     private bool _hasAnimator;
 
     public MultiAimConstraint headmultiAimConstraint;
+    public MultiAimConstraint chestmultiAimConstraint;
 
     //public MultiAimConstraint rarmmultiAimConstraint;
     public OverrideTransform overrideTransform;
@@ -139,6 +140,8 @@ public class RobotController : MonoBehaviour
     public GameObject target;
 
     private float _headaimwait = 0.0f;
+
+    private float _chestaimwait = 0.0f;
 
     private float _rarmaimwait = 0.0f;
 
@@ -364,22 +367,17 @@ public class RobotController : MonoBehaviour
     private void UpperBodyMove()
     {
 
-        float angle = Vector3.Angle(target.transform.position - transform.position, transform.forward);
-
-        if (angle > 60)
-        {
-            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
-        }
-        else
-            _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
-
-        headmultiAimConstraint.weight = _headaimwait;
+      
+  
 
         switch(upperBodyState)
         {
             case UpperBodyState.FIRE:
                 {
+                    _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
+
                     _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.02f);
+                    _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.02f);
 
                     if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
                     {
@@ -404,6 +402,16 @@ public class RobotController : MonoBehaviour
                 break;
             case UpperBodyState.STAND:
                 {
+                    float angle = Vector3.Angle(target.transform.position - transform.position, transform.forward);
+
+                    if (angle > 60)
+                    {
+                        _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
+                    }
+                    else
+                        _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
+
+
                     if (_input.fire)
                     {
                         upperBodyState = UpperBodyState.FIRE;
@@ -413,7 +421,7 @@ public class RobotController : MonoBehaviour
 
                         float angle_aim = Vector3.Angle(target.transform.position - shoulder_hint.transform.position, transform.forward);
 
-                        if (angle > 60)
+                        if (angle > 100)
                         {
                             if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                             {
@@ -430,11 +438,12 @@ public class RobotController : MonoBehaviour
                     }
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
+                    _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.02f);
                 }
                 break;
         }
 
-
+        headmultiAimConstraint.weight = _headaimwait;
 
         Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
 
@@ -453,6 +462,8 @@ public class RobotController : MonoBehaviour
         overrideTransform.weight = _rarmaimwait;
 
         animator.SetLayerWeight(1, _rarmaimwait);
+
+        chestmultiAimConstraint.weight = _chestaimwait;
     }
 
     //return angle in range -180 to 180
