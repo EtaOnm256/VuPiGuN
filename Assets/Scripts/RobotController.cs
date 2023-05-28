@@ -131,13 +131,19 @@ public class RobotController : MonoBehaviour
 
     public MultiAimConstraint headmultiAimConstraint;
     public MultiAimConstraint chestmultiAimConstraint;
+    public RigBuilder rigBuilder;
 
     //public MultiAimConstraint rarmmultiAimConstraint;
     public OverrideTransform overrideTransform;
     public GameObject aimingBase;
     public GameObject shoulder_hint;
 
-    public GameObject target;
+    public RobotController Target_Robot;
+    public GameObject Head = null;
+    public GameObject Chest = null;
+    private GameObject target_chest;
+    private GameObject target_head;
+
 
     private float _headaimwait = 0.0f;
 
@@ -206,7 +212,7 @@ public class RobotController : MonoBehaviour
 
     public GameObject Rhand;
 
-    GameObject gun;
+    public GameObject Gun;
 
     private bool IsCurrentDeviceMouse
     {
@@ -233,7 +239,7 @@ public class RobotController : MonoBehaviour
         boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
 
         beam_prefab = Resources.Load<GameObject>("Beam");
-        gun = Rhand.transform.Find("BeamRifle").gameObject;
+        //gun = Rhand.transform.Find("BeamRifle").gameObject;
     }
 
     private void Start()
@@ -256,6 +262,13 @@ public class RobotController : MonoBehaviour
         _fallTimeoutDelta = FallTimeout;
 
         boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
+
+        target_chest = Target_Robot.Chest;
+        target_head = Target_Robot.Head;
+
+        chestmultiAimConstraint.data.sourceObjects = new WeightedTransformArray {new WeightedTransform(Target_Robot.Chest.transform,1.0f) };
+        headmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Head.transform, 1.0f) };
+        rigBuilder.Build();
     }
 
     private bool ConsumeBoost()
@@ -392,17 +405,17 @@ public class RobotController : MonoBehaviour
                         else if (lowerBodyState == LowerBodyState.FIRE)
                             lowerBodyState = LowerBodyState.STAND;
 
-                        GameObject beam_obj = GameObject.Instantiate(beam_prefab, gun.transform.position,gun.transform.rotation);
+                        GameObject beam_obj = GameObject.Instantiate(beam_prefab, Gun.transform.position,Gun.transform.rotation);
 
                         Beam beam = beam_obj.GetComponent<Beam>();
 
-                        beam.direction = gun.transform.forward;
+                        beam.direction = Gun.transform.forward;
                     }
                 }
                 break;
             case UpperBodyState.STAND:
                 {
-                    float angle = Vector3.Angle(target.transform.position - transform.position, transform.forward);
+                    float angle = Vector3.Angle(target_chest.transform.position - transform.position, transform.forward);
 
                     if (angle > 60)
                     {
@@ -419,7 +432,7 @@ public class RobotController : MonoBehaviour
 
                         animator.Play("Armature|Fire", 1, 0.0f);
 
-                        float angle_aim = Vector3.Angle(target.transform.position - shoulder_hint.transform.position, transform.forward);
+                        float angle_aim = Vector3.Angle(target_chest.transform.position - shoulder_hint.transform.position, transform.forward);
 
                         if (angle > 100)
                         {
@@ -447,7 +460,7 @@ public class RobotController : MonoBehaviour
 
         Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
 
-        Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position - target.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+        Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
         Quaternion q_rotation_global = q_base_global * q_aim_global;
 
@@ -464,6 +477,8 @@ public class RobotController : MonoBehaviour
         animator.SetLayerWeight(1, _rarmaimwait);
 
         chestmultiAimConstraint.weight = _chestaimwait;
+
+
     }
 
     //return angle in range -180 to 180
@@ -765,7 +780,7 @@ public class RobotController : MonoBehaviour
                     }
 
 
-                    Vector3 target_dir = target.transform.position - transform.position;
+                    Vector3 target_dir = target_chest.transform.position - transform.position;
 
                     _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
