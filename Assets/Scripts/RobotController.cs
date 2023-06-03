@@ -109,11 +109,16 @@ public class RobotController : MonoBehaviour
     private int _animIDWalk;
     private int _animIDJump;
     private int _animIDAir;
-
+    
     private int _animIDStep_Left;
     private int _animIDStep_Right;
     private int _animIDStep_Front;
     private int _animIDStep_Back;
+
+    private int _animIDKnockback_Back;
+    private int _animIDKnockback_Front;
+    private int _animIDKnockback_Left;
+    private int _animIDKnockback_Right;
 
     private int _animIDDash;
 
@@ -160,10 +165,12 @@ public class RobotController : MonoBehaviour
     bool event_stepped = false;
     bool event_stepbegin = false;
     bool event_dashed = false;
+    bool event_knockbacked = false;
     public enum UpperBodyState
     {
         STAND,
-        FIRE
+        FIRE,
+        KNOCKBACK
     }
 
     public enum LowerBodyState
@@ -177,7 +184,8 @@ public class RobotController : MonoBehaviour
         AIRFIRE,
         STEP,
         DASH,
-        AIRROTATE
+        AIRROTATE,
+        KNOCKBACK
     }
 
     public enum StepDirection
@@ -195,6 +203,7 @@ public class RobotController : MonoBehaviour
     Canvas HUDCanvas;
     Slider boostSlider;
 
+    Vector3 knockbackdir;
    
     public int Boost_Max = 200;
 
@@ -213,6 +222,34 @@ public class RobotController : MonoBehaviour
     public GameObject Rhand;
 
     public GameObject Gun;
+
+    public void DoDamage(Vector3 dir)
+    {
+        event_knockbacked = false;
+
+        upperBodyState = UpperBodyState.KNOCKBACK;
+        lowerBodyState = LowerBodyState.KNOCKBACK;
+
+        knockbackdir = dir;
+        knockbackdir.y = 0.0f;
+
+        float knockbackdegree = Mathf.Atan2(knockbackdir.x, knockbackdir.z) * Mathf.Rad2Deg;
+
+        float stepmotiondegree = Mathf.Repeat(knockbackdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
+
+        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+            _animator.Play(_animIDKnockback_Right, 0, 0);
+        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+            _animator.Play(_animIDKnockback_Back, 0, 0);
+        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+            _animator.Play(_animIDKnockback_Left, 0, 0);
+        else
+            _animator.Play(_animIDKnockback_Front, 0, 0);
+
+
+
+        _speed = SprintSpeed;
+    }
 
     private bool IsCurrentDeviceMouse
     {
@@ -244,7 +281,8 @@ public class RobotController : MonoBehaviour
 
     private void Start()
     {
-        _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+        if(CinemachineCameraTarget!=null)
+            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
@@ -263,12 +301,15 @@ public class RobotController : MonoBehaviour
 
         boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
 
-        target_chest = Target_Robot.Chest;
-        target_head = Target_Robot.Head;
+        if (Target_Robot != null)
+        {
+            target_chest = Target_Robot.Chest;
+            target_head = Target_Robot.Head;
 
-        chestmultiAimConstraint.data.sourceObjects = new WeightedTransformArray {new WeightedTransform(Target_Robot.Chest.transform,1.0f) };
-        headmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Head.transform, 1.0f) };
-        rigBuilder.Build();
+            chestmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Chest.transform, 1.0f) };
+            headmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Head.transform, 1.0f) };
+            rigBuilder.Build();
+        }
     }
 
     private bool ConsumeBoost()
@@ -301,8 +342,13 @@ public class RobotController : MonoBehaviour
 
     private void LateUpdate()
     {
-        CameraRotation();
-        CinemachineCameraTarget.transform.position = transform.position + CinemachineCameraTarget.transform.rotation * offset;
+
+
+        if (CinemachineCameraTarget != null)
+        {
+            CameraRotation();
+            CinemachineCameraTarget.transform.position = transform.position + CinemachineCameraTarget.transform.rotation * offset;
+        }
     }
 
     private void AssignAnimationIDs()
@@ -313,11 +359,18 @@ public class RobotController : MonoBehaviour
         _animIDWalk = Animator.StringToHash("Walk");
         _animIDJump = Animator.StringToHash("Jump");
         _animIDAir = Animator.StringToHash("Air");
+
         _animIDStep_Left = Animator.StringToHash("Step_Left");
         _animIDStep_Right = Animator.StringToHash("Step_Right");
         _animIDStep_Front = Animator.StringToHash("Step_Front");
         _animIDStep_Back = Animator.StringToHash("Step_Back");
+
         _animIDDash = Animator.StringToHash("Dash");
+
+        _animIDKnockback_Back = Animator.StringToHash("KnockBack_Back");
+        _animIDKnockback_Front = Animator.StringToHash("KnockBack_Front");
+        _animIDKnockback_Right = Animator.StringToHash("KnockBack_Right");
+        _animIDKnockback_Left = Animator.StringToHash("KnockBack_Left");
     }
 
     private void GroundedCheck()
@@ -415,14 +468,23 @@ public class RobotController : MonoBehaviour
                 break;
             case UpperBodyState.STAND:
                 {
-                    float angle = Vector3.Angle(target_chest.transform.position - transform.position, transform.forward);
+                    float angle = 180.0f;
 
-                    if (angle > 60)
+                    if (target_chest)
+                    {
+                        angle = Vector3.Angle(target_chest.transform.position - transform.position, transform.forward);
+
+                        if (angle > 60)
+                        {
+                            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
+                        }
+                        else
+                            _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
+                    }
+                    else
                     {
                         _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
                     }
-                    else
-                        _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
 
 
                     if (_input.fire)
@@ -434,7 +496,7 @@ public class RobotController : MonoBehaviour
 
                         float angle_aim = Vector3.Angle(target_chest.transform.position - shoulder_hint.transform.position, transform.forward);
 
-                        if (angle > 100)
+                        if (angle > 100 || target_chest==null)
                         {
                             if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                             {
@@ -458,27 +520,29 @@ public class RobotController : MonoBehaviour
 
         headmultiAimConstraint.weight = _headaimwait;
 
-        Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
+        if (target_chest != null)
+        {
 
-        Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+            Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
 
-        Quaternion q_rotation_global = q_base_global * q_aim_global;
+            Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
-        Quaternion q_base = Quaternion.Inverse(aimingBase.transform.rotation);
+            Quaternion q_rotation_global = q_base_global * q_aim_global;
 
-        Quaternion q_final = q_base * q_rotation_global * aimingBase.transform.rotation;
+            Quaternion q_base = Quaternion.Inverse(aimingBase.transform.rotation);
 
-        //overrideTransform.data.rotation = q_final.eulerAngles;
-        overrideTransform.data.position = shoulder_hint.transform.position;
-        overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+            Quaternion q_final = q_base * q_rotation_global * aimingBase.transform.rotation;
+
+            //overrideTransform.data.rotation = q_final.eulerAngles;
+            overrideTransform.data.position = shoulder_hint.transform.position;
+            overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+        }
 
         overrideTransform.weight = _rarmaimwait;
 
         animator.SetLayerWeight(1, _rarmaimwait);
 
         chestmultiAimConstraint.weight = _chestaimwait;
-
-
     }
 
     //return angle in range -180 to 180
@@ -898,6 +962,38 @@ public class RobotController : MonoBehaviour
                     }
                 }
                 break;
+            case LowerBodyState.KNOCKBACK:
+                {
+                    // a reference to the players current horizontal velocity
+                    float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+                    float speedOffset = 0.1f;
+
+                    targetSpeed = 0.0f;
+
+                    // accelerate or decelerate to target speed
+                    if (
+                        //currentHorizontalSpeed < targetSpeed - speedOffset ||
+                        currentHorizontalSpeed > targetSpeed + speedOffset
+                        )
+                    {
+                        // creates curved result rather than a linear one giving a more organic speed change
+                        // note T in Lerp is clamped, so we don't need to clamp our speed
+                        _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed,
+                            Time.deltaTime * SpeedChangeRate);
+
+                        // round speed to 3 decimal places
+                        _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                    }
+
+                    if (event_knockbacked)
+                    {
+                        lowerBodyState = LowerBodyState.STAND;
+                        upperBodyState = UpperBodyState.STAND;
+                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+
+                    }
+                }
+                break;
         }
 
 
@@ -907,8 +1003,8 @@ public class RobotController : MonoBehaviour
 
             float stepangle = 0.0f;
 
-             switch (stepDirection)
-             {
+            switch (stepDirection)
+            {
                 case StepDirection.LEFT:
                     stepangle = -90.0f;
                     break;
@@ -925,20 +1021,39 @@ public class RobotController : MonoBehaviour
 
             targetDirection = Quaternion.Euler(0.0f, transform.eulerAngles.y + stepangle, 0.0f) * Vector3.forward;
 
-            /*   float degree_delta = (Mathf.Repeat(steptargetrotation - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f);
-
-               if(degree_delta != 0.0f)
-                   Debug.Log(degree_delta);
-
-               if(degree_delta < 1.0f && degree_delta > -1.0f)
-                   transform.rotation = Quaternion.Euler(0.0f, steptargetrotation, 0.0f);
-               else if (degree_delta > 0.0f)
-                   transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y + 1.0f, 0.0f);
-               else
-                   transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y - 1.0f, 0.0f);
-            */
-
+         
             transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, 1.0f), 0.0f);
+
+            // move the player
+            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+        }
+        else if (lowerBodyState == LowerBodyState.KNOCKBACK)
+        {
+            Vector3 targetDirection;
+
+            float stepangle = -180.0f;
+
+            /*switch (stepDirection)
+            {
+                case StepDirection.LEFT:
+                    stepangle = -90.0f;
+                    break;
+                case StepDirection.RIGHT:
+                    stepangle = 90.0f;
+                    break;
+                case StepDirection.BACKWARD:
+                    stepangle = -180.0f;
+                    break;
+                case StepDirection.FORWARD:
+                    stepangle = 0.0f;
+                    break;
+            }*/
+
+            targetDirection = knockbackdir;
+
+         
+            //transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, 1.0f), 0.0f);
 
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
@@ -1001,6 +1116,11 @@ public class RobotController : MonoBehaviour
     {
         event_dashed = true;
     }
+    private void OnKnockbacked()
+    {
+        event_knockbacked = true;
+    }
+
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
         if (lfAngle < -360f) lfAngle += 360f;

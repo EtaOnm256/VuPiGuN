@@ -28,8 +28,10 @@ public class Beam : MonoBehaviour
     public GameObject hitEffect_prefab;
 
     GameObject[] hitHistory = new GameObject[8];
-    int hitHistoryCount = 0;
+    RobotController[] hitHistoryRC = new RobotController[8];
 
+    int hitHistoryCount = 0;
+    int hitHistoryRCCount = 0;
 
     // Update is called once per frame
     void Update()
@@ -49,9 +51,25 @@ public class Beam : MonoBehaviour
             if (hitHistory.Contains(rayCastHit[i].collider.gameObject))
                 continue;
 
-            GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
-
             hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;
+
+           
+
+            RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
+
+            if (robotController != null)
+            {
+                if (hitHistoryRC.Contains(robotController))
+                    continue;
+
+                hitHistoryRC[hitHistoryRCCount++] = robotController;
+
+                robotController.DoDamage(direction);
+
+                GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
+            }
+
+     
         }
 
 
