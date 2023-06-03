@@ -339,6 +339,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1913031727}
     - target: {fileID: 9209227123616401360, guid: 3ca8aa5d61ada684684e15c0cd93b5bb, type: 3}
+      propertyPath: HUDCanvas
+      value: 
+      objectReference: {fileID: 806228394}
+    - target: {fileID: 9209227123616401360, guid: 3ca8aa5d61ada684684e15c0cd93b5bb, type: 3}
       propertyPath: Target_Robot
       value: 
       objectReference: {fileID: 1913031727}

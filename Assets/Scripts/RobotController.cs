@@ -200,7 +200,7 @@ public class RobotController : MonoBehaviour
 
     float steptargetrotation;
 
-    Canvas HUDCanvas;
+    public Canvas HUDCanvas;
     Slider boostSlider;
 
     Vector3 knockbackdir;
@@ -213,7 +213,10 @@ public class RobotController : MonoBehaviour
     {
         get { return _boost; }
         set {
-                        boostSlider.value = _boost = value;
+                _boost = value;
+
+            if (HUDCanvas != null)
+                boostSlider.value = _boost;
             }
     }
 
@@ -272,8 +275,9 @@ public class RobotController : MonoBehaviour
             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
 
-        HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
-        boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
+        //HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+        if(HUDCanvas != null)
+            boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
 
         beam_prefab = Resources.Load<GameObject>("Beam");
         //gun = Rhand.transform.Find("BeamRifle").gameObject;
@@ -299,7 +303,8 @@ public class RobotController : MonoBehaviour
         _jumpTimeoutDelta = JumpTimeout;
         _fallTimeoutDelta = FallTimeout;
 
-        boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
+        if(HUDCanvas != null)
+            boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
 
         if (Target_Robot != null)
         {
@@ -560,7 +565,7 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.DASH:
                 {
 
-                    if (lowerBodyState != LowerBodyState.AIR || _input.jump)
+                    if (lowerBodyState != LowerBodyState.AIR || _input.jump) //自由落下以外
                     {
                         // set target speed based on move speed, sprint speed and if sprint is pressed
                         if (lowerBodyState == LowerBodyState.AIR)
@@ -631,7 +636,7 @@ public class RobotController : MonoBehaviour
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
                         }
                     }
-                    else
+                    else //自由落下
                     {
                         // a reference to the players current horizontal velocity
                         float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -655,152 +660,101 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-                    // update animator if using character
-                    //if (_hasAnimator)
+    
+                    switch(lowerBodyState)
                     {
-                        //_animator.SetFloat(_animIDSpeed, _animationBlend);
-                        //_animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
-
-                        switch(lowerBodyState)
-                        {
-                            case LowerBodyState.STAND:
-                                if (_input.move != Vector2.zero)
-                                {
-                                    lowerBodyState = LowerBodyState.WALK;
-                                    _animator.CrossFadeInFixedTime(_animIDWalk, 0.5f,0);
-                                }
-                               
-                                break;
-                            case LowerBodyState.WALK:
-                                if (_input.move == Vector2.zero)
-                                {
-                                    lowerBodyState = LowerBodyState.STAND;
-                                    _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
-                                }
-                                break;
-                        }
-
-                        if(lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
-                        {
-                            if (_input.jump)
+                        case LowerBodyState.STAND:
+                            if (_input.move != Vector2.zero)
                             {
-                                event_jumped = false;
-                                lowerBodyState = LowerBodyState.JUMP;
-                                _animator.CrossFadeInFixedTime(_animIDJump, 0.5f, 0);
+                                lowerBodyState = LowerBodyState.WALK;
+                                _animator.CrossFadeInFixedTime(_animIDWalk, 0.5f,0);
                             }
-                            else if( _input.sprint && upperBodyState == UpperBodyState.STAND)
+                               
+                            break;
+                        case LowerBodyState.WALK:
+                            if (_input.move == Vector2.zero)
                             {
-                                event_stepped = false;
-                                event_stepbegin = false;
-                                lowerBodyState = LowerBodyState.STEP;
+                                lowerBodyState = LowerBodyState.STAND;
+                                _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                            }
+                            break;
+                    }
 
-                                // normalise input direction
-                                Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+                    if(lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
+                    {
+                        if (_input.jump)
+                        {
+                            event_jumped = false;
+                            lowerBodyState = LowerBodyState.JUMP;
+                            _animator.CrossFadeInFixedTime(_animIDJump, 0.5f, 0);
+                        }
+                        else if( _input.sprint && upperBodyState == UpperBodyState.STAND)
+                        {
+                            StartStep();
 
-                                float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                             _mainCamera.transform.eulerAngles.y;
-
-           
-                                
-
-                                float stepmotiondegree = Mathf.Repeat(steptargetdegree- transform.eulerAngles.y+180.0f, 360.0f)-180.0f;
-
-     
-
-                                if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-                                    stepDirection = StepDirection.RIGHT;
-                                else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-                                    stepDirection = StepDirection.BACKWARD;
-                                else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-                                    stepDirection = StepDirection.LEFT;
-                                else 
-                                    stepDirection = StepDirection.FORWARD;
-
-                     
-
-                                switch(stepDirection)
-                                {
-                                    case StepDirection.LEFT:
-                                        _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
-                                        steptargetrotation = steptargetdegree + 90.0f;
-                                        break;
-                                    case StepDirection.BACKWARD:
-                                        _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
-                                        steptargetrotation = steptargetdegree + 180.0f;
-                                        break;
-                                    case StepDirection.RIGHT:
-                                        _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
-                                        steptargetrotation = steptargetdegree - 90.0f;
-                                        break;
-                                    default:
-                                    //case StepDirection.FORWARD:
-                                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
-                                        steptargetrotation = steptargetdegree;
-                                        break;
-                                }
+                           
 
                  
-                            }
-
-                            RegenBoost();
                         }
 
-                        if(lowerBodyState == LowerBodyState.AIR)
+                        RegenBoost();
+                    }
+
+                    if(lowerBodyState == LowerBodyState.AIR)
+                    {
+                        if (_input.jump)
                         {
-                            if (_input.jump)
+                            if (ConsumeBoost())
+                            {
+                                _verticalVelocity = Mathf.Min(_verticalVelocity + 0.4f, AscendingVelocity);
+                            }
+                        }
+                        else
+                        {
+                            if(_input.sprint)
                             {
                                 if (ConsumeBoost())
                                 {
-                                    _verticalVelocity = Mathf.Min(_verticalVelocity + 0.4f, AscendingVelocity);
-                                }
-                            }
-                            else
-                            {
-                                if(_input.sprint)
-                                {
-                                    if (ConsumeBoost())
+
+                                    // normalise input direction
+                                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                                    // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                                    // if there is a move input rotate player when the player is moving
+                                    if (_input.move != Vector2.zero)
                                     {
+                                        _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                                            _mainCamera.transform.eulerAngles.y;
+                                    }
 
-                                        // normalise input direction
-                                        Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+                                    float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
 
-                                        // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-                                        // if there is a move input rotate player when the player is moving
-                                        if (_input.move != Vector2.zero)
-                                        {
-                                            _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                                              _mainCamera.transform.eulerAngles.y;
-                                        }
-
-                                        float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
-
-                                        if (degree < RotateSpeed && degree > -RotateSpeed)
-                                        {
-                                            lowerBodyState = LowerBodyState.DASH;
-                                            _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
-                                            event_dashed = false;
-                                        }
-                                        else
-                                        {
-                                            lowerBodyState = LowerBodyState.AIRROTATE;
-                                        }
+                                    if (degree < RotateSpeed && degree > -RotateSpeed)
+                                    {
+                                        lowerBodyState = LowerBodyState.DASH;
+                                        _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
+                                        event_dashed = false;
+                                    }
+                                    else
+                                    {
+                                        lowerBodyState = LowerBodyState.AIRROTATE;
                                     }
                                 }
                             }
-                            _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                         }
+                        _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
+                    }
 
-                        if(lowerBodyState == LowerBodyState.DASH)
+                    if(lowerBodyState == LowerBodyState.DASH)
+                    {
+                        _verticalVelocity = 0.0f;
+
+                        bool boost_remain = ConsumeBoost();
+
+                        if ((!_input.sprint || !boost_remain) && event_dashed)
                         {
-                            _verticalVelocity = 0.0f;
-
-                            bool boost_remain = ConsumeBoost();
-
-                            if ((!_input.sprint || !boost_remain) && event_dashed)
-                            {
-                                lowerBodyState = LowerBodyState.AIR;
-                                _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
-                            }
+                            lowerBodyState = LowerBodyState.AIR;
+                            _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
                         }
                     }
 
@@ -945,7 +899,7 @@ public class RobotController : MonoBehaviour
                 {
 
 
-                    _speed = targetSpeed = event_stepbegin ? SprintSpeed : 0.0f;
+                    _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed/* : 0.0f*/;
 
                     _animationBlend = 0.0f;
 
@@ -1034,22 +988,7 @@ public class RobotController : MonoBehaviour
 
             float stepangle = -180.0f;
 
-            /*switch (stepDirection)
-            {
-                case StepDirection.LEFT:
-                    stepangle = -90.0f;
-                    break;
-                case StepDirection.RIGHT:
-                    stepangle = 90.0f;
-                    break;
-                case StepDirection.BACKWARD:
-                    stepangle = -180.0f;
-                    break;
-                case StepDirection.FORWARD:
-                    stepangle = 0.0f;
-                    break;
-            }*/
-
+          
             targetDirection = knockbackdir;
 
          
@@ -1071,6 +1010,57 @@ public class RobotController : MonoBehaviour
      
     }
 
+    private void StartStep()
+    {
+        event_stepped = false;
+        event_stepbegin = false;
+        lowerBodyState = LowerBodyState.STEP;
+
+        // normalise input direction
+        Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+        float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                        _mainCamera.transform.eulerAngles.y;
+
+
+
+
+        float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
+
+
+
+        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+            stepDirection = StepDirection.RIGHT;
+        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+            stepDirection = StepDirection.BACKWARD;
+        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+            stepDirection = StepDirection.LEFT;
+        else
+            stepDirection = StepDirection.FORWARD;
+
+
+
+        switch (stepDirection)
+        {
+            case StepDirection.LEFT:
+                _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
+                steptargetrotation = steptargetdegree + 90.0f;
+                break;
+            case StepDirection.BACKWARD:
+                _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
+                steptargetrotation = steptargetdegree + 180.0f;
+                break;
+            case StepDirection.RIGHT:
+                _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
+                steptargetrotation = steptargetdegree - 90.0f;
+                break;
+            default:
+                //case StepDirection.FORWARD:
+                _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
+                steptargetrotation = steptargetdegree;
+                break;
+        }
+    }
     private void JumpAndGravity()
     {
         if (Grounded)
