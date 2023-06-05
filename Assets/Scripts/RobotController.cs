@@ -115,12 +115,16 @@ public class RobotController : MonoBehaviour
     private int _animIDStep_Front;
     private int _animIDStep_Back;
 
+    private int _animIDDash;
+
     private int _animIDKnockback_Back;
     private int _animIDKnockback_Front;
     private int _animIDKnockback_Left;
     private int _animIDKnockback_Right;
 
-    private int _animIDDash;
+    private int _animIDDown;
+    private int _animIDGetup;
+
 
 #if ENABLE_INPUT_SYSTEM
     private PlayerInput _playerInput;
@@ -166,11 +170,15 @@ public class RobotController : MonoBehaviour
     bool event_stepbegin = false;
     bool event_dashed = false;
     bool event_knockbacked = false;
+    bool event_getup = false;
+    bool event_downed = false;
     public enum UpperBodyState
     {
         STAND,
         FIRE,
-        KNOCKBACK
+        KNOCKBACK,
+        DOWN,
+        GETUP
     }
 
     public enum LowerBodyState
@@ -185,7 +193,9 @@ public class RobotController : MonoBehaviour
         STEP,
         DASH,
         AIRROTATE,
-        KNOCKBACK
+        KNOCKBACK,
+        DOWN,
+        GETUP
     }
 
     public enum StepDirection
@@ -376,6 +386,9 @@ public class RobotController : MonoBehaviour
         _animIDKnockback_Front = Animator.StringToHash("KnockBack_Front");
         _animIDKnockback_Right = Animator.StringToHash("KnockBack_Right");
         _animIDKnockback_Left = Animator.StringToHash("KnockBack_Left");
+
+        _animIDDown = Animator.StringToHash("Down");
+        _animIDGetup = Animator.StringToHash("Getup");
     }
 
     private void GroundedCheck()
@@ -551,8 +564,8 @@ public class RobotController : MonoBehaviour
     }
 
     //return angle in range -180 to 180
-   
-
+    float accum = 0.0f;
+    float origin = 0.0f;
     private void LowerBodyMove()
     {
         float targetSpeed = 0.0f;
@@ -682,6 +695,9 @@ public class RobotController : MonoBehaviour
 
                     if(lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
                     {
+                       
+
+
                         if (_input.jump)
                         {
                             event_jumped = false;
@@ -702,6 +718,8 @@ public class RobotController : MonoBehaviour
 
                     if(lowerBodyState == LowerBodyState.AIR)
                     {
+                     
+                     
                         if (_input.jump)
                         {
                             if (ConsumeBoost())
@@ -745,7 +763,8 @@ public class RobotController : MonoBehaviour
                         _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                     }
 
-                    if(lowerBodyState == LowerBodyState.DASH)
+                 
+                    if (lowerBodyState == LowerBodyState.DASH)
                     {
                         _verticalVelocity = 0.0f;
 
@@ -757,6 +776,19 @@ public class RobotController : MonoBehaviour
                             _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
                         }
                     }
+
+                    //テスト用
+                    if (_input.down)
+                    {
+                        lowerBodyState = LowerBodyState.DOWN;
+                        upperBodyState = UpperBodyState.DOWN;
+
+                        _animator.Play(_animIDDown, 0, 0);
+                        event_downed = false;
+                        _input.down = false;
+                        _controller.height = 4;
+                    }
+
 
                     JumpAndGravity();
                     GroundedCheck();
@@ -821,41 +853,95 @@ public class RobotController : MonoBehaviour
                 break;
             case LowerBodyState.GROUND:
             case LowerBodyState.JUMP:
+            case LowerBodyState.DOWN:
+            case LowerBodyState.GETUP:
                 {
                     targetSpeed = 0.0f;
 
                     _animationBlend = 0.0f;
 
-               
+
                     _speed = 0.0f;
 
 
-
-
-
-                    if (lowerBodyState == LowerBodyState.GROUND)
+                    switch (lowerBodyState)
                     {
-                        if (event_grounded)
+
+
+                        case LowerBodyState.GROUND:
                         {
-                            lowerBodyState = LowerBodyState.STAND;
-                            _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                            if (event_grounded)
+                            {
+                                lowerBodyState = LowerBodyState.STAND;
+                                _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                            }
                         }
+                        break;
+
+                        case LowerBodyState.JUMP:
+                        {
+                            if (event_jumped)
+                            {
+                                lowerBodyState = LowerBodyState.AIR;
+                                _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                                Grounded = false;
+                                _verticalVelocity = AscendingVelocity;
+
+                                _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
+                            }
+                        }
+                        break;
+
+                        case LowerBodyState.DOWN:
+                        {
+                            if (event_downed && _input.down)
+                            {
+
+                                _input.down = false;
+                                lowerBodyState = LowerBodyState.GETUP;
+                                upperBodyState = UpperBodyState.GETUP;
+                                _animator.Play(_animIDGetup, 0, 0);
+                                event_getup = false;
+                                    accum = 0.0f;
+                                    origin = transform.position.y;
+                                _verticalVelocity = 0.0f;
+                            }
+
+                            JumpAndGravity();
+                        }
+                        break;
+
+                        case LowerBodyState.GETUP:
+                        {
+                            
+
+                            if (event_getup)
+                            {
+                                lowerBodyState = LowerBodyState.STAND;
+                                upperBodyState = UpperBodyState.STAND;
+                                _animator.Play(_animIDStand, 0, 0);
+                                _controller.height = 7.0f;
+                                _verticalVelocity = 0.0f;
+
+                            }
+                            else
+                            {
+                                AnimatorStateInfo animeStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
+                                float prevheight = _controller.height;
+
+                                float newheight = _controller.height = 4.0f + animeStateInfo.normalizedTime * (7.0f - 4.0f);
+                               
+
+                                _verticalVelocity = (newheight - prevheight) / Time.deltaTime / 2.0f;
+
+                             }
+                        }
+                        break;
                     }
 
-                    if (lowerBodyState == LowerBodyState.JUMP)
-                    {
-                        if (event_jumped)
-                        {
-                            lowerBodyState = LowerBodyState.AIR;
-                            _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
-                            Grounded = false;
-                            _verticalVelocity = AscendingVelocity;
-
-                            _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
-                        }
-                    }
+                    break;
                 }
-                break;
             case LowerBodyState.AIRROTATE:
                 {
                     _verticalVelocity = 0.0f;
@@ -948,6 +1034,9 @@ public class RobotController : MonoBehaviour
                     }
                 }
                 break;
+            
+             
+
         }
 
 
@@ -1109,6 +1198,15 @@ public class RobotController : MonoBehaviour
     private void OnKnockbacked()
     {
         event_knockbacked = true;
+    }
+    private void OnGetup()
+    {
+        event_getup = true;
+    }
+
+    private void OnDowned()
+    {
+        event_downed = true;
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
