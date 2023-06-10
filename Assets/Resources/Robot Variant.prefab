@@ -1363,8 +1363,6 @@ GameObject:
   - component: {fileID: 3615620133775521692}
   - component: {fileID: 7263584431591222758}
   - component: {fileID: 5611008216375150508}
-  - component: {fileID: 6962933331434120875}
-  - component: {fileID: 5505099327465762296}
   - component: {fileID: 1406418183187529142}
   - component: {fileID: 9209227123616401360}
   m_Layer: 0
@@ -1430,56 +1428,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 3.5, z: 0}
---- !u!114 &6962933331434120875
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4136155994415754534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: ec61cfc11bcb4ab4bb5bdbbbebaa26e6, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &5505099327465762296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4136155994415754534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e087ecce43ebbff45a1b360637807d93, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  move: {x: 0, y: 0}
-  look: {x: 0, y: 0}
-  jump: 0
-  sprint: 0
-  fire: 0
-  analogMovement: 0
-  cursorLocked: 1
-  cursorInputForLook: 1
 --- !u!114 &1406418183187529142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1536,6 +1484,7 @@ MonoBehaviour:
   TerminalVelocity: 53
   AscendingVelocity: 20
   offset: {x: 0, y: 10, z: -20}
+  _input: {fileID: 0}
   headmultiAimConstraint: {fileID: 5005913491507713147}
   chestmultiAimConstraint: {fileID: 4551316252105674422}
   rigBuilder: {fileID: 1406418183187529142}
@@ -1548,6 +1497,7 @@ MonoBehaviour:
   animator: {fileID: 7263584431591222758}
   upperBodyState: 0
   lowerBodyState: 0
+  HUDCanvas: {fileID: 0}
   Boost_Max: 500
   Rhand: {fileID: 2062433410563805223}
   Gun: {fileID: 8315741762986381636}

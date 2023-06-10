@@ -12,9 +12,6 @@ using System;
 using StarterAssets;
 
 [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM
-[RequireComponent(typeof(PlayerInput))]
-#endif
 public class RobotController : MonoBehaviour
 {
     [Header("Player")]
@@ -126,17 +123,16 @@ public class RobotController : MonoBehaviour
     private int _animIDGetup;
 
 
-#if ENABLE_INPUT_SYSTEM
-    private PlayerInput _playerInput;
-#endif
     private Animator _animator;
     private CharacterController _controller;
-    private StarterAssetsInputs _input;
+    
     private GameObject _mainCamera;
 
     private const float _threshold = 0.01f;
 
     private bool _hasAnimator;
+
+    public InputBase _input;
 
     public MultiAimConstraint headmultiAimConstraint;
     public MultiAimConstraint chestmultiAimConstraint;
@@ -264,17 +260,7 @@ public class RobotController : MonoBehaviour
         _speed = SprintSpeed;
     }
 
-    private bool IsCurrentDeviceMouse
-    {
-        get
-        {
-#if ENABLE_INPUT_SYSTEM
-            return _playerInput.currentControlScheme == "KeyboardMouse";
-#else
-				return false;
-#endif
-        }
-    }
+   
 
 
     private void Awake()
@@ -300,12 +286,7 @@ public class RobotController : MonoBehaviour
 
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
-        _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM
-        _playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
+        //_input = GetComponent<StarterAssetsInputs>();
 
         AssignAnimationIDs();
 
@@ -433,7 +414,8 @@ public class RobotController : MonoBehaviour
         if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
         {
             //Don't multiply mouse input by Time.deltaTime;
-            float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            float deltaTimeMultiplier =1.0f;
 
             _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
             _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;

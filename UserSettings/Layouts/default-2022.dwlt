@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 997
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Inspector
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 371}
   m_MaxSize: {x: 10000, y: 10000}
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 45
+  controlID: 91
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -245,8 +245,8 @@ MonoBehaviour:
     y: 573
     width: 1258
     height: 374
-  m_MinSize: {x: 101, y: 121}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 18}
@@ -409,9 +409,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: 10fbffff
+      m_SelectedIDs: b4f9ffff
+      m_LastClickedID: -1612
+      m_ExpandedIDs: b4f9ffff10fbffff12fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -686,8 +686,8 @@ MonoBehaviour:
     - dockPosition: 0
       containerId: overlay-toolbar__left
       floating: 0
-      collapsed: 0
-      displayed: 0
+      collapsed: 1
+      displayed: 1
       snapOffset: {x: 0, y: 25}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
@@ -1218,7 +1218,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 3e710000
     m_LastClickedID: 28990
-    m_ExpandedIDs: 00000000006f0000026f0000046f0000066f0000086f00000a6f000000ca9a3bffffff7f
+    m_ExpandedIDs: 00000000fe6e0000006f0000026f0000046f0000066f0000086f000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1246,7 +1246,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000006f0000026f0000046f0000066f0000086f00000a6f0000
+    m_ExpandedIDs: 00000000fe6e0000006f0000026f0000046f0000066f0000086f0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1271,8 +1271,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: f40b0000
-    m_LastClickedInstanceID: 3060
+    m_SelectedInstanceIDs: 10fbffff
+    m_LastClickedInstanceID: -1264
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c623000040590000842000004061000084330000ec3400000c6d0000386d000072720000647200003a6d00009c7200008833000054d100003c6d0000446d0000566d0000963300007a330000546c0000a46d00000000000076750000386e0000fe6e0000026f0000066f00006e39000074740000
     m_RenameOverlay:
@@ -1290,7 +1290,7 @@ MonoBehaviour:
       m_IsRenaming: 0
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
-      m_ClientGUIView: {fileID: 10}
+      m_ClientGUIView: {fileID: 9}
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
       m_InstanceID: 0
@@ -1365,7 +1365,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectInstanceID: -1
-  m_LastVerticalScrollValue: 0
+  m_LastVerticalScrollValue: 123
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
