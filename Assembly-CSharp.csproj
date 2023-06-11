@@ -62,6 +62,7 @@
     <Compile Include="Assets\Scripts\BeamHitEffect.cs" />
     <Compile Include="Assets\Scripts\Beam.cs" />
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\ThirdPersonController.cs" />
+    <Compile Include="Assets\StarterAssets\InputSystem\StarterAssetsInputs.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualButton.cs" />
     <Compile Include="Assets\Scripts\HumanInput.cs" />
     <Compile Include="Assets\Scripts\UIController_Overlay.cs" />
@@ -71,7 +72,6 @@
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\BasicRigidBodyPush.cs" />
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\RobotAI.cs" />
-    <Compile Include="Assets\StarterAssets\InputSystem\StarterAssetsInputs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\StarterAssets\license.txt" />

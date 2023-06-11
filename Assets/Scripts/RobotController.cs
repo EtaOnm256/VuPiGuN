@@ -234,30 +234,50 @@ public class RobotController : MonoBehaviour
 
     public void DoDamage(Vector3 dir)
     {
-        event_knockbacked = false;
+        
 
-        upperBodyState = UpperBodyState.KNOCKBACK;
-        lowerBodyState = LowerBodyState.KNOCKBACK;
+        if (lowerBodyState != LowerBodyState.DOWN)
+        {
+            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE)
+            {
+                lowerBodyState = LowerBodyState.DOWN;
+                upperBodyState = UpperBodyState.DOWN;
 
-        knockbackdir = dir;
-        knockbackdir.y = 0.0f;
+                _animator.Play(_animIDDown, 0, 0);
+                event_downed = false;
+                _input.down = false;
+                _controller.height = 4;
+            }
+            else
+            {
+                event_knockbacked = false;
 
-        float knockbackdegree = Mathf.Atan2(knockbackdir.x, knockbackdir.z) * Mathf.Rad2Deg;
+                upperBodyState = UpperBodyState.KNOCKBACK;
+                lowerBodyState = LowerBodyState.KNOCKBACK;
 
-        float stepmotiondegree = Mathf.Repeat(knockbackdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
+                knockbackdir = dir;
+                knockbackdir.y = 0.0f;
 
-        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-            _animator.Play(_animIDKnockback_Right, 0, 0);
-        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-            _animator.Play(_animIDKnockback_Back, 0, 0);
-        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-            _animator.Play(_animIDKnockback_Left, 0, 0);
-        else
-            _animator.Play(_animIDKnockback_Front, 0, 0);
+                float knockbackdegree = Mathf.Atan2(knockbackdir.x, knockbackdir.z) * Mathf.Rad2Deg;
 
+                float stepmotiondegree = Mathf.Repeat(knockbackdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
+                if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                    _animator.Play(_animIDKnockback_Right, 0, 0);
+                else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                    _animator.Play(_animIDKnockback_Back, 0, 0);
+                else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                    _animator.Play(_animIDKnockback_Left, 0, 0);
+                else
+                    _animator.Play(_animIDKnockback_Front, 0, 0);
 
-        _speed = SprintSpeed;
+                _controller.height = 7.0f;
+
+                _verticalVelocity = 0.0f;
+
+                _speed = SprintSpeed;
+            }
+        }
     }
 
    
@@ -375,8 +395,15 @@ public class RobotController : MonoBehaviour
     private void GroundedCheck()
     {
         // set sphere position, with offset
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
-            transform.position.z);
+        Vector3 spherePosition;
+
+        if(lowerBodyState == LowerBodyState.DOWN)
+            spherePosition = new Vector3(transform.position.x, transform.position.y+3.4f,
+                transform.position.z);
+        else
+            spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
+                transform.position.z);
+
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
             QueryTriggerInteraction.Ignore);
 
@@ -515,6 +542,13 @@ public class RobotController : MonoBehaviour
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.02f);
                 }
+                break;
+            case UpperBodyState.KNOCKBACK:
+            case UpperBodyState.DOWN:
+            case UpperBodyState.GETUP:
+                _rarmaimwait = 0.0f;
+                _chestaimwait = 0.0f;
+                _headaimwait = 0.0f;
                 break;
         }
 
@@ -759,17 +793,7 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-                    //テスト用
-                    if (_input.down)
-                    {
-                        lowerBodyState = LowerBodyState.DOWN;
-                        upperBodyState = UpperBodyState.DOWN;
-
-                        _animator.Play(_animIDDown, 0, 0);
-                        event_downed = false;
-                        _input.down = false;
-                        _controller.height = 4;
-                    }
+                  
 
 
                     JumpAndGravity();
@@ -876,7 +900,7 @@ public class RobotController : MonoBehaviour
 
                         case LowerBodyState.DOWN:
                         {
-                            if (event_downed && _input.down)
+                            if (event_downed && Grounded)
                             {
 
                                 _input.down = false;
@@ -890,6 +914,7 @@ public class RobotController : MonoBehaviour
                             }
 
                             JumpAndGravity();
+                            GroundedCheck();
                         }
                         break;
 
@@ -1207,10 +1232,15 @@ public class RobotController : MonoBehaviour
         if (Grounded) Gizmos.color = transparentGreen;
         else Gizmos.color = transparentRed;
 
-        // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
-        Gizmos.DrawSphere(
-            new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
-            GroundedRadius);
+        if(lowerBodyState == LowerBodyState.DOWN)
+            Gizmos.DrawSphere(
+          new Vector3(transform.position.x, transform.position.y+3.4f, transform.position.z),
+          GroundedRadius);
+        else
+            // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
+            Gizmos.DrawSphere(
+                new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
+                GroundedRadius);
     }
 
     private void OnFootstep(AnimationEvent animationEvent)

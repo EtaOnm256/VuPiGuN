@@ -689,6 +689,17 @@ MonoBehaviour:
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
+--- !u!114 &922949694 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9209227123616401360, guid: 3ca8aa5d61ada684684e15c0cd93b5bb, type: 3}
+  m_PrefabInstance: {fileID: 434724877}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922949685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3a333195176ecc41ab3fe4f6d1b4086, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &957237487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,6 +1171,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9209227123616401360, guid: 3ca8aa5d61ada684684e15c0cd93b5bb, type: 3}
+      propertyPath: Target_Robot
+      value: 
+      objectReference: {fileID: 922949694}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ca8aa5d61ada684684e15c0cd93b5bb, type: 3}
@@ -1392,7 +1407,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2145432527}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 579a48e3efdd59b429c12717dce2ffe4, type: 3}
+  m_Script: {fileID: 11500000, guid: 855c9cae2e0b4f64b9cecfce98258b18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   move: {x: 0, y: 0}
