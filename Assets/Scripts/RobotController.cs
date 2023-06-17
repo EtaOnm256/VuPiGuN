@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 using UnityEngine.Animations.Rigging;
 using System;
+using System.Collections.Generic;
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
  */
 
@@ -81,6 +82,10 @@ public class RobotController : MonoBehaviour
 
     public float TerminalVelocity = 53.0f;
     public float AscendingVelocity = 20.0f;
+
+    public int HP = 500;
+    public int MaxHP = 500;
+
     public Vector3 offset;
 
     // cinemachine
@@ -149,6 +154,7 @@ public class RobotController : MonoBehaviour
     private GameObject target_chest;
     private GameObject target_head;
 
+    public List<RobotController> lockingEnemy = new List<RobotController>();
 
     private float _headaimwait = 0.0f;
 
@@ -215,6 +221,8 @@ public class RobotController : MonoBehaviour
 
     int _boost;
 
+    public bool dead = false;
+
     int boost
     {
         get { return _boost; }
@@ -232,7 +240,8 @@ public class RobotController : MonoBehaviour
 
     public GameObject Gun;
 
-    public void DoDamage(Vector3 dir)
+    public UIController_Overlay reticle_UICO;
+    public void DoDamage(Vector3 dir,int damage)
     {
         
 
@@ -278,10 +287,47 @@ public class RobotController : MonoBehaviour
                 _speed = SprintSpeed;
             }
         }
+
+        HP = Math.Max(0, HP - damage);
+
+        if(HP <= 0)
+        {
+            dead = true;
+        }
     }
 
-   
+    private void TargetEnemy(RobotController robotController)
+    {
+        Target_Robot = robotController;
 
+        target_chest = Target_Robot.Chest;
+        target_head = Target_Robot.Head;
+
+        chestmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Chest.transform, 1.0f) };
+        headmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Head.transform, 1.0f) };
+        rigBuilder.Build();
+
+        Target_Robot.lockingEnemy.Add(this);
+
+        if(HUDCanvas != null)
+            reticle_UICO.targetTfm = Target_Robot.transform;
+    }
+
+    public void PurgeTarget(RobotController robotController)
+    {
+        Target_Robot = null;
+
+        target_chest = null;
+        target_head = null;
+
+        chestmultiAimConstraint.data.sourceObjects = new WeightedTransformArray {  };
+        headmultiAimConstraint.data.sourceObjects = new WeightedTransformArray {  };
+
+        rigBuilder.Build();
+
+        if (HUDCanvas != null)
+            reticle_UICO.targetTfm = null;
+    }
 
     private void Awake()
     {
@@ -292,8 +338,14 @@ public class RobotController : MonoBehaviour
         }
 
         //HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
-        if(HUDCanvas != null)
+        if (HUDCanvas != null)
+        {
             boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
+
+            Transform reticle = HUDCanvas.gameObject.transform.Find("Reticle");
+
+            reticle_UICO = reticle.GetComponent<UIController_Overlay>();
+        }
 
         beam_prefab = Resources.Load<GameObject>("Beam");
         //gun = Rhand.transform.Find("BeamRifle").gameObject;
@@ -319,13 +371,10 @@ public class RobotController : MonoBehaviour
 
         if (Target_Robot != null)
         {
-            target_chest = Target_Robot.Chest;
-            target_head = Target_Robot.Head;
-
-            chestmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Chest.transform, 1.0f) };
-            headmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Head.transform, 1.0f) };
-            rigBuilder.Build();
+            TargetEnemy(Target_Robot);
         }
+
+        HP = MaxHP;
     }
 
     private bool ConsumeBoost()
@@ -348,12 +397,23 @@ public class RobotController : MonoBehaviour
 
     private void Update()
     {
-        _hasAnimator = TryGetComponent(out _animator);
+        if (!dead)
+        {
+            _hasAnimator = TryGetComponent(out _animator);
 
-       
-        UpperBodyMove();
-        LowerBodyMove();
-  
+
+            UpperBodyMove();
+            LowerBodyMove();
+        }
+        else
+        {
+            for(int i=0;i<lockingEnemy.Count;i++)
+            {
+                lockingEnemy[i].PurgeTarget(this);
+            }
+
+            GameObject.Destroy(gameObject);
+        }
     }
 
     private void LateUpdate()
@@ -521,9 +581,9 @@ public class RobotController : MonoBehaviour
 
                         animator.Play("Armature|Fire", 1, 0.0f);
 
-                        float angle_aim = Vector3.Angle(target_chest.transform.position - shoulder_hint.transform.position, transform.forward);
+                                                    
 
-                        if (angle > 100 || target_chest==null)
+                        if (angle > 100)
                         {
                             if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                             {
@@ -560,6 +620,22 @@ public class RobotController : MonoBehaviour
             Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
 
             Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+
+            Quaternion q_rotation_global = q_base_global * q_aim_global;
+
+            Quaternion q_base = Quaternion.Inverse(aimingBase.transform.rotation);
+
+            Quaternion q_final = q_base * q_rotation_global * aimingBase.transform.rotation;
+
+            //overrideTransform.data.rotation = q_final.eulerAngles;
+            overrideTransform.data.position = shoulder_hint.transform.position;
+            overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+        }
+        else
+        {
+            Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
+
+            Quaternion q_aim_global = Quaternion.LookRotation(-shoulder_hint.transform.forward, new Vector3(0.0f, 1.0f, 0.0f));
 
             Quaternion q_rotation_global = q_base_global * q_aim_global;
 
@@ -835,15 +911,17 @@ public class RobotController : MonoBehaviour
                         _speed = targetSpeed;
                     }
 
+                    if (target_chest != null)
+                    {
+                        Vector3 target_dir = target_chest.transform.position - transform.position;
 
-                    Vector3 target_dir = target_chest.transform.position - transform.position;
+                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
 
-                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
-
-                    // rotate to face input direction relative to camera position
-                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                    }
 
                     if (lowerBodyState == LowerBodyState.AIRFIRE)
                         animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);

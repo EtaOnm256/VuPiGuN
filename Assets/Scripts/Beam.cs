@@ -64,7 +64,7 @@ public class Beam : MonoBehaviour
 
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                robotController.DoDamage(direction);
+                robotController.DoDamage(direction,500);
 
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
             }
