@@ -1483,6 +1483,8 @@ MonoBehaviour:
   LockCameraPosition: 0
   TerminalVelocity: 53
   AscendingVelocity: 20
+  HP: 500
+  MaxHP: 500
   offset: {x: 0, y: 10, z: -20}
   _input: {fileID: 0}
   headmultiAimConstraint: {fileID: 5005913491507713147}
@@ -1494,13 +1496,17 @@ MonoBehaviour:
   Target_Robot: {fileID: 0}
   Head: {fileID: 6697067826758002872}
   Chest: {fileID: 92791013429808212}
+  lockingEnemy: []
   animator: {fileID: 7263584431591222758}
+  explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   upperBodyState: 0
   lowerBodyState: 0
   HUDCanvas: {fileID: 0}
   Boost_Max: 500
+  dead: 0
   Rhand: {fileID: 2062433410563805223}
   Gun: {fileID: 8315741762986381636}
+  reticle_UICO: {fileID: 0}
 --- !u!1 &4188222971925212718
 GameObject:
   m_ObjectHideFlags: 0

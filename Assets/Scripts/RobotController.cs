@@ -164,6 +164,8 @@ public class RobotController : MonoBehaviour
 
     public Animator animator;
 
+    public GameObject explode_prefab;
+
     //public bool firing = false;
 
     bool event_grounded = false;
@@ -411,6 +413,8 @@ public class RobotController : MonoBehaviour
             {
                 lockingEnemy[i].PurgeTarget(this);
             }
+
+            GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
 
             GameObject.Destroy(gameObject);
         }

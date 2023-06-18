@@ -72,9 +72,30 @@
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\BasicRigidBodyPush.cs" />
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\RobotAI.cs" />
+    <Compile Include="Assets\Effekseer\Example\EfkBasic.cs" />
+    <Compile Include="Assets\Scripts\EffectSelfDelete.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Effekseer\Materials\GrabDepthShader.shader" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderDistortionPS.cginc" />
+    <None Include="Assets\Effekseer\Plugins\x86\EffekseerUnity.dll" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderAdLitUnlitPS.cginc" />
+    <None Include="Assets\Effekseer\Materials\Texture2DArrayBlitShader.shader" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderDistortionCommonPS.cginc" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderAdCommonPS.cginc" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShader_Linear_sRGB.cginc" />
+    <None Include="Assets\Effekseer\Materials\Texture2DBlitShader.shader" />
+    <None Include="Assets\Effekseer\Plugins\x86_64\EffekseerUnity.dll" />
     <None Include="Assets\StarterAssets\license.txt" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderCommon.cginc" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderSoftParticlePS.cginc" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderVS.cginc" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderAdVS.cginc" />
+    <None Include="Assets\Effekseer\Texture\error.txt" />
+    <None Include="Assets\Effekseer\Materials\FakeShader.shader" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderLitUnlitPS.cginc" />
+    <None Include="Assets\Effekseer\Materials\EffekseerFixedShader.shader" />
+    <None Include="Assets\Effekseer\Materials\EffekseerShaderAdDistortionPS.cginc" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -853,6 +874,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Effekseer.HDRP.csproj">
+      <Project>{AC97AEA2-A6E9-F7FB-34D0-5DDB42104F06}</Project>
+      <Name>Effekseer.HDRP</Name>
+    </ProjectReference>
+    <ProjectReference Include="Effekseer.URP.csproj">
+      <Project>{21481208-6D79-1713-AC7F-3B79AB3CFEA5}</Project>
+      <Name>Effekseer.URP</Name>
+    </ProjectReference>
+    <ProjectReference Include="Effekseer.PostProcessing.csproj">
+      <Project>{57D9AABE-B5D7-9670-07B6-4A2D30838399}</Project>
+      <Name>Effekseer.PostProcessing</Name>
+    </ProjectReference>
+    <ProjectReference Include="Effekseer.csproj">
+      <Project>{5FBB86BE-02C6-FC54-99E0-C43A32D2BB59}</Project>
+      <Name>Effekseer</Name>
+    </ProjectReference>
+    <ProjectReference Include="EffekseerEditor.csproj">
+      <Project>{5B89D7DC-294E-0A82-5D99-A4F76D2C7BF9}</Project>
+      <Name>EffekseerEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
