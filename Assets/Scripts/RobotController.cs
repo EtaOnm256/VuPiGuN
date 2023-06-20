@@ -166,6 +166,10 @@ public class RobotController : MonoBehaviour
 
     public GameObject explode_prefab;
 
+    public WorldManager worldManager;
+
+    public WorldManager.Team team;
+
     //public bool firing = false;
 
     bool event_grounded = false;
@@ -176,6 +180,9 @@ public class RobotController : MonoBehaviour
     bool event_knockbacked = false;
     bool event_getup = false;
     bool event_downed = false;
+
+    public Vector3 center_offset;
+
     public enum UpperBodyState
     {
         STAND,
@@ -351,6 +358,8 @@ public class RobotController : MonoBehaviour
 
         beam_prefab = Resources.Load<GameObject>("Beam");
         //gun = Rhand.transform.Find("BeamRifle").gameObject;
+
+        center_offset = transform.Find("Robot").localPosition;
     }
 
     private void Start()
@@ -377,6 +386,11 @@ public class RobotController : MonoBehaviour
         }
 
         HP = MaxHP;
+
+        if(team == null)
+        {
+            worldManager.AssignToTeam(this);
+        }
     }
 
     private bool ConsumeBoost()
@@ -397,12 +411,42 @@ public class RobotController : MonoBehaviour
         boost = Math.Min(boost+1, Boost_Max);
     }
 
+    public static float DistanceToLine(Ray ray, Vector3 point)
+    {
+        return Vector3.Cross(ray.direction, point - ray.origin).magnitude;
+    }
+
     private void Update()
     {
         if (!dead)
         {
             _hasAnimator = TryGetComponent(out _animator);
 
+            float mindist = float.MaxValue;
+
+            RobotController nearest_robot = null;
+
+            foreach (var team in worldManager.teams)
+            {
+                if (team == this.team)
+                    continue;
+
+               
+
+                foreach(var robot in team.robotControllers)
+                {
+                    float dist = DistanceToLine(Camera.main.ViewportPointToRay(new Vector3(0.5f,0.5f,0.0f)), robot.transform.TransformPoint(robot.center_offset));
+
+                    if(dist < mindist)
+                    {
+                        mindist = dist;
+                        nearest_robot = robot;
+                    }
+                }
+            }
+
+            if(Target_Robot != nearest_robot)
+                TargetEnemy(nearest_robot);
 
             UpperBodyMove();
             LowerBodyMove();
@@ -413,6 +457,8 @@ public class RobotController : MonoBehaviour
             {
                 lockingEnemy[i].PurgeTarget(this);
             }
+
+            team.robotControllers.Remove(this);
 
             GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
 

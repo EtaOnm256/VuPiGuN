@@ -56,26 +56,26 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerRuntime.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerModelAsset.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerHandle.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerRenderer.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\StereoRendererUtil.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerSystem.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerPlayableBehaviour.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerRendererNative.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\Effekseer.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerRendererUnity.cs" />
     <Compile Include="Assets\Effekseer\Scripts\EffekseerDependentAssets.cs" />
     <Compile Include="Assets\Effekseer\Scripts\EffekseerShaderGenerator.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerPlayableAsset.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerSound.cs" />
     <Compile Include="Assets\Effekseer\Scripts\EffekseerSettings.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerModelAsset.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerRuntime.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerMaterialAsset.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerSound.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\Effekseer.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerPlayableBehaviour.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerRendererUnity.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerSystem.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerPlayableAsset.cs" />
     <Compile Include="Assets\Effekseer\Scripts\EffekseerEffectAsset.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerCurveAsset.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerRendererNative.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerHandle.cs" />
     <Compile Include="Assets\Effekseer\Scripts\EffekseerBlitter.cs" />
     <Compile Include="Assets\Effekseer\Scripts\EffekseerEmitter.cs" />
-    <Compile Include="Assets\Effekseer\Scripts\EffekseerMaterialAsset.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\StereoRendererUtil.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerCurveAsset.cs" />
+    <Compile Include="Assets\Effekseer\Scripts\EffekseerRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Effekseer\Scripts\Effekseer.asmdef" />

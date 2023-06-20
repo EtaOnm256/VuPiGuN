@@ -56,14 +56,14 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Effekseer\Editor\EffekseerEmitterEditor.cs" />
-    <Compile Include="Assets\Effekseer\Editor\EffekseerAssetPostProcessor.cs" />
     <Compile Include="Assets\Effekseer\Editor\EffekseerSystemEditor.cs" />
-    <Compile Include="Assets\Effekseer\Editor\EffekseerMaterialInformation.cs" />
-    <Compile Include="Assets\Effekseer\Editor\EffekseerEditor.cs" />
-    <Compile Include="Assets\Effekseer\Editor\EffekseerPluginSwitcher.cs" />
-    <Compile Include="Assets\Effekseer\Editor\EffekseerAssetInspector.cs" />
     <Compile Include="Assets\Effekseer\Editor\EffekseerTool.cs" />
+    <Compile Include="Assets\Effekseer\Editor\EffekseerEditor.cs" />
+    <Compile Include="Assets\Effekseer\Editor\EffekseerEmitterEditor.cs" />
+    <Compile Include="Assets\Effekseer\Editor\EffekseerAssetInspector.cs" />
+    <Compile Include="Assets\Effekseer\Editor\EffekseerAssetPostProcessor.cs" />
+    <Compile Include="Assets\Effekseer\Editor\EffekseerPluginSwitcher.cs" />
+    <Compile Include="Assets\Effekseer\Editor\EffekseerMaterialInformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Effekseer\Editor\EffekseerEditor.asmdef" />

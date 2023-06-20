@@ -60,20 +60,21 @@
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualJoystick.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualTouchZone.cs" />
     <Compile Include="Assets\Scripts\BeamHitEffect.cs" />
+    <Compile Include="Assets\Scripts\WorldManager.cs" />
     <Compile Include="Assets\Scripts\Beam.cs" />
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\ThirdPersonController.cs" />
     <Compile Include="Assets\StarterAssets\InputSystem\StarterAssetsInputs.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualButton.cs" />
     <Compile Include="Assets\Scripts\HumanInput.cs" />
     <Compile Include="Assets\Scripts\UIController_Overlay.cs" />
+    <Compile Include="Assets\Effekseer\Example\EfkBasic.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\CanvasInputs\UICanvasControllerInput.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\Utilities\MobileDisableAutoSwitchControls.cs" />
+    <Compile Include="Assets\Scripts\EffectSelfDelete.cs" />
     <Compile Include="Assets\Scripts\InputBase.cs" />
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\BasicRigidBodyPush.cs" />
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\RobotAI.cs" />
-    <Compile Include="Assets\Effekseer\Example\EfkBasic.cs" />
-    <Compile Include="Assets\Scripts\EffectSelfDelete.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Effekseer\Materials\GrabDepthShader.shader" />
@@ -874,10 +875,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Effekseer.HDRP.csproj">
-      <Project>{AC97AEA2-A6E9-F7FB-34D0-5DDB42104F06}</Project>
-      <Name>Effekseer.HDRP</Name>
-    </ProjectReference>
     <ProjectReference Include="Effekseer.URP.csproj">
       <Project>{21481208-6D79-1713-AC7F-3B79AB3CFEA5}</Project>
       <Name>Effekseer.URP</Name>
@@ -886,13 +883,17 @@
       <Project>{57D9AABE-B5D7-9670-07B6-4A2D30838399}</Project>
       <Name>Effekseer.PostProcessing</Name>
     </ProjectReference>
+    <ProjectReference Include="EffekseerEditor.csproj">
+      <Project>{5B89D7DC-294E-0A82-5D99-A4F76D2C7BF9}</Project>
+      <Name>EffekseerEditor</Name>
+    </ProjectReference>
     <ProjectReference Include="Effekseer.csproj">
       <Project>{5FBB86BE-02C6-FC54-99E0-C43A32D2BB59}</Project>
       <Name>Effekseer</Name>
     </ProjectReference>
-    <ProjectReference Include="EffekseerEditor.csproj">
-      <Project>{5B89D7DC-294E-0A82-5D99-A4F76D2C7BF9}</Project>
-      <Name>EffekseerEditor</Name>
+    <ProjectReference Include="Effekseer.HDRP.csproj">
+      <Project>{AC97AEA2-A6E9-F7FB-34D0-5DDB42104F06}</Project>
+      <Name>Effekseer.HDRP</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
