@@ -307,6 +307,8 @@ public class RobotController : MonoBehaviour
 
     private void TargetEnemy(RobotController robotController)
     {
+        UntargetEnemy();
+
         Target_Robot = robotController;
 
         target_chest = Target_Robot.Chest;
@@ -320,6 +322,14 @@ public class RobotController : MonoBehaviour
 
         if(HUDCanvas != null)
             reticle_UICO.targetTfm = Target_Robot.transform;
+    }
+
+    public void UntargetEnemy()
+    {
+        if (Target_Robot != null)
+        {
+            Target_Robot.lockingEnemy.Remove(this);
+        }
     }
 
     public void PurgeTarget(RobotController robotController)
@@ -453,7 +463,9 @@ public class RobotController : MonoBehaviour
         }
         else
         {
-            for(int i=0;i<lockingEnemy.Count;i++)
+            UntargetEnemy();
+
+            for (int i=0;i<lockingEnemy.Count;i++)
             {
                 lockingEnemy[i].PurgeTarget(this);
             }
