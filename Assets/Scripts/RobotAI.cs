@@ -13,7 +13,7 @@ public class RobotAI : InputBase
     // Update is called once per frame
     void Update()
     {
-        fire = true;
+        //fire = true;
 
     }
 }

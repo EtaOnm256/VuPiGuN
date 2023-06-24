@@ -19,30 +19,10 @@ public class WorldManager : MonoBehaviour
         Team friend_team = new Team { robotControllers = new List<RobotController>() };
         Team enemy_team = new Team { robotControllers = new List<RobotController>() };
 
-       
-        GameObject enemy = GameObject.Instantiate(enemy_prefab, new Vector3(20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f));
 
-       
-        RobotController robotController = enemy.GetComponent<RobotController>();
-
-        robotController.worldManager = this;
-        robotController._input = enemy.AddComponent<RobotAI>();
-
-        robotController.team = enemy_team;
-
-        enemy_team.robotControllers.Add(robotController);
-
-        enemy = GameObject.Instantiate(enemy_prefab, new Vector3(-20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f));
-
-
-        robotController = enemy.GetComponent<RobotController>();
-
-        robotController.worldManager = this;
-        robotController._input = enemy.AddComponent<RobotAI>();
-
-        robotController.team = enemy_team;
-
-        enemy_team.robotControllers.Add(robotController);
+        SpawnEnemy(new Vector3(-20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
+        SpawnEnemy(new Vector3(20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
+     
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
@@ -52,6 +32,8 @@ public class WorldManager : MonoBehaviour
 
     public void AssignToTeam(RobotController robotController)
     {
+        player = robotController;
+
         robotController.team = teams[0];
 
         teams[0].robotControllers.Add(robotController);
@@ -60,9 +42,52 @@ public class WorldManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(player==null)
+        {
+            GameObject player_obj = GameObject.Instantiate(enemy_prefab, new Vector3(0, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f));
+
+
+            player = player_obj.GetComponent<RobotController>();
+
+            player.worldManager = this;
+          
+            player.team = teams[0];
+
+            teams[0].robotControllers.Add(player);
+
+        }
+
         foreach(var team in teams)
         {
             
         }
+    }
+
+    RobotController player;
+
+    public void HandleRemoveUnit(RobotController robotController)
+    {
+        robotController.team.robotControllers.Remove(robotController);
+
+        if (player == robotController)
+            player = null;
+    }
+
+    private void SpawnEnemy(Vector3 pos, Quaternion rot, Team team)
+    {
+        GameObject enemy = GameObject.Instantiate(enemy_prefab, pos, rot);
+
+
+        RobotController robotController = enemy.GetComponent<RobotController>();
+
+        robotController.worldManager = this;
+        robotController._input = enemy.AddComponent<RobotAI>();
+
+        Destroy(enemy.GetComponent<HumanInput>());
+        Destroy(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());
+
+        robotController.team = team;
+
+        team.robotControllers.Add(robotController);
     }
 }

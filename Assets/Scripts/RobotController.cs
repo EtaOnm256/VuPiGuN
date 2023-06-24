@@ -250,9 +250,19 @@ public class RobotController : MonoBehaviour
     public GameObject Gun;
 
     public UIController_Overlay reticle_UICO;
+
+    private bool spawn_completed = false; // スポーンしたフレームにDoDamage呼ばれると落ちるので
+
+    public GameObject AimHelper_Head = null;
+    public GameObject AimHelper_Chest = null;
+
+    Quaternion AimTargetRotation_Head;
+    Quaternion AimTargetRotation_Chest;
+
     public void DoDamage(Vector3 dir,int damage)
     {
-        
+        if (!spawn_completed)
+            return;
 
         if (lowerBodyState != LowerBodyState.DOWN)
         {
@@ -314,9 +324,7 @@ public class RobotController : MonoBehaviour
         target_chest = Target_Robot.Chest;
         target_head = Target_Robot.Head;
 
-        chestmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Chest.transform, 1.0f) };
-        headmultiAimConstraint.data.sourceObjects = new WeightedTransformArray { new WeightedTransform(Target_Robot.Head.transform, 1.0f) };
-        rigBuilder.Build();
+        //rigBuilder.Build();
 
         Target_Robot.lockingEnemy.Add(this);
 
@@ -339,10 +347,7 @@ public class RobotController : MonoBehaviour
         target_chest = null;
         target_head = null;
 
-        chestmultiAimConstraint.data.sourceObjects = new WeightedTransformArray {  };
-        headmultiAimConstraint.data.sourceObjects = new WeightedTransformArray {  };
-
-        rigBuilder.Build();
+        //rigBuilder.Build();
 
         if (HUDCanvas != null)
             reticle_UICO.targetTfm = null;
@@ -390,6 +395,9 @@ public class RobotController : MonoBehaviour
         if(HUDCanvas != null)
             boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
 
+        AimTargetRotation_Head = Head.transform.rotation;
+        AimTargetRotation_Chest = Chest.transform.rotation;
+
         if (Target_Robot != null)
         {
             TargetEnemy(Target_Robot);
@@ -401,6 +409,10 @@ public class RobotController : MonoBehaviour
         {
             worldManager.AssignToTeam(this);
         }
+
+
+
+        spawn_completed = true;
     }
 
     private bool ConsumeBoost()
@@ -470,7 +482,7 @@ public class RobotController : MonoBehaviour
                 lockingEnemy[i].PurgeTarget(this);
             }
 
-            team.robotControllers.Remove(this);
+            worldManager.HandleRemoveUnit(this);
 
             GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
 
@@ -581,8 +593,8 @@ public class RobotController : MonoBehaviour
 
     private void UpperBodyMove()
     {
-
-      
+        bool head_no_aiming = false;
+        bool chest_no_aiming = false;
   
 
         switch(upperBodyState)
@@ -626,6 +638,7 @@ public class RobotController : MonoBehaviour
                         if (angle > 60)
                         {
                             _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
+                            head_no_aiming = true;
                         }
                         else
                             _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
@@ -633,6 +646,7 @@ public class RobotController : MonoBehaviour
                     else
                     {
                         _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
+                        head_no_aiming = true;
                     }
 
 
@@ -663,6 +677,7 @@ public class RobotController : MonoBehaviour
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.02f);
+                    chest_no_aiming = true;
                 }
                 break;
             case UpperBodyState.KNOCKBACK:
@@ -675,6 +690,11 @@ public class RobotController : MonoBehaviour
         }
 
         headmultiAimConstraint.weight = _headaimwait;
+
+        //headmultiAimConstraint.weight = 1.0f;
+
+        Quaternion target_rot_head;
+        Quaternion target_rot_chest;
 
         if (target_chest != null)
         {
@@ -692,6 +712,9 @@ public class RobotController : MonoBehaviour
             //overrideTransform.data.rotation = q_final.eulerAngles;
             overrideTransform.data.position = shoulder_hint.transform.position;
             overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+
+            target_rot_head = Quaternion.LookRotation(target_head.transform.position - Head.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+            target_rot_chest = Quaternion.LookRotation(target_chest.transform.position - Chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
         }
         else
         {
@@ -708,7 +731,41 @@ public class RobotController : MonoBehaviour
             //overrideTransform.data.rotation = q_final.eulerAngles;
             overrideTransform.data.position = shoulder_hint.transform.position;
             overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+
+            target_rot_head = Head.transform.rotation;
+            target_rot_chest = Chest.transform.rotation;
         }
+
+        //Quaternion thisframe_rot_head
+
+        if (head_no_aiming)
+        {
+            AimTargetRotation_Head = target_rot_head;
+        }
+        else
+        {
+            AimTargetRotation_Head = Quaternion.RotateTowards(AimTargetRotation_Head, target_rot_head, 1.0f);
+            //= target_rot_head;
+            //= Head.transform.rotation;
+        }
+
+        AimHelper_Head.transform.position = Head.transform.position + AimTargetRotation_Head * Vector3.forward*3;
+
+
+        if (chest_no_aiming)
+        {
+            AimTargetRotation_Chest = target_rot_chest;
+        }
+        else
+        {
+            AimTargetRotation_Chest = Quaternion.RotateTowards(AimTargetRotation_Chest, target_rot_chest, 1.0f);
+            //= target_rot_head;
+            //= Head.transform.rotation;
+        }
+
+        AimHelper_Chest.transform.position = Chest.transform.position + AimTargetRotation_Chest * Vector3.forward * 3;
+
+
 
         overrideTransform.weight = _rarmaimwait;
 
