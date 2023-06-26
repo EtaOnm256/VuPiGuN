@@ -86,6 +86,10 @@ public class RobotController : MonoBehaviour
     public int HP = 500;
     public int MaxHP = 500;
 
+    public int StepLimit = 30;
+
+    int stepremain = 0;
+
     public Vector3 offset;
 
     // cinemachine
@@ -1193,10 +1197,10 @@ public class RobotController : MonoBehaviour
 
                     _animationBlend = 0.0f;
 
-
+                    stepremain--;
                
                    
-                    if (event_stepped && !_input.sprint)
+                    if (event_stepped && (!_input.sprint || stepremain<=0))
                     {
                         lowerBodyState = LowerBodyState.GROUND;
 
@@ -1353,6 +1357,8 @@ public class RobotController : MonoBehaviour
                 steptargetrotation = steptargetdegree;
                 break;
         }
+
+        stepremain = StepLimit;
     }
     private void JumpAndGravity()
     {

@@ -1489,8 +1489,9 @@ MonoBehaviour:
   AscendingVelocity: 20
   HP: 500
   MaxHP: 500
+  StepLimit: 150
   offset: {x: 0, y: 10, z: -20}
-  _input: {fileID: 0}
+  _input: {fileID: 8772217306487596250}
   headmultiAimConstraint: {fileID: 5005913491507713147}
   chestmultiAimConstraint: {fileID: 4551316252105674422}
   rigBuilder: {fileID: 1406418183187529142}
