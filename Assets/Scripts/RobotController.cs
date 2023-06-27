@@ -944,7 +944,7 @@ public class RobotController : MonoBehaviour
                         }
                         else
                         {
-                            if(_input.sprint)
+                            if(_input.sprint && upperBodyState == UpperBodyState.STAND)
                             {
                                 if (ConsumeBoost())
                                 {
