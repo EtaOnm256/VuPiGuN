@@ -256,6 +256,7 @@ public class RobotController : MonoBehaviour
     public GameObject Rhand;
 
     public GameObject Gun;
+    public BeamSaber Sword;
 
     public UIController_Overlay reticle_UICO;
 
@@ -692,6 +693,8 @@ public class RobotController : MonoBehaviour
                         upperBodyState = UpperBodyState.GROUNDSLASH;
                         event_groundslash = false;
                         _animator.CrossFadeInFixedTime(_animIDGroundSlash, 0.0f, 0);
+
+                        Sword.emitting = true;
                     }
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
@@ -1269,6 +1272,7 @@ public class RobotController : MonoBehaviour
 
                     if(event_groundslash)
                     {
+                        Sword.emitting = false;
                         lowerBodyState = LowerBodyState.STAND;
                         upperBodyState = UpperBodyState.STAND;
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
