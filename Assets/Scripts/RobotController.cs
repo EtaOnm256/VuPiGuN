@@ -131,6 +131,7 @@ public class RobotController : MonoBehaviour
     private int _animIDDown;
     private int _animIDGetup;
 
+    private int _animIDGroundSlash;
 
     private Animator _animator;
     private CharacterController _controller;
@@ -184,6 +185,7 @@ public class RobotController : MonoBehaviour
     bool event_knockbacked = false;
     bool event_getup = false;
     bool event_downed = false;
+    bool event_groundslash = false;
 
     public Vector3 center_offset;
 
@@ -193,7 +195,8 @@ public class RobotController : MonoBehaviour
         FIRE,
         KNOCKBACK,
         DOWN,
-        GETUP
+        GETUP,
+        GROUNDSLASH
     }
 
     public enum LowerBodyState
@@ -210,7 +213,8 @@ public class RobotController : MonoBehaviour
         AIRROTATE,
         KNOCKBACK,
         DOWN,
-        GETUP
+        GETUP,
+        GROUNDSLASH
     }
 
     public enum StepDirection
@@ -528,6 +532,8 @@ public class RobotController : MonoBehaviour
 
         _animIDDown = Animator.StringToHash("Down");
         _animIDGetup = Animator.StringToHash("Getup");
+
+        _animIDGroundSlash = Animator.StringToHash("GroundSlash");
     }
 
     private void GroundedCheck()
@@ -679,6 +685,15 @@ public class RobotController : MonoBehaviour
        
                     }
 
+                    if(_input.slash)
+                    {
+                        _input.slash = false;
+                        lowerBodyState = LowerBodyState.GROUNDSLASH;
+                        upperBodyState = UpperBodyState.GROUNDSLASH;
+                        event_groundslash = false;
+                        _animator.CrossFadeInFixedTime(_animIDGroundSlash, 0.0f, 0);
+                    }
+
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.02f);
                     chest_no_aiming = true;
@@ -687,6 +702,7 @@ public class RobotController : MonoBehaviour
             case UpperBodyState.KNOCKBACK:
             case UpperBodyState.DOWN:
             case UpperBodyState.GETUP:
+            case UpperBodyState.GROUNDSLASH:
                 _rarmaimwait = 0.0f;
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
@@ -858,7 +874,7 @@ public class RobotController : MonoBehaviour
                             //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                             //    RotationSmoothTime);
 
-                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, lowerBodyState == LowerBodyState.DASH ? DashRotateSpeed  : RotateSpeed);
+                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, lowerBodyState == LowerBodyState.DASH ? DashRotateSpeed : RotateSpeed);
 
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -888,16 +904,16 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-    
-                    switch(lowerBodyState)
+
+                    switch (lowerBodyState)
                     {
                         case LowerBodyState.STAND:
                             if (_input.move != Vector2.zero)
                             {
                                 lowerBodyState = LowerBodyState.WALK;
-                                _animator.CrossFadeInFixedTime(_animIDWalk, 0.5f,0);
+                                _animator.CrossFadeInFixedTime(_animIDWalk, 0.5f, 0);
                             }
-                               
+
                             break;
                         case LowerBodyState.WALK:
                             if (_input.move == Vector2.zero)
@@ -908,9 +924,9 @@ public class RobotController : MonoBehaviour
                             break;
                     }
 
-                    if(lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
+                    if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
                     {
-                       
+
 
 
                         if (_input.jump)
@@ -919,22 +935,22 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.JUMP;
                             _animator.CrossFadeInFixedTime(_animIDJump, 0.5f, 0);
                         }
-                        else if( _input.sprint && upperBodyState == UpperBodyState.STAND)
+                        else if (_input.sprint && upperBodyState == UpperBodyState.STAND)
                         {
                             StartStep();
 
-                           
 
-                 
+
+
                         }
 
                         RegenBoost();
                     }
 
-                    if(lowerBodyState == LowerBodyState.AIR)
+                    if (lowerBodyState == LowerBodyState.AIR)
                     {
-                     
-                     
+
+
                         if (_input.jump)
                         {
                             if (ConsumeBoost())
@@ -944,7 +960,7 @@ public class RobotController : MonoBehaviour
                         }
                         else
                         {
-                            if(_input.sprint && upperBodyState == UpperBodyState.STAND)
+                            if (_input.sprint && upperBodyState == UpperBodyState.STAND)
                             {
                                 if (ConsumeBoost())
                                 {
@@ -978,7 +994,7 @@ public class RobotController : MonoBehaviour
                         _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                     }
 
-                 
+
                     if (lowerBodyState == LowerBodyState.DASH)
                     {
                         _verticalVelocity = 0.0f;
@@ -992,7 +1008,7 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-                  
+
 
 
                     JumpAndGravity();
@@ -1010,13 +1026,13 @@ public class RobotController : MonoBehaviour
                     float speedOffset = 0.1f;
                     float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
-                 
+
                     targetSpeed = 0.0f;
 
                     _animationBlend = Mathf.Max(_animationBlend - 0.015f, 0.0f);
 
                     if (_animationBlend < 0.01f) _animationBlend = 0f;
-                 
+
                     // accelerate or decelerate to target speed
                     if (currentHorizontalSpeed < targetSpeed - speedOffset ||
                         currentHorizontalSpeed > targetSpeed + speedOffset)
@@ -1076,76 +1092,76 @@ public class RobotController : MonoBehaviour
 
 
                         case LowerBodyState.GROUND:
-                        {
-                            if (event_grounded)
                             {
-                                lowerBodyState = LowerBodyState.STAND;
-                                _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                                if (event_grounded)
+                                {
+                                    lowerBodyState = LowerBodyState.STAND;
+                                    _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                                }
                             }
-                        }
-                        break;
+                            break;
 
                         case LowerBodyState.JUMP:
-                        {
-                            if (event_jumped)
                             {
-                                lowerBodyState = LowerBodyState.AIR;
-                                _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
-                                Grounded = false;
-                                _verticalVelocity = AscendingVelocity;
+                                if (event_jumped)
+                                {
+                                    lowerBodyState = LowerBodyState.AIR;
+                                    _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                                    Grounded = false;
+                                    _verticalVelocity = AscendingVelocity;
 
-                                _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
+                                    _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
+                                }
                             }
-                        }
-                        break;
+                            break;
 
                         case LowerBodyState.DOWN:
-                        {
-                            if (event_downed && Grounded)
                             {
+                                if (event_downed && Grounded)
+                                {
 
-                                _input.down = false;
-                                lowerBodyState = LowerBodyState.GETUP;
-                                upperBodyState = UpperBodyState.GETUP;
-                                _animator.Play(_animIDGetup, 0, 0);
-                                event_getup = false;
+                                    _input.down = false;
+                                    lowerBodyState = LowerBodyState.GETUP;
+                                    upperBodyState = UpperBodyState.GETUP;
+                                    _animator.Play(_animIDGetup, 0, 0);
+                                    event_getup = false;
                                     accum = 0.0f;
                                     origin = transform.position.y;
-                                _verticalVelocity = 0.0f;
-                            }
+                                    _verticalVelocity = 0.0f;
+                                }
 
-                            JumpAndGravity();
-                            GroundedCheck();
-                        }
-                        break;
+                                JumpAndGravity();
+                                GroundedCheck();
+                            }
+                            break;
 
                         case LowerBodyState.GETUP:
-                        {
-                            
-
-                            if (event_getup)
                             {
-                                lowerBodyState = LowerBodyState.STAND;
-                                upperBodyState = UpperBodyState.STAND;
-                                _animator.Play(_animIDStand, 0, 0);
-                                _controller.height = 7.0f;
-                                _verticalVelocity = 0.0f;
 
+
+                                if (event_getup)
+                                {
+                                    lowerBodyState = LowerBodyState.STAND;
+                                    upperBodyState = UpperBodyState.STAND;
+                                    _animator.Play(_animIDStand, 0, 0);
+                                    _controller.height = 7.0f;
+                                    _verticalVelocity = 0.0f;
+
+                                }
+                                else
+                                {
+                                    AnimatorStateInfo animeStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
+                                    float prevheight = _controller.height;
+
+                                    float newheight = _controller.height = 4.0f + animeStateInfo.normalizedTime * (7.0f - 4.0f);
+
+
+                                    _verticalVelocity = (newheight - prevheight) / Time.deltaTime / 2.0f;
+
+                                }
                             }
-                            else
-                            {
-                                AnimatorStateInfo animeStateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-
-                                float prevheight = _controller.height;
-
-                                float newheight = _controller.height = 4.0f + animeStateInfo.normalizedTime * (7.0f - 4.0f);
-                               
-
-                                _verticalVelocity = (newheight - prevheight) / Time.deltaTime / 2.0f;
-
-                             }
-                        }
-                        break;
+                            break;
                     }
 
                     break;
@@ -1177,7 +1193,7 @@ public class RobotController : MonoBehaviour
 
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-                   
+
 
                     float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
 
@@ -1198,15 +1214,15 @@ public class RobotController : MonoBehaviour
                     _animationBlend = 0.0f;
 
                     stepremain--;
-               
-                   
-                    if (event_stepped && (!_input.sprint || stepremain<=0))
+
+
+                    if (event_stepped && (!_input.sprint || stepremain <= 0))
                     {
                         lowerBodyState = LowerBodyState.GROUND;
 
                         event_grounded = false;
 
-                        _animator.CrossFadeInFixedTime(_animIDGround, 0.25f, 0,0.15f);
+                        _animator.CrossFadeInFixedTime(_animIDGround, 0.25f, 0, 0.15f);
                     }
                 }
                 break;
@@ -1242,9 +1258,26 @@ public class RobotController : MonoBehaviour
                     }
                 }
                 break;
-            
-             
+            case LowerBodyState.GROUNDSLASH:
+                {
+                    targetSpeed = 0.0f;
 
+                    _animationBlend = 0.0f;
+
+
+                    _speed = 0.0f;
+
+                    if(event_groundslash)
+                    {
+                        lowerBodyState = LowerBodyState.STAND;
+                        upperBodyState = UpperBodyState.STAND;
+                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                    }
+
+                    break;
+
+
+                }
         }
 
 
@@ -1417,6 +1450,11 @@ public class RobotController : MonoBehaviour
     private void OnDowned()
     {
         event_downed = true;
+    }
+
+    private void OnGroundSlash()
+    {
+        event_groundslash = true;
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

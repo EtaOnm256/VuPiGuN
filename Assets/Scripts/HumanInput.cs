@@ -41,10 +41,15 @@ using UnityEngine.InputSystem;
 		{
 			DownInput(value.isPressed);
 		}
+
+		public void OnSlash(InputValue value)
+		{
+			SlashInput(value.isPressed);
+		}
 #endif
 
 
-		public void MoveInput(Vector2 newMoveDirection)
+	public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
 		} 
@@ -74,8 +79,12 @@ using UnityEngine.InputSystem;
 			down = newDownState;
 		}
 
+		public void SlashInput(bool newSlashState)
+		{
+			slash = newSlashState;
+		}
 
-		private void OnApplicationFocus(bool hasFocus)
+	private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
 		}

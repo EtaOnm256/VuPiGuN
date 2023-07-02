@@ -1771,6 +1771,7 @@ MonoBehaviour:
   sprint: 0
   fire: 0
   down: 0
+  slash: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1

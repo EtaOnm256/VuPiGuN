@@ -1462,9 +1462,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 15
   SprintSpeed: 30
-  RotateSpeed: 1
+  RotateSpeed: 2
   DashRotateSpeed: 0.25
-  AirDashRotateSpeed: 2
+  AirDashRotateSpeed: 4
   AirMoveSpeed: 8
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 0}
@@ -1489,7 +1489,7 @@ MonoBehaviour:
   AscendingVelocity: 20
   HP: 500
   MaxHP: 500
-  StepLimit: 150
+  StepLimit: 60
   offset: {x: 0, y: 10, z: -20}
   _input: {fileID: 8772217306487596250}
   headmultiAimConstraint: {fileID: 5005913491507713147}
@@ -1564,6 +1564,7 @@ MonoBehaviour:
   sprint: 0
   fire: 0
   down: 0
+  slash: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1

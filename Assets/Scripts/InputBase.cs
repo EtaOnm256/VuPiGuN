@@ -11,6 +11,7 @@ public class InputBase : MonoBehaviour
     public bool sprint;
     public bool fire;
     public bool down;
+    public bool slash;
 
     [Header("Movement Settings")]
     public bool analogMovement;
