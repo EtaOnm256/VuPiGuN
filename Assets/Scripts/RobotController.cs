@@ -88,6 +88,8 @@ public class RobotController : MonoBehaviour
 
     public int StepLimit = 30;
 
+    public float SlashDistance = 7.0f;
+
     int stepremain = 0;
 
     public Vector3 offset;
@@ -196,6 +198,7 @@ public class RobotController : MonoBehaviour
         KNOCKBACK,
         DOWN,
         GETUP,
+        GROUNDSLASH_DASH,
         GROUNDSLASH
     }
 
@@ -214,6 +217,7 @@ public class RobotController : MonoBehaviour
         KNOCKBACK,
         DOWN,
         GETUP,
+        GROUNDSLASH_DASH,
         GROUNDSLASH
     }
 
@@ -419,7 +423,7 @@ public class RobotController : MonoBehaviour
             worldManager.AssignToTeam(this);
         }
 
-
+        Sword.emitting = false;
 
         spawn_completed = true;
     }
@@ -689,12 +693,24 @@ public class RobotController : MonoBehaviour
                     if(_input.slash)
                     {
                         _input.slash = false;
-                        lowerBodyState = LowerBodyState.GROUNDSLASH;
-                        upperBodyState = UpperBodyState.GROUNDSLASH;
-                        event_groundslash = false;
-                        _animator.CrossFadeInFixedTime(_animIDGroundSlash, 0.0f, 0);
+                        lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
+                        upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
+                        event_stepbegin = event_stepped = false;
+                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                        stepremain = StepLimit;
+                        
 
-                        Sword.emitting = true;
+                        if (target_chest != null)
+                        {
+                            Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                            _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                            float rotation = _targetRotation;
+
+                            // rotate to face input direction relative to camera position
+                            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                        }
                     }
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
@@ -706,6 +722,7 @@ public class RobotController : MonoBehaviour
             case UpperBodyState.DOWN:
             case UpperBodyState.GETUP:
             case UpperBodyState.GROUNDSLASH:
+            case UpperBodyState.GROUNDSLASH_DASH:
                 _rarmaimwait = 0.0f;
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
@@ -795,6 +812,8 @@ public class RobotController : MonoBehaviour
         animator.SetLayerWeight(1, _rarmaimwait);
 
         chestmultiAimConstraint.weight = _chestaimwait;
+
+        Sword.dir = transform.forward;
     }
 
     //return angle in range -180 to 180
@@ -1226,6 +1245,40 @@ public class RobotController : MonoBehaviour
                         event_grounded = false;
 
                         _animator.CrossFadeInFixedTime(_animIDGround, 0.25f, 0, 0.15f);
+                    }
+                }
+                break;
+            case LowerBodyState.GROUNDSLASH_DASH:
+                {
+
+
+                    _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed/* : 0.0f*/;
+
+                    _animationBlend = 0.0f;
+
+                    bool slash = false;
+
+                    if(target_chest == null)
+                    {
+                        slash = true;
+                    }
+                    else
+                    {
+                        if( (target_chest.transform.position-Chest.transform.position).magnitude < SlashDistance)
+                        {
+                            slash = true;
+                        }
+                    }
+
+                    stepremain--;
+
+                    if (slash || stepremain <= 0)
+                    {
+                        lowerBodyState = LowerBodyState.GROUNDSLASH;
+                        upperBodyState = UpperBodyState.GROUNDSLASH;
+                        event_groundslash = false;
+                        Sword.emitting = true;
+                        _animator.CrossFadeInFixedTime(_animIDGroundSlash, 0.0f, 0);
                     }
                 }
                 break;

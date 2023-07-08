@@ -16,6 +16,9 @@ public class BeamSaber : MonoBehaviour
     RobotController[] hitHistoryRC = new RobotController[16];
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
+
+    public Vector3 dir;
+
     public bool emitting
     {
         set {
@@ -78,7 +81,7 @@ public class BeamSaber : MonoBehaviour
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(Vector3.zero, 250);
+                    robotController.DoDamage(dir, 250);
 
                     GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
                 }
