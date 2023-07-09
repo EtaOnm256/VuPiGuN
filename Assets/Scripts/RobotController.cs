@@ -311,6 +311,8 @@ public class RobotController : MonoBehaviour
                 _verticalVelocity = 0.0f;
 
                 _speed = SprintSpeed;
+
+                Sword.emitting = false;
             }
         }
 
@@ -559,9 +561,7 @@ public class RobotController : MonoBehaviour
 
                 if (Grounded)
                 {
-                    _animator.Play(_animIDGround,0,0);
-                    lowerBodyState = LowerBodyState.GROUND;
-                    event_grounded = false;
+                    TransitLowerBodyState(LowerBodyState.GROUND);
                 }
                 break;
             case LowerBodyState.STAND:
@@ -623,7 +623,9 @@ public class RobotController : MonoBehaviour
                             TransitLowerBodyState(LowerBodyState.AIR);
                         }
                         else if (lowerBodyState == LowerBodyState.FIRE)
-                            lowerBodyState = LowerBodyState.STAND;
+                        {
+                            TransitLowerBodyState(LowerBodyState.STAND);
+                        }
 
                         GameObject beam_obj = GameObject.Instantiate(beam_prefab, Gun.transform.position,Gun.transform.rotation);
 
@@ -931,8 +933,7 @@ public class RobotController : MonoBehaviour
                         case LowerBodyState.WALK:
                             if (_input.move == Vector2.zero)
                             {
-                                lowerBodyState = LowerBodyState.STAND;
-                                _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                                TransitLowerBodyState(LowerBodyState.STAND);
                             }
                             break;
                     }
@@ -968,7 +969,7 @@ public class RobotController : MonoBehaviour
                         {
                             if (ConsumeBoost())
                             {
-                                _verticalVelocity = Mathf.Min(_verticalVelocity + 0.4f, AscendingVelocity);
+                                _verticalVelocity = Mathf.Min(_verticalVelocity + 0.6f, AscendingVelocity);
                             }
                         }
                         else
@@ -1107,8 +1108,7 @@ public class RobotController : MonoBehaviour
                             {
                                 if (event_grounded)
                                 {
-                                    lowerBodyState = LowerBodyState.STAND;
-                                    _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                                    TransitLowerBodyState(LowerBodyState.STAND);
                                 }
                             }
                             break;
@@ -1147,16 +1147,9 @@ public class RobotController : MonoBehaviour
 
                         case LowerBodyState.GETUP:
                             {
-
-
                                 if (event_getup)
                                 {
-                                    lowerBodyState = LowerBodyState.STAND;
-                                    upperBodyState = UpperBodyState.STAND;
-                                    _animator.Play(_animIDStand, 0, 0);
-                                    _controller.height = 7.0f;
-                                    _verticalVelocity = 0.0f;
-
+                                    TransitLowerBodyState(LowerBodyState.STAND);
                                 }
                                 else
                                 {
@@ -1228,11 +1221,7 @@ public class RobotController : MonoBehaviour
 
                     if (event_stepped && (!_input.sprint || stepremain <= 0))
                     {
-                        lowerBodyState = LowerBodyState.GROUND;
-
-                        event_grounded = false;
-
-                        _animator.CrossFadeInFixedTime(_animIDGround, 0.25f, 0, 0.15f);
+                        TransitLowerBodyState(LowerBodyState.GROUND);
                     }
                 }
                 break;
@@ -1295,9 +1284,7 @@ public class RobotController : MonoBehaviour
 
                     if (event_knockbacked)
                     {
-                        lowerBodyState = LowerBodyState.STAND;
-                        upperBodyState = UpperBodyState.STAND;
-                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                        TransitLowerBodyState(LowerBodyState.STAND);
 
                     }
                 }
@@ -1313,10 +1300,7 @@ public class RobotController : MonoBehaviour
 
                     if(event_groundslash)
                     {
-                        Sword.emitting = false;
-                        lowerBodyState = LowerBodyState.STAND;
-                        upperBodyState = UpperBodyState.STAND;
-                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                        TransitLowerBodyState(LowerBodyState.STAND);
                     }
 
                     break;
@@ -1385,17 +1369,21 @@ public class RobotController : MonoBehaviour
      
     }
 
-
+    // ここで扱わないもの
     // KNOCKBACKは複雑すぎるのでDoDamageにべた書き
     private void TransitLowerBodyState(LowerBodyState newState)
     {
         if(lowerBodyState == LowerBodyState.DOWN && newState != LowerBodyState.DOWN)
             _controller.height = 7.0f;
 
+        if(lowerBodyState == LowerBodyState.GROUNDSLASH && newState != LowerBodyState.GROUNDSLASH)
+        {
+            Sword.emitting = false;
+        }
+
         switch (newState)
         {
             case LowerBodyState.AIR:
-                lowerBodyState = LowerBodyState.AIR;
 
                 if (lowerBodyState == LowerBodyState.DASH)
                     _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
@@ -1405,13 +1393,53 @@ public class RobotController : MonoBehaviour
                 Grounded = false;
                 break;
             case LowerBodyState.DOWN:
-                lowerBodyState = LowerBodyState.DOWN;
                 upperBodyState = UpperBodyState.DOWN;
 
                 _animator.Play(_animIDDown, 0, 0);
                 event_downed = false;
                 _input.down = false;
                 _controller.height = 4;
+                break;
+            case LowerBodyState.GROUND:
+
+                if (lowerBodyState == LowerBodyState.STEP)
+                {
+                    event_grounded = false;
+                    _animator.CrossFadeInFixedTime(_animIDGround, 0.25f, 0, 0.15f);
+                }
+                else
+                {
+                    _animator.Play(_animIDGround, 0, 0);
+                    event_grounded = false;
+                }
+                break;
+            case LowerBodyState.STAND:
+                switch(lowerBodyState)
+                {
+                    case LowerBodyState.FIRE:
+                        break;
+                    case LowerBodyState.WALK:
+                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                        break;
+                    case LowerBodyState.GROUND:
+                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                        break;
+                    case LowerBodyState.GETUP:
+                        upperBodyState = UpperBodyState.STAND;
+                        _animator.Play(_animIDStand, 0, 0);
+                        _controller.height = 7.0f;
+                        _verticalVelocity = 0.0f;
+                        break;
+                    case LowerBodyState.KNOCKBACK:
+                        upperBodyState = UpperBodyState.STAND;
+                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                        break;
+                    case LowerBodyState.GROUNDSLASH:
+    
+                        upperBodyState = UpperBodyState.STAND;
+                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                        break;
+                }
                 break;
         }
 
