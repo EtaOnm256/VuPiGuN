@@ -669,7 +669,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GroundSlash
-  m_Speed: 16
+  m_Speed: 24
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []

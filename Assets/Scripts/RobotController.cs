@@ -1233,6 +1233,19 @@ public class RobotController : MonoBehaviour
 
                     _animationBlend = 0.0f;
 
+
+                    if (target_chest != null)
+                    {
+                        Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                    }
+
                     bool slash = false;
 
                     if(target_chest == null)
@@ -1295,6 +1308,18 @@ public class RobotController : MonoBehaviour
 
                     _animationBlend = 0.0f;
 
+
+                    if (target_chest != null)
+                    {
+                        Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                    }
 
                     _speed = 0.0f;
 
