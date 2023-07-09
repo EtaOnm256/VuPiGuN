@@ -279,15 +279,9 @@ public class RobotController : MonoBehaviour
 
         if (lowerBodyState != LowerBodyState.DOWN)
         {
-            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE)
+            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState==LowerBodyState.DASH)
             {
-                lowerBodyState = LowerBodyState.DOWN;
-                upperBodyState = UpperBodyState.DOWN;
-
-                _animator.Play(_animIDDown, 0, 0);
-                event_downed = false;
-                _input.down = false;
-                _controller.height = 4;
+                TransitLowerBodyState(LowerBodyState.DOWN);
             }
             else
             {
@@ -575,8 +569,7 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.STEP:
                 if (!Grounded)
                 {
-                    lowerBodyState = LowerBodyState.AIR;
-                    _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                    TransitLowerBodyState(LowerBodyState.AIR);
                 }
                 break;
         }
@@ -627,9 +620,7 @@ public class RobotController : MonoBehaviour
 
                         if (lowerBodyState == LowerBodyState.AIRFIRE)
                         {
-                            lowerBodyState = LowerBodyState.AIR;
-                            _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
-                            Grounded = false;
+                            TransitLowerBodyState(LowerBodyState.AIR);
                         }
                         else if (lowerBodyState == LowerBodyState.FIRE)
                             lowerBodyState = LowerBodyState.STAND;
@@ -1025,8 +1016,7 @@ public class RobotController : MonoBehaviour
 
                         if ((!_input.sprint || !boost_remain) && event_dashed)
                         {
-                            lowerBodyState = LowerBodyState.AIR;
-                            _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
+                            TransitLowerBodyState(LowerBodyState.AIR);
                         }
                     }
 
@@ -1127,9 +1117,7 @@ public class RobotController : MonoBehaviour
                             {
                                 if (event_jumped)
                                 {
-                                    lowerBodyState = LowerBodyState.AIR;
-                                    _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
-                                    Grounded = false;
+                                    TransitLowerBodyState(LowerBodyState.AIR);
                                     _verticalVelocity = AscendingVelocity;
 
                                     _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
@@ -1395,6 +1383,39 @@ public class RobotController : MonoBehaviour
         }
 
      
+    }
+
+
+    // KNOCKBACKは複雑すぎるのでDoDamageにべた書き
+    private void TransitLowerBodyState(LowerBodyState newState)
+    {
+        if(lowerBodyState == LowerBodyState.DOWN && newState != LowerBodyState.DOWN)
+            _controller.height = 7.0f;
+
+        switch (newState)
+        {
+            case LowerBodyState.AIR:
+                lowerBodyState = LowerBodyState.AIR;
+
+                if (lowerBodyState == LowerBodyState.DASH)
+                    _animator.CrossFadeInFixedTime(_animIDAir, 0.25f, 0);
+                else
+                    _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                
+                Grounded = false;
+                break;
+            case LowerBodyState.DOWN:
+                lowerBodyState = LowerBodyState.DOWN;
+                upperBodyState = UpperBodyState.DOWN;
+
+                _animator.Play(_animIDDown, 0, 0);
+                event_downed = false;
+                _input.down = false;
+                _controller.height = 4;
+                break;
+        }
+
+        lowerBodyState = newState;
     }
 
     private void StartStep()
