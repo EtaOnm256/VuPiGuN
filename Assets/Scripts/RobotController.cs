@@ -133,7 +133,10 @@ public class RobotController : MonoBehaviour
     private int _animIDDown;
     private int _animIDGetup;
 
-    private int _animIDGroundSlash;
+    const int GroundSlash_Num = 2;
+    int groundslash_count = 0;
+
+    private int[] _animIDGroundSlash = new int[GroundSlash_Num];
 
     private Animator _animator;
     private CharacterController _controller;
@@ -534,7 +537,10 @@ public class RobotController : MonoBehaviour
         _animIDDown = Animator.StringToHash("Down");
         _animIDGetup = Animator.StringToHash("Getup");
 
-        _animIDGroundSlash = Animator.StringToHash("GroundSlash");
+        for (int i = 0; i < GroundSlash_Num; i++)
+        {
+            _animIDGroundSlash[i] = Animator.StringToHash($"GroundSlash_{i}");
+        }
     }
 
     private void GroundedCheck()
@@ -1268,7 +1274,8 @@ public class RobotController : MonoBehaviour
                         upperBodyState = UpperBodyState.GROUNDSLASH;
                         event_groundslash = false;
                         Sword.emitting = true;
-                        _animator.CrossFadeInFixedTime(_animIDGroundSlash, 0.0f, 0);
+                        groundslash_count = 0;
+                        _animator.CrossFadeInFixedTime(_animIDGroundSlash[groundslash_count], 0.0f, 0);
                     }
                 }
                 break;
@@ -1304,11 +1311,10 @@ public class RobotController : MonoBehaviour
                 break;
             case LowerBodyState.GROUNDSLASH:
                 {
-                    targetSpeed = 0.0f;
-
+                   
                     _animationBlend = 0.0f;
 
-
+                    _speed = 0.0f;
                     if (target_chest != null)
                     {
                         Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -1319,13 +1325,38 @@ public class RobotController : MonoBehaviour
 
                         // rotate to face input direction relative to camera position
                         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+
+                        if ((target_chest.transform.position - Chest.transform.position).magnitude > SlashDistance)
+                        {
+                           _speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
+                        }
                     }
 
-                    _speed = 0.0f;
+                    //targetSpeed = 0.0f;
+                    //_speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
+                    
 
-                    if(event_groundslash)
+
+
+                    if (event_groundslash)
                     {
-                        TransitLowerBodyState(LowerBodyState.STAND);
+                        Sword.emitting = false;
+
+                        groundslash_count++;
+                        if(groundslash_count == GroundSlash_Num || !_input.slash)
+                            TransitLowerBodyState(LowerBodyState.STAND);
+                        else
+                        {
+       
+                            _input.slash = false;
+
+                            lowerBodyState = LowerBodyState.GROUNDSLASH;
+                            upperBodyState = UpperBodyState.GROUNDSLASH;
+                            event_groundslash = false;
+                            Sword.emitting = true;
+                            _animator.CrossFadeInFixedTime(_animIDGroundSlash[groundslash_count], 0.0f, 0);
+                        }
+
                     }
 
                     break;
