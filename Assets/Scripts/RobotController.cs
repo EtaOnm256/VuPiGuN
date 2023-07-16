@@ -133,7 +133,7 @@ public class RobotController : MonoBehaviour
     private int _animIDDown;
     private int _animIDGetup;
 
-    const int GroundSlash_Num = 2;
+    const int GroundSlash_Num = 3;
     int groundslash_count = 0;
 
     private int[] _animIDGroundSlash = new int[GroundSlash_Num];

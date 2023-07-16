@@ -42,7 +42,7 @@ public class BeamSaber : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Vector3 start = transform.TransformPoint(new Vector3(0.0f,0.01f,0.0f));
+        Vector3 start = transform.TransformPoint(new Vector3(0.0f,0.02f,0.0f));
         Vector3 end = transform.TransformPoint(lineRenderer.GetPosition(1));
 
         length = (end - start).magnitude;
@@ -56,7 +56,7 @@ public class BeamSaber : MonoBehaviour
         if(emitting)
         {
 
-            Vector3 start = transform.TransformPoint(new Vector3(0.0f, 0.01f, 0.0f));
+            Vector3 start = transform.TransformPoint(new Vector3(0.0f, 0.02f, 0.0f));
             Vector3 end = transform.TransformPoint(lineRenderer.GetPosition(1));
 
             Ray ray = new Ray(start,end- start);
@@ -81,7 +81,7 @@ public class BeamSaber : MonoBehaviour
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(dir, 250);
+                    robotController.DoDamage(dir, 150);
 
                     GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
                 }

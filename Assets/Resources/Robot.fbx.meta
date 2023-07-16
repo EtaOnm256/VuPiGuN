@@ -66,6 +66,9 @@ ModelImporter:
   - first:
       74: 5587850273756761646
     second: Armature|GroundSlash_1
+  - first:
+      74: 1457911639920680016
+    second: Armature|GroundSlash_2
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -775,6 +778,42 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|GroundSlash_0
       takeName: Armature|GroundSlash_0
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 299
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 1
+        functionName: OnGroundSlash
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|GroundSlash_2
+      takeName: Armature|GroundSlash_2
       internalID: 0
       firstFrame: 0
       lastFrame: 299
