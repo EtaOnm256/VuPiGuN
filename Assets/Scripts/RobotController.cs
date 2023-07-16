@@ -130,6 +130,11 @@ public class RobotController : MonoBehaviour
     private int _animIDKnockback_Left;
     private int _animIDKnockback_Right;
 
+    private int _animIDKnockback_Strong_Back;
+    private int _animIDKnockback_Strong_Front;
+    private int _animIDKnockback_Strong_Left;
+    private int _animIDKnockback_Strong_Right;
+
     private int _animIDDown;
     private int _animIDGetup;
 
@@ -275,7 +280,7 @@ public class RobotController : MonoBehaviour
     Quaternion AimTargetRotation_Head;
     Quaternion AimTargetRotation_Chest;
 
-    public void DoDamage(Vector3 dir,int damage)
+    public void DoDamage(Vector3 dir,int damage,bool strong)
     {
         if (!spawn_completed)
             return;
@@ -290,6 +295,8 @@ public class RobotController : MonoBehaviour
             {
                 event_knockbacked = false;
 
+            
+
                 upperBodyState = UpperBodyState.KNOCKBACK;
                 lowerBodyState = LowerBodyState.KNOCKBACK;
 
@@ -300,20 +307,39 @@ public class RobotController : MonoBehaviour
 
                 float stepmotiondegree = Mathf.Repeat(knockbackdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
-                if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-                    _animator.Play(_animIDKnockback_Right, 0, 0);
-                else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-                    _animator.Play(_animIDKnockback_Back, 0, 0);
-                else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-                    _animator.Play(_animIDKnockback_Left, 0, 0);
+                if (strong)
+                {
+                    if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                        _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
+                    else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                        _animator.Play(_animIDKnockback_Strong_Back, 0, 0);
+                    else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                        _animator.Play(_animIDKnockback_Strong_Left, 0, 0);
+                    else
+                        _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
+
+                    _speed = SprintSpeed*2;
+                }
                 else
-                    _animator.Play(_animIDKnockback_Front, 0, 0);
+                {
+
+                    if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                        _animator.Play(_animIDKnockback_Right, 0, 0);
+                    else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                        _animator.Play(_animIDKnockback_Back, 0, 0);
+                    else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                        _animator.Play(_animIDKnockback_Left, 0, 0);
+                    else
+                        _animator.Play(_animIDKnockback_Front, 0, 0);
+
+                    _speed = SprintSpeed;
+                }
 
                 _controller.height = 7.0f;
 
                 _verticalVelocity = 0.0f;
 
-                _speed = SprintSpeed;
+                
 
                 Sword.emitting = false;
             }
@@ -533,6 +559,11 @@ public class RobotController : MonoBehaviour
         _animIDKnockback_Front = Animator.StringToHash("KnockBack_Front");
         _animIDKnockback_Right = Animator.StringToHash("KnockBack_Right");
         _animIDKnockback_Left = Animator.StringToHash("KnockBack_Left");
+
+        _animIDKnockback_Strong_Back = Animator.StringToHash("KnockBack_Strong_Back");
+        _animIDKnockback_Strong_Front = Animator.StringToHash("KnockBack_Strong_Front");
+        _animIDKnockback_Strong_Right = Animator.StringToHash("KnockBack_Strong_Right");
+        _animIDKnockback_Strong_Left = Animator.StringToHash("KnockBack_Strong_Left");
 
         _animIDDown = Animator.StringToHash("Down");
         _animIDGetup = Animator.StringToHash("Getup");
