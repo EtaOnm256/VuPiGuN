@@ -16,7 +16,7 @@ public class RobotAI : InputBase
     void Update()
     {
         //fire = true;
-        slash = true;
+        //slash = true;
         if(moveDirChangeTimer==0)
         {
             move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));

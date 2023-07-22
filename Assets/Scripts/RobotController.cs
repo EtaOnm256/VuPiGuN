@@ -1304,8 +1304,10 @@ public class RobotController : MonoBehaviour
                         lowerBodyState = LowerBodyState.GROUNDSLASH;
                         upperBodyState = UpperBodyState.GROUNDSLASH;
                         event_groundslash = false;
-                        Sword.emitting = true;
+                        Sword.emitting = false;
                         groundslash_count = 0;
+                        Sword.damage = 250;
+                        Sword.strong = true;
                         _animator.CrossFadeInFixedTime(_animIDGroundSlash[groundslash_count], 0.0f, 0);
                     }
                 }
@@ -1384,7 +1386,19 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.GROUNDSLASH;
                             upperBodyState = UpperBodyState.GROUNDSLASH;
                             event_groundslash = false;
-                            Sword.emitting = true;
+                            Sword.emitting = false;
+
+                            if(groundslash_count == GroundSlash_Num-1)
+                            {
+                                Sword.damage = 500;
+                                Sword.strong = false;
+                            }
+                            else
+                            {
+                                Sword.damage = 250;
+                                Sword.strong = true;
+                            }
+
                             _animator.CrossFadeInFixedTime(_animIDGroundSlash[groundslash_count], 0.0f, 0);
                         }
 
@@ -1648,6 +1662,11 @@ public class RobotController : MonoBehaviour
     private void OnGroundSlash()
     {
         event_groundslash = true;
+    }
+
+    private void OnGroundSlashBegin()
+    {
+        Sword.emitting = true;
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

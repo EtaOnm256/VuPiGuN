@@ -39,6 +39,9 @@ public class BeamSaber : MonoBehaviour
         get { return _emitting; }
     }
 
+    public bool strong = false;
+    public int damage = 250;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,7 +84,7 @@ public class BeamSaber : MonoBehaviour
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(dir, 150,true);
+                    robotController.DoDamage(dir, /*damage*/0, strong);
 
                     GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
                 }
