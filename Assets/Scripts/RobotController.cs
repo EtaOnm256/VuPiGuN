@@ -1391,12 +1391,24 @@ public class RobotController : MonoBehaviour
                             if(groundslash_count == GroundSlash_Num-1)
                             {
                                 Sword.damage = 500;
-                                Sword.strong = false;
+                                
                             }
                             else
                             {
                                 Sword.damage = 250;
+                                
+                            }
+
+                            if(groundslash_count == 1)
+                            {
+                                
                                 Sword.strong = true;
+
+                            }
+                            else
+                            {
+                                
+                                Sword.strong = false;
                             }
 
                             _animator.CrossFadeInFixedTime(_animIDGroundSlash[groundslash_count], 0.0f, 0);
