@@ -491,13 +491,19 @@ public class RobotController : MonoBehaviour
                 if (team == this.team)
                     continue;
 
-               
+                
 
                 foreach(var robot in team.robotControllers)
                 {
                     float dist = DistanceToLine(Camera.main.ViewportPointToRay(new Vector3(0.5f,0.5f,0.0f)), robot.transform.TransformPoint(robot.center_offset));
 
-                    if(dist < mindist)
+                    Vector3 relatePos = robot.transform.TransformPoint(robot.center_offset) - transform.TransformPoint(center_offset);
+
+                    Quaternion q = Quaternion.Inverse(Camera.main.transform.rotation);
+
+                    relatePos = q*relatePos;
+
+                    if (dist < mindist && relatePos.z >= 0.0f)
                     {
                         mindist = dist;
                         nearest_robot = robot;
@@ -505,8 +511,23 @@ public class RobotController : MonoBehaviour
                 }
             }
 
-            if(Target_Robot != nearest_robot)
-                TargetEnemy(nearest_robot);
+            if (nearest_robot == null)
+            {
+                UntargetEnemy();
+
+                Target_Robot = null;
+
+                target_chest = null;
+                target_head = null;
+
+                if (HUDCanvas != null)
+                    reticle_UICO.targetTfm = null;
+            }
+            else
+            {
+                if (Target_Robot != nearest_robot)
+                    TargetEnemy(nearest_robot);
+            }
 
             UpperBodyMove();
             LowerBodyMove();
