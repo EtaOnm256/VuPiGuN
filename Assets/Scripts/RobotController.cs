@@ -625,7 +625,10 @@ public class RobotController : MonoBehaviour
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
             QueryTriggerInteraction.Ignore);
 
-        switch(lowerBodyState)
+        if (_controller.isGrounded)
+            Grounded = true;
+
+        switch (lowerBodyState)
         {
             case LowerBodyState.AIR:
             case LowerBodyState.AIRFIRE:
@@ -1386,6 +1389,7 @@ public class RobotController : MonoBehaviour
                             airslash_count = 0;
                             Sword.damage = 250;
                             Sword.strong = true;
+                            _verticalVelocity = 0.0f;
                             _animator.CrossFadeInFixedTime(_animIDAirSlash[airslash_count], 0.0f, 0);
                         }
                     }
@@ -1419,6 +1423,9 @@ public class RobotController : MonoBehaviour
                         TransitLowerBodyState(LowerBodyState.STAND);
 
                     }
+
+                    JumpAndGravity();
+                    GroundedCheck();
                 }
                 break;
             case LowerBodyState.GROUNDSLASH:
@@ -1469,7 +1476,7 @@ public class RobotController : MonoBehaviour
                             upperBodyState = UpperBodyState.AIRSLASH;
                             event_airslash = false;
                             Sword.emitting = false;
-
+                            _verticalVelocity = 0.0f;
                             Sword.damage = 250;
                             Sword.strong = false;
 
@@ -1520,7 +1527,8 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-           
+                    JumpAndGravity();
+                    GroundedCheck();
                     break;
 
 
