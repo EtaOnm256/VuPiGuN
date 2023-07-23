@@ -1590,7 +1590,13 @@ public class RobotController : MonoBehaviour
 
             if (target_chest != null)
             {
-                targetDirection = (target_chest.transform.position - Chest.transform.position).normalized;
+                Vector3 targetOffset = (Chest.transform.position - target_chest.transform.position);
+
+                targetOffset.y = 0.0f;
+
+                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * SlashDistance;
+
+                targetDirection = (targetPos - Chest.transform.position).normalized;
 
                 _verticalVelocity = targetDirection.y*_speed;
 
