@@ -40,7 +40,7 @@ public class WorldManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if(player==null)
         {

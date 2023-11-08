@@ -1463,9 +1463,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 15
   SprintSpeed: 30
-  RotateSpeed: 1
-  DashRotateSpeed: 0.25
-  AirDashRotateSpeed: 2
+  RotateSpeed: 4
+  DashRotateSpeed: 1
+  AirDashRotateSpeed: 8
   AirMoveSpeed: 8
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 0}
@@ -1490,7 +1490,7 @@ MonoBehaviour:
   AscendingVelocity: 20
   HP: 500
   MaxHP: 500
-  StepLimit: 120
+  StepLimit: 45
   SlashDistance: 6
   offset: {x: 0, y: 10, z: -20}
   _input: {fileID: 8772217306487596250}

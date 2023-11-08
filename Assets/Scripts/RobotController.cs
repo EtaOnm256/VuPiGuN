@@ -486,7 +486,7 @@ public class RobotController : MonoBehaviour
         return Vector3.Cross(ray.direction, point - ray.origin).magnitude;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!dead)
         {
@@ -685,10 +685,10 @@ public class RobotController : MonoBehaviour
         {
             case UpperBodyState.FIRE:
                 {
-                    _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
+                    _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
 
-                    _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.02f);
-                    _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.02f);
+                    _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
+                    _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
 
                     if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
                     {
@@ -721,15 +721,15 @@ public class RobotController : MonoBehaviour
 
                         if (angle > 60)
                         {
-                            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
+                            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.1f);
                             head_no_aiming = true;
                         }
                         else
-                            _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.05f);
+                            _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.1f);
                     }
                     else
                     {
-                        _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.05f);
+                        _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.1f);
                         head_no_aiming = true;
                     }
 
@@ -807,8 +807,8 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.02f);
-                    _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.02f);
+                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
+                    _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
                     chest_no_aiming = true;
                 }
                 break;

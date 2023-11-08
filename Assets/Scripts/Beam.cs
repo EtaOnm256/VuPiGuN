@@ -34,9 +34,9 @@ public class Beam : MonoBehaviour
     int hitHistoryRCCount = 0;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        const float speed = 0.3f;
+        const float speed = 1.2f;
 
         float length = (lineRenderer.GetPosition(1) - start_pos).magnitude;
 

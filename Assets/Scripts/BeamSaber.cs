@@ -54,7 +54,7 @@ public class BeamSaber : MonoBehaviour
     float length;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if(emitting)
         {

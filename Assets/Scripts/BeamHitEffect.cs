@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BeamHitEffect : MonoBehaviour
 {
-    int MaxTime = 60;
+    int MaxTime = 30;
 
     int time;
 
@@ -18,7 +18,7 @@ public class BeamHitEffect : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float scale = initialscale * (time) / MaxTime;
 
