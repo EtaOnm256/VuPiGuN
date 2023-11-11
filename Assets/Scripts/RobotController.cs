@@ -467,7 +467,7 @@ public class RobotController : MonoBehaviour
     {
         if(boost > 0)
         {
-            boost--;
+            boost-=2;
             return true;
         }
         else
@@ -478,7 +478,7 @@ public class RobotController : MonoBehaviour
 
     private void RegenBoost()
     {
-        boost = Math.Min(boost+1, Boost_Max);
+        boost = Math.Min(boost+4, Boost_Max);
     }
 
     public static float DistanceToLine(Ray ray, Vector3 point)
@@ -1072,7 +1072,7 @@ public class RobotController : MonoBehaviour
                         {
                             if (ConsumeBoost())
                             {
-                                _verticalVelocity = Mathf.Min(_verticalVelocity + 0.6f, AscendingVelocity);
+                                _verticalVelocity = Mathf.Min(_verticalVelocity + 1.8f, AscendingVelocity);
                             }
                         }
                         else
@@ -1263,7 +1263,7 @@ public class RobotController : MonoBehaviour
                                     float newheight = _controller.height = 4.0f + animeStateInfo.normalizedTime * (7.0f - 4.0f);
 
 
-                                    _verticalVelocity = (newheight - prevheight) / Time.deltaTime / 2.0f;
+                                    _verticalVelocity = (newheight - prevheight) / Time.deltaTime;
 
                                 }
                             }
