@@ -467,7 +467,7 @@ public class RobotController : MonoBehaviour
     {
         if(boost > 0)
         {
-            boost-=2;
+            boost-=4;
             return true;
         }
         else
@@ -478,7 +478,7 @@ public class RobotController : MonoBehaviour
 
     private void RegenBoost()
     {
-        boost = Math.Min(boost+4, Boost_Max);
+        boost = Math.Min(boost+8, Boost_Max);
     }
 
     public static float DistanceToLine(Ray ray, Vector3 point)
@@ -1376,7 +1376,7 @@ public class RobotController : MonoBehaviour
                             event_groundslash = false;
                             Sword.emitting = false;
                             groundslash_count = 0;
-                            Sword.damage = 250;
+                            Sword.damage = 100;
                             Sword.strong = true;
                             _animator.CrossFadeInFixedTime(_animIDGroundSlash[groundslash_count], 0.0f, 0);
                         }
@@ -1387,7 +1387,7 @@ public class RobotController : MonoBehaviour
                             event_airslash = false;
                             Sword.emitting = false;
                             airslash_count = 0;
-                            Sword.damage = 250;
+                            Sword.damage = 100;
                             Sword.strong = true;
                             _verticalVelocity = 0.0f;
                             _animator.CrossFadeInFixedTime(_animIDAirSlash[airslash_count], 0.0f, 0);
@@ -1477,7 +1477,7 @@ public class RobotController : MonoBehaviour
                             event_airslash = false;
                             Sword.emitting = false;
                             _verticalVelocity = 0.0f;
-                            Sword.damage = 250;
+                            Sword.damage = 100;
                             Sword.strong = false;
 
                             _animator.CrossFadeInFixedTime(_animIDAirSlash[airslash_count], 0.0f, 0);
@@ -1502,12 +1502,12 @@ public class RobotController : MonoBehaviour
 
                             if (groundslash_count == GroundSlash_Num - 1)
                             {
-                                Sword.damage = 500;
+                                Sword.damage = 200;
 
                             }
                             else
                             {
-                                Sword.damage = 250;
+                                Sword.damage = 100;
 
                             }
 
@@ -1594,7 +1594,7 @@ public class RobotController : MonoBehaviour
 
                 targetOffset.y = 0.0f;
 
-                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * SlashDistance;
+                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (SlashDistance*0.9f);
 
                 targetDirection = (targetPos - Chest.transform.position).normalized;
 

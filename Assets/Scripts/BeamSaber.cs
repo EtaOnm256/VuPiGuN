@@ -84,7 +84,7 @@ public class BeamSaber : MonoBehaviour
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(dir, /*damage*/0, strong);
+                    robotController.DoDamage(dir, damage, strong);
 
                     GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
                 }

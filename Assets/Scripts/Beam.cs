@@ -36,7 +36,7 @@ public class Beam : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        const float speed = 1.2f;
+        const float speed = 1.6f;
 
         float length = (lineRenderer.GetPosition(1) - start_pos).magnitude;
 
@@ -64,7 +64,7 @@ public class Beam : MonoBehaviour
 
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                robotController.DoDamage(direction,250,false);
+                robotController.DoDamage(direction,100,false);
 
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
             }

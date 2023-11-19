@@ -20,7 +20,7 @@ public class RobotAI : InputBase
         //jump = true;
         if(moveDirChangeTimer==0)
         {
-            move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
+//            move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
             moveDirChangeTimer = 60;
         }
         moveDirChangeTimer--;
