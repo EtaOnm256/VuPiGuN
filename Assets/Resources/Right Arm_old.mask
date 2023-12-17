@@ -6,7 +6,7 @@ AvatarMask:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Right Arm
+  m_Name: Right Arm_old
   m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
   m_Elements:
   - m_Path: 
@@ -43,9 +43,7 @@ AvatarMask:
     m_Weight: 0
   - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L/UpArm.L/DownArm.L
     m_Weight: 0
-  - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L/UpArm.L/DownArm.L/Hand.L
-    m_Weight: 0
-  - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L/UpArm.L/DownArm.L/Hand.L/Hand.L_end
+  - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L/UpArm.L/DownArm.L/DownArm.L_end
     m_Weight: 0
   - m_Path: Armature/Weist/Chest/ChestShoulder.R
     m_Weight: 1
@@ -57,14 +55,12 @@ AvatarMask:
     m_Weight: 1
   - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R/UpArm.R/DownArm.R
     m_Weight: 1
-  - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R/UpArm.R/DownArm.R/Hand.R
-    m_Weight: 1
-  - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R/UpArm.R/DownArm.R/Hand.R/Hand.R_end
+  - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R/UpArm.R/DownArm.R/DownArm.R_end
     m_Weight: 1
   - m_Path: Armature/Weist/Chest/Head
     m_Weight: 1
   - m_Path: Armature/Weist/Chest/Head/Head_end
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Armature/Weist/Hip.L
     m_Weight: 0
   - m_Path: Armature/Weist/Hip.L/UpLeg.L
@@ -85,35 +81,9 @@ AvatarMask:
     m_Weight: 0
   - m_Path: Armature/Weist/Hip.R/UpLeg.R/DownLeg.R/Foot.R/Foot.R_end
     m_Weight: 0
-  - m_Path: Collider_Chest
+  - m_Path: Camera
     m_Weight: 0
-  - m_Path: Collider_DownArm.L
-    m_Weight: 0
-  - m_Path: Collider_DownArm.R
-    m_Weight: 0
-  - m_Path: Collider_DownLeg.L
-    m_Weight: 0
-  - m_Path: Collider_DownLeg.R
-    m_Weight: 0
-  - m_Path: Collider_Foot.L
-    m_Weight: 0
-  - m_Path: Collider_Foot.R
-    m_Weight: 0
-  - m_Path: Collider_Head
-    m_Weight: 0
-  - m_Path: Collider_Shoulder.L
-    m_Weight: 0
-  - m_Path: Collider_Shoulder.R
-    m_Weight: 0
-  - m_Path: Collider_UpArm.L
-    m_Weight: 0
-  - m_Path: Collider_UpArm.R
-    m_Weight: 0
-  - m_Path: Collider_UpLeg.L
-    m_Weight: 0
-  - m_Path: Collider_UpLeg.R
-    m_Weight: 0
-  - m_Path: Collider_Weist
+  - m_Path: Light
     m_Weight: 0
   - m_Path: Robot
     m_Weight: 0

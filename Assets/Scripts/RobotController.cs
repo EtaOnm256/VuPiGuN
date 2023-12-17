@@ -427,7 +427,7 @@ public class RobotController : MonoBehaviour
 
     private void Start()
     {
-        if(CinemachineCameraTarget!=null)
+        if (CinemachineCameraTarget!=null)
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
         _hasAnimator = TryGetComponent(out _animator);

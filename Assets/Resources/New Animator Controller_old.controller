@@ -539,7 +539,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: New Animator Controller
+  m_Name: New Animator Controller_old
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: VerticalSpeed
@@ -564,7 +564,7 @@ AnimatorController:
   - serializedVersion: 5
     m_Name: RightArm
     m_StateMachine: {fileID: 1164986259999253990}
-    m_Mask: {fileID: 31900000, guid: c6a450b00b4e28c44bd6cbb65bb178db, type: 2}
+    m_Mask: {fileID: 31900000, guid: 032903052f3ce28468e01ad31d843343, type: 2}
     m_Motions: []
     m_Behaviours: []
     m_BlendingMode: 0
