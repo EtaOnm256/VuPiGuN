@@ -6,6 +6,7 @@ public class BeamSaber : MonoBehaviour
 {
     public LineRenderer lineRenderer;
 
+    bool _slashing = false;
     bool _emitting = false;
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -19,14 +20,15 @@ public class BeamSaber : MonoBehaviour
 
     public Vector3 dir;
 
-    public bool emitting
+    public bool slashing
     {
         set {
-            _emitting = value;
+            _slashing = value;
 
-            lineRenderer.enabled = _emitting;
+            if (_slashing)
+                _emitting = true;
 
-            if(!_emitting)
+            if(!_slashing)
             {
                 hitHistoryCount = 0;
                 hitHistoryRCCount = 0;
@@ -36,8 +38,25 @@ public class BeamSaber : MonoBehaviour
             }
 
         }
+        get { return _slashing; }
+    }
+
+    public bool emitting
+    {
+        set
+        {
+            _emitting = value;
+
+            if (!_emitting)
+                _slashing = false;
+
+            lineRenderer.enabled = _emitting;
+
+
+        }
         get { return _emitting; }
     }
+
 
     public bool strong = false;
     public int damage = 250;
@@ -56,7 +75,7 @@ public class BeamSaber : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(emitting)
+        if(slashing)
         {
 
             Vector3 start = transform.TransformPoint(new Vector3(0.0f, 0.02f, 0.0f));

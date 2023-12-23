@@ -352,6 +352,7 @@ public class RobotController : MonoBehaviour
                 
 
                 Sword.emitting = false;
+
             }
         }
 
@@ -770,6 +771,8 @@ public class RobotController : MonoBehaviour
                             _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
                             stepremain = StepLimit;
 
+                            Sword.emitting = true;
+
 
                             if (target_chest != null)
                             {
@@ -792,6 +795,7 @@ public class RobotController : MonoBehaviour
                             _animator.CrossFadeInFixedTime(_animIDDash, 0.0f, 0);
                             stepremain = StepLimit;
 
+                            Sword.emitting = true;
 
                             if (target_chest != null)
                             {
@@ -1374,7 +1378,7 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.GROUNDSLASH;
                             upperBodyState = UpperBodyState.GROUNDSLASH;
                             event_groundslash = false;
-                            Sword.emitting = false;
+                            Sword.slashing = false;
                             groundslash_count = 0;
                             Sword.damage = 100;
                             Sword.strong = true;
@@ -1385,7 +1389,7 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.AIRSLASH;
                             upperBodyState = UpperBodyState.AIRSLASH;
                             event_airslash = false;
-                            Sword.emitting = false;
+                            Sword.slashing = false;
                             airslash_count = 0;
                             Sword.damage = 100;
                             Sword.strong = true;
@@ -1462,11 +1466,13 @@ public class RobotController : MonoBehaviour
 
                     if (lowerBodyState == LowerBodyState.AIRSLASH && event_airslash)
                     {
-                        Sword.emitting = false;
-
                         airslash_count++;
                         if (airslash_count == AirSlash_Num || !_input.slash)
+                        {
+                            Sword.emitting = false;
+
                             TransitLowerBodyState(LowerBodyState.AIR);
+                        }
                         else
                         {
 
@@ -1475,7 +1481,7 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.AIRSLASH;
                             upperBodyState = UpperBodyState.AIRSLASH;
                             event_airslash = false;
-                            Sword.emitting = false;
+                            Sword.slashing = false;
                             _verticalVelocity = 0.0f;
                             Sword.damage = 100;
                             Sword.strong = false;
@@ -1485,11 +1491,12 @@ public class RobotController : MonoBehaviour
                     }
                     else if(lowerBodyState == LowerBodyState.GROUNDSLASH && event_groundslash)
                     {
-                        Sword.emitting = false;
-
                         groundslash_count++;
                         if (groundslash_count == GroundSlash_Num || !_input.slash)
+                        {
+                            Sword.emitting = false;
                             TransitLowerBodyState(LowerBodyState.STAND);
+                        }
                         else
                         {
 
@@ -1498,7 +1505,7 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.GROUNDSLASH;
                             upperBodyState = UpperBodyState.GROUNDSLASH;
                             event_groundslash = false;
-                            Sword.emitting = false;
+                            Sword.slashing = false;
 
                             if (groundslash_count == GroundSlash_Num - 1)
                             {
@@ -1636,6 +1643,11 @@ public class RobotController : MonoBehaviour
             _controller.height = 7.0f;
 
         if(lowerBodyState == LowerBodyState.GROUNDSLASH && newState != LowerBodyState.GROUNDSLASH)
+        {
+            Sword.emitting = false;
+        }
+
+        if (lowerBodyState == LowerBodyState.AIRSLASH && newState != LowerBodyState.AIRSLASH)
         {
             Sword.emitting = false;
         }
@@ -1829,7 +1841,7 @@ public class RobotController : MonoBehaviour
 
     private void OnGroundSlashBegin()
     {
-        Sword.emitting = true;
+        Sword.slashing = true;
     }
 
     private void OnAirSlash()
@@ -1839,7 +1851,7 @@ public class RobotController : MonoBehaviour
 
     private void OnAirSlashBegin()
     {
-        Sword.emitting = true;
+        Sword.slashing = true;
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
