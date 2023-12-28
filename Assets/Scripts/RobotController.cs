@@ -295,6 +295,8 @@ public class RobotController : MonoBehaviour
         if (!spawn_completed)
             return;
 
+        _animator.speed = 1.0f;
+
         if (lowerBodyState != LowerBodyState.DOWN)
         {
             if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState==LowerBodyState.DASH)
@@ -792,7 +794,8 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.AIRSLASH_DASH;
                             upperBodyState = UpperBodyState.AIRSLASH_DASH;
                             event_stepbegin = event_stepped = false;
-                            _animator.CrossFadeInFixedTime(_animIDDash, 0.0f, 0);
+                            _animator.CrossFadeInFixedTime(_animIDAirSlash[0], 0.0f, 0);
+                            _animator.speed = 0.0f;
                             stepremain = StepLimit;
 
                             Sword.emitting = true;
@@ -1388,6 +1391,7 @@ public class RobotController : MonoBehaviour
                         {
                             lowerBodyState = LowerBodyState.AIRSLASH;
                             upperBodyState = UpperBodyState.AIRSLASH;
+                            _animator.speed = 1.0f;
                             event_airslash = false;
                             Sword.slashing = false;
                             airslash_count = 0;
