@@ -138,6 +138,8 @@ public class RobotController : MonoBehaviour
     private int _animIDDown;
     private int _animIDGetup;
 
+    private int _animIDStand2;
+
     const int GroundSlash_Num = 3;
     int groundslash_count = 0;
 
@@ -167,6 +169,16 @@ public class RobotController : MonoBehaviour
     public OverrideTransform overrideTransform;
     public GameObject aimingBase;
     public GameObject shoulder_hint;
+    public GameObject chest_hint;
+
+    public GameObject aiming_hint
+    {
+        get { if (dualwielding) return chest_hint;
+            else return shoulder_hint;
+                }
+    }
+
+    public bool dualwielding = false;
 
     public RobotController Target_Robot;
     public GameObject Head = null;
@@ -181,6 +193,8 @@ public class RobotController : MonoBehaviour
     private float _chestaimwait = 0.0f;
 
     private float _rarmaimwait = 0.0f;
+
+    private float _barmlayerwait = 0.0f;
 
     public Animator animator;
 
@@ -611,6 +625,8 @@ public class RobotController : MonoBehaviour
         {
             _animIDAirSlash[i] = Animator.StringToHash($"AirSlash_{i}");
         }
+
+        _animIDStand2 = Animator.StringToHash("Stand2");
     }
 
     private void GroundedCheck()
@@ -690,10 +706,22 @@ public class RobotController : MonoBehaviour
                 {
                     _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
 
+
                     _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
+
                     _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
 
-                    if (animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1)
+                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+
+                    bool shoot = false;
+
+
+                    if (dualwielding)
+                        shoot = animator.GetCurrentAnimatorStateInfo(2).normalizedTime >= 1;
+                    else
+                        shoot = animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1;
+
+                    if (shoot)
                     {
                         upperBodyState = UpperBodyState.STAND;
 
@@ -704,6 +732,11 @@ public class RobotController : MonoBehaviour
                         else if (lowerBodyState == LowerBodyState.FIRE)
                         {
                             TransitLowerBodyState(LowerBodyState.STAND);
+                        }
+
+                        if (dualwielding)
+                        {
+                            _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
                         }
 
                         GameObject beam_obj = GameObject.Instantiate(beam_prefab, Gun.transform.position,Gun.transform.rotation);
@@ -742,7 +775,10 @@ public class RobotController : MonoBehaviour
                         upperBodyState = UpperBodyState.FIRE;
                         _input.fire = false;
 
-                        animator.Play("Armature|Fire", 1, 0.0f);
+                        if(dualwielding)
+                            animator.Play("Fire2", 2, 0.0f);
+                        else
+                            animator.Play("Fire", 1, 0.0f);
 
                                                     
 
@@ -816,19 +852,20 @@ public class RobotController : MonoBehaviour
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
+                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                     chest_no_aiming = true;
                 }
                 break;
             case UpperBodyState.KNOCKBACK:
             case UpperBodyState.DOWN:
             case UpperBodyState.GETUP:
-            case UpperBodyState.GROUNDSLASH:
-            case UpperBodyState.GROUNDSLASH_DASH:
-            case UpperBodyState.AIRSLASH:
-            case UpperBodyState.AIRSLASH_DASH:
                 _rarmaimwait = 0.0f;
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
+                _barmlayerwait = 0.0f;
+                break;
+            default:
+                _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
                 break;
         }
 
@@ -839,12 +876,14 @@ public class RobotController : MonoBehaviour
         Quaternion target_rot_head;
         Quaternion target_rot_chest;
 
+
+
         if (target_chest != null)
         {
 
-            Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
+            Quaternion q_base_global = Quaternion.Inverse(aiming_hint.transform.rotation);
 
-            Quaternion q_aim_global = Quaternion.LookRotation(shoulder_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+            Quaternion q_aim_global = Quaternion.LookRotation(aiming_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
             Quaternion q_rotation_global = q_base_global * q_aim_global;
 
@@ -861,9 +900,9 @@ public class RobotController : MonoBehaviour
         }
         else
         {
-            Quaternion q_base_global = Quaternion.Inverse(shoulder_hint.transform.rotation);
+            Quaternion q_base_global = Quaternion.Inverse(aiming_hint.transform.rotation);
 
-            Quaternion q_aim_global = Quaternion.LookRotation(-shoulder_hint.transform.forward, new Vector3(0.0f, 1.0f, 0.0f));
+            Quaternion q_aim_global = Quaternion.LookRotation(-aiming_hint.transform.forward, new Vector3(0.0f, 1.0f, 0.0f));
 
             Quaternion q_rotation_global = q_base_global * q_aim_global;
 
@@ -912,7 +951,10 @@ public class RobotController : MonoBehaviour
 
         overrideTransform.weight = _rarmaimwait;
 
-        animator.SetLayerWeight(1, _rarmaimwait);
+        if(dualwielding)
+            animator.SetLayerWeight(2, _barmlayerwait);
+        else
+            animator.SetLayerWeight(1, _rarmaimwait);
 
         chestmultiAimConstraint.weight = _chestaimwait;
 

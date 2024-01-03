@@ -2746,6 +2746,8 @@ MonoBehaviour:
   overrideTransform: {fileID: 4980892467289847954}
   aimingBase: {fileID: 8642908618005363729}
   shoulder_hint: {fileID: 6048410596538289565}
+  chest_hint: {fileID: 6766279819973984601}
+  dualwielding: 1
   Target_Robot: {fileID: 0}
   Head: {fileID: 4539593104152821007}
   Chest: {fileID: 7153603775768943075}
@@ -2848,6 +2850,37 @@ Transform:
   m_Father: {fileID: 811896432428010206}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6766279819973984601
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8267903811653264091}
+  m_Layer: 0
+  m_Name: ChestHint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8267903811653264091
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6766279819973984601}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.0077831955, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5737688583317284463}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6874766888478246223
 GameObject:
   m_ObjectHideFlags: 0
@@ -2908,6 +2941,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8267903811653264091}
   - {fileID: 446754958900968528}
   - {fileID: 1776574747196983510}
   - {fileID: 7203516482820715729}
