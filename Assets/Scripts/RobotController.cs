@@ -541,9 +541,9 @@ public class RobotController : MonoBehaviour
                 if (Target_Robot != nearest_robot)
                     TargetEnemy(nearest_robot);
             }
-
-            UpperBodyMove();
             LowerBodyMove();
+            UpperBodyMove();
+            
         }
         else
         {

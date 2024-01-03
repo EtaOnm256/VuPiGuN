@@ -32,7 +32,7 @@ AvatarMask:
   - m_Path: Armature/Weist
     m_Weight: 0
   - m_Path: Armature/Weist/Chest
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Armature/Weist/Chest/ChestShoulder.L
     m_Weight: 0
   - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L
@@ -48,7 +48,7 @@ AvatarMask:
   - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L/Shoulder.L/UpArm.L/DownArm.L/Hand.L/Hand.L_end
     m_Weight: 0
   - m_Path: Armature/Weist/Chest/ChestShoulder.R
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R
     m_Weight: 1
   - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R
@@ -62,9 +62,9 @@ AvatarMask:
   - m_Path: Armature/Weist/Chest/ChestShoulder.R/AimBase.R/Shoulder.R/UpArm.R/DownArm.R/Hand.R/Hand.R_end
     m_Weight: 1
   - m_Path: Armature/Weist/Chest/Head
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Armature/Weist/Chest/Head/Head_end
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Armature/Weist/Hip.L
     m_Weight: 0
   - m_Path: Armature/Weist/Hip.L/UpLeg.L
@@ -115,5 +115,5 @@ AvatarMask:
     m_Weight: 0
   - m_Path: Collider_Weist
     m_Weight: 0
-  - m_Path: Robot
+  - m_Path: Robot1
     m_Weight: 0
