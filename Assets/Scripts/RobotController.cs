@@ -163,6 +163,7 @@ public class RobotController : MonoBehaviour
 
     public MultiAimConstraint headmultiAimConstraint;
     public MultiAimConstraint chestmultiAimConstraint;
+    public MultiAimConstraint rhandmultiAimConstraint;
     public RigBuilder rigBuilder;
 
     //public MultiAimConstraint rarmmultiAimConstraint;
@@ -183,6 +184,7 @@ public class RobotController : MonoBehaviour
     public RobotController Target_Robot;
     public GameObject Head = null;
     public GameObject Chest = null;
+    public GameObject RHand = null;
     private GameObject target_chest;
     private GameObject target_head;
 
@@ -300,6 +302,7 @@ public class RobotController : MonoBehaviour
 
     public GameObject AimHelper_Head = null;
     public GameObject AimHelper_Chest = null;
+    public GameObject AimHelper_RHand = null;
 
     Quaternion AimTargetRotation_Head;
     Quaternion AimTargetRotation_Chest;
@@ -698,9 +701,10 @@ public class RobotController : MonoBehaviour
     {
         bool head_no_aiming = false;
         bool chest_no_aiming = false;
-  
 
-        switch(upperBodyState)
+        float _rhandaimwait = 0.0f;
+
+        switch (upperBodyState)
         {
             case UpperBodyState.FIRE:
                 {
@@ -715,11 +719,18 @@ public class RobotController : MonoBehaviour
 
                     bool shoot = false;
 
+                   
 
                     if (dualwielding)
+                    {
                         shoot = animator.GetCurrentAnimatorStateInfo(2).normalizedTime >= 1;
+                        _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                    }
                     else
+                    {
                         shoot = animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1;
+                        _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(1).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                    }
 
                     if (shoot)
                     {
@@ -875,47 +886,31 @@ public class RobotController : MonoBehaviour
 
         Quaternion target_rot_head;
         Quaternion target_rot_chest;
-
+        Quaternion target_rot_rhand;
 
 
         if (target_chest != null)
         {
 
-            Quaternion q_base_global = Quaternion.Inverse(aiming_hint.transform.rotation);
-
             Quaternion q_aim_global = Quaternion.LookRotation(aiming_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
-            Quaternion q_rotation_global = q_base_global * q_aim_global;
-
-            Quaternion q_base = Quaternion.Inverse(aimingBase.transform.rotation);
-
-            Quaternion q_final = q_base * q_rotation_global * aimingBase.transform.rotation;
-
-            //overrideTransform.data.rotation = q_final.eulerAngles;
             overrideTransform.data.position = shoulder_hint.transform.position;
             overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
 
             target_rot_head = Quaternion.LookRotation(target_head.transform.position - Head.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
             target_rot_chest = Quaternion.LookRotation(target_chest.transform.position - Chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+            target_rot_rhand = Quaternion.LookRotation(target_chest.transform.position - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
         }
         else
         {
-            Quaternion q_base_global = Quaternion.Inverse(aiming_hint.transform.rotation);
-
             Quaternion q_aim_global = Quaternion.LookRotation(-aiming_hint.transform.forward, new Vector3(0.0f, 1.0f, 0.0f));
 
-            Quaternion q_rotation_global = q_base_global * q_aim_global;
-
-            Quaternion q_base = Quaternion.Inverse(aimingBase.transform.rotation);
-
-            Quaternion q_final = q_base * q_rotation_global * aimingBase.transform.rotation;
-
-            //overrideTransform.data.rotation = q_final.eulerAngles;
             overrideTransform.data.position = shoulder_hint.transform.position;
             overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
 
             target_rot_head = Head.transform.rotation;
             target_rot_chest = Chest.transform.rotation;
+            target_rot_rhand = RHand.transform.rotation* Quaternion.LookRotation(new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f));
         }
 
         //Quaternion thisframe_rot_head
@@ -948,6 +943,8 @@ public class RobotController : MonoBehaviour
         AimHelper_Chest.transform.position = Chest.transform.position + AimTargetRotation_Chest * Vector3.forward * 3;
 
 
+        AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
+        rhandmultiAimConstraint.weight = _rhandaimwait;
 
         overrideTransform.weight = _rarmaimwait;
 
