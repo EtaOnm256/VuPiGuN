@@ -152,7 +152,10 @@ public class RobotController : MonoBehaviour
 
     private Animator _animator;
     private CharacterController _controller;
-    
+
+    private float org_controller_height;
+    private float min_controller_height;
+
     private GameObject _mainCamera;
 
     private const float _threshold = 0.01f;
@@ -452,6 +455,10 @@ public class RobotController : MonoBehaviour
 
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
+
+        org_controller_height = _controller.height;
+        min_controller_height = _controller.radius * 2;
+
         //_input = GetComponent<StarterAssetsInputs>();
 
         AssignAnimationIDs();
@@ -1306,11 +1313,10 @@ public class RobotController : MonoBehaviour
 
                                     float prevheight = _controller.height;
 
-                                    float newheight = _controller.height = 4.0f + animeStateInfo.normalizedTime * (7.0f - 4.0f);
+                                    float newheight = _controller.height = min_controller_height + animeStateInfo.normalizedTime * (org_controller_height - min_controller_height);
 
 
-                                    _verticalVelocity = (newheight - prevheight) / Time.deltaTime;
-
+                                    _verticalVelocity = (newheight - prevheight) / Time.deltaTime/2;
                                 }
                             }
                             break;
@@ -1683,7 +1689,7 @@ public class RobotController : MonoBehaviour
     private void TransitLowerBodyState(LowerBodyState newState)
     {
         if(lowerBodyState == LowerBodyState.DOWN && newState != LowerBodyState.DOWN)
-            _controller.height = 7.0f;
+            _controller.height = org_controller_height;
 
         if(lowerBodyState == LowerBodyState.GROUNDSLASH && newState != LowerBodyState.GROUNDSLASH)
         {
@@ -1717,7 +1723,7 @@ public class RobotController : MonoBehaviour
                 _animator.Play(_animIDDown, 0, 0);
                 event_downed = false;
                 _input.down = false;
-                _controller.height = 4;
+                _controller.height = min_controller_height;
                 break;
             case LowerBodyState.GROUND:
 
@@ -1746,7 +1752,7 @@ public class RobotController : MonoBehaviour
                     case LowerBodyState.GETUP:
                         upperBodyState = UpperBodyState.STAND;
                         _animator.Play(_animIDStand, 0, 0);
-                        _controller.height = 7.0f;
+                        _controller.height = org_controller_height;
                         _verticalVelocity = 0.0f;
                         break;
                     case LowerBodyState.KNOCKBACK:
