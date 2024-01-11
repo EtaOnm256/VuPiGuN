@@ -83,8 +83,8 @@ public class WorldManager : MonoBehaviour
         robotController.worldManager = this;
         robotController._input = enemy.AddComponent<RobotAI>();
 
-        Destroy(enemy.GetComponent<HumanInput>());
-        Destroy(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());
+        DestroyImmediate(enemy.GetComponent<HumanInput>());
+        DestroyImmediate(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());
 
         robotController.team = team;
 

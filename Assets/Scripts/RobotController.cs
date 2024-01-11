@@ -92,6 +92,8 @@ public class RobotController : MonoBehaviour
 
     int stepremain = 0;
 
+    private bool is_player;
+
     public Vector3 offset;
 
     // cinemachine
@@ -175,6 +177,7 @@ public class RobotController : MonoBehaviour
     public GameObject shoulder_hint;
     public GameObject chest_hint;
 
+    
     public GameObject aiming_hint
     {
         get { if (dualwielding) return chest_hint;
@@ -453,6 +456,8 @@ public class RobotController : MonoBehaviour
         if (CinemachineCameraTarget!=null)
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
+        is_player = GetComponent<HumanInput>() != null;
+
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
 
@@ -528,22 +533,36 @@ public class RobotController : MonoBehaviour
                 if (team == this.team)
                     continue;
 
-                
-
-                foreach(var robot in team.robotControllers)
+                if (is_player)
                 {
-                    float dist = DistanceToLine(Camera.main.ViewportPointToRay(new Vector3(0.5f,0.5f,0.0f)), robot.transform.TransformPoint(robot.center_offset));
-
-                    Vector3 relatePos = robot.transform.TransformPoint(robot.center_offset) - transform.TransformPoint(center_offset);
-
-                    Quaternion q = Quaternion.Inverse(Camera.main.transform.rotation);
-
-                    relatePos = q*relatePos;
-
-                    if (dist < mindist && relatePos.z >= 0.0f)
+                    foreach (var robot in team.robotControllers)
                     {
-                        mindist = dist;
-                        nearest_robot = robot;
+                        float dist = DistanceToLine(Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f)), robot.transform.TransformPoint(robot.center_offset));
+
+                        Vector3 relatePos = robot.transform.TransformPoint(robot.center_offset) - transform.TransformPoint(center_offset);
+
+                        Quaternion q = Quaternion.Inverse(Camera.main.transform.rotation);
+
+                        relatePos = q * relatePos;
+
+                        if (dist < mindist && relatePos.z >= 0.0f)
+                        {
+                            mindist = dist;
+                            nearest_robot = robot;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var robot in team.robotControllers)
+                    {
+                        float dist =  (transform.TransformPoint(center_offset) - robot.transform.TransformPoint(robot.center_offset)).sqrMagnitude;
+                
+                        if (dist < mindist)
+                        {
+                            mindist = dist;
+                            nearest_robot = robot;
+                        }
                     }
                 }
             }
@@ -966,7 +985,6 @@ public class RobotController : MonoBehaviour
     }
 
     //return angle in range -180 to 180
-    float accum = 0.0f;
     float origin = 0.0f;
     private void LowerBodyMove()
     {
@@ -1291,7 +1309,6 @@ public class RobotController : MonoBehaviour
                                     upperBodyState = UpperBodyState.GETUP;
                                     _animator.Play(_animIDGetup, 0, 0);
                                     event_getup = false;
-                                    accum = 0.0f;
                                     origin = transform.position.y;
                                     _verticalVelocity = 0.0f;
                                 }
@@ -1627,9 +1644,7 @@ public class RobotController : MonoBehaviour
         {
             Vector3 targetDirection;
 
-            float stepangle = -180.0f;
-
-          
+         
             targetDirection = knockbackdir;
 
          
