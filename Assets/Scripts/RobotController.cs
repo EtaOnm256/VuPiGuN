@@ -896,12 +896,15 @@ public class RobotController : MonoBehaviour
             case UpperBodyState.KNOCKBACK:
             case UpperBodyState.DOWN:
             case UpperBodyState.GETUP:
-                _rarmaimwait = 0.0f;
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
+                _rarmaimwait = 0.0f;
                 _barmlayerwait = 0.0f;
                 break;
             default:
+                _chestaimwait = 0.0f;
+                _headaimwait = 0.0f;
+                _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
                 break;
         }
