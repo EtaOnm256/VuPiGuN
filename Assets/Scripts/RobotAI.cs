@@ -17,7 +17,11 @@ public class RobotAI : InputBase
     {
         //fire = true;
         //slash = true;
-        //jump = true;
+        if (moveDirChangeTimer > 30)
+            jump = true;
+        else
+            jump = false;
+
         if(moveDirChangeTimer==0)
         {
 //            move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
