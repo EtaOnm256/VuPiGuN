@@ -858,8 +858,7 @@ public class RobotController : MonoBehaviour
                     {
                         if (Grounded)
                         {
-                            bool lowerslash = false;
-
+  
                             if (target_chest != null)
                             {
                                 Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -870,40 +869,18 @@ public class RobotController : MonoBehaviour
 
                                 // rotate to face input direction relative to camera position
                                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-
-                                if(target_chest.transform.position.y < Chest.transform.position.y - 0.00852969*Chest.transform.lossyScale.y)
-                                {
-                                    lowerslash = true;
-                                }
                             }
 
-                            if (lowerslash)
-                            {
-                                _input.slash = false;
-                                Sword.emitting = true;
-                                lowerBodyState = LowerBodyState.LowerSlash;
-                                upperBodyState = UpperBodyState.LowerSlash;
-                                event_slash = false;
-                                Sword.slashing = false;
-                                slash_count = 0;
-                                Sword.damage = 100;
-                                Sword.strong = true;
-                                _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
-                            }
-                            else
-                            {
-                                _input.slash = false;
-                                lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
-                                upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
-                                event_stepbegin = event_stepped = false;
-                                _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                stepremain = StepLimit;
+                          
+                            _input.slash = false;
+                            lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
+                            upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
+                            event_stepbegin = event_stepped = false;
+                            _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                            stepremain = StepLimit;
 
-                                Sword.emitting = true;
-                            }
-
-                           
-                        }
+                            Sword.emitting = true;
+                           }
                         else
                         {
                             _input.slash = false;
@@ -941,6 +918,12 @@ public class RobotController : MonoBehaviour
             case UpperBodyState.GETUP:
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
+                _rarmaimwait = 0.0f;
+                _barmlayerwait = 0.0f;
+                break;
+            case UpperBodyState.LowerSlash:
+                _chestaimwait = 0.0f;
+                _headaimwait = 1.0f;
                 _rarmaimwait = 0.0f;
                 _barmlayerwait = 0.0f;
                 break;
@@ -1450,6 +1433,7 @@ public class RobotController : MonoBehaviour
 
                     _animationBlend = 0.0f;
 
+                  
 
                     if (target_chest != null)
                     {
@@ -1464,8 +1448,9 @@ public class RobotController : MonoBehaviour
                     }
 
                     bool slash = false;
+                    bool lowerslash = false;
 
-                    if(target_chest == null)
+                    if (target_chest == null)
                     {
                         slash = true;
                     }
@@ -1475,6 +1460,12 @@ public class RobotController : MonoBehaviour
                         {
                             slash = true;
                         }
+
+                        //if(target_chest.transform.position.y < Chest.transform.position.y - 0.00852969*Chest.transform.lossyScale.y)
+                        if (Target_Robot.lowerBodyState == LowerBodyState.DOWN || Target_Robot.lowerBodyState == LowerBodyState.GETUP)
+                        {
+                            lowerslash = true;
+                        }
                     }
 
                     stepremain--;
@@ -1483,15 +1474,28 @@ public class RobotController : MonoBehaviour
                     {
                         if (lowerBodyState == LowerBodyState.GROUNDSLASH_DASH)
                         {
-
-                            lowerBodyState = LowerBodyState.GroundSlash;
-                            upperBodyState = UpperBodyState.GroundSlash;
-                            event_slash = false;
-                            Sword.slashing = false;
-                            slash_count = 0;
-                            Sword.damage = 100;
-                            Sword.strong = true;
-                            _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.GroundSlash]._animID[slash_count], 0.0f, 0);
+                            if (lowerslash)
+                            {
+                                lowerBodyState = LowerBodyState.LowerSlash;
+                                upperBodyState = UpperBodyState.LowerSlash;
+                                event_slash = false;
+                                Sword.slashing = false;
+                                slash_count = 0;
+                                Sword.damage = 100;
+                                Sword.strong = true;
+                                _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
+                            }
+                            else
+                            {
+                                lowerBodyState = LowerBodyState.GroundSlash;
+                                upperBodyState = UpperBodyState.GroundSlash;
+                                event_slash = false;
+                                Sword.slashing = false;
+                                slash_count = 0;
+                                Sword.damage = 100;
+                                Sword.strong = true;
+                                _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.GroundSlash]._animID[slash_count], 0.0f, 0);
+                            }
                         }
                         else
                         {
