@@ -17,10 +17,10 @@ public class RobotAI : InputBase
     {
         //fire = true;
         //slash = true;
-        if (moveDirChangeTimer > 30)
+        /*if (moveDirChangeTimer > 30)
             jump = true;
         else
-            jump = false;
+            jump = false;*/
 
         if(moveDirChangeTimer==0)
         {

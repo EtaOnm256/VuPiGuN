@@ -1466,6 +1466,12 @@ public class RobotController : MonoBehaviour
                         {
                             lowerslash = true;
                         }
+
+                        if (target_chest.transform.lossyScale.y <= Chest.transform.lossyScale.y*0.501
+                            && target_chest.transform.position.y < Chest.transform.position.y)
+                        {
+                            lowerslash = true;
+                        }
                     }
 
                     stepremain--;
