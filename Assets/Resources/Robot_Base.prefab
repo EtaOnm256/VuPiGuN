@@ -2853,8 +2853,8 @@ MonoBehaviour:
   LockCameraPosition: 0
   TerminalVelocity: 53
   AscendingVelocity: 20
-  HP: 500
-  MaxHP: 500
+  HP: 5000
+  MaxHP: 5000
   StepLimit: 45
   SlashDistance: 6
   offset: {x: 0, y: 10, z: -20}

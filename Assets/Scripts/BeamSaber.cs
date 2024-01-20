@@ -28,7 +28,7 @@ public class BeamSaber : MonoBehaviour
             if (_slashing)
                 _emitting = true;
 
-            if(!_slashing)
+            if (!_slashing)
             {
                 hitHistoryCount = 0;
                 hitHistoryRCCount = 0;
@@ -51,7 +51,7 @@ public class BeamSaber : MonoBehaviour
                 _slashing = false;
 
             lineRenderer.enabled = _emitting;
-
+            
 
         }
         get { return _emitting; }
@@ -67,49 +67,74 @@ public class BeamSaber : MonoBehaviour
         Vector3 start = transform.TransformPoint(new Vector3(0.0f,0.02f,0.0f));
         Vector3 end = transform.TransformPoint(lineRenderer.GetPosition(1));
 
-        length = (end - start).magnitude;
+  
     }
 
-    float length;
+    const int num_points = 3;
+
+    Vector3[] prev_points = new Vector3[num_points];
+    Vector3[] points = new Vector3[num_points];
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(slashing)
+        Vector3 start = transform.TransformPoint(new Vector3(0.0f, 0.02f, 0.0f));
+        Vector3 end = transform.TransformPoint(lineRenderer.GetPosition(1));
+
+        for (int i=0;i<num_points;i++)
         {
+            points[i] = Vector3.Lerp(start, end, ((float)i) / (num_points - 1));
+        }
 
-            Vector3 start = transform.TransformPoint(new Vector3(0.0f, 0.02f, 0.0f));
-            Vector3 end = transform.TransformPoint(lineRenderer.GetPosition(1));
+      
 
-            Ray ray = new Ray(start,end- start);
+        if (slashing)
+        {
+            EvalHit(start, end);
 
-            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, length, 1 << 6);
 
-            for (int i = 0; i < numhit; i++)
+            for (int idx_point=0; idx_point < num_points; idx_point++)
             {
-                if (hitHistory.Contains(rayCastHit[i].collider.gameObject))
+                EvalHit(points[idx_point], prev_points[idx_point]);
+            }
+           
+        }
+
+        points.CopyTo(prev_points,0);
+    }
+
+    private void EvalHit(Vector3 p1,Vector3 p2)
+    {
+        Ray ray = new Ray(p1, p2 - p1);
+
+        float length = (p2 - p1).magnitude;
+
+        int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, length, 1 << 6);
+
+        for (int idx_hit = 0; idx_hit < numhit; idx_hit++)
+        {
+            if (hitHistory.Contains(rayCastHit[idx_hit].collider.gameObject))
+                continue;
+
+            hitHistory[hitHistoryCount++] = rayCastHit[idx_hit].collider.gameObject;
+
+
+
+            RobotController robotController = rayCastHit[idx_hit].collider.gameObject.GetComponentInParent<RobotController>();
+
+            if (robotController != null)
+            {
+                if (hitHistoryRC.Contains(robotController))
                     continue;
 
-                hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;
+                hitHistoryRC[hitHistoryRCCount++] = robotController;
 
+                robotController.DoDamage(dir, damage, strong);
 
-
-                RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
-
-                if (robotController != null)
-                {
-                    if (hitHistoryRC.Contains(robotController))
-                        continue;
-
-                    hitHistoryRC[hitHistoryRCCount++] = robotController;
-
-                    robotController.DoDamage(dir, damage, strong);
-
-                    GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
-                }
-
-
+                GameObject.Instantiate(hitEffect_prefab, rayCastHit[idx_hit].point, Quaternion.identity);
             }
+
+
         }
     }
 }
