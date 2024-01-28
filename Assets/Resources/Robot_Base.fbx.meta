@@ -93,6 +93,12 @@ ModelImporter:
   - first:
       74: -3772194492086704045
     second: Armature|QuickSlash_1
+  - first:
+      74: -6970275817363873037
+    second: Armature|Fire2 (1)
+  - first:
+      74: 6978918426761046540
+    second: Armature|DashSlash_0
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -115,7 +121,8 @@ ModelImporter:
       It will never be firedEvent OnStepped has a time (0.792789) outside the clip's
       valid range (0.000000..0.791667). It will never be firedEvent OnStepped has
       a time (0.792789) outside the clip's valid range (0.000000..0.791667). It will
-      never be fired
+      never be firedEvent OnSlashEnd has a time (6.250000) outside the clip's valid
+      range (0.000000..4.208333). It will never be fired
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -914,35 +921,6 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Collider_Chest|Jump
-      takeName: Collider_Chest|Jump
-      internalID: 0
-      firstFrame: 0
-      lastFrame: 39
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
       name: Armature|Fire2
       takeName: Armature|Fire2
       internalID: 0
@@ -1112,6 +1090,49 @@ ModelImporter:
       curves: []
       events:
       - time: 0.42340747
+        functionName: OnSlashBegin
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 1
+        functionName: OnSlashEnd
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|DashSlash_0
+      takeName: Armature|DashSlash_0
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 150
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.018970672
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
