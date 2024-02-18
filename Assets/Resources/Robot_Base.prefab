@@ -2857,7 +2857,7 @@ MonoBehaviour:
   MaxHP: 5000
   StepLimit: 45
   SlashDistance: 6
-  offset: {x: 0, y: 10, z: -20}
+  offset: {x: 0, y: 8, z: -15}
   _input: {fileID: 3918500435415403674}
   headmultiAimConstraint: {fileID: 8240275247160239941}
   chestmultiAimConstraint: {fileID: 4152913449269264376}
