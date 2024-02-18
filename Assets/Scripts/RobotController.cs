@@ -360,6 +360,9 @@ public class RobotController : MonoBehaviour
             if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState==LowerBodyState.DASH)
             {
                 TransitLowerBodyState(LowerBodyState.DOWN);
+
+                _speed = 0.0f;
+                _verticalVelocity = 0.0f;
             }
             else
             {
@@ -806,6 +809,7 @@ public class RobotController : MonoBehaviour
                         if (dualwielding)
                         {
                             _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                            _animator.speed = 1.0f;
                         }
 
                         GameObject beam_obj = GameObject.Instantiate(beam_prefab, Gun.transform.position,Gun.transform.rotation);
@@ -863,6 +867,7 @@ public class RobotController : MonoBehaviour
                                 lowerBodyState = LowerBodyState.FIRE;
                                 _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                             }
+                            _animator.speed = 1.0f;
                         }
        
                     }
@@ -908,6 +913,7 @@ public class RobotController : MonoBehaviour
 
                                 Sword.emitting = true;
                             }
+                            _animator.speed = 1.0f;
                         }
                         else
                         {
@@ -1577,6 +1583,7 @@ public class RobotController : MonoBehaviour
                         {
                             lowerBodyState = LowerBodyState.LowerSlash;
                             upperBodyState = UpperBodyState.LowerSlash;
+                            _animator.speed = 1.0f;
                             event_slash = false;
                             Sword.slashing = false;
                             slash_count = 0;
@@ -1590,6 +1597,7 @@ public class RobotController : MonoBehaviour
                             {
                                 lowerBodyState = LowerBodyState.GroundSlash;
                                 upperBodyState = UpperBodyState.GroundSlash;
+                                _animator.speed = 1.0f;
                                 event_slash = false;
                                 Sword.slashing = false;
                                 slash_count = 0;
