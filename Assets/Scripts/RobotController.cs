@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.Animations.Rigging;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
  */
 
@@ -68,11 +69,12 @@ public class RobotController : MonoBehaviour
     [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
     public GameObject CinemachineCameraTarget;
 
+    // 上がマイナスなので注意
     [Tooltip("How far in degrees can you move the camera up")]
-    public float TopClamp = 70.0f;
+    public float TopClamp = -30.0f;
 
     [Tooltip("How far in degrees can you move the camera down")]
-    public float BottomClamp = -30.0f;
+    public float BottomClamp = 60.0f;
 
     [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
     public float CameraAngleOverride = 0.0f;
@@ -210,12 +212,14 @@ public class RobotController : MonoBehaviour
                 }
     }
 
-    public bool dualwielding = false;
-
-    public RobotController Target_Robot;
     public GameObject Head = null;
     public GameObject Chest = null;
     public GameObject RHand = null;
+
+    public bool dualwielding = false;
+
+    public RobotController Target_Robot;
+
     private GameObject target_chest;
     private GameObject target_head;
 
@@ -226,6 +230,8 @@ public class RobotController : MonoBehaviour
     private float _chestaimwait = 0.0f;
 
     private float _rarmaimwait = 0.0f;
+
+    private int fire_followthrough = 0;
 
     private float _barmlayerwait = 0.0f;
 
@@ -319,7 +325,7 @@ public class RobotController : MonoBehaviour
 
     public bool dead = false;
 
-    int boost
+    public int boost
     {
         get { return _boost; }
         set {
@@ -533,6 +539,7 @@ public class RobotController : MonoBehaviour
         Sword.emitting = false;
 
         spawn_completed = true;
+
     }
 
     private bool ConsumeBoost()
@@ -573,7 +580,7 @@ public class RobotController : MonoBehaviour
                 if (team == this.team)
                     continue;
 
-                if (is_player)
+                /*if (is_player)
                 {
                     foreach (var robot in team.robotControllers)
                     {
@@ -592,7 +599,7 @@ public class RobotController : MonoBehaviour
                         }
                     }
                 }
-                else
+                else*/
                 {
                     foreach (var robot in team.robotControllers)
                     {
@@ -649,11 +656,6 @@ public class RobotController : MonoBehaviour
     {
 
 
-        if (CinemachineCameraTarget != null)
-        {
-            CameraRotation();
-            CinemachineCameraTarget.transform.position = transform.position + CinemachineCameraTarget.transform.rotation * offset * transform.lossyScale.x;
-        }
     }
 
     private void AssignAnimationIDs()
@@ -738,10 +740,42 @@ public class RobotController : MonoBehaviour
       
     }
 
+    private void OnEnable()
+    {
+        StartCoroutine(nameof(UpdateLateFixedUpdate));
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(nameof(UpdateLateFixedUpdate));
+    }
+
+    private void LateFixedUpdate()
+    {
+
+        if (CinemachineCameraTarget != null)
+        {
+            CameraRotation();
+            CinemachineCameraTarget.transform.position = transform.position + CinemachineCameraTarget.transform.rotation * offset * transform.lossyScale.x;
+        }
+    }
+
+    private IEnumerator UpdateLateFixedUpdate()
+    {
+        var waitForFixedUpdate = new WaitForFixedUpdate();
+
+
+        while (true)
+        {
+            yield return waitForFixedUpdate;
+            LateFixedUpdate();
+        }
+    }
+
     private void CameraRotation()
     {
         // if there is an input and camera position is not fixed
-        if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+        /*if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
         {
             //Don't multiply mouse input by Time.deltaTime;
             //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
@@ -749,11 +783,30 @@ public class RobotController : MonoBehaviour
 
             _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
             _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+        }*/
+
+        if (Target_Robot != null)
+        {
+            Quaternion q = Quaternion.LookRotation(target_chest.transform.position - Head.transform.position, Vector3.up);
+
+            _cinemachineTargetYaw = q.eulerAngles.y;
+            _cinemachineTargetPitch = q.eulerAngles.x + 10.0f;
+
+            if (_cinemachineTargetPitch > 180.0f)
+                _cinemachineTargetPitch -= 360.0f;
+
+          /*  Vector3 ypr = q.eulerAngles;
+
+            ypr.x +=10.0f;
+
+            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(ypr);*/
         }
 
         // clamp our rotations so our values are limited 360 degrees
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+
+        _cinemachineTargetPitch = Mathf.Clamp(_cinemachineTargetPitch, TopClamp, BottomClamp);
+
 
         // Cinemachine will follow this target
         CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
@@ -780,45 +833,62 @@ public class RobotController : MonoBehaviour
 
                     _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
 
-                    bool shoot = false;
-
-                   
-
                     if (dualwielding)
                     {
-                        shoot = animator.GetCurrentAnimatorStateInfo(2).normalizedTime >= 1;
                         _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
                     }
                     else
                     {
-                        shoot = animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1;
                         _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(1).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
                     }
 
-                    if (shoot)
+                    if (fire_followthrough <= 0)
                     {
-                        upperBodyState = UpperBodyState.STAND;
-
-                        if (lowerBodyState == LowerBodyState.AIRFIRE)
-                        {
-                            TransitLowerBodyState(LowerBodyState.AIR);
-                        }
-                        else if (lowerBodyState == LowerBodyState.FIRE)
-                        {
-                            TransitLowerBodyState(LowerBodyState.STAND);
-                        }
+                        bool shoot = false;
 
                         if (dualwielding)
                         {
-                            _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
-                            _animator.speed = 1.0f;
+                            shoot = animator.GetCurrentAnimatorStateInfo(2).normalizedTime >= 1;
+                        }
+                        else
+                        {
+                            shoot = animator.GetCurrentAnimatorStateInfo(1).normalizedTime >= 1;
                         }
 
-                        GameObject beam_obj = GameObject.Instantiate(beam_prefab, Gun.transform.position,Gun.transform.rotation);
+                        if (shoot)
+                        {
+                            fire_followthrough = 45;
 
-                        Beam beam = beam_obj.GetComponent<Beam>();
+                            GameObject beam_obj = GameObject.Instantiate(beam_prefab, Gun.transform.position, Gun.transform.rotation);
 
-                        beam.direction = Gun.transform.forward;
+                            Beam beam = beam_obj.GetComponent<Beam>();
+
+                            beam.direction = Gun.transform.forward;
+                        }
+                    }
+                    else
+                    {
+                        fire_followthrough--;
+
+                        if(fire_followthrough <= 0)
+                        {
+                            upperBodyState = UpperBodyState.STAND;
+
+                            if (lowerBodyState == LowerBodyState.AIRFIRE)
+                            {
+                                TransitLowerBodyState(LowerBodyState.AIR);
+                            }
+                            else if (lowerBodyState == LowerBodyState.FIRE)
+                            {
+                                TransitLowerBodyState(LowerBodyState.STAND);
+                            }
+
+                            if (dualwielding)
+                            {
+                                _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                                _animator.speed = 1.0f;
+                            }
+                        }
                     }
                 }
                 break;
@@ -1727,12 +1797,12 @@ public class RobotController : MonoBehaviour
 
                             Vector3 targetDirection = (targetPos - Chest.transform.position).normalized;
 
-                            _targetRotation = Mathf.Atan2(targetDirection.x, targetDirection.z) * Mathf.Rad2Deg;
+                            //_targetRotation = Mathf.Atan2(targetDirection.x, targetDirection.z) * Mathf.Rad2Deg;
 
-                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
+                            //float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
 
                             // rotate to face input direction relative to camera position
-                            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                            //transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);*/
 
                             //if ((target_chest.transform.position - Chest.transform.position).magnitude > SlashDistance * transform.lossyScale.x)
                             {

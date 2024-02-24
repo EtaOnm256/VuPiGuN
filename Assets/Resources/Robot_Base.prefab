@@ -2847,8 +2847,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   CinemachineCameraTarget: {fileID: 0}
-  TopClamp: 70
-  BottomClamp: -30
+  TopClamp: -30
+  BottomClamp: 60
   CameraAngleOverride: 0
   LockCameraPosition: 0
   TerminalVelocity: 53
@@ -2867,11 +2867,11 @@ MonoBehaviour:
   aimingBase: {fileID: 8642908618005363729}
   shoulder_hint: {fileID: 6048410596538289565}
   chest_hint: {fileID: 6766279819973984601}
-  dualwielding: 1
-  Target_Robot: {fileID: 0}
   Head: {fileID: 4539593104152821007}
   Chest: {fileID: 7153603775768943075}
   RHand: {fileID: 2098590484211214698}
+  dualwielding: 1
+  Target_Robot: {fileID: 0}
   lockingEnemy: []
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}

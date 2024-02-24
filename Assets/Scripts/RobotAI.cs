@@ -6,21 +6,39 @@ public class RobotAI : InputBase
 {
     int moveDirChangeTimer = 60;
 
+    RobotController robotController = null;
+
+    void Awake()
+    {
+        robotController = GetComponent<RobotController>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
+    bool boosting = false;
+
     // Update is called once per frame
     void FixedUpdate()
     {
         //fire = true;
         //slash = true;
-        if (moveDirChangeTimer > 30)
-            jump = true;
+
+        if(boosting)
+        {
+            if (robotController.boost == 0)
+                boosting = false;
+        }
         else
-            jump = false;
+        {
+            if (robotController.boost == robotController.Boost_Max)
+                boosting = true;
+        }
+           
+        jump = boosting;
 
         if(moveDirChangeTimer==0)
         {
