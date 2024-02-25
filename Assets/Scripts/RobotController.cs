@@ -495,7 +495,7 @@ public class RobotController : MonoBehaviour
 
             reticle_UICO_Current = reticle_current.GetComponent<UIController_Overlay>();
 
-            reticle_UICO_Current.originTrm = Head.transform;
+            reticle_UICO_Current.originTrm = transform;
 }
 
         beam_prefab = Resources.Load<GameObject>("Beam");
@@ -799,7 +799,7 @@ public class RobotController : MonoBehaviour
 
         if (Target_Robot != null && upperBodyState == UpperBodyState.FIRE)
         {
-            Quaternion qtarget = Quaternion.LookRotation(Target_Robot.transform.position - Head.transform.position, Vector3.up);
+            Quaternion qtarget = Quaternion.LookRotation(Target_Robot.transform.position - transform.position, Vector3.up);
 
             Vector3 vtarget = qtarget.eulerAngles;
 
