@@ -343,7 +343,8 @@ public class RobotController : MonoBehaviour
     public GameObject Gun;
     public BeamSaber Sword;
 
-    public UIController_Overlay reticle_UICO;
+    public UIController_Overlay reticle_UICO_Target;
+    public UIController_Overlay reticle_UICO_Current;
 
     private bool spawn_completed = false; // スポーンしたフレームにDoDamage呼ばれると落ちるので
 
@@ -449,7 +450,7 @@ public class RobotController : MonoBehaviour
         Target_Robot.lockingEnemy.Add(this);
 
         if(HUDCanvas != null)
-            reticle_UICO.targetTfm = Target_Robot.transform;
+            reticle_UICO_Target.targetTfm = reticle_UICO_Current.targetTfm = Target_Robot.transform;
     }
 
     public void UntargetEnemy()
@@ -470,7 +471,7 @@ public class RobotController : MonoBehaviour
         //rigBuilder.Build();
 
         if (HUDCanvas != null)
-            reticle_UICO.targetTfm = null;
+            reticle_UICO_Target.targetTfm = reticle_UICO_Current.targetTfm = null;
     }
 
     private void Awake()
@@ -486,10 +487,16 @@ public class RobotController : MonoBehaviour
         {
             boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
 
-            Transform reticle = HUDCanvas.gameObject.transform.Find("Reticle");
+            Transform reticle_target = HUDCanvas.gameObject.transform.Find("Reticle_Target");
 
-            reticle_UICO = reticle.GetComponent<UIController_Overlay>();
-        }
+            reticle_UICO_Target = reticle_target.GetComponent<UIController_Overlay>();
+
+            Transform reticle_current = HUDCanvas.gameObject.transform.Find("Reticle_Current");
+
+            reticle_UICO_Current = reticle_current.GetComponent<UIController_Overlay>();
+
+            reticle_UICO_Current.originTrm = Head.transform;
+}
 
         beam_prefab = Resources.Load<GameObject>("Beam");
         //gun = Rhand.transform.Find("BeamRifle").gameObject;
@@ -580,7 +587,7 @@ public class RobotController : MonoBehaviour
                 if (team == this.team)
                     continue;
 
-                /*if (is_player)
+                if (is_player)
                 {
                     foreach (var robot in team.robotControllers)
                     {
@@ -599,7 +606,7 @@ public class RobotController : MonoBehaviour
                         }
                     }
                 }
-                else*/
+                else
                 {
                     foreach (var robot in team.robotControllers)
                     {
@@ -624,7 +631,7 @@ public class RobotController : MonoBehaviour
                 target_head = null;
 
                 if (HUDCanvas != null)
-                    reticle_UICO.targetTfm = null;
+                    reticle_UICO_Target.targetTfm = reticle_UICO_Current.targetTfm = null;
             }
             else
             {
@@ -644,6 +651,8 @@ public class RobotController : MonoBehaviour
                 lockingEnemy[i].PurgeTarget(this);
             }
 
+            reticle_UICO_Current.originTrm = null;
+
             worldManager.HandleRemoveUnit(this);
 
             GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
@@ -652,11 +661,7 @@ public class RobotController : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
-    {
-
-
-    }
+   
 
     private void AssignAnimationIDs()
     {
@@ -772,34 +777,45 @@ public class RobotController : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (!(Target_Robot != null && upperBodyState == UpperBodyState.FIRE))
+        {
+
+            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            {
+                //Don't multiply mouse input by Time.deltaTime;
+                //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                float deltaTimeMultiplier = 1.0f;
+
+                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
+                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+            }
+        }
+    }
+
     private void CameraRotation()
     {
-        // if there is an input and camera position is not fixed
-        /*if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
-        {
-            //Don't multiply mouse input by Time.deltaTime;
-            //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-            float deltaTimeMultiplier =1.0f;
 
-            _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-            _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
-        }*/
-
-        if (Target_Robot != null)
+        if (Target_Robot != null && upperBodyState == UpperBodyState.FIRE)
         {
-            Quaternion q = Quaternion.LookRotation(target_chest.transform.position - Head.transform.position, Vector3.up);
+            Quaternion qtarget = Quaternion.LookRotation(Target_Robot.transform.position - Head.transform.position, Vector3.up);
+
+            Vector3 vtarget = qtarget.eulerAngles;
+
+            vtarget.x += 10.0f;
+
+            Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation,Quaternion.Euler(vtarget), 1.0f);
 
             _cinemachineTargetYaw = q.eulerAngles.y;
-            _cinemachineTargetPitch = q.eulerAngles.x + 10.0f;
+            _cinemachineTargetPitch = q.eulerAngles.x;
 
             if (_cinemachineTargetPitch > 180.0f)
                 _cinemachineTargetPitch -= 360.0f;
-
-          /*  Vector3 ypr = q.eulerAngles;
-
-            ypr.x +=10.0f;
-
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(ypr);*/
+        }
+        else
+        {
+           
         }
 
         // clamp our rotations so our values are limited 360 degrees
