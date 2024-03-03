@@ -30,6 +30,35 @@ public class WorldManager : MonoBehaviour
 
     }
 
+    public void HandleEnemyAdd(RobotController robotController)
+    {
+        foreach (var team in teams)
+        {
+            if (team == robotController.team) continue;
+
+            foreach (var robot in team.robotControllers)
+            {
+                robot.OnEnemyAdded(robotController);
+                robotController.OnEnemyAdded(robot);
+            }
+        }
+    }
+
+    public void HandleEnemyRemove(RobotController robotController)
+    {
+        foreach (var team in teams)
+        {
+            if (team == robotController.team) continue;
+
+            foreach (var robot in team.robotControllers)
+            {
+                robot.OnEnemyRemoved(robotController);
+                robotController.OnEnemyRemoved(robot);
+            }
+        }
+    }
+
+
     public void AssignToTeam(RobotController robotController)
     {
         player = robotController;
@@ -37,6 +66,9 @@ public class WorldManager : MonoBehaviour
         robotController.team = teams[0];
 
         teams[0].robotControllers.Add(robotController);
+        HandleEnemyAdd(robotController);
+
+
     }
 
     // Update is called once per frame
@@ -54,19 +86,19 @@ public class WorldManager : MonoBehaviour
             player.team = teams[0];
 
             teams[0].robotControllers.Add(player);
-
+            HandleEnemyAdd(player);
         }
 
-        foreach(var team in teams)
-        {
-            
-        }
+       
     }
 
     RobotController player;
 
     public void HandleRemoveUnit(RobotController robotController)
     {
+        HandleEnemyRemove(robotController);
+
+
         robotController.team.robotControllers.Remove(robotController);
 
         if (player == robotController)
@@ -89,5 +121,6 @@ public class WorldManager : MonoBehaviour
         robotController.team = team;
 
         team.robotControllers.Add(robotController);
+        HandleEnemyAdd(robotController);
     }
 }

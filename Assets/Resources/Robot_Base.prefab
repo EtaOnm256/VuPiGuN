@@ -2853,8 +2853,8 @@ MonoBehaviour:
   LockCameraPosition: 0
   TerminalVelocity: 53
   AscendingVelocity: 20
-  HP: 5000
-  MaxHP: 5000
+  HP: 500
+  MaxHP: 500
   StepLimit: 45
   SlashDistance: 6
   offset: {x: 0, y: 8, z: -15}
@@ -2885,7 +2885,7 @@ MonoBehaviour:
   Rhand: {fileID: 9119824526815872400}
   Gun: {fileID: 6747127753966092105}
   Sword: {fileID: 1600776732990077113}
-  reticle_UICO: {fileID: 0}
+  uIController_Overlay: {fileID: 0}
   AimHelper_Head: {fileID: 8747842198656981557}
   AimHelper_Chest: {fileID: 2621356082494473596}
   AimHelper_RHand: {fileID: 4754426859814798826}

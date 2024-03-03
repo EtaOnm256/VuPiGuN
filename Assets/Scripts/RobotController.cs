@@ -255,8 +255,6 @@ public class RobotController : MonoBehaviour
     bool event_downed = false;
     bool event_slash = false;
 
-    public Vector3 center_offset;
-
     public enum UpperBodyState
     {
         STAND,
@@ -343,8 +341,7 @@ public class RobotController : MonoBehaviour
     public GameObject Gun;
     public BeamSaber Sword;
 
-    public UIController_Overlay reticle_UICO_Target;
-    public UIController_Overlay reticle_UICO_Current;
+    public UIController_Overlay uIController_Overlay;
 
     private bool spawn_completed = false; // スポーンしたフレームにDoDamage呼ばれると落ちるので
 
@@ -450,7 +447,7 @@ public class RobotController : MonoBehaviour
         Target_Robot.lockingEnemy.Add(this);
 
         if(HUDCanvas != null)
-            reticle_UICO_Target.targetTfm = reticle_UICO_Current.targetTfm = Target_Robot.transform;
+            uIController_Overlay.target = Target_Robot;
     }
 
     public void UntargetEnemy()
@@ -471,7 +468,7 @@ public class RobotController : MonoBehaviour
         //rigBuilder.Build();
 
         if (HUDCanvas != null)
-            reticle_UICO_Target.targetTfm = reticle_UICO_Current.targetTfm = null;
+            uIController_Overlay.target = null;
     }
 
     private void Awake()
@@ -487,21 +484,15 @@ public class RobotController : MonoBehaviour
         {
             boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
 
-            Transform reticle_target = HUDCanvas.gameObject.transform.Find("Reticle_Target");
 
-            reticle_UICO_Target = reticle_target.GetComponent<UIController_Overlay>();
+            uIController_Overlay = HUDCanvas.GetComponent<UIController_Overlay>();
 
-            Transform reticle_current = HUDCanvas.gameObject.transform.Find("Reticle_Current");
-
-            reticle_UICO_Current = reticle_current.GetComponent<UIController_Overlay>();
-
-            reticle_UICO_Current.originTrm = transform;
-}
+    
+            uIController_Overlay.origin = this;
+        }
 
         beam_prefab = Resources.Load<GameObject>("Beam");
         //gun = Rhand.transform.Find("BeamRifle").gameObject;
-
-        center_offset = transform.Find("Robot").localPosition;
     }
 
     private void Start()
@@ -572,6 +563,18 @@ public class RobotController : MonoBehaviour
         return Vector3.Cross(ray.direction, point - ray.origin).magnitude;
     }
 
+    public void OnEnemyAdded(RobotController robotController)
+    {
+        if(HUDCanvas != null)
+            uIController_Overlay.AddRobot(robotController);
+    }
+
+    public void OnEnemyRemoved(RobotController robotController)
+    {
+        if (HUDCanvas != null)
+            uIController_Overlay.RemoveRobot(robotController);
+    }
+
     private void FixedUpdate()
     {
         if (!dead)
@@ -591,7 +594,7 @@ public class RobotController : MonoBehaviour
                 {
                     foreach (var robot in team.robotControllers)
                     {
-                        float dist = DistanceToLine(Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f)), robot.transform.TransformPoint(robot.center_offset));
+                        /*float dist = DistanceToLine(Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f)), robot.transform.TransformPoint(robot.center_offset));
 
                         Vector3 relatePos = robot.transform.TransformPoint(robot.center_offset) - transform.TransformPoint(center_offset);
 
@@ -603,14 +606,23 @@ public class RobotController : MonoBehaviour
                         {
                             mindist = dist;
                             nearest_robot = robot;
+                        }*/
+
+                        float dist = Quaternion.Angle(CinemachineCameraTarget.transform.rotation,GetTargetQuaternion(robot));
+
+                        if(dist < 90.0f && dist < mindist)
+                        {
+                            mindist = dist;
+                            nearest_robot = robot;
                         }
+                        
                     }
                 }
                 else
                 {
                     foreach (var robot in team.robotControllers)
                     {
-                        float dist =  (transform.TransformPoint(center_offset) - robot.transform.TransformPoint(robot.center_offset)).sqrMagnitude;
+                        float dist =  (GetCenter() - robot.GetCenter()).sqrMagnitude;
                 
                         if (dist < mindist)
                         {
@@ -631,7 +643,7 @@ public class RobotController : MonoBehaviour
                 target_head = null;
 
                 if (HUDCanvas != null)
-                    reticle_UICO_Target.targetTfm = reticle_UICO_Current.targetTfm = null;
+                    uIController_Overlay.target = null;
             }
             else
             {
@@ -651,7 +663,8 @@ public class RobotController : MonoBehaviour
                 lockingEnemy[i].PurgeTarget(this);
             }
 
-            reticle_UICO_Current.originTrm = null;
+            if(uIController_Overlay!=null)
+                uIController_Overlay.origin = null;
 
             worldManager.HandleRemoveUnit(this);
 
@@ -794,18 +807,24 @@ public class RobotController : MonoBehaviour
         }
     }
 
+    private Quaternion GetTargetQuaternion(RobotController target)
+    {
+        Quaternion qtarget = Quaternion.LookRotation( target.GetCenter() - GetCenter(), Vector3.up);
+
+        Vector3 vtarget = qtarget.eulerAngles;
+
+        vtarget.x += 10.0f;
+
+        return Quaternion.Euler(vtarget);
+    }
+
     private void CameraRotation()
     {
 
         if (Target_Robot != null && upperBodyState == UpperBodyState.FIRE)
         {
-            Quaternion qtarget = Quaternion.LookRotation(Target_Robot.transform.position - transform.position, Vector3.up);
-
-            Vector3 vtarget = qtarget.eulerAngles;
-
-            vtarget.x += 10.0f;
-
-            Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation,Quaternion.Euler(vtarget), 1.0f);
+            
+            Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, GetTargetQuaternion(Target_Robot), 1.0f);
 
             _cinemachineTargetYaw = q.eulerAngles.y;
             _cinemachineTargetPitch = q.eulerAngles.x;
@@ -2422,5 +2441,10 @@ public class RobotController : MonoBehaviour
         {
             AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
         }
+    }
+
+    public Vector3 GetCenter()
+    {
+        return transform.TransformPoint(new Vector3(0, 3.805078f, 0));
     }
 }
