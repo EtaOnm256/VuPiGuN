@@ -13,6 +13,11 @@ public class UIController_Overlay : MonoBehaviour
 
     public Canvas canvas;
 
+    public bool locked = false;
+
+    public float distance = 1000.0f;
+
+
     GameObject reticle_prefab;
     GameObject guideline_prefab;
     public class ReticleAndGuideline
@@ -86,46 +91,29 @@ public class UIController_Overlay : MonoBehaviour
         return (rot * rel)+pos;
     }
 
+    private void SetGuideLinePosition(LineRenderer guideline_lineRenderer,Vector3 relative_l,Vector3 relative_f, Vector3 relative_f_far)
+    {
+       
+        Vector3 screenPoint_line_l = RectTransformUtility.WorldToScreenPoint(Camera.main, RelToAbs(relative_l, origin.GetCenter(), Camera.main.transform.rotation));
+        screenPoint_line_l.z = 50.0f;
+        Vector3 screenPoint_line_l_guide = RectTransformUtility.WorldToScreenPoint(Camera.main, RelToAbs(relative_l + relative_f, origin.GetCenter(), Camera.main.transform.rotation));
+        screenPoint_line_l_guide.z = 50.0f;
+
+        guideline_lineRenderer.positionCount = 2;
+        guideline_lineRenderer.SetPosition(0, camera.ScreenToWorldPoint(screenPoint_line_l));
+        guideline_lineRenderer.SetPosition(1, camera.ScreenToWorldPoint(screenPoint_line_l_guide));
+
+        Vector3 screenPoint_line_l_far = RectTransformUtility.WorldToScreenPoint(Camera.main, RelToAbs(relative_l + relative_f_far, origin.GetCenter(), Camera.main.transform.rotation));
+        screenPoint_line_l_far.z = 50.0f;
+
+        float length_on_screen_far = (screenPoint_line_l_far - screenPoint_line_l).magnitude;
+        float length_on_screen = (screenPoint_line_l_guide - screenPoint_line_l).magnitude;
+
+        guideline_lineRenderer.endWidth = 0.1f * ( (length_on_screen_far-length_on_screen) / length_on_screen_far);
+    }
+
     void Update()
     {
-        
-        /*
-            image.enabled = true;
-
-            if (targetTfm != null)
-            {
-           
-
-
-                //Vector3 relative = looking_transform.InverseTransformPoint(targetTfm.position + offset);
-                Vector3 relative = AbsToRel(targetTfm.position, originTrm.position, Camera.main.transform.rotation);
-
-                float length = relative.magnitude;
-
-                Quaternion relative_q = Quaternion.FromToRotation(Vector3.forward, relative);
-
-                Vector3 relative_ypr = relative_q.eulerAngles;
-
-                relative_ypr.x = -10.0f;
-                relative_ypr.y = 0.0f;
-
-                Quaternion relative_q_offset = Quaternion.Euler(relative_ypr);
-
-                Vector3 relative_offset = relative_q_offset*Vector3.forward* length;
-
-                //Vector3 world_offset = looking_transform.TransformPoint(relative_offset);
-                Vector3 world_offset =  RelToAbs(relative_offset, originTrm.position, Camera.main.transform.rotation);
-
-                myRectTfm.position
-                    = RectTransformUtility.WorldToScreenPoint(Camera.main, world_offset + offset);
-
-            }
-            else
-            {
-                myRectTfm.position
-                    = new Vector2(0.5f, 0.5f);
-            }    */
-  
         foreach(var reticle in robotReticle)
         {
             if (Camera.main.transform.InverseTransformPoint(reticle.Key.transform.position).z >= 0)
@@ -182,35 +170,33 @@ public class UIController_Overlay : MonoBehaviour
 
                 reticle.Value.guideline.lineRenderer.SetPosition(0, camera.ScreenToWorldPoint(screenPoint_line));
                 reticle.Value.guideline.lineRenderer.SetPosition(1, camera.ScreenToWorldPoint(screenPoint_guide_line));
+                if(target == reticle.Key)
+                {
+                    reticle.Value.reticle.image.color = Color.red;
+                }
+                else
+                    reticle.Value.reticle.image.color = Color.green;
             }
             else
                 reticle.Value.reticle.image.enabled = false;
+
+          
         }
 
-        guideline_lineRenderer_l.positionCount = 2;
+      
 
-        Vector3 relative_l = -Vector3.right*0.5f;
+        Vector3 relative_f = Vector3.forward * distance;
+        relative_f = Quaternion.AngleAxis(-10.0f, Vector3.right) * relative_f;
+
+        Vector3 relative_f_far = Vector3.forward * 10000.0f;
+        relative_f_far = Quaternion.AngleAxis(-10.0f, Vector3.right) * relative_f_far;
+
+        Vector3 relative_l = -Vector3.right * 0.5f;
+
+        SetGuideLinePosition(guideline_lineRenderer_l, relative_l, relative_f, relative_f_far);
+
         Vector3 relative_r = Vector3.right * 0.5f;
 
-        Vector3 relative_f = Vector3.forward * 1000.0f;
-
-        relative_f = Quaternion.AngleAxis(-10.0f, Vector3.right)* relative_f;
-
-        Vector3 screenPoint_line_l = RectTransformUtility.WorldToScreenPoint(Camera.main, RelToAbs(relative_l, origin.GetCenter(), Camera.main.transform.rotation));
-        screenPoint_line_l.z = 50.0f;
-        Vector3 screenPoint_line_l_guide = RectTransformUtility.WorldToScreenPoint(Camera.main, RelToAbs(relative_l+relative_f, origin.GetCenter(), Camera.main.transform.rotation));
-        screenPoint_line_l_guide.z = 50.0f;
-
-        Vector3 screenPoint_line_r = RectTransformUtility.WorldToScreenPoint(Camera.main, RelToAbs(relative_r, origin.GetCenter(), Camera.main.transform.rotation));
-        screenPoint_line_r.z = 50.0f;
-        Vector3 screenPoint_line_r_guide = RectTransformUtility.WorldToScreenPoint(Camera.main, RelToAbs(relative_r+relative_f, origin.GetCenter(), Camera.main.transform.rotation));
-        screenPoint_line_r_guide.z = 50.0f;
-
-
-        guideline_lineRenderer_l.SetPosition(0, camera.ScreenToWorldPoint(screenPoint_line_l));
-        guideline_lineRenderer_l.SetPosition(1, camera.ScreenToWorldPoint(screenPoint_line_l_guide));
-
-        guideline_lineRenderer_r.SetPosition(0, camera.ScreenToWorldPoint(screenPoint_line_r));
-        guideline_lineRenderer_r.SetPosition(1, camera.ScreenToWorldPoint(screenPoint_line_r_guide));
+        SetGuideLinePosition(guideline_lineRenderer_r, relative_r, relative_f, relative_f_far);
     }
 }

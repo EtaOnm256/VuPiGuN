@@ -583,6 +583,8 @@ public class RobotController : MonoBehaviour
 
             float mindist = float.MaxValue;
 
+            float mindot = float.MaxValue;
+
             RobotController nearest_robot = null;
 
             foreach (var team in worldManager.teams)
@@ -592,31 +594,58 @@ public class RobotController : MonoBehaviour
 
                 if (is_player)
                 {
+                    bool already_lock = false;
+
                     foreach (var robot in team.robotControllers)
                     {
-                        /*float dist = DistanceToLine(Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f)), robot.transform.TransformPoint(robot.center_offset));
+                        Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
+                        Vector3 startingPoint = transform.position;
 
-                        Vector3 relatePos = robot.transform.TransformPoint(robot.center_offset) - transform.TransformPoint(center_offset);
+                        Ray ray = new Ray(GetCenter(), direction);
+                        float dist = Vector3.Cross(ray.direction, robot.GetCenter() - ray.origin).magnitude;
 
-                        Quaternion q = Quaternion.Inverse(Camera.main.transform.rotation);
+                        float dot = Vector3.Dot(ray.direction, robot.GetCenter() - ray.origin);
 
-                        relatePos = q * relatePos;
-
-                        if (dist < mindist && relatePos.z >= 0.0f)
+                        if (dot > 0.0f)
                         {
-                            mindist = dist;
-                            nearest_robot = robot;
-                        }*/
+                            if (already_lock)
+                            {
+                                if (dist < 2.0f)
+                                {
+                                    if (dot < mindot)
+                                    {
+                                        mindot = dot;
+                                        nearest_robot = robot;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (dist < mindist)
+                                {
+                                    mindist = dist;
+                                    nearest_robot = robot;
 
-                        float dist = Quaternion.Angle(CinemachineCameraTarget.transform.rotation,GetTargetQuaternion(robot));
-
-                        if(dist < 90.0f && dist < mindist)
-                        {
-                            mindist = dist;
-                            nearest_robot = robot;
+                                    if(dist < 2.0f)
+                                    {
+                                        already_lock = true;
+                                        mindot = dot;
+                                    }
+                                }
+                            }
                         }
                         
                     }
+
+                    uIController_Overlay.locked = already_lock;
+
+                    if (already_lock)
+                    {
+                        uIController_Overlay.distance = mindot;
+
+                    }
+                    else
+                        uIController_Overlay.distance = 1000.0f;
                 }
                 else
                 {
@@ -807,7 +836,7 @@ public class RobotController : MonoBehaviour
         }
     }
 
-    private Quaternion GetTargetQuaternion(RobotController target)
+    private Quaternion GetTargetQuaternionForView(RobotController target)
     {
         Quaternion qtarget = Quaternion.LookRotation( target.GetCenter() - GetCenter(), Vector3.up);
 
@@ -818,13 +847,25 @@ public class RobotController : MonoBehaviour
         return Quaternion.Euler(vtarget);
     }
 
+    private Quaternion GetCurrentAimQuaternion()
+    {
+        Quaternion qtarget = CinemachineCameraTarget.transform.rotation;
+
+        Vector3 vtarget = qtarget.eulerAngles;
+
+        vtarget.x -= 10.0f;
+
+        return Quaternion.Euler(vtarget);
+    }
+
+
     private void CameraRotation()
     {
 
         if (Target_Robot != null && upperBodyState == UpperBodyState.FIRE)
         {
             
-            Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, GetTargetQuaternion(Target_Robot), 1.0f);
+            Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
 
             _cinemachineTargetYaw = q.eulerAngles.y;
             _cinemachineTargetPitch = q.eulerAngles.x;

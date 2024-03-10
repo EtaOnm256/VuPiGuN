@@ -400,7 +400,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
-      value: 0.05
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].value
@@ -408,11 +408,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].inSlope
-      value: -0.05
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].outSlope
-      value: -0.05
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].tangentMode
@@ -1186,6 +1186,8 @@ MonoBehaviour:
   target: {fileID: 0}
   camera: {fileID: 589278062}
   canvas: {fileID: 806228394}
+  locked: 0
+  distance: 1000
   guideline_lineRenderer_l: {fileID: 2076090743}
   guideline_lineRenderer_r: {fileID: 1799090818}
 --- !u!1 &924788703
@@ -2308,7 +2310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
-      value: 0.05
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].value
@@ -2316,11 +2318,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].inSlope
-      value: -0.05
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].outSlope
-      value: -0.05
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 398901199261938359, guid: 43503e800d93d234a96d723c761662f4, type: 3}
       propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].tangentMode
