@@ -13,10 +13,9 @@ public class UIController_Overlay : MonoBehaviour
 
     public Canvas canvas;
 
-    public bool locked = false;
-
     public float distance = 1000.0f;
 
+    public RobotController.LockonState lockonState;
 
     GameObject reticle_prefab;
     GameObject guideline_prefab;
@@ -172,7 +171,18 @@ public class UIController_Overlay : MonoBehaviour
                 reticle.Value.guideline.lineRenderer.SetPosition(1, camera.ScreenToWorldPoint(screenPoint_guide_line));
                 if(target == reticle.Key)
                 {
-                    reticle.Value.reticle.image.color = Color.red;
+                    switch(lockonState)
+                    {
+                        case RobotController.LockonState.FREE:
+                            reticle.Value.reticle.image.color = Color.yellow;
+                            break;
+                        case RobotController.LockonState.SEEKING:
+                            reticle.Value.reticle.image.color = new Color(1.0f,0.5f,0.0f);
+                            break;
+                        case RobotController.LockonState.LOCKON:
+                            reticle.Value.reticle.image.color = Color.red;
+                            break;
+                    }
                 }
                 else
                     reticle.Value.reticle.image.color = Color.green;

@@ -218,6 +218,15 @@ public class RobotController : MonoBehaviour
 
     public bool dualwielding = false;
 
+    public enum LockonState
+    {
+        FREE,
+        SEEKING,
+        LOCKON
+    }
+
+    LockonState lockonState = LockonState.FREE;
+
     public RobotController Target_Robot;
 
     private GameObject target_chest;
@@ -594,58 +603,78 @@ public class RobotController : MonoBehaviour
 
                 if (is_player)
                 {
-                    bool already_lock = false;
+                    bool blocked = false;
 
-                    foreach (var robot in team.robotControllers)
+                    if (lockonState == LockonState.FREE)
                     {
+                        
+
+                        foreach (var robot in team.robotControllers)
+                        {
+                            Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
+                            Vector3 startingPoint = transform.position;
+
+                            Ray ray = new Ray(GetCenter(), direction);
+                            float dist = Vector3.Cross(ray.direction, robot.GetCenter() - ray.origin).magnitude;
+
+                            float dot = Vector3.Dot(ray.direction, robot.GetCenter() - ray.origin);
+
+                            if (dot > 0.0f)
+                            {
+                                if (blocked)
+                                {
+                                    if (dist < 2.0f)
+                                    {
+                                        if (dot < mindot)
+                                        {
+                                            mindot = dot;
+                                            nearest_robot = robot;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (dist < mindist)
+                                    {
+                                        mindist = dist;
+                                        nearest_robot = robot;
+
+                                        if (dist < 2.0f)
+                                        {
+                                            blocked = true;
+                                            mindot = dot;
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        nearest_robot = Target_Robot;
+
                         Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
                         Vector3 startingPoint = transform.position;
 
                         Ray ray = new Ray(GetCenter(), direction);
-                        float dist = Vector3.Cross(ray.direction, robot.GetCenter() - ray.origin).magnitude;
+                        float dist = Vector3.Cross(ray.direction, Target_Robot.GetCenter() - ray.origin).magnitude;
 
-                        float dot = Vector3.Dot(ray.direction, robot.GetCenter() - ray.origin);
+                        float dot = Vector3.Dot(ray.direction, Target_Robot.GetCenter() - ray.origin);
 
-                        if (dot > 0.0f)
-                        {
-                            if (already_lock)
-                            {
-                                if (dist < 2.0f)
-                                {
-                                    if (dot < mindot)
-                                    {
-                                        mindot = dot;
-                                        nearest_robot = robot;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (dist < mindist)
-                                {
-                                    mindist = dist;
-                                    nearest_robot = robot;
+                        mindist = dist;
+                        mindot = dot;
+                        blocked = true;
 
-                                    if(dist < 2.0f)
-                                    {
-                                        already_lock = true;
-                                        mindot = dot;
-                                    }
-                                }
-                            }
-                        }
-                        
                     }
-
-                    uIController_Overlay.locked = already_lock;
-
-                    if (already_lock)
+                    if (blocked)
                     {
                         uIController_Overlay.distance = mindot;
 
                     }
                     else
                         uIController_Overlay.distance = 1000.0f;
+                 
                 }
                 else
                 {
@@ -679,6 +708,9 @@ public class RobotController : MonoBehaviour
                 if (Target_Robot != nearest_robot)
                     TargetEnemy(nearest_robot);
             }
+            if (HUDCanvas != null)
+                uIController_Overlay.lockonState = lockonState;
+
             LowerBodyMove();
             UpperBodyMove();
             
@@ -802,7 +834,7 @@ public class RobotController : MonoBehaviour
 
         if (CinemachineCameraTarget != null)
         {
-            CameraRotation();
+            CameraAndLockon();
             CinemachineCameraTarget.transform.position = transform.position + CinemachineCameraTarget.transform.rotation * offset * transform.lossyScale.x;
         }
     }
@@ -859,23 +891,102 @@ public class RobotController : MonoBehaviour
     }
 
 
-    private void CameraRotation()
+    private void CameraAndLockon()
     {
 
-        if (Target_Robot != null && upperBodyState == UpperBodyState.FIRE)
-        {
-            
-            Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
+        if (Target_Robot != null)
+        { 
+            if(lockonState == LockonState.FREE)
+            {
+                if (
+                   upperBodyState == UpperBodyState.FIRE
+                   || lowerBodyState == LowerBodyState.AIRSLASH_DASH
+                        || lowerBodyState == LowerBodyState.AirSlash
+                        || lowerBodyState == LowerBodyState.DashSlash
+                        || lowerBodyState == LowerBodyState.DASHSLASH_DASH
+                        || lowerBodyState == LowerBodyState.GroundSlash
+                        || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
+                        || lowerBodyState == LowerBodyState.QuickSlash
+                        || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
+                        || lowerBodyState == LowerBodyState.LowerSlash
+                   )
+                {
+                    lockonState = LockonState.SEEKING;
+                }
+            }
 
-            _cinemachineTargetYaw = q.eulerAngles.y;
-            _cinemachineTargetPitch = q.eulerAngles.x;
+            if(lockonState == LockonState.SEEKING)
+            {
+                if (
+                 upperBodyState == UpperBodyState.FIRE
+                 || lowerBodyState == LowerBodyState.AIRSLASH_DASH
+                      || lowerBodyState == LowerBodyState.AirSlash
+                      || lowerBodyState == LowerBodyState.DashSlash
+                      || lowerBodyState == LowerBodyState.DASHSLASH_DASH
+                      || lowerBodyState == LowerBodyState.GroundSlash
+                      || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
+                      || lowerBodyState == LowerBodyState.QuickSlash
+                      || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
+                      || lowerBodyState == LowerBodyState.LowerSlash
+                 )
+                {
+                    float angle = Quaternion.Angle(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot));
 
-            if (_cinemachineTargetPitch > 180.0f)
-                _cinemachineTargetPitch -= 360.0f;
+                    if(angle < 1.0f)
+                    {
+                        lockonState = LockonState.LOCKON;
+                    }
+                    else
+                    {
+                        Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
+
+                        _cinemachineTargetYaw = q.eulerAngles.y;
+                        _cinemachineTargetPitch = q.eulerAngles.x;
+
+                        if (_cinemachineTargetPitch > 180.0f)
+                            _cinemachineTargetPitch -= 360.0f;
+                    }
+                }
+                else
+                {
+                    lockonState = LockonState.FREE;
+                }
+            }
+
+            if(lockonState == LockonState.LOCKON)
+            {
+                if (
+                upperBodyState == UpperBodyState.FIRE
+                || lowerBodyState == LowerBodyState.AIRSLASH_DASH
+                     || lowerBodyState == LowerBodyState.AirSlash
+                     || lowerBodyState == LowerBodyState.DashSlash
+                     || lowerBodyState == LowerBodyState.DASHSLASH_DASH
+                     || lowerBodyState == LowerBodyState.GroundSlash
+                     || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
+                     || lowerBodyState == LowerBodyState.QuickSlash
+                     || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
+                     || lowerBodyState == LowerBodyState.LowerSlash
+                )
+                {
+
+                    Quaternion q = GetTargetQuaternionForView(Target_Robot);
+
+                    _cinemachineTargetYaw = q.eulerAngles.y;
+                    _cinemachineTargetPitch = q.eulerAngles.x;
+
+                    if (_cinemachineTargetPitch > 180.0f)
+                        _cinemachineTargetPitch -= 360.0f;
+                }
+                else
+                {
+                    lockonState = LockonState.FREE;
+                }
+            }
+          
         }
         else
         {
-           
+            lockonState = LockonState.FREE;
         }
 
         // clamp our rotations so our values are limited 360 degrees
