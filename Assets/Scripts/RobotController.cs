@@ -98,6 +98,9 @@ public class RobotController : MonoBehaviour
 
     public Vector3 offset;
 
+    public Vector3 slash_camera_offset;
+    public bool slash_camera_offset_set = false;
+
     // cinemachine
     private float _cinemachineTargetYaw;
     private float _cinemachineTargetPitch;
@@ -835,7 +838,7 @@ public class RobotController : MonoBehaviour
         if (CinemachineCameraTarget != null)
         {
             CameraAndLockon();
-            CinemachineCameraTarget.transform.position = transform.position + CinemachineCameraTarget.transform.rotation * offset * transform.lossyScale.x;
+            
         }
     }
 
@@ -893,14 +896,10 @@ public class RobotController : MonoBehaviour
 
     private void CameraAndLockon()
     {
+        float dist_enemy = float.MaxValue;
 
-        if (Target_Robot != null)
-        { 
-            if(lockonState == LockonState.FREE)
-            {
-                if (
-                   upperBodyState == UpperBodyState.FIRE
-                   || lowerBodyState == LowerBodyState.AIRSLASH_DASH
+        if(Target_Robot != null && 
+                        (lowerBodyState == LowerBodyState.AIRSLASH_DASH
                         || lowerBodyState == LowerBodyState.AirSlash
                         || lowerBodyState == LowerBodyState.DashSlash
                         || lowerBodyState == LowerBodyState.DASHSLASH_DASH
@@ -909,36 +908,118 @@ public class RobotController : MonoBehaviour
                         || lowerBodyState == LowerBodyState.QuickSlash
                         || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
                         || lowerBodyState == LowerBodyState.LowerSlash
+                   ) && lockonState != LockonState.FREE
                    )
-                {
-                    lockonState = LockonState.SEEKING;
-                }
+        {
+            dist_enemy = (GetCenter() - Target_Robot.GetCenter()).magnitude;
+        }
+
+        if (dist_enemy < 25.0f)
+        {
+            if (!slash_camera_offset_set)
+            {
+                Vector3 off_hori = GetCenter() - Target_Robot.GetCenter();
+                off_hori.y = 0.0f;
+
+                slash_camera_offset = Quaternion.AngleAxis(90.0f, Vector3.up) * (off_hori).normalized * 20.0f;
             }
 
-            if(lockonState == LockonState.SEEKING)
-            {
-                if (
-                 upperBodyState == UpperBodyState.FIRE
-                 || lowerBodyState == LowerBodyState.AIRSLASH_DASH
-                      || lowerBodyState == LowerBodyState.AirSlash
-                      || lowerBodyState == LowerBodyState.DashSlash
-                      || lowerBodyState == LowerBodyState.DASHSLASH_DASH
-                      || lowerBodyState == LowerBodyState.GroundSlash
-                      || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
-                      || lowerBodyState == LowerBodyState.QuickSlash
-                      || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
-                      || lowerBodyState == LowerBodyState.LowerSlash
-                 )
-                {
-                    float angle = Quaternion.Angle(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot));
+            slash_camera_offset_set = true;
 
-                    if(angle < 1.0f)
+            Vector3 lookat = (GetCenter() + Target_Robot.GetCenter()) / 2;
+
+            CinemachineCameraTarget.transform.position = lookat+ slash_camera_offset;
+
+            CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(-slash_camera_offset);
+
+            Quaternion q = GetTargetQuaternionForView(Target_Robot);
+
+            _cinemachineTargetYaw = q.eulerAngles.y;
+            _cinemachineTargetPitch = q.eulerAngles.x;
+
+            if (_cinemachineTargetPitch > 180.0f)
+                _cinemachineTargetPitch -= 360.0f;
+        }
+        else
+        {
+            slash_camera_offset_set = false;
+
+            if (Target_Robot != null)
+            {
+                if (lockonState == LockonState.FREE)
+                {
+                    if (
+                       upperBodyState == UpperBodyState.FIRE
+                       || lowerBodyState == LowerBodyState.AIRSLASH_DASH
+                            || lowerBodyState == LowerBodyState.AirSlash
+                            || lowerBodyState == LowerBodyState.DashSlash
+                            || lowerBodyState == LowerBodyState.DASHSLASH_DASH
+                            || lowerBodyState == LowerBodyState.GroundSlash
+                            || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
+                            || lowerBodyState == LowerBodyState.QuickSlash
+                            || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
+                            || lowerBodyState == LowerBodyState.LowerSlash
+                       )
                     {
-                        lockonState = LockonState.LOCKON;
+                        lockonState = LockonState.SEEKING;
+                    }
+                }
+
+                if (lockonState == LockonState.SEEKING)
+                {
+                    if (
+                     upperBodyState == UpperBodyState.FIRE
+                     || lowerBodyState == LowerBodyState.AIRSLASH_DASH
+                          || lowerBodyState == LowerBodyState.AirSlash
+                          || lowerBodyState == LowerBodyState.DashSlash
+                          || lowerBodyState == LowerBodyState.DASHSLASH_DASH
+                          || lowerBodyState == LowerBodyState.GroundSlash
+                          || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
+                          || lowerBodyState == LowerBodyState.QuickSlash
+                          || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
+                          || lowerBodyState == LowerBodyState.LowerSlash
+                     )
+                    {
+                        float angle = Quaternion.Angle(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot));
+
+                        if (angle < 1.0f)
+                        {
+                            lockonState = LockonState.LOCKON;
+                        }
+                        else
+                        {
+                            Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
+
+                            _cinemachineTargetYaw = q.eulerAngles.y;
+                            _cinemachineTargetPitch = q.eulerAngles.x;
+
+                            if (_cinemachineTargetPitch > 180.0f)
+                                _cinemachineTargetPitch -= 360.0f;
+                        }
                     }
                     else
                     {
-                        Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
+                        lockonState = LockonState.FREE;
+                    }
+                }
+
+                if (lockonState == LockonState.LOCKON)
+                {
+                    if (
+                    upperBodyState == UpperBodyState.FIRE
+                    || lowerBodyState == LowerBodyState.AIRSLASH_DASH
+                         || lowerBodyState == LowerBodyState.AirSlash
+                         || lowerBodyState == LowerBodyState.DashSlash
+                         || lowerBodyState == LowerBodyState.DASHSLASH_DASH
+                         || lowerBodyState == LowerBodyState.GroundSlash
+                         || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
+                         || lowerBodyState == LowerBodyState.QuickSlash
+                         || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
+                         || lowerBodyState == LowerBodyState.LowerSlash
+                    )
+                    {
+
+                        Quaternion q = GetTargetQuaternionForView(Target_Robot);
 
                         _cinemachineTargetYaw = q.eulerAngles.y;
                         _cinemachineTargetPitch = q.eulerAngles.x;
@@ -946,58 +1027,30 @@ public class RobotController : MonoBehaviour
                         if (_cinemachineTargetPitch > 180.0f)
                             _cinemachineTargetPitch -= 360.0f;
                     }
+                    else
+                    {
+                        lockonState = LockonState.FREE;
+                    }
                 }
-                else
-                {
-                    lockonState = LockonState.FREE;
-                }
-            }
 
-            if(lockonState == LockonState.LOCKON)
+            }
+            else
             {
-                if (
-                upperBodyState == UpperBodyState.FIRE
-                || lowerBodyState == LowerBodyState.AIRSLASH_DASH
-                     || lowerBodyState == LowerBodyState.AirSlash
-                     || lowerBodyState == LowerBodyState.DashSlash
-                     || lowerBodyState == LowerBodyState.DASHSLASH_DASH
-                     || lowerBodyState == LowerBodyState.GroundSlash
-                     || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
-                     || lowerBodyState == LowerBodyState.QuickSlash
-                     || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
-                     || lowerBodyState == LowerBodyState.LowerSlash
-                )
-                {
-
-                    Quaternion q = GetTargetQuaternionForView(Target_Robot);
-
-                    _cinemachineTargetYaw = q.eulerAngles.y;
-                    _cinemachineTargetPitch = q.eulerAngles.x;
-
-                    if (_cinemachineTargetPitch > 180.0f)
-                        _cinemachineTargetPitch -= 360.0f;
-                }
-                else
-                {
-                    lockonState = LockonState.FREE;
-                }
+                lockonState = LockonState.FREE;
             }
-          
+
+            // clamp our rotations so our values are limited 360 degrees
+            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+
+            _cinemachineTargetPitch = Mathf.Clamp(_cinemachineTargetPitch, TopClamp, BottomClamp);
+
+
+            // Cinemachine will follow this target
+            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+                _cinemachineTargetYaw, 0.0f);
+
+            CinemachineCameraTarget.transform.position = transform.position + CinemachineCameraTarget.transform.rotation * offset * transform.lossyScale.x;
         }
-        else
-        {
-            lockonState = LockonState.FREE;
-        }
-
-        // clamp our rotations so our values are limited 360 degrees
-        _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-
-        _cinemachineTargetPitch = Mathf.Clamp(_cinemachineTargetPitch, TopClamp, BottomClamp);
-
-
-        // Cinemachine will follow this target
-        CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-            _cinemachineTargetYaw, 0.0f);
     }
 
     private void UpperBodyMove()
