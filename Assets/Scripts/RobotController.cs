@@ -914,7 +914,7 @@ public class RobotController : MonoBehaviour
             dist_enemy = (GetCenter() - Target_Robot.GetCenter()).magnitude;
         }
 
-        if (dist_enemy < 25.0f)
+        if (dist_enemy < 20.0f)
         {
             if (!slash_camera_offset_set)
             {
@@ -1221,7 +1221,7 @@ public class RobotController : MonoBehaviour
                                 upperBodyState = UpperBodyState.QUICKSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                stepremain = StepLimit / 4;
+                                stepremain = StepLimit/2;
 
                                 Sword.emitting = true;
                             }
@@ -1258,7 +1258,7 @@ public class RobotController : MonoBehaviour
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
                                 _animator.speed = 0.0f;
-                                stepremain = StepLimit;
+                                stepremain = StepLimit/2;
 
                                 Sword.emitting = true;
 
@@ -1804,10 +1804,12 @@ public class RobotController : MonoBehaviour
                 {
                     float rotatespeed;
 
-                    if (lowerBodyState == LowerBodyState.QUICKSLASH_DASH || lowerBodyState == LowerBodyState.DASHSLASH_DASH)
-                        _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed*2/* : 0.0f*/;
-                    else
+                    if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+                        _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed*2.0f/* : 0.0f*/;
+                    else if (lowerBodyState == LowerBodyState.GROUNDSLASH_DASH)
                         _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed/* : 0.0f*/;
+                    else
+                        _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed * 1.5f/* : 0.0f*/;
 
                     if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
                         rotatespeed = RotateSpeed / 2.0f;
