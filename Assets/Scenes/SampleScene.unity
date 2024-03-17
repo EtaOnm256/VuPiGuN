@@ -1186,8 +1186,8 @@ MonoBehaviour:
   target: {fileID: 0}
   camera: {fileID: 589278062}
   canvas: {fileID: 806228394}
-  locked: 0
   distance: 1000
+  lockonState: 0
   guideline_lineRenderer_l: {fileID: 2076090743}
   guideline_lineRenderer_r: {fileID: 1799090818}
 --- !u!1 &924788703

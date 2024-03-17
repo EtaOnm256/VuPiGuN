@@ -77,6 +77,7 @@
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\BasicRigidBodyPush.cs" />
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\RobotAI.cs" />
+    <Compile Include="Assets\Scripts\Thruster.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Effekseer\Materials\GrabDepthShader.shader" />
