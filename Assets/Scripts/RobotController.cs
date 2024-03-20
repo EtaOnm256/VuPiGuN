@@ -350,6 +350,8 @@ public class RobotController : MonoBehaviour
     }
 
     GameObject beam_prefab;
+    GameObject beamemit_prefab;
+
 
     public GameObject Rhand;
 
@@ -507,6 +509,7 @@ public class RobotController : MonoBehaviour
         }
 
         beam_prefab = Resources.Load<GameObject>("Beam");
+        beamemit_prefab = Resources.Load<GameObject>("BeamEmit");
         //gun = Rhand.transform.Find("BeamRifle").gameObject;
     }
 
@@ -1107,6 +1110,8 @@ public class RobotController : MonoBehaviour
                             Beam beam = beam_obj.GetComponent<Beam>();
 
                             beam.direction = Gun.transform.forward;
+
+                            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, Gun.transform.position, Gun.transform.rotation);
                         }
                     }
                     else
