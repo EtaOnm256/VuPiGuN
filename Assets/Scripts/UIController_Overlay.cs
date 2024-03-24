@@ -167,17 +167,18 @@ public class UIController_Overlay : MonoBehaviour
                 Vector3 screenPoint_guide_line = screenPoint_guide;
                 screenPoint_guide_line.z = 50.0f;
 
+                reticle.Value.guideline.lineRenderer.enabled = true;
                 reticle.Value.guideline.lineRenderer.SetPosition(0, camera.ScreenToWorldPoint(screenPoint_line));
                 reticle.Value.guideline.lineRenderer.SetPosition(1, camera.ScreenToWorldPoint(screenPoint_guide_line));
-                if(target == reticle.Key)
+                if (target == reticle.Key)
                 {
-                    switch(lockonState)
+                    switch (lockonState)
                     {
                         case RobotController.LockonState.FREE:
                             reticle.Value.reticle.image.color = Color.yellow;
                             break;
                         case RobotController.LockonState.SEEKING:
-                            reticle.Value.reticle.image.color = new Color(1.0f,0.5f,0.0f);
+                            reticle.Value.reticle.image.color = new Color(1.0f, 0.5f, 0.0f);
                             break;
                         case RobotController.LockonState.LOCKON:
                             reticle.Value.reticle.image.color = Color.red;
@@ -188,9 +189,13 @@ public class UIController_Overlay : MonoBehaviour
                     reticle.Value.reticle.image.color = Color.green;
             }
             else
+            {
                 reticle.Value.reticle.image.enabled = false;
+                reticle.Value.guideline.lineRenderer.enabled = false;
+            }
 
-          
+
+
         }
 
       

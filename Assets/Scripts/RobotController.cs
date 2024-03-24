@@ -85,6 +85,9 @@ public class RobotController : MonoBehaviour
     public float TerminalVelocity = 53.0f;
     public float AscendingVelocity = 20.0f;
 
+    public Vector3 cameraPosition;
+    public Quaternion cameraRotation;
+
     public int HP = 500;
     public int MaxHP = 500;
 
@@ -187,8 +190,6 @@ public class RobotController : MonoBehaviour
 
     private float org_controller_height;
     private float min_controller_height;
-
-    private GameObject _mainCamera;
 
     private const float _threshold = 0.01f;
 
@@ -490,12 +491,8 @@ public class RobotController : MonoBehaviour
 
     private void Awake()
     {
-        // get a reference to our main camera
-        if (_mainCamera == null)
-        {
-            _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        }
-
+      
+   
         //HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
         if (HUDCanvas != null)
         {
@@ -573,7 +570,7 @@ public class RobotController : MonoBehaviour
 
     private void RegenBoost()
     {
-        boost = Math.Min(boost+8, Boost_Max);
+        boost = Math.Min(boost+12, Boost_Max);
     }
 
     public static float DistanceToLine(Ray ray, Vector3 point)
@@ -840,11 +837,12 @@ public class RobotController : MonoBehaviour
 
     private void LateFixedUpdate()
     {
+        CameraAndLockon();
 
-        if (CinemachineCameraTarget != null)
+        if(CinemachineCameraTarget != null)
         {
-            CameraAndLockon();
-            
+            CinemachineCameraTarget.transform.position = cameraPosition;
+            CinemachineCameraTarget.transform.rotation = cameraRotation;
         }
     }
 
@@ -890,7 +888,7 @@ public class RobotController : MonoBehaviour
 
     private Quaternion GetCurrentAimQuaternion()
     {
-        Quaternion qtarget = CinemachineCameraTarget.transform.rotation;
+        Quaternion qtarget = cameraRotation;
 
         Vector3 vtarget = qtarget.eulerAngles;
 
@@ -934,9 +932,9 @@ public class RobotController : MonoBehaviour
 
             Vector3 lookat = (GetCenter() + Target_Robot.GetCenter()) / 2;
 
-            CinemachineCameraTarget.transform.position = lookat+ slash_camera_offset;
+            cameraPosition = lookat + slash_camera_offset;
 
-            CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(-slash_camera_offset);
+            cameraRotation = Quaternion.LookRotation(-slash_camera_offset);
 
             Quaternion q = GetTargetQuaternionForView(Target_Robot);
 
@@ -986,7 +984,7 @@ public class RobotController : MonoBehaviour
                           || lowerBodyState == LowerBodyState.LowerSlash
                      )
                     {
-                        float angle = Quaternion.Angle(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot));
+                        float angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
 
                         if (angle < 1.0f)
                         {
@@ -994,7 +992,7 @@ public class RobotController : MonoBehaviour
                         }
                         else
                         {
-                            Quaternion q = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
+                            Quaternion q = Quaternion.RotateTowards(cameraRotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
 
                             _cinemachineTargetYaw = q.eulerAngles.y;
                             _cinemachineTargetPitch = q.eulerAngles.x;
@@ -1052,10 +1050,12 @@ public class RobotController : MonoBehaviour
 
 
             // Cinemachine will follow this target
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+            cameraRotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
                 _cinemachineTargetYaw, 0.0f);
 
-            CinemachineCameraTarget.transform.position = transform.position + CinemachineCameraTarget.transform.rotation * offset * transform.lossyScale.x;
+            cameraPosition = transform.position + cameraRotation * offset * transform.lossyScale.x;
+
+
         }
     }
 
@@ -1466,7 +1466,7 @@ public class RobotController : MonoBehaviour
                         if (_input.move != Vector2.zero)
                         {
                             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                              _mainCamera.transform.eulerAngles.y;
+                                              cameraRotation.eulerAngles.y;
                             //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                             //    RotationSmoothTime);
 
@@ -1567,7 +1567,7 @@ public class RobotController : MonoBehaviour
                                     if (_input.move != Vector2.zero)
                                     {
                                         _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                                            _mainCamera.transform.eulerAngles.y;
+                                                            cameraRotation.eulerAngles.y;
                                     }
 
                                     float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
@@ -1771,7 +1771,7 @@ public class RobotController : MonoBehaviour
                     if (_input.move != Vector2.zero)
                     {
                         _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                          _mainCamera.transform.eulerAngles.y;
+                                          cameraRotation.eulerAngles.y;
                         //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                         //    RotationSmoothTime);
                     }
@@ -2518,7 +2518,7 @@ public class RobotController : MonoBehaviour
         Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
         float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                        _mainCamera.transform.eulerAngles.y;
+                        cameraRotation.eulerAngles.y;
 
 
 

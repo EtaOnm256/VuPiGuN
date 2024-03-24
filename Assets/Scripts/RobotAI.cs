@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RobotAI : InputBase
 {
-    int moveDirChangeTimer = 60;
+    int moveDirChangeTimer = 0;
 
     RobotController robotController = null;
 
@@ -20,6 +20,7 @@ public class RobotAI : InputBase
     }
 
     bool boosting = false;
+    bool ascending = false;
 
     // Update is called once per frame
     void FixedUpdate()
@@ -27,24 +28,61 @@ public class RobotAI : InputBase
         //fire = true;
         //slash = true;
 
-        /*if(boosting)
+        if(boosting)
         {
+            sprint = false;
+
             if (robotController.boost == 0)
                 boosting = false;
+
+            if (ascending)
+            {
+                jump = true;
+                if (robotController.transform.position.y > 10.0f)
+                {
+                    ascending = false;
+                }
+            }
+            else
+            {
+                if (robotController.transform.position.y < 7.5f)
+                {
+                    ascending = true;
+                }
+                else
+                {
+                    jump = false;
+                    sprint = true;
+                }
+            }
+            
         }
         else
         {
+            sprint = false;
+            jump = false;
+
             if (robotController.boost == robotController.Boost_Max)
                 boosting = true;
         }
-           
-        jump = boosting;
 
         if(moveDirChangeTimer==0)
         {
             move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
             moveDirChangeTimer = 60;
         }
-        moveDirChangeTimer--;*/
+
+
+
+        Vector3 move_pos = new Vector3(move.x, 0.0f, move.y);
+
+        bool coli = Physics.Raycast(robotController.transform.position, robotController.cameraRotation*move_pos, 10.0f,1 << 3);
+
+        if(coli)
+        {
+            move = -move;
+        }
+
+        moveDirChangeTimer--;
     }
 }
