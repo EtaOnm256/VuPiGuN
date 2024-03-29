@@ -4,7 +4,11 @@ using UnityEngine;
 using System.Linq;
 public class Beam : MonoBehaviour
 {
+    public RobotController target = null;
+
     public LineRenderer lineRenderer;
+
+    public Quaternion initial_direction;
 
     public Vector3 direction;
 
@@ -21,6 +25,8 @@ public class Beam : MonoBehaviour
 
         lineRenderer.SetPosition(0, start_pos);
         lineRenderer.SetPosition(1, start_pos);
+
+        initial_direction = Quaternion.LookRotation(direction);
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -33,14 +39,26 @@ public class Beam : MonoBehaviour
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
 
+	int time = 120;
     // Update is called once per frame
     void FixedUpdate()
     {
         const float speed = 1.6f;
 
-        float length = (lineRenderer.GetPosition(1) - start_pos).magnitude;
+	
 
-        length = Mathf.Min(length, MaxLength);
+        if(target != null)
+        {
+            Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
+
+            Quaternion qTarget = Quaternion.LookRotation(target.GetCenter() - lineRenderer.GetPosition(1));
+
+            Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 1.0f);
+
+            Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 10.0f);
+
+            direction = qDirection_result * Vector3.forward;
+        }
 
         Ray ray = new Ray(lineRenderer.GetPosition(1), direction);
 
@@ -72,11 +90,20 @@ public class Beam : MonoBehaviour
      
         }
 
+     
 
         lineRenderer.SetPosition(1, lineRenderer.GetPosition(1) + direction * speed);
 
-        lineRenderer.SetPosition(0, lineRenderer.GetPosition(1) - direction * length);
+        float length = (lineRenderer.GetPosition(1) - start_pos).magnitude;
+
+        length = Mathf.Min(length, MaxLength);
+
+        Vector3 view_dir = (lineRenderer.GetPosition(1) - start_pos).normalized;
+
+        lineRenderer.SetPosition(0, lineRenderer.GetPosition(1) - view_dir * length);
 
        
+     	if (time-- <= 0)
+            GameObject.Destroy(gameObject);
     }
 }

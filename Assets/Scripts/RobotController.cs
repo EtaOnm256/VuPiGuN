@@ -1110,6 +1110,7 @@ public class RobotController : MonoBehaviour
                             Beam beam = beam_obj.GetComponent<Beam>();
 
                             beam.direction = Gun.transform.forward;
+                            beam.target = Target_Robot;
 
                             GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, Gun.transform.position, Gun.transform.rotation);
                         }
