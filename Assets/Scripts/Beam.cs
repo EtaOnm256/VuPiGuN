@@ -53,11 +53,14 @@ public class Beam : MonoBehaviour
 
             Quaternion qTarget = Quaternion.LookRotation(target.GetCenter() - lineRenderer.GetPosition(1));
 
-            Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 1.0f);
+            if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
+            {
+                Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 1.0f);
 
-            Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 10.0f);
+                Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 10.0f);
 
-            direction = qDirection_result * Vector3.forward;
+                direction = qDirection_result * Vector3.forward;
+            }
         }
 
         Ray ray = new Ray(lineRenderer.GetPosition(1), direction);
