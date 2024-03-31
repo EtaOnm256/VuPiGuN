@@ -350,13 +350,13 @@ public class RobotController : MonoBehaviour
             }
     }
 
-    GameObject beam_prefab;
-    GameObject beamemit_prefab;
+
 
 
     public GameObject Rhand;
 
-    public GameObject Gun;
+    public Weapon rightWeapon;
+
     public BeamSaber Sword;
 
     public UIController_Overlay uIController_Overlay;
@@ -504,10 +504,6 @@ public class RobotController : MonoBehaviour
     
             uIController_Overlay.origin = this;
         }
-
-        beam_prefab = Resources.Load<GameObject>("Beam");
-        beamemit_prefab = Resources.Load<GameObject>("BeamEmit");
-        //gun = Rhand.transform.Find("BeamRifle").gameObject;
     }
 
     private void Start()
@@ -716,6 +712,8 @@ public class RobotController : MonoBehaviour
             }
             if (HUDCanvas != null)
                 uIController_Overlay.lockonState = lockonState;
+
+            rightWeapon.Target_Robot = Target_Robot;
 
             LowerBodyMove();
             UpperBodyMove();
@@ -1105,14 +1103,7 @@ public class RobotController : MonoBehaviour
                         {
                             fire_followthrough = 45;
 
-                            GameObject beam_obj = GameObject.Instantiate(beam_prefab, Gun.transform.position, Gun.transform.rotation);
-
-                            Beam beam = beam_obj.GetComponent<Beam>();
-
-                            beam.direction = Gun.transform.forward;
-                            beam.target = Target_Robot;
-
-                            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, Gun.transform.position, Gun.transform.rotation);
+                            rightWeapon.Fire();
                         }
                     }
                     else

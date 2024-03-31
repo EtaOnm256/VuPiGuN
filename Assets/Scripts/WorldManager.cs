@@ -12,6 +12,8 @@ public class WorldManager : MonoBehaviour
     public List<Team> teams = new List<Team>();
 
     public GameObject enemy_prefab = null;
+    public GameObject enemy_weapon_prefab = null;
+
 
     // Start is called before the first frame update
     void Start()
@@ -108,12 +110,19 @@ public class WorldManager : MonoBehaviour
     private void SpawnEnemy(Vector3 pos, Quaternion rot, Team team)
     {
         GameObject enemy = GameObject.Instantiate(enemy_prefab, pos, rot);
-
+        GameObject enemyweapon = GameObject.Instantiate(enemy_weapon_prefab, pos, rot);
 
         RobotController robotController = enemy.GetComponent<RobotController>();
 
         robotController.worldManager = this;
         robotController._input = enemy.AddComponent<RobotAI>();
+
+        enemyweapon.transform.parent = robotController.RHand.transform;
+        enemyweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+        enemyweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+        enemyweapon.transform.localScale = new Vector3(1, 1, 1);
+
+        robotController.rightWeapon = enemyweapon.GetComponent<Weapon>();
 
         DestroyImmediate(enemy.GetComponent<HumanInput>());
         DestroyImmediate(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());
