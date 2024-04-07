@@ -25,7 +25,7 @@ public class RobotAI : InputBase
     // Update is called once per frame
     void FixedUpdate()
     {
-        fire = true;
+        //fire = true;
         //slash = true;
 
         if (boosting)

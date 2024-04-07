@@ -9,9 +9,13 @@ public class UIController_Overlay : MonoBehaviour
    
     public Dictionary<RobotController, ReticleAndGuideline> robotReticle = new Dictionary<RobotController, ReticleAndGuideline>();
 
+    public List<Weapon> weapons = new List<Weapon>();
+
     public Camera camera;
 
     public Canvas canvas;
+
+    public GameObject weaponPanel;
 
     public float distance = 1000.0f;
 
@@ -69,10 +73,22 @@ public class UIController_Overlay : MonoBehaviour
         robotReticle.Remove(robotController);
     }
 
+    public void AddWeapon(Weapon weapon)
+    {
+        weapon.uIController_Overlay = this;
+
+        weapons.Add(weapon);
+    }
+
+    public void RemoveWeapon(Weapon weapon)
+    {
+        weapons.Remove(weapon);
+    }
+
     private void Awake()
     {
-        reticle_prefab = Resources.Load<GameObject>("Reticle");
-        guideline_prefab = Resources.Load<GameObject>("GuideLine");
+        reticle_prefab = Resources.Load<GameObject>("UI/Reticle");
+        guideline_prefab = Resources.Load<GameObject>("UI/GuideLine");
     }
 
     void Start()

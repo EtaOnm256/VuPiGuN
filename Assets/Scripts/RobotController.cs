@@ -503,6 +503,8 @@ public class RobotController : MonoBehaviour
 
     
             uIController_Overlay.origin = this;
+
+            uIController_Overlay.AddWeapon(rightWeapon);
         }
     }
 

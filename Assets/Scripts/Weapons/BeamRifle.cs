@@ -8,33 +8,69 @@ public class BeamRifle : Weapon
     GameObject beamemit_prefab;
 
 
-    private void Awake()
+    private const int Max_Ammo = 6;
+
+    private const int MaxEnergy = Max_Ammo* Reload_Time;
+    private const int Reload_Time = 150;
+
+    int _energy = 0;
+
+    int energy
+    {
+        set
+        {
+            if (_energy != value)
+            {
+                _energy = value;
+
+                weaponPanelItem.ammoText.text = (_energy/ Reload_Time).ToString();
+                weaponPanelItem.ammoSlider.value = _energy;
+
+            }
+        }
+
+        get
+        {
+            return _energy;
+        }
+    }
+
+    protected override void OnAwake()
     {
         beam_prefab = Resources.Load<GameObject>("Beam");
         beamemit_prefab = Resources.Load<GameObject>("BeamEmit");
+
+        weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
 
     // Start is called before the first frame update
-    void Start()
+    protected override void OnStart()
     {
-        
+        weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
+        energy = MaxEnergy;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        energy = Mathf.Min(MaxEnergy, energy + 1);
     }
 
     public override void Fire()
     {
-        GameObject beam_obj = GameObject.Instantiate(beam_prefab, gameObject.transform.position, gameObject.transform.rotation);
+        if (energy >= Reload_Time)
+        {
 
-        Beam beam = beam_obj.GetComponent<Beam>();
+            GameObject beam_obj = GameObject.Instantiate(beam_prefab, gameObject.transform.position, gameObject.transform.rotation);
 
-        beam.direction = gameObject.transform.forward;
-        beam.target = Target_Robot;
+            Beam beam = beam_obj.GetComponent<Beam>();
 
-        GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, gameObject.transform.position, gameObject.transform.rotation);
+            beam.direction = gameObject.transform.forward;
+            beam.target = Target_Robot;
+
+            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, gameObject.transform.position, gameObject.transform.rotation);
+
+            energy -= Reload_Time;
+        }
     }
 }
