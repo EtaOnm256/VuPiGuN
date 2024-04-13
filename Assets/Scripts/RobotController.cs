@@ -602,9 +602,7 @@ public class RobotController : MonoBehaviour
             _hasAnimator = TryGetComponent(out _animator);
 
             float mindist = float.MaxValue;
-
-            float mindot = float.MaxValue;
-
+            float minangle = float.MaxValue;
             RobotController nearest_robot = null;
 
             foreach (var team in worldManager.teams)
@@ -623,37 +621,42 @@ public class RobotController : MonoBehaviour
                         foreach (var robot in team.robotControllers)
                         {
                             Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
-                            Vector3 startingPoint = transform.position;
+                           // Vector3 startingPoint = transform.position;
 
                             Ray ray = new Ray(GetCenter(), direction);
-                            float dist = Vector3.Cross(ray.direction, robot.GetCenter() - ray.origin).magnitude;
+                            float shift = Vector3.Cross(ray.direction, robot.GetCenter() - ray.origin).magnitude;
 
-                            float dot = Vector3.Dot(ray.direction, robot.GetCenter() - ray.origin);
+                            float dist = Vector3.Dot(ray.direction, robot.GetCenter() - ray.origin);
 
-                            if (dot > 0.0f)
+                            float angle = Vector3.Angle(ray.direction, robot.GetCenter() - ray.origin);
+
+                            if (dist > 0.0f)
                             {
                                 if (blocked)
                                 {
-                                    if (dist < 2.0f)
+                                    if (shift < 2.0f)
                                     {
-                                        if (dot < mindot)
+                                        if (dist < mindist)
                                         {
-                                            mindot = dot;
+                                            mindist = dist;
                                             nearest_robot = robot;
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    if (dist < mindist)
+                                    if (shift < 2.0f)
                                     {
+                                        blocked = true;
                                         mindist = dist;
                                         nearest_robot = robot;
-
-                                        if (dist < 2.0f)
+                                    }
+                                    else
+                                    {
+                                        if (angle < minangle)
                                         {
-                                            blocked = true;
-                                            mindot = dot;
+                                            minangle = angle;
+                                            nearest_robot = robot;
                                         }
                                     }
                                 }
@@ -669,18 +672,17 @@ public class RobotController : MonoBehaviour
                         Vector3 startingPoint = transform.position;
 
                         Ray ray = new Ray(GetCenter(), direction);
-                        float dist = Vector3.Cross(ray.direction, Target_Robot.GetCenter() - ray.origin).magnitude;
+                        float shift = Vector3.Cross(ray.direction, Target_Robot.GetCenter() - ray.origin).magnitude;
 
                         float dot = Vector3.Dot(ray.direction, Target_Robot.GetCenter() - ray.origin);
 
-                        mindist = dist;
-                        mindot = dot;
+                        mindist = dot;
                         blocked = true;
 
                     }
                     if (blocked)
                     {
-                        uIController_Overlay.distance = mindot;
+                        uIController_Overlay.distance = mindist;
 
                     }
                     else
@@ -867,7 +869,7 @@ public class RobotController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!(Target_Robot != null && upperBodyState == UpperBodyState.FIRE))
+        if (!(Target_Robot != null && lockonState != LockonState.FREE))
         {
 
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
@@ -959,78 +961,21 @@ public class RobotController : MonoBehaviour
             {
                 if (lockonState == LockonState.FREE)
                 {
-                    if (
-                       upperBodyState == UpperBodyState.FIRE
-                       || lowerBodyState == LowerBodyState.AIRSLASH_DASH
-                            || lowerBodyState == LowerBodyState.AirSlash
-                            || lowerBodyState == LowerBodyState.DashSlash
-                            || lowerBodyState == LowerBodyState.DASHSLASH_DASH
-                            || lowerBodyState == LowerBodyState.GroundSlash
-                            || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
-                            || lowerBodyState == LowerBodyState.QuickSlash
-                            || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
-                            || lowerBodyState == LowerBodyState.LowerSlash
-                       )
-                    {
-                        lockonState = LockonState.SEEKING;
-                    }
+                   
                 }
 
                 if (lockonState == LockonState.SEEKING)
                 {
-                    if (
-                     upperBodyState == UpperBodyState.FIRE
-                     || lowerBodyState == LowerBodyState.AIRSLASH_DASH
-                          || lowerBodyState == LowerBodyState.AirSlash
-                          || lowerBodyState == LowerBodyState.DashSlash
-                          || lowerBodyState == LowerBodyState.DASHSLASH_DASH
-                          || lowerBodyState == LowerBodyState.GroundSlash
-                          || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
-                          || lowerBodyState == LowerBodyState.QuickSlash
-                          || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
-                          || lowerBodyState == LowerBodyState.LowerSlash
-                     )
+                  
+                    float angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
+
+                    if (angle < 1.0f)
                     {
-                        float angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
-
-                        if (angle < 1.0f)
-                        {
-                            lockonState = LockonState.LOCKON;
-                        }
-                        else
-                        {
-                            Quaternion q = Quaternion.RotateTowards(cameraRotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
-
-                            _cinemachineTargetYaw = q.eulerAngles.y;
-                            _cinemachineTargetPitch = q.eulerAngles.x;
-
-                            if (_cinemachineTargetPitch > 180.0f)
-                                _cinemachineTargetPitch -= 360.0f;
-                        }
+                        lockonState = LockonState.LOCKON;
                     }
                     else
                     {
-                        lockonState = LockonState.FREE;
-                    }
-                }
-
-                if (lockonState == LockonState.LOCKON)
-                {
-                    if (
-                    upperBodyState == UpperBodyState.FIRE
-                    || lowerBodyState == LowerBodyState.AIRSLASH_DASH
-                         || lowerBodyState == LowerBodyState.AirSlash
-                         || lowerBodyState == LowerBodyState.DashSlash
-                         || lowerBodyState == LowerBodyState.DASHSLASH_DASH
-                         || lowerBodyState == LowerBodyState.GroundSlash
-                         || lowerBodyState == LowerBodyState.GROUNDSLASH_DASH
-                         || lowerBodyState == LowerBodyState.QuickSlash
-                         || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
-                         || lowerBodyState == LowerBodyState.LowerSlash
-                    )
-                    {
-
-                        Quaternion q = GetTargetQuaternionForView(Target_Robot);
+                        Quaternion q = Quaternion.RotateTowards(cameraRotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
 
                         _cinemachineTargetYaw = q.eulerAngles.y;
                         _cinemachineTargetPitch = q.eulerAngles.x;
@@ -1038,12 +983,19 @@ public class RobotController : MonoBehaviour
                         if (_cinemachineTargetPitch > 180.0f)
                             _cinemachineTargetPitch -= 360.0f;
                     }
-                    else
-                    {
-                        lockonState = LockonState.FREE;
-                    }
                 }
 
+                if (lockonState == LockonState.LOCKON)
+                {
+                    Quaternion q = GetTargetQuaternionForView(Target_Robot);
+
+                    _cinemachineTargetYaw = q.eulerAngles.y;
+                    _cinemachineTargetPitch = q.eulerAngles.x;
+
+                    if (_cinemachineTargetPitch > 180.0f)
+                        _cinemachineTargetPitch -= 360.0f;
+                 
+                 }
             }
             else
             {
@@ -1112,6 +1064,16 @@ public class RobotController : MonoBehaviour
                         {
                             fire_followthrough = 45;
 
+                            if (lockonState == LockonState.LOCKON)
+                            {
+                                rightWeapon.Target_Robot = Target_Robot;
+                            }
+                            else
+                            {
+                                rightWeapon.Target_Robot = null;
+                                lockonState = LockonState.FREE;
+                            }
+                            
                             rightWeapon.Fire();
                         }
                     }
@@ -1143,6 +1105,7 @@ public class RobotController : MonoBehaviour
                 break;
             case UpperBodyState.STAND:
                 {
+                    lockonState = LockonState.FREE;
                     float angle = 180.0f;
 
                     if (target_chest)
@@ -1174,7 +1137,9 @@ public class RobotController : MonoBehaviour
                         else
                             animator.Play("Fire", 1, 0.0f);
 
-                                                    
+                        lockonState = LockonState.SEEKING;
+
+
 
                         if (angle > 100)
                         {
@@ -1289,6 +1254,7 @@ public class RobotController : MonoBehaviour
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
                     _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                    
                     chest_no_aiming = true;
                 }
                 break;
@@ -1299,18 +1265,21 @@ public class RobotController : MonoBehaviour
                 _headaimwait = 0.0f;
                 _rarmaimwait = 0.0f;
                 _barmlayerwait = 0.0f;
+                lockonState = LockonState.FREE;
                 break;
             case UpperBodyState.LowerSlash:
                 _chestaimwait = 0.0f;
                 _headaimwait = 1.0f;
                 _rarmaimwait = 0.0f;
                 _barmlayerwait = 0.0f;
+                lockonState = LockonState.FREE;
                 break;
             default:
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+                lockonState = LockonState.FREE;
                 break;
         }
 

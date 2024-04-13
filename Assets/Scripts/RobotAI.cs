@@ -25,6 +25,8 @@ public class RobotAI : InputBase
     // Update is called once per frame
     void FixedUpdate()
     {
+
+        return;
         //fire = true;
         //slash = true;
 
@@ -66,7 +68,7 @@ public class RobotAI : InputBase
                 boosting = true;
         }
 
-        if(moveDirChangeTimer==0)
+       if(moveDirChangeTimer==0)
         {
             move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
             moveDirChangeTimer = 60;
