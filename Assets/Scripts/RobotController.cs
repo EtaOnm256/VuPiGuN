@@ -385,7 +385,14 @@ public class RobotController : MonoBehaviour
 
                 knockbackdir = dir;
                 knockbackdir.y = 0.0f;
-                _speed = SprintSpeed/2;
+                if (strong)
+                {
+                    _speed = SprintSpeed;
+                }
+                else
+                {
+                    _speed = SprintSpeed / 2;
+                }
                 _verticalVelocity = 0.0f;
             }
             else
