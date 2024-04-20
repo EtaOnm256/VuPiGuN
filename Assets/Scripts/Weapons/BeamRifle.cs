@@ -26,6 +26,16 @@ public class BeamRifle : Weapon
                 weaponPanelItem.ammoText.text = (_energy/ Reload_Time).ToString();
                 weaponPanelItem.ammoSlider.value = _energy;
 
+                if((_energy / Reload_Time) <= 0)
+                {
+                    weaponPanelItem.ammoText.color = Color.red;
+                    weaponPanelItem.iconImage.color = Color.red;
+                }
+                else
+                {
+                    weaponPanelItem.ammoText.color = Color.white;
+                    weaponPanelItem.iconImage.color = Color.white;
+                }
             }
         }
 
