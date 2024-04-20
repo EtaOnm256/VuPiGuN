@@ -152,14 +152,14 @@ public class RobotController : MonoBehaviour
 
     int slash_count = 0;
 
- /*   const int GroundSlash_Num = 3;
-    private int[] _animIDGroundSlash;
+    /*   const int GroundSlash_Num = 3;
+       private int[] _animIDGroundSlash;
 
-    const int AirSlash_Num = 1;
-    private int[] _animIDAirSlash = new int[AirSlash_Num];
+       const int AirSlash_Num = 1;
+       private int[] _animIDAirSlash = new int[AirSlash_Num];
 
-    const int LowerSlash_Num = 1;
-    private int[] _animIDLowerSlash = new int[LowerSlash_Num];*/
+       const int LowerSlash_Num = 1;
+       private int[] _animIDLowerSlash = new int[LowerSlash_Num];*/
 
     struct SlashMotionInfo
     {
@@ -187,6 +187,7 @@ public class RobotController : MonoBehaviour
 
     private Animator _animator;
     private CharacterController _controller;
+    private Vector3 hitNormal;
 
     private float org_controller_height;
     private float min_controller_height;
@@ -208,12 +209,14 @@ public class RobotController : MonoBehaviour
     public GameObject shoulder_hint;
     public GameObject chest_hint;
 
-    
+
     public GameObject aiming_hint
     {
-        get { if (dualwielding) return chest_hint;
+        get
+        {
+            if (dualwielding) return chest_hint;
             else return shoulder_hint;
-                }
+        }
     }
 
     public GameObject Head = null;
@@ -318,7 +321,7 @@ public class RobotController : MonoBehaviour
 
     public enum StepDirection
     {
-        FORWARD,LEFT,BACKWARD,RIGHT
+        FORWARD, LEFT, BACKWARD, RIGHT
     }
 
     StepDirection stepDirection;
@@ -332,7 +335,7 @@ public class RobotController : MonoBehaviour
     Slider boostSlider;
 
     Vector3 knockbackdir;
-   
+
     public int Boost_Max = 200;
 
     int _boost;
@@ -342,12 +345,13 @@ public class RobotController : MonoBehaviour
     public int boost
     {
         get { return _boost; }
-        set {
-                _boost = value;
+        set
+        {
+            _boost = value;
 
             if (HUDCanvas != null)
                 boostSlider.value = _boost;
-            }
+        }
     }
 
 
@@ -370,7 +374,7 @@ public class RobotController : MonoBehaviour
     Quaternion AimTargetRotation_Head;
     Quaternion AimTargetRotation_Chest;
 
-    public void DoDamage(Vector3 dir,int damage,bool strong)
+    public void DoDamage(Vector3 dir, int damage, bool strong)
     {
         if (!spawn_completed)
             return;
@@ -379,7 +383,7 @@ public class RobotController : MonoBehaviour
 
         if (lowerBodyState != LowerBodyState.DOWN)
         {
-            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState==LowerBodyState.DASH)
+            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState == LowerBodyState.DASH)
             {
                 TransitLowerBodyState(LowerBodyState.DOWN);
 
@@ -399,7 +403,7 @@ public class RobotController : MonoBehaviour
             {
                 event_knockbacked = false;
 
-            
+
 
                 upperBodyState = UpperBodyState.KNOCKBACK;
                 lowerBodyState = LowerBodyState.KNOCKBACK;
@@ -422,7 +426,7 @@ public class RobotController : MonoBehaviour
                     else
                         _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
 
-                    _speed = SprintSpeed*2;
+                    _speed = SprintSpeed * 2;
                 }
                 else
                 {
@@ -443,7 +447,7 @@ public class RobotController : MonoBehaviour
 
                 _verticalVelocity = 0.0f;
 
-                
+
 
                 Sword.emitting = false;
 
@@ -452,7 +456,7 @@ public class RobotController : MonoBehaviour
 
         HP = Math.Max(0, HP - damage);
 
-        if(HP <= 0)
+        if (HP <= 0)
         {
             dead = true;
         }
@@ -471,7 +475,7 @@ public class RobotController : MonoBehaviour
 
         Target_Robot.lockingEnemy.Add(this);
 
-        if(HUDCanvas != null)
+        if (HUDCanvas != null)
             uIController_Overlay.target = Target_Robot;
     }
 
@@ -498,8 +502,8 @@ public class RobotController : MonoBehaviour
 
     private void Awake()
     {
-      
-   
+
+
         //HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
         if (HUDCanvas != null)
         {
@@ -508,7 +512,7 @@ public class RobotController : MonoBehaviour
 
             uIController_Overlay = HUDCanvas.GetComponent<UIController_Overlay>();
 
-    
+
             uIController_Overlay.origin = this;
 
             uIController_Overlay.AddWeapon(rightWeapon);
@@ -517,7 +521,7 @@ public class RobotController : MonoBehaviour
 
     private void Start()
     {
-        if (CinemachineCameraTarget!=null)
+        if (CinemachineCameraTarget != null)
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
         is_player = GetComponent<HumanInput>() != null;
@@ -536,7 +540,7 @@ public class RobotController : MonoBehaviour
         _jumpTimeoutDelta = JumpTimeout;
         _fallTimeoutDelta = FallTimeout;
 
-        if(HUDCanvas != null)
+        if (HUDCanvas != null)
             boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
 
         AimTargetRotation_Head = Head.transform.rotation;
@@ -549,7 +553,7 @@ public class RobotController : MonoBehaviour
 
         HP = MaxHP;
 
-        if(team == null)
+        if (team == null)
         {
             worldManager.AssignToTeam(this);
         }
@@ -562,9 +566,9 @@ public class RobotController : MonoBehaviour
 
     private bool ConsumeBoost()
     {
-        if(boost > 0)
+        if (boost > 0)
         {
-            boost-=4;
+            boost -= 4;
             return true;
         }
         else
@@ -575,7 +579,7 @@ public class RobotController : MonoBehaviour
 
     private void RegenBoost()
     {
-        boost = Math.Min(boost+12, Boost_Max);
+        boost = Math.Min(boost + 12, Boost_Max);
     }
 
     public static float DistanceToLine(Ray ray, Vector3 point)
@@ -585,7 +589,7 @@ public class RobotController : MonoBehaviour
 
     public void OnEnemyAdded(RobotController robotController)
     {
-        if(HUDCanvas != null)
+        if (HUDCanvas != null)
             uIController_Overlay.AddRobot(robotController);
     }
 
@@ -616,12 +620,12 @@ public class RobotController : MonoBehaviour
 
                     if (lockonState == LockonState.FREE)
                     {
-                        
+
 
                         foreach (var robot in team.robotControllers)
                         {
                             Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
-                           // Vector3 startingPoint = transform.position;
+                            // Vector3 startingPoint = transform.position;
 
                             Ray ray = new Ray(GetCenter(), direction);
                             float shift = Vector3.Cross(ray.direction, robot.GetCenter() - ray.origin).magnitude;
@@ -687,14 +691,14 @@ public class RobotController : MonoBehaviour
                     }
                     else
                         uIController_Overlay.distance = 1000.0f;
-                 
+
                 }
                 else
                 {
                     foreach (var robot in team.robotControllers)
                     {
-                        float dist =  (GetCenter() - robot.GetCenter()).sqrMagnitude;
-                
+                        float dist = (GetCenter() - robot.GetCenter()).sqrMagnitude;
+
                         if (dist < mindist)
                         {
                             mindist = dist;
@@ -728,18 +732,18 @@ public class RobotController : MonoBehaviour
 
             LowerBodyMove();
             UpperBodyMove();
-            
+
         }
         else
         {
             UntargetEnemy();
 
-            for (int i=0;i<lockingEnemy.Count;i++)
+            for (int i = 0; i < lockingEnemy.Count; i++)
             {
                 lockingEnemy[i].PurgeTarget(this);
             }
 
-            if(uIController_Overlay!=null)
+            if (uIController_Overlay != null)
                 uIController_Overlay.origin = null;
 
             worldManager.HandleRemoveUnit(this);
@@ -750,7 +754,7 @@ public class RobotController : MonoBehaviour
         }
     }
 
-   
+
 
     private void AssignAnimationIDs()
     {
@@ -781,13 +785,13 @@ public class RobotController : MonoBehaviour
         _animIDDown = Animator.StringToHash("Down");
         _animIDGetup = Animator.StringToHash("Getup");
 
-        foreach(var slashmotion in slashMotionInfo)
+        foreach (var slashmotion in slashMotionInfo)
         {
-            for(int i=0;i< slashmotion.Value.num;i++)
+            for (int i = 0; i < slashmotion.Value.num; i++)
                 slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
         }
 
-       
+
         _animIDStand2 = Animator.StringToHash("Stand2");
     }
 
@@ -796,8 +800,8 @@ public class RobotController : MonoBehaviour
         // set sphere position, with offset
         Vector3 spherePosition;
 
-        if(lowerBodyState == LowerBodyState.DOWN)
-            spherePosition = new Vector3(transform.position.x, transform.position.y+3.4f,
+        if (lowerBodyState == LowerBodyState.DOWN)
+            spherePosition = new Vector3(transform.position.x, transform.position.y + 3.4f,
                 transform.position.z);
         else
             spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
@@ -831,7 +835,7 @@ public class RobotController : MonoBehaviour
                 break;
         }
 
-      
+
     }
 
     private void OnEnable()
@@ -848,7 +852,7 @@ public class RobotController : MonoBehaviour
     {
         CameraAndLockon();
 
-        if(CinemachineCameraTarget != null)
+        if (CinemachineCameraTarget != null)
         {
             CinemachineCameraTarget.transform.position = cameraPosition;
             CinemachineCameraTarget.transform.rotation = cameraRotation;
@@ -886,7 +890,7 @@ public class RobotController : MonoBehaviour
 
     private Quaternion GetTargetQuaternionForView(RobotController target)
     {
-        Quaternion qtarget = Quaternion.LookRotation( target.GetCenter() - GetCenter(), Vector3.up);
+        Quaternion qtarget = Quaternion.LookRotation(target.GetCenter() - GetCenter(), Vector3.up);
 
         Vector3 vtarget = qtarget.eulerAngles;
 
@@ -911,7 +915,7 @@ public class RobotController : MonoBehaviour
     {
         float dist_enemy = float.MaxValue;
 
-        if(Target_Robot != null && 
+        if (Target_Robot != null &&
                         (lowerBodyState == LowerBodyState.AIRSLASH_DASH
                         || lowerBodyState == LowerBodyState.AirSlash
                         || lowerBodyState == LowerBodyState.DashSlash
@@ -961,12 +965,12 @@ public class RobotController : MonoBehaviour
             {
                 if (lockonState == LockonState.FREE)
                 {
-                   
+
                 }
 
                 if (lockonState == LockonState.SEEKING)
                 {
-                  
+
                     float angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
 
                     if (angle < 1.0f)
@@ -994,8 +998,8 @@ public class RobotController : MonoBehaviour
 
                     if (_cinemachineTargetPitch > 180.0f)
                         _cinemachineTargetPitch -= 360.0f;
-                 
-                 }
+
+                }
             }
             else
             {
@@ -1073,7 +1077,7 @@ public class RobotController : MonoBehaviour
                                 rightWeapon.Target_Robot = null;
                                 lockonState = LockonState.FREE;
                             }
-                            
+
                             rightWeapon.Fire();
                         }
                     }
@@ -1081,7 +1085,7 @@ public class RobotController : MonoBehaviour
                     {
                         fire_followthrough--;
 
-                        if(fire_followthrough <= 0)
+                        if (fire_followthrough <= 0)
                         {
                             upperBodyState = UpperBodyState.STAND;
 
@@ -1132,7 +1136,7 @@ public class RobotController : MonoBehaviour
                         upperBodyState = UpperBodyState.FIRE;
                         _input.fire = false;
 
-                        if(dualwielding)
+                        if (dualwielding)
                             animator.Play("Fire2", 2, 0.0f);
                         else
                             animator.Play("Fire", 1, 0.0f);
@@ -1155,10 +1159,10 @@ public class RobotController : MonoBehaviour
                             }
                             _animator.speed = 1.0f;
                         }
-       
+
                     }
 
-                    if(_input.slash)
+                    if (_input.slash)
                     {
                         if (Grounded)
                         {
@@ -1195,7 +1199,7 @@ public class RobotController : MonoBehaviour
                                 upperBodyState = UpperBodyState.QUICKSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                stepremain = StepLimit/2;
+                                stepremain = StepLimit / 2;
 
                                 Sword.emitting = true;
                             }
@@ -1204,14 +1208,14 @@ public class RobotController : MonoBehaviour
                         else
                         {
                             if (lowerBodyState == LowerBodyState.DASH)
-                            { 
+                            {
                                 _input.slash = false;
                                 lowerBodyState = LowerBodyState.DASHSLASH_DASH;
                                 upperBodyState = UpperBodyState.DASHSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.DashSlash]._animID[0], 0.0f, 0);
                                 _animator.speed = 0.0f;
-                                stepremain = StepLimit/2;
+                                stepremain = StepLimit / 2;
 
                                 Sword.emitting = true;
 
@@ -1221,7 +1225,7 @@ public class RobotController : MonoBehaviour
 
                                     dashslash_offset.y = 0.0f;
 
-                                    dashslash_offset = Quaternion.AngleAxis(-45, new Vector3(0.0f, 1.0f, 0.0f))* dashslash_offset;
+                                    dashslash_offset = Quaternion.AngleAxis(-45, new Vector3(0.0f, 1.0f, 0.0f)) * dashslash_offset;
                                 }
                             }
                             else
@@ -1232,7 +1236,7 @@ public class RobotController : MonoBehaviour
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
                                 _animator.speed = 0.0f;
-                                stepremain = StepLimit/2;
+                                stepremain = StepLimit / 2;
 
                                 Sword.emitting = true;
 
@@ -1254,7 +1258,7 @@ public class RobotController : MonoBehaviour
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
                     _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
-                    
+
                     chest_no_aiming = true;
                 }
                 break;
@@ -1313,7 +1317,7 @@ public class RobotController : MonoBehaviour
 
             target_rot_head = Head.transform.rotation;
             target_rot_chest = Chest.transform.rotation;
-            target_rot_rhand = RHand.transform.rotation* Quaternion.LookRotation(new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f));
+            target_rot_rhand = RHand.transform.rotation * Quaternion.LookRotation(new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f));
         }
 
         //Quaternion thisframe_rot_head
@@ -1329,7 +1333,7 @@ public class RobotController : MonoBehaviour
             //= Head.transform.rotation;
         }
 
-        AimHelper_Head.transform.position = Head.transform.position + AimTargetRotation_Head * Vector3.forward*3;
+        AimHelper_Head.transform.position = Head.transform.position + AimTargetRotation_Head * Vector3.forward * 3;
 
 
         if (chest_no_aiming)
@@ -1351,7 +1355,7 @@ public class RobotController : MonoBehaviour
 
         overrideTransform.weight = _rarmaimwait;
 
-        if(dualwielding)
+        if (dualwielding)
             animator.SetLayerWeight(2, _barmlayerwait);
         else
             animator.SetLayerWeight(1, _rarmaimwait);
@@ -1811,7 +1815,7 @@ public class RobotController : MonoBehaviour
 
 
 
-                if (target_chest != null)
+                    if (target_chest != null)
                     {
                         if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
                         {
@@ -1969,7 +1973,7 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-   
+
                 }
                 break;
             case LowerBodyState.KNOCKBACK:
@@ -2229,7 +2233,7 @@ public class RobotController : MonoBehaviour
                             _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
                         }
 
-                        
+
                     }
 
 
@@ -2270,7 +2274,7 @@ public class RobotController : MonoBehaviour
             transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, 1.0f), 0.0f);
 
             // move the player
-            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+            MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
         else if (lowerBodyState == LowerBodyState.KNOCKBACK || lowerBodyState == LowerBodyState.DOWN)
@@ -2284,7 +2288,7 @@ public class RobotController : MonoBehaviour
             //transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, 1.0f), 0.0f);
 
             // move the player
-            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+            MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
         else if (lowerBodyState == LowerBodyState.AIRSLASH_DASH)
@@ -2317,7 +2321,7 @@ public class RobotController : MonoBehaviour
 
 
             // move the player
-            _controller.Move(targetDirection * (_speed * Time.deltaTime) +
+            MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
         else if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
@@ -2352,7 +2356,7 @@ public class RobotController : MonoBehaviour
 
 
             // move the player
-            _controller.Move(targetDirection * (_speed * Time.deltaTime) +
+            MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
         else
@@ -2360,7 +2364,7 @@ public class RobotController : MonoBehaviour
             Vector3 targetDirection = transform.rotation * Vector3.forward;
 
             // move the player
-            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+            MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
 
@@ -2370,16 +2374,16 @@ public class RobotController : MonoBehaviour
             thruster.emitting = boosting;
         }
     }
-    
+
 
     // ここで扱わないもの
     // KNOCKBACKは複雑すぎるのでDoDamageにべた書き
     private void TransitLowerBodyState(LowerBodyState newState)
     {
-        if(lowerBodyState == LowerBodyState.DOWN && newState != LowerBodyState.DOWN)
+        if (lowerBodyState == LowerBodyState.DOWN && newState != LowerBodyState.DOWN)
             _controller.height = org_controller_height;
 
-        if(
+        if (
             (lowerBodyState == LowerBodyState.GroundSlash && newState != LowerBodyState.GroundSlash)
             || (lowerBodyState == LowerBodyState.LowerSlash && newState != LowerBodyState.LowerSlash)
             || (lowerBodyState == LowerBodyState.QuickSlash && newState != LowerBodyState.QuickSlash)
@@ -2436,7 +2440,7 @@ public class RobotController : MonoBehaviour
                 }
                 break;
             case LowerBodyState.STAND:
-                switch(lowerBodyState)
+                switch (lowerBodyState)
                 {
                     case LowerBodyState.FIRE:
                         break;
@@ -2457,7 +2461,7 @@ public class RobotController : MonoBehaviour
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                         break;
                     case LowerBodyState.GroundSlash:
-    
+
                         upperBodyState = UpperBodyState.STAND;
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                         break;
@@ -2540,17 +2544,17 @@ public class RobotController : MonoBehaviour
             {
                 _verticalVelocity = -2f;
             }
- 
+
         }
         else
         {
-          
+
         }
 
         // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
         //if (_verticalVelocity < _terminalVelocity)
         {
-            _verticalVelocity = Mathf.Max(_verticalVelocity+Gravity * Time.deltaTime, -TerminalVelocity);
+            _verticalVelocity = Mathf.Max(_verticalVelocity + Gravity * Time.deltaTime, -TerminalVelocity);
         }
     }
 
@@ -2562,7 +2566,7 @@ public class RobotController : MonoBehaviour
     {
         event_jumped = true;
     }
-    
+
     private void OnStepped()
     {
         event_stepped = true;
@@ -2590,7 +2594,7 @@ public class RobotController : MonoBehaviour
         event_downed = true;
     }
 
- 
+
     private void OnSlashEnd()
     {
         event_slash = true;
@@ -2617,9 +2621,9 @@ public class RobotController : MonoBehaviour
         if (Grounded) Gizmos.color = transparentGreen;
         else Gizmos.color = transparentRed;
 
-        if(lowerBodyState == LowerBodyState.DOWN)
+        if (lowerBodyState == LowerBodyState.DOWN)
             Gizmos.DrawSphere(
-          new Vector3(transform.position.x, transform.position.y+3.4f, transform.position.z),
+          new Vector3(transform.position.x, transform.position.y + 3.4f, transform.position.z),
           GroundedRadius);
         else
             // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
@@ -2651,5 +2655,47 @@ public class RobotController : MonoBehaviour
     public Vector3 GetCenter()
     {
         return transform.TransformPoint(new Vector3(0, 3.805078f, 0));
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        hitNormal = hit.normal;
+    }
+
+    void MoveAccordingTerrain(Vector3 velocity)
+    {
+        if (Grounded)
+        {
+            if (velocity.y <= 0.0f)
+            {
+                if (Vector3.Angle(Vector3.up, hitNormal) < _controller.slopeLimit)
+                {
+
+                    Vector3 newVelocity = velocity;
+
+                    newVelocity.y = 0.0f;
+
+                    Quaternion q = Quaternion.FromToRotation(Vector3.up, hitNormal);
+
+                    newVelocity = q * newVelocity;
+                    newVelocity.y += velocity.y;
+
+                    if (newVelocity.y < 0.0f)
+                        _controller.Move(newVelocity);
+                    else
+                        _controller.Move(velocity);
+                }
+                else
+                    _controller.Move(velocity);
+            }
+            else
+            {
+                _controller.Move(velocity);
+            }
+        }
+        else
+        {
+            _controller.Move(velocity);
+        }
     }
 }

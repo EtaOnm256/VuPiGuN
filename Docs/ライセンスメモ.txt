@@ -1,2 +1,8 @@
 照準
 https://www.flaticon.com/free-icon/focus_8621773?term=reticle&page=2&position=89&origin=search&related_id=8621773
+
+草とか土のテクスチャ
+https://assetstore.unity.com/packages/2d/textures-materials/stylized-nature-textures-228680
+
+テクスチャ類
+https://assetstore.unity.com/packages/2d/textures-materials/25-free-realistic-textures-nature-city-home-construction-more-240323
