@@ -20,7 +20,7 @@ public class WorldManager : MonoBehaviour
     {
         Team friend_team = new Team { robotControllers = new List<RobotController>() };
         Team enemy_team = new Team { robotControllers = new List<RobotController>() };
-
+  
 
         SpawnEnemy(new Vector3(-20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
         SpawnEnemy(new Vector3(20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
@@ -109,8 +109,12 @@ public class WorldManager : MonoBehaviour
 
     private void SpawnEnemy(Vector3 pos, Quaternion rot, Team team)
     {
-        GameObject enemy = GameObject.Instantiate(enemy_prefab, pos, rot);
-        GameObject enemyweapon = GameObject.Instantiate(enemy_weapon_prefab, pos, rot);
+        RaycastHit raycastHit;
+
+        Physics.Raycast(pos+new Vector3(0.0f,100.0f,0.0f), -Vector3.up,out raycastHit, float.MaxValue, 1 << 3);
+
+        GameObject enemy = GameObject.Instantiate(enemy_prefab, raycastHit.point, rot);
+        GameObject enemyweapon = GameObject.Instantiate(enemy_weapon_prefab, raycastHit.point, rot);
 
         RobotController robotController = enemy.GetComponent<RobotController>();
 
