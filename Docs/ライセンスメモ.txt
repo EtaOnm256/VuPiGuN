@@ -4,5 +4,8 @@ https://www.flaticon.com/free-icon/focus_8621773?term=reticle&page=2&position=89
 草とか土のテクスチャ
 https://assetstore.unity.com/packages/2d/textures-materials/stylized-nature-textures-228680
 
-テクスチャ類
+テクスチャ類（まだ使ってない）
 https://assetstore.unity.com/packages/2d/textures-materials/25-free-realistic-textures-nature-city-home-construction-more-240323
+
+木
+https://assetstore.unity.com/packages/3d/vegetation/trees/low-poly-tree-pack-57866
