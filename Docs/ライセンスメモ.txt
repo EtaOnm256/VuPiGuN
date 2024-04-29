@@ -9,3 +9,6 @@ https://assetstore.unity.com/packages/2d/textures-materials/25-free-realistic-te
 
 木
 https://assetstore.unity.com/packages/3d/vegetation/trees/low-poly-tree-pack-57866
+
+岩
+https://assetstore.unity.com/packages/3d/environments/low-poly-rock-pack-57874

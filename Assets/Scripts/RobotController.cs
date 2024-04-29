@@ -956,6 +956,8 @@ public class RobotController : MonoBehaviour
 
             if (_cinemachineTargetPitch > 180.0f)
                 _cinemachineTargetPitch -= 360.0f;
+
+            lockonState = LockonState.LOCKON;
         }
         else
         {
@@ -1190,6 +1192,7 @@ public class RobotController : MonoBehaviour
                                 stepremain = StepLimit;
 
                                 Sword.emitting = true;
+                                lockonState = LockonState.SEEKING;
                             }
                             else
                             {
@@ -1202,6 +1205,7 @@ public class RobotController : MonoBehaviour
                                 stepremain = StepLimit / 2;
 
                                 Sword.emitting = true;
+                                lockonState = LockonState.SEEKING;
                             }
                             _animator.speed = 1.0f;
                         }
@@ -1218,7 +1222,7 @@ public class RobotController : MonoBehaviour
                                 stepremain = StepLimit / 2;
 
                                 Sword.emitting = true;
-
+                                lockonState = LockonState.SEEKING;
                                 if (target_chest != null)
                                 {
                                     dashslash_offset = (Chest.transform.position - target_chest.transform.position);
@@ -1239,7 +1243,7 @@ public class RobotController : MonoBehaviour
                                 stepremain = StepLimit / 2;
 
                                 Sword.emitting = true;
-
+                                lockonState = LockonState.SEEKING;
                                 if (target_chest != null)
                                 {
                                     Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -1277,6 +1281,19 @@ public class RobotController : MonoBehaviour
                 _rarmaimwait = 0.0f;
                 _barmlayerwait = 0.0f;
                 lockonState = LockonState.FREE;
+                break;
+            case UpperBodyState.GROUNDSLASH_DASH:
+            case UpperBodyState.AIRSLASH_DASH:
+            case UpperBodyState.DASHSLASH_DASH:
+            case UpperBodyState.QUICKSLASH_DASH:
+            case UpperBodyState.GroundSlash:
+            case UpperBodyState.AirSlash:
+            case UpperBodyState.QuickSlash:
+            case UpperBodyState.DashSlash:
+                _chestaimwait = 0.0f;
+                _headaimwait = 0.0f;
+                _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
+                _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
                 break;
             default:
                 _chestaimwait = 0.0f;
