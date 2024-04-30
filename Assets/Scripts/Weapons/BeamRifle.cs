@@ -15,6 +15,8 @@ public class BeamRifle : Weapon
 
     int _energy = 0;
 
+    public GameObject firePoint;
+
     int energy
     {
         set
@@ -71,14 +73,14 @@ public class BeamRifle : Weapon
         if (energy >= Reload_Time)
         {
 
-            GameObject beam_obj = GameObject.Instantiate(beam_prefab, gameObject.transform.position, gameObject.transform.rotation);
+            GameObject beam_obj = GameObject.Instantiate(beam_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             Beam beam = beam_obj.GetComponent<Beam>();
 
             beam.direction = gameObject.transform.forward;
             beam.target = Target_Robot;
 
-            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, gameObject.transform.position, gameObject.transform.rotation);
+            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             energy -= Reload_Time;
         }
