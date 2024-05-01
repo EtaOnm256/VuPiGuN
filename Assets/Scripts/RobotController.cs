@@ -150,6 +150,8 @@ public class RobotController : MonoBehaviour
 
     private int _animIDStand2;
 
+    private int _animIDSubFire;
+
     int slash_count = 0;
 
     /*   const int GroundSlash_Num = 3;
@@ -250,7 +252,7 @@ public class RobotController : MonoBehaviour
 
     private float _rarmaimwait = 0.0f;
 
-    private int fire_followthrough = 0;
+    public int fire_followthrough = 0;
 
     private float _barmlayerwait = 0.0f;
 
@@ -273,6 +275,7 @@ public class RobotController : MonoBehaviour
     bool event_getup = false;
     bool event_downed = false;
     bool event_slash = false;
+    bool event_subfired = false;
 
     public enum UpperBodyState
     {
@@ -290,7 +293,7 @@ public class RobotController : MonoBehaviour
         QuickSlash,
         DASHSLASH_DASH,
         DashSlash,
-
+        SUBFIRE,
     }
 
     public enum LowerBodyState
@@ -317,6 +320,8 @@ public class RobotController : MonoBehaviour
         QuickSlash,
         DASHSLASH_DASH,
         DashSlash,
+        SUBFIRE,
+        AIRSUBFIRE,
     }
 
     public enum StepDirection
@@ -360,6 +365,8 @@ public class RobotController : MonoBehaviour
     public GameObject Rhand;
 
     public Weapon rightWeapon;
+
+    public Weapon shoulderWeapon;
 
     public BeamSaber Sword;
 
@@ -516,6 +523,9 @@ public class RobotController : MonoBehaviour
             uIController_Overlay.origin = this;
 
             uIController_Overlay.AddWeapon(rightWeapon);
+
+            if(shoulderWeapon != null)
+                uIController_Overlay.AddWeapon(shoulderWeapon);
         }
     }
 
@@ -729,7 +739,8 @@ public class RobotController : MonoBehaviour
                 uIController_Overlay.lockonState = lockonState;
 
             rightWeapon.Target_Robot = Target_Robot;
-
+            if(shoulderWeapon != null)
+                shoulderWeapon.Target_Robot = Target_Robot;
             LowerBodyMove();
             UpperBodyMove();
 
@@ -793,6 +804,8 @@ public class RobotController : MonoBehaviour
 
 
         _animIDStand2 = Animator.StringToHash("Stand2");
+
+        _animIDSubFire = Animator.StringToHash("SubFire");
     }
 
     private void GroundedCheck()
@@ -819,7 +832,7 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.AIRFIRE:
             case LowerBodyState.DASH:
             case LowerBodyState.AIRROTATE:
-
+            case LowerBodyState.AIRSUBFIRE:
                 if (Grounded)
                 {
                     TransitLowerBodyState(LowerBodyState.GROUND);
@@ -1109,6 +1122,44 @@ public class RobotController : MonoBehaviour
                     }
                 }
                 break;
+            case UpperBodyState.SUBFIRE:
+                {
+                    if (fire_followthrough <= 0)
+                    {
+                        if (event_subfired)
+                        {
+                            fire_followthrough = 30;
+
+                            if (lockonState == LockonState.LOCKON)
+                            {
+                                shoulderWeapon.Target_Robot = Target_Robot;
+                            }
+                            else
+                            {
+                                shoulderWeapon.Target_Robot = null;
+                                lockonState = LockonState.FREE;
+                            }
+
+                            shoulderWeapon.Fire();
+                        }
+                    }
+                    else
+                    {
+                        fire_followthrough--;
+
+                        if (fire_followthrough <= 0)
+                        {
+                            upperBodyState = UpperBodyState.STAND;
+                            if (lowerBodyState == LowerBodyState.AIRSUBFIRE)
+                            {
+                                TransitLowerBodyState(LowerBodyState.AIR);
+                            }
+                            else if(lowerBodyState == LowerBodyState.SUBFIRE)
+                                TransitLowerBodyState(LowerBodyState.STAND);
+                        }
+                    }
+                }
+                break;
             case UpperBodyState.STAND:
                 {
                     lockonState = LockonState.FREE;
@@ -1161,6 +1212,8 @@ public class RobotController : MonoBehaviour
                             }
                             _animator.speed = 1.0f;
                         }
+
+                        fire_followthrough = 0;
 
                     }
 
@@ -1257,6 +1310,28 @@ public class RobotController : MonoBehaviour
                                 }
                             }
                         }
+                    }
+
+                    if (_input.subfire)
+                    {
+                        _input.subfire = false;
+
+                        if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
+                        {
+                            lowerBodyState = LowerBodyState.AIRSUBFIRE;
+                        }
+                        else
+                        {
+                            lowerBodyState = LowerBodyState.SUBFIRE;
+                        }
+
+                        upperBodyState = UpperBodyState.SUBFIRE;
+                        event_subfired = false;
+                        _animator.CrossFadeInFixedTime(_animIDSubFire, 0.25f, 0);
+                        _animator.speed = 1.0f;
+                        
+                        lockonState = LockonState.SEEKING;
+                        fire_followthrough = 0;
                     }
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
@@ -1607,6 +1682,8 @@ public class RobotController : MonoBehaviour
                 break;
             case LowerBodyState.FIRE:
             case LowerBodyState.AIRFIRE:
+            case LowerBodyState.SUBFIRE:
+            case LowerBodyState.AIRSUBFIRE:
                 {
                     targetSpeed = 0.0f;
 
@@ -1646,7 +1723,12 @@ public class RobotController : MonoBehaviour
 
                         _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
+                        float rotation;
+                        
+                        if(lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.AIRFIRE)
+                            rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed*2);
+                        else
+                            rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed * 4);
 
                         // rotate to face input direction relative to camera position
                         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -2258,8 +2340,8 @@ public class RobotController : MonoBehaviour
                     GroundedCheck();
                     break;
 
-
-                }
+            
+               }
         }
 
 
@@ -2455,6 +2537,13 @@ public class RobotController : MonoBehaviour
                     _animator.Play(_animIDGround, 0, 0);
                     event_grounded = false;
                 }
+
+                if(lowerBodyState == LowerBodyState.AIRSUBFIRE 
+                    || lowerBodyState == LowerBodyState.SUBFIRE) // 地形が動いたり、押し出された落ちたりしたらこっちもありえるかも
+                {
+                    upperBodyState = UpperBodyState.STAND;
+                }
+
                 break;
             case LowerBodyState.STAND:
                 switch (lowerBodyState)
@@ -2474,25 +2563,14 @@ public class RobotController : MonoBehaviour
                         _verticalVelocity = 0.0f;
                         break;
                     case LowerBodyState.KNOCKBACK:
-                        upperBodyState = UpperBodyState.STAND;
-                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
-                        break;
                     case LowerBodyState.GroundSlash:
-
-                        upperBodyState = UpperBodyState.STAND;
-                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
-                        break;
                     case LowerBodyState.LowerSlash:
-
-                        upperBodyState = UpperBodyState.STAND;
-                        _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
-                        break;
                     case LowerBodyState.QuickSlash:
 
                         upperBodyState = UpperBodyState.STAND;
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                         break;
-                }
+                  }
                 break;
         }
 
@@ -2714,5 +2792,10 @@ public class RobotController : MonoBehaviour
         {
             _controller.Move(velocity);
         }
+    }
+
+    void OnSubFireAnim()
+    {
+        event_subfired = true;
     }
 }

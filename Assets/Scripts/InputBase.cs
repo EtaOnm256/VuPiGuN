@@ -12,6 +12,7 @@ public class InputBase : MonoBehaviour
     public bool fire;
     public bool down;
     public bool slash;
+    public bool subfire;
 
     [Header("Movement Settings")]
     public bool analogMovement;

@@ -46,6 +46,11 @@ using UnityEngine.InputSystem;
 		{
 			SlashInput(value.isPressed);
 		}
+
+		public void OnSubFire(InputValue value)
+		{
+			SubFireInput(value.isPressed);
+		}
 #endif
 
 
@@ -82,6 +87,11 @@ using UnityEngine.InputSystem;
 		public void SlashInput(bool newSlashState)
 		{
 			slash = newSlashState;
+		}
+
+		public void SubFireInput(bool newSlashState)
+		{
+			subfire = newSlashState;
 		}
 
 	private void OnApplicationFocus(bool hasFocus)
