@@ -26,16 +26,19 @@ public class RobotAI : InputBase
     void FixedUpdate()
     {
 
-        return;
+        //return;
         //fire = true;
         //slash = true;
-
+        subfire = false;
         if (boosting)
         {
             sprint = false;
 
             if (robotController.boost == 0)
+            {
                 boosting = false;
+                subfire = true;
+            }
 
             if (ascending)
             {
@@ -86,5 +89,8 @@ public class RobotAI : InputBase
         }
 
         moveDirChangeTimer--;
+
+        if (robotController.Target_Robot != null)
+            robotController.cameraRotation = robotController.GetTargetQuaternionForView(robotController.Target_Robot);
     }
 }

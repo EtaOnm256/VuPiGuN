@@ -13,6 +13,7 @@ public class WorldManager : MonoBehaviour
 
     public GameObject enemy_prefab = null;
     public GameObject enemy_weapon_prefab = null;
+    public GameObject enemy_subweapon_prefab = null;
 
 
     // Start is called before the first frame update
@@ -114,20 +115,32 @@ public class WorldManager : MonoBehaviour
         Physics.Raycast(pos+new Vector3(0.0f,100.0f,0.0f), -Vector3.up,out raycastHit, float.MaxValue, 1 << 3);
 
         GameObject enemy = GameObject.Instantiate(enemy_prefab, raycastHit.point, rot);
-        GameObject enemyweapon = GameObject.Instantiate(enemy_weapon_prefab, raycastHit.point, rot);
+      
 
         RobotController robotController = enemy.GetComponent<RobotController>();
 
         robotController.worldManager = this;
         robotController._input = enemy.AddComponent<RobotAI>();
+        {
+            GameObject enemyweapon = GameObject.Instantiate(enemy_weapon_prefab, raycastHit.point, rot);
 
-        enemyweapon.transform.parent = robotController.RHand.transform;
-        enemyweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-        enemyweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
-        enemyweapon.transform.localScale = new Vector3(1, 1, 1);
+            enemyweapon.transform.parent = robotController.RHand.transform;
+            enemyweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+            enemyweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+            enemyweapon.transform.localScale = new Vector3(1, 1, 1);
 
-        robotController.rightWeapon = enemyweapon.GetComponent<Weapon>();
+            robotController.rightWeapon = enemyweapon.GetComponent<Weapon>();
+        }
+        {
+            GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
 
+            enemysubweapon.transform.parent = robotController.LShoulder.transform;
+            enemysubweapon.transform.localPosition = new Vector3(0.01043f, 0.0114f, 0.00055f);
+            enemysubweapon.transform.localEulerAngles = new Vector3(-0.103f, 1.591f, -86.308f);
+            enemysubweapon.transform.localScale = new Vector3(1, 1, 1);
+
+            robotController.shoulderWeapon = enemysubweapon.GetComponent<Weapon>();
+        }
         DestroyImmediate(enemy.GetComponent<HumanInput>());
         DestroyImmediate(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());
 

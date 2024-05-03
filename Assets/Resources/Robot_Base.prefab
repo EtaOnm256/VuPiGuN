@@ -2873,12 +2873,14 @@ MonoBehaviour:
   Head: {fileID: 4539593104152821007}
   Chest: {fileID: 7153603775768943075}
   RHand: {fileID: 2098590484211214698}
+  LShoulder: {fileID: 5258992504347009597}
   dualwielding: 1
   thrusters:
   - {fileID: 175234124548439368}
   - {fileID: 8418218240117876311}
   Target_Robot: {fileID: 0}
   lockingEnemy: []
+  fire_followthrough: 0
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   worldManager: {fileID: 0}
@@ -2889,6 +2891,7 @@ MonoBehaviour:
   dead: 0
   Rhand: {fileID: 9119824526815872400}
   rightWeapon: {fileID: 0}
+  shoulderWeapon: {fileID: 0}
   Sword: {fileID: 1600776732990077113}
   uIController_Overlay: {fileID: 0}
   AimHelper_Head: {fileID: 8747842198656981557}
@@ -2943,6 +2946,7 @@ MonoBehaviour:
   fire: 0
   down: 0
   slash: 0
+  subfire: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1

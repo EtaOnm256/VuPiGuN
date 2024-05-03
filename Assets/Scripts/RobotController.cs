@@ -224,6 +224,7 @@ public class RobotController : MonoBehaviour
     public GameObject Head = null;
     public GameObject Chest = null;
     public GameObject RHand = null;
+    public GameObject LShoulder = null;
 
     public bool dualwielding = false;
 
@@ -901,7 +902,8 @@ public class RobotController : MonoBehaviour
         }
     }
 
-    private Quaternion GetTargetQuaternionForView(RobotController target)
+    // AIから呼びされるので
+    public Quaternion GetTargetQuaternionForView(RobotController target)
     {
         Quaternion qtarget = Quaternion.LookRotation(target.GetCenter() - GetCenter(), Vector3.up);
 
@@ -1158,6 +1160,11 @@ public class RobotController : MonoBehaviour
                                 TransitLowerBodyState(LowerBodyState.STAND);
                         }
                     }
+
+                    _chestaimwait = 0.0f;
+                    _headaimwait = 0.0f;
+                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
+                    _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.16f);
                 }
                 break;
             case UpperBodyState.STAND:

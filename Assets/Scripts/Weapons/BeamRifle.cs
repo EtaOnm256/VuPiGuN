@@ -49,7 +49,7 @@ public class BeamRifle : Weapon
 
     protected override void OnAwake()
     {
-        beam_prefab = Resources.Load<GameObject>("Beam");
+        beam_prefab = Resources.Load<GameObject>("Projectile/Beam");
         beamemit_prefab = Resources.Load<GameObject>("BeamEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
