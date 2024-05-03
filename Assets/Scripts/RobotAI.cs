@@ -37,7 +37,7 @@ public class RobotAI : InputBase
             if (robotController.boost == 0)
             {
                 boosting = false;
-                subfire = true;
+                //subfire = true;
             }
 
             if (ascending)

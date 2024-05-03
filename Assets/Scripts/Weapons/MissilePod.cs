@@ -11,7 +11,7 @@ public class MissilePod : Weapon
     private const int Max_Ammo = 6;
 
     private const int MaxEnergy = Max_Ammo* Reload_Time;
-    private const int Reload_Time = 150;
+    private const int Reload_Time = 60;
 
     int _energy = 0;
 

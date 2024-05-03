@@ -43,7 +43,7 @@
                 },
                 {
                     "name": "Fire",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "a069f421-c00b-4501-9996-0771d6d88500",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -52,7 +52,7 @@
                 },
                 {
                     "name": "Down",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "0ea88ac9-13df-42b8-8c1f-57319be037ee",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -61,7 +61,7 @@
                 },
                 {
                     "name": "Slash",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "5da549cf-467d-4274-9ba7-9882a88b4856",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -70,7 +70,7 @@
                 },
                 {
                     "name": "SubFire",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "9497161c-a338-4d6a-a92e-496ce8c3f94a",
                     "expectedControlType": "Button",
                     "processors": "",

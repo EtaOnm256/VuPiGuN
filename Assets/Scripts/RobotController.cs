@@ -153,6 +153,7 @@ public class RobotController : MonoBehaviour
     private int _animIDSubFire;
 
     int slash_count = 0;
+    bool slash_reserved = false;
 
     /*   const int GroundSlash_Num = 3;
        private int[] _animIDGroundSlash;
@@ -210,7 +211,6 @@ public class RobotController : MonoBehaviour
     public GameObject aimingBase;
     public GameObject shoulder_hint;
     public GameObject chest_hint;
-
 
     public GameObject aiming_hint
     {
@@ -1149,15 +1149,35 @@ public class RobotController : MonoBehaviour
                     {
                         fire_followthrough--;
 
-                        if (fire_followthrough <= 0)
+                        bool refire = false;
+
+                        if(fire_followthrough == 20)
                         {
-                            upperBodyState = UpperBodyState.STAND;
-                            if (lowerBodyState == LowerBodyState.AIRSUBFIRE)
+                            Debug.Log(_input.subfire);
+
+                            if (_input.subfire)
                             {
-                                TransitLowerBodyState(LowerBodyState.AIR);
+                                //_input.subfire = false;
+                                _animator.speed = 1.0f;
+
+                                lockonState = LockonState.SEEKING;
+                                fire_followthrough = 0;
+                                refire = true;
                             }
-                            else if(lowerBodyState == LowerBodyState.SUBFIRE)
-                                TransitLowerBodyState(LowerBodyState.STAND);
+                        }
+
+                        if (!refire && fire_followthrough <= 0)
+                        {
+                          
+                            {
+                                upperBodyState = UpperBodyState.STAND;
+                                if (lowerBodyState == LowerBodyState.AIRSUBFIRE)
+                                {
+                                    TransitLowerBodyState(LowerBodyState.AIR);
+                                }
+                                else if (lowerBodyState == LowerBodyState.SUBFIRE)
+                                    TransitLowerBodyState(LowerBodyState.STAND);
+                            }
                         }
                     }
 
@@ -1194,7 +1214,7 @@ public class RobotController : MonoBehaviour
                     if (_input.fire)
                     {
                         upperBodyState = UpperBodyState.FIRE;
-                        _input.fire = false;
+                        //_input.fire = false;
 
                         if (dualwielding)
                             animator.Play("Fire2", 2, 0.0f);
@@ -1244,7 +1264,7 @@ public class RobotController : MonoBehaviour
                             if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
                             {
 
-                                _input.slash = false;
+                                //_input.slash = false;
                                 lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
                                 upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
@@ -1257,7 +1277,7 @@ public class RobotController : MonoBehaviour
                             else
                             {
 
-                                _input.slash = false;
+                                //_input.slash = false;
                                 lowerBodyState = LowerBodyState.QUICKSLASH_DASH;
                                 upperBodyState = UpperBodyState.QUICKSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
@@ -1273,7 +1293,7 @@ public class RobotController : MonoBehaviour
                         {
                             if (lowerBodyState == LowerBodyState.DASH)
                             {
-                                _input.slash = false;
+                                //_input.slash = false;
                                 lowerBodyState = LowerBodyState.DASHSLASH_DASH;
                                 upperBodyState = UpperBodyState.DASHSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
@@ -1294,7 +1314,7 @@ public class RobotController : MonoBehaviour
                             }
                             else
                             {
-                                _input.slash = false;
+                                //_input.slash = false;
                                 lowerBodyState = LowerBodyState.AIRSLASH_DASH;
                                 upperBodyState = UpperBodyState.AIRSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
@@ -1321,7 +1341,7 @@ public class RobotController : MonoBehaviour
 
                     if (_input.subfire)
                     {
-                        _input.subfire = false;
+                        //_input.subfire = false;
 
                         if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                         {
@@ -1798,7 +1818,7 @@ public class RobotController : MonoBehaviour
                                 if (event_downed && Grounded)
                                 {
 
-                                    _input.down = false;
+                                    //_input.down = false;
                                     lowerBodyState = LowerBodyState.GETUP;
                                     upperBodyState = UpperBodyState.GETUP;
                                     _animator.Play(_animIDGetup, 0, 0);
@@ -2003,6 +2023,7 @@ public class RobotController : MonoBehaviour
                                 upperBodyState = UpperBodyState.LowerSlash;
                                 _animator.speed = 1.0f;
                                 event_slash = false;
+                                slash_reserved = false;
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
@@ -2015,6 +2036,7 @@ public class RobotController : MonoBehaviour
                                 upperBodyState = UpperBodyState.GroundSlash;
                                 _animator.speed = 1.0f;
                                 event_slash = false;
+                                slash_reserved = false;
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
@@ -2031,6 +2053,7 @@ public class RobotController : MonoBehaviour
                                 upperBodyState = UpperBodyState.LowerSlash;
                                 _animator.speed = 1.0f;
                                 event_slash = false;
+                                slash_reserved = false;
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
@@ -2043,6 +2066,7 @@ public class RobotController : MonoBehaviour
                                 upperBodyState = UpperBodyState.QuickSlash;
                                 _animator.speed = 1.0f;
                                 event_slash = false;
+                                slash_reserved = false;
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
@@ -2057,6 +2081,7 @@ public class RobotController : MonoBehaviour
                             upperBodyState = UpperBodyState.DashSlash;
                             _animator.speed = 1.0f;
                             event_slash = false;
+                            slash_reserved = false;
                             Sword.slashing = false;
                             slash_count = 0;
                             Sword.damage = 100;
@@ -2070,6 +2095,7 @@ public class RobotController : MonoBehaviour
                             upperBodyState = UpperBodyState.AirSlash;
                             _animator.speed = 1.0f;
                             event_slash = false;
+                            slash_reserved = false;
                             Sword.slashing = false;
                             slash_count = 0;
                             Sword.damage = 100;
@@ -2183,11 +2209,16 @@ public class RobotController : MonoBehaviour
                     if (lowerBodyState == LowerBodyState.DashSlash)
                         boosting = true;
 
+                    if(_input.slash)
+                    {
+                        slash_reserved = true;
+                    }
+
 
                     if (lowerBodyState == LowerBodyState.AirSlash && event_slash)
                     {
                         slash_count++;
-                        if (slash_count == slashMotionInfo[LowerBodyState.AirSlash].num || !_input.slash)
+                        if (slash_count == slashMotionInfo[LowerBodyState.AirSlash].num || !slash_reserved)
                         {
                             Sword.emitting = false;
 
@@ -2196,11 +2227,12 @@ public class RobotController : MonoBehaviour
                         else
                         {
 
-                            _input.slash = false;
+                            //_input.slash = false;
 
                             lowerBodyState = LowerBodyState.AirSlash;
                             upperBodyState = UpperBodyState.AirSlash;
                             event_slash = false;
+                            slash_reserved = false;
                             Sword.slashing = false;
                             _verticalVelocity = 0.0f;
                             Sword.damage = 100;
@@ -2212,7 +2244,7 @@ public class RobotController : MonoBehaviour
                     else if (lowerBodyState == LowerBodyState.GroundSlash && event_slash)
                     {
                         slash_count++;
-                        if (slash_count == slashMotionInfo[LowerBodyState.GroundSlash].num || !_input.slash)
+                        if (slash_count == slashMotionInfo[LowerBodyState.GroundSlash].num || !slash_reserved)
                         {
                             Sword.emitting = false;
                             TransitLowerBodyState(LowerBodyState.STAND);
@@ -2220,11 +2252,12 @@ public class RobotController : MonoBehaviour
                         else
                         {
 
-                            _input.slash = false;
+                            //_input.slash = false;
 
                             lowerBodyState = LowerBodyState.GroundSlash;
                             upperBodyState = UpperBodyState.GroundSlash;
                             event_slash = false;
+                            slash_reserved = false;
                             Sword.slashing = false;
 
                             if (slash_count == slashMotionInfo[LowerBodyState.GroundSlash].num - 1)
@@ -2256,7 +2289,7 @@ public class RobotController : MonoBehaviour
                     else if (lowerBodyState == LowerBodyState.LowerSlash && event_slash)
                     {
                         slash_count++;
-                        if (slash_count == slashMotionInfo[LowerBodyState.LowerSlash].num || !_input.slash)
+                        if (slash_count == slashMotionInfo[LowerBodyState.LowerSlash].num || !slash_reserved)
                         {
                             Sword.emitting = false;
                             TransitLowerBodyState(LowerBodyState.STAND);
@@ -2264,11 +2297,12 @@ public class RobotController : MonoBehaviour
                         else
                         {
 
-                            _input.slash = false;
+                            //_input.slash = false;
 
                             lowerBodyState = LowerBodyState.LowerSlash;
                             upperBodyState = UpperBodyState.LowerSlash;
                             event_slash = false;
+                            slash_reserved = false;
                             Sword.slashing = false;
 
                             if (slash_count == slashMotionInfo[LowerBodyState.GroundSlash].num - 1)
@@ -2300,7 +2334,7 @@ public class RobotController : MonoBehaviour
                     else if (lowerBodyState == LowerBodyState.QuickSlash && event_slash)
                     {
                         slash_count++;
-                        if (slash_count == slashMotionInfo[LowerBodyState.QuickSlash].num || !_input.slash)
+                        if (slash_count == slashMotionInfo[LowerBodyState.QuickSlash].num || !slash_reserved)
                         {
                             Sword.emitting = false;
                             TransitLowerBodyState(LowerBodyState.STAND);
@@ -2308,11 +2342,12 @@ public class RobotController : MonoBehaviour
                         else
                         {
 
-                            _input.slash = false;
+                            //_input.slash = false;
 
                             lowerBodyState = LowerBodyState.QuickSlash;
                             upperBodyState = UpperBodyState.QuickSlash;
                             event_slash = false;
+                            slash_reserved = false;
                             Sword.slashing = false;
 
                             _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.QuickSlash]._animID[slash_count], 0.0f, 0);
@@ -2321,7 +2356,7 @@ public class RobotController : MonoBehaviour
                     if (lowerBodyState == LowerBodyState.DashSlash && event_slash)
                     {
                         slash_count++;
-                        if (slash_count == slashMotionInfo[LowerBodyState.DashSlash].num || !_input.slash)
+                        if (slash_count == slashMotionInfo[LowerBodyState.DashSlash].num || !slash_reserved)
                         {
                             Sword.emitting = false;
                             TransitLowerBodyState(LowerBodyState.AIR);
@@ -2329,11 +2364,12 @@ public class RobotController : MonoBehaviour
                         else
                         {
 
-                            _input.slash = false;
+                            //_input.slash = false;
 
                             lowerBodyState = LowerBodyState.DashSlash;
                             upperBodyState = UpperBodyState.DashSlash;
                             event_slash = false;
+                            slash_reserved = false;
                             Sword.slashing = false;
 
                             _animator.CrossFadeInFixedTime(slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
@@ -2529,7 +2565,7 @@ public class RobotController : MonoBehaviour
 
                 _animator.Play(_animIDDown, 0, 0);
                 event_downed = false;
-                _input.down = false;
+                //_input.down = false;
                 _controller.height = min_controller_height;
                 break;
             case LowerBodyState.GROUND:
