@@ -253,7 +253,7 @@ public class RobotController : MonoBehaviour
 
     private float _rarmaimwait = 0.0f;
 
-    public int fire_followthrough = 0;
+    public bool fire_done = false;
 
     private float _barmlayerwait = 0.0f;
 
@@ -1068,7 +1068,7 @@ public class RobotController : MonoBehaviour
                         _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(1).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
                     }
 
-                    if (fire_followthrough <= 0)
+                    if (!fire_done)
                     {
                         bool shoot = false;
 
@@ -1083,8 +1083,7 @@ public class RobotController : MonoBehaviour
 
                         if (shoot)
                         {
-                            fire_followthrough = 45;
-
+                            fire_done = true;
                             if (lockonState == LockonState.LOCKON)
                             {
                                 rightWeapon.Target_Robot = Target_Robot;
@@ -1095,14 +1094,21 @@ public class RobotController : MonoBehaviour
                                 lockonState = LockonState.FREE;
                             }
 
-                            rightWeapon.Fire();
+                            rightWeapon.trigger = true;
                         }
                     }
                     else
                     {
-                        fire_followthrough--;
+                        if (rightWeapon.canHold)
+                        {
+                            rightWeapon.trigger = _input.fire;
+                        }
+                        else
+                        {
+                            rightWeapon.trigger = false;
+                        }
 
-                        if (fire_followthrough <= 0)
+                        if (!rightWeapon.followthrough_now)
                         {
                             upperBodyState = UpperBodyState.STAND;
 
@@ -1126,12 +1132,10 @@ public class RobotController : MonoBehaviour
                 break;
             case UpperBodyState.SUBFIRE:
                 {
-                    if (fire_followthrough <= 0)
+                    if (!fire_done)
                     {
                         if (event_subfired)
                         {
-                            fire_followthrough = 30;
-
                             if (lockonState == LockonState.LOCKON)
                             {
                                 shoulderWeapon.Target_Robot = Target_Robot;
@@ -1142,31 +1146,22 @@ public class RobotController : MonoBehaviour
                                 lockonState = LockonState.FREE;
                             }
 
-                            shoulderWeapon.Fire();
+                            shoulderWeapon.trigger = true;
+                            fire_done = true;
                         }
                     }
                     else
                     {
-                        fire_followthrough--;
-
-                        bool refire = false;
-
-                        if(fire_followthrough == 20)
+                        if (shoulderWeapon.canHold)
                         {
-                            Debug.Log(_input.subfire);
-
-                            if (_input.subfire)
-                            {
-                                //_input.subfire = false;
-                                _animator.speed = 1.0f;
-
-                                lockonState = LockonState.SEEKING;
-                                fire_followthrough = 0;
-                                refire = true;
-                            }
+                            shoulderWeapon.trigger = _input.subfire;
                         }
-
-                        if (!refire && fire_followthrough <= 0)
+                        else
+                        {
+                            shoulderWeapon.trigger = false;
+                        }
+ 
+                        if (!shoulderWeapon.followthrough_now)
                         {
                           
                             {
@@ -1240,8 +1235,7 @@ public class RobotController : MonoBehaviour
                             _animator.speed = 1.0f;
                         }
 
-                        fire_followthrough = 0;
-
+                        fire_done = false;
                     }
 
                     if (_input.slash)
@@ -1354,11 +1348,11 @@ public class RobotController : MonoBehaviour
 
                         upperBodyState = UpperBodyState.SUBFIRE;
                         event_subfired = false;
+                        fire_done = false;
                         _animator.CrossFadeInFixedTime(_animIDSubFire, 0.25f, 0);
                         _animator.speed = 1.0f;
                         
                         lockonState = LockonState.SEEKING;
-                        fire_followthrough = 0;
                     }
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);

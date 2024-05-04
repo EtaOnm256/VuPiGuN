@@ -66,11 +66,8 @@ public class BeamRifle : Weapon
     void FixedUpdate()
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
-    }
 
-    public override void Fire()
-    {
-        if (energy >= Reload_Time)
+        if (energy >= Reload_Time && trigger && fire_followthrough <= 0)
         {
 
             GameObject beam_obj = GameObject.Instantiate(beam_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -83,6 +80,12 @@ public class BeamRifle : Weapon
             GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             energy -= Reload_Time;
+
+            fire_followthrough = 45;
         }
+
+        if (fire_followthrough > 0)
+            fire_followthrough--;
     }
-}
+
+ }

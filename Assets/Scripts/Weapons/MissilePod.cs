@@ -32,12 +32,16 @@ public class MissilePod : Weapon
                 {
                     weaponPanelItem.ammoText.color = Color.red;
                     weaponPanelItem.iconImage.color = Color.red;
+                    canHold = false;
                 }
                 else
                 {
                     weaponPanelItem.ammoText.color = Color.white;
                     weaponPanelItem.iconImage.color = Color.white;
+                    canHold = true;
                 }
+
+             
             }
         }
 
@@ -60,29 +64,37 @@ public class MissilePod : Weapon
     {
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
+        
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
-    }
 
-    public override void Fire()
-    {
-        if (energy >= Reload_Time)
+        if(trigger && fire_followthrough <= 20)
         {
+            if (energy >= Reload_Time)
+            {
 
-            GameObject beam_obj = GameObject.Instantiate(missile_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
+                GameObject beam_obj = GameObject.Instantiate(missile_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
 
-            Missile beam = beam_obj.GetComponent<Missile>();
+                Missile beam = beam_obj.GetComponent<Missile>();
 
-            beam.direction = gameObject.transform.forward;
-            beam.target = Target_Robot;
-            //beam.transform.localScale = Vector3.one;
-           // GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
+                beam.direction = gameObject.transform.forward;
+                beam.target = Target_Robot;
+                //beam.transform.localScale = Vector3.one;
+                // GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
 
-            energy -= Reload_Time;
+                energy -= Reload_Time;
+
+                fire_followthrough = 30;
+            }
         }
+
+        if(fire_followthrough > 0)
+            fire_followthrough--;
     }
+
+
 }

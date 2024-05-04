@@ -10,11 +10,32 @@ public class Weapon : MonoBehaviour
     public GameObject weaponPanelItemObj = null;
     public GameObject weaponPanelItem_prefab = null;
     public WeaponPanelItem weaponPanelItem = null;
-    // Start is called before the first frame update
-    public virtual void Fire()
+
+    private bool _trigger;
+
+    public bool trigger
     {
+        get { return _trigger; }
+        set { _trigger = value; }
     }
 
+    public bool canHold
+    {
+        get { return _canHold; }
+        protected set { _canHold = value; }
+    }
+
+    private bool _canHold = false;
+
+    protected int fire_followthrough = 0;
+
+    public bool followthrough_now
+    {
+        get { return fire_followthrough != 0; }
+    }
+
+    // Start is called before the first frame update
+   
     private void Awake()
     {
         weaponPanelItem_prefab = Resources.Load<GameObject>("UI/WeaponPanelItem");
