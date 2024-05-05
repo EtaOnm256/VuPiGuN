@@ -152,6 +152,8 @@ public class RobotController : MonoBehaviour
 
     private int _animIDSubFire;
 
+    private int _animIDHeavyFire;
+
     int slash_count = 0;
     bool slash_reserved = false;
 
@@ -226,7 +228,10 @@ public class RobotController : MonoBehaviour
     public GameObject RHand = null;
     public GameObject LShoulder = null;
 
-    public bool dualwielding = false;
+    public bool dualwielding
+    {
+        get { return rightWeapon.heavy; }
+    }
 
     public enum LockonState
     {
@@ -277,6 +282,7 @@ public class RobotController : MonoBehaviour
     bool event_downed = false;
     bool event_slash = false;
     bool event_subfired = false;
+    bool event_heavyfired = false;
 
     public enum UpperBodyState
     {
@@ -295,6 +301,7 @@ public class RobotController : MonoBehaviour
         DASHSLASH_DASH,
         DashSlash,
         SUBFIRE,
+        HEAVYFIRE,
     }
 
     public enum LowerBodyState
@@ -323,6 +330,8 @@ public class RobotController : MonoBehaviour
         DashSlash,
         SUBFIRE,
         AIRSUBFIRE,
+        HEAVYFIRE,
+        AIRHEAVYFIRE,
     }
 
     public enum StepDirection
@@ -742,7 +751,7 @@ public class RobotController : MonoBehaviour
             rightWeapon.Target_Robot = Target_Robot;
             if(shoulderWeapon != null)
                 shoulderWeapon.Target_Robot = Target_Robot;
-            LowerBodyMove();
+            LowerBodyMove(); // 順番入れ替えるとHEAVYFIREの反動が処理できないので注意
             UpperBodyMove();
 
         }
@@ -807,6 +816,8 @@ public class RobotController : MonoBehaviour
         _animIDStand2 = Animator.StringToHash("Stand2");
 
         _animIDSubFire = Animator.StringToHash("SubFire");
+
+        _animIDHeavyFire = Animator.StringToHash("HeavyFire");
     }
 
     private void GroundedCheck()
@@ -834,6 +845,7 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.DASH:
             case LowerBodyState.AIRROTATE:
             case LowerBodyState.AIRSUBFIRE:
+            case LowerBodyState.AIRHEAVYFIRE:
                 if (Grounded)
                 {
                     TransitLowerBodyState(LowerBodyState.GROUND);
@@ -1182,6 +1194,59 @@ public class RobotController : MonoBehaviour
                     _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.16f);
                 }
                 break;
+            case UpperBodyState.HEAVYFIRE:
+                {
+                    if (!fire_done)
+                    {
+                        if (event_heavyfired)
+                        {
+                            if (lockonState == LockonState.LOCKON)
+                            {
+                                rightWeapon.Target_Robot = Target_Robot;
+                            }
+                            else
+                            {
+                                rightWeapon.Target_Robot = null;
+                                lockonState = LockonState.FREE;
+                            }
+
+                            event_heavyfired = false; // 撃った瞬間をLowerBodyMove()で判定するため
+                            rightWeapon.trigger = true;
+                            fire_done = true;
+                        }
+                    }
+                    else
+                    {
+                        //if (rightWeapon.canHold)
+                       // {
+                        //    shoulderWeapon.trigger = _input.subfire;
+                        //}
+                        //else
+                        {
+                            rightWeapon.trigger = false;
+                        }
+
+                        if (!rightWeapon.followthrough_now)
+                        {
+
+                            {
+                                upperBodyState = UpperBodyState.STAND;
+                                if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
+                                {
+                                    TransitLowerBodyState(LowerBodyState.AIR);
+                                }
+                                else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
+                                    TransitLowerBodyState(LowerBodyState.STAND);
+                            }
+                        }
+                    }
+
+                    _chestaimwait = 0.0f;
+                    _headaimwait = 0.0f;
+                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
+                    _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.16f);
+                }
+                break;
             case UpperBodyState.STAND:
                 {
                     lockonState = LockonState.FREE;
@@ -1208,32 +1273,57 @@ public class RobotController : MonoBehaviour
 
                     if (_input.fire)
                     {
-                        upperBodyState = UpperBodyState.FIRE;
-                        //_input.fire = false;
-
-                        if (dualwielding)
-                            animator.Play("Fire2", 2, 0.0f);
-                        else
-                            animator.Play("Fire", 1, 0.0f);
-
-                        lockonState = LockonState.SEEKING;
-
-
-
-                        if (angle > 100)
+                        if(rightWeapon.heavy)
                         {
+                            //_input.subfire = false;
+
                             if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                             {
-                                lowerBodyState = LowerBodyState.AIRFIRE;
-                                _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                                lowerBodyState = LowerBodyState.AIRHEAVYFIRE;
                             }
                             else
                             {
-                                lowerBodyState = LowerBodyState.FIRE;
-                                _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                                lowerBodyState = LowerBodyState.HEAVYFIRE;
                             }
+
+                            upperBodyState = UpperBodyState.HEAVYFIRE;
+                            event_heavyfired = false;
+                            fire_done = false;
+                            _animator.CrossFadeInFixedTime(_animIDHeavyFire, 0.25f, 0);
                             _animator.speed = 1.0f;
+
+                            lockonState = LockonState.SEEKING;
                         }
+                        else
+                        {
+                            upperBodyState = UpperBodyState.FIRE;
+                            //_input.fire = false;
+
+                            if (dualwielding)
+                                animator.Play("Fire2", 2, 0.0f);
+                            else
+                                animator.Play("Fire", 1, 0.0f);
+
+                            lockonState = LockonState.SEEKING;
+
+
+
+                            if (angle > 100)
+                            {
+                                if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
+                                {
+                                    lowerBodyState = LowerBodyState.AIRFIRE;
+                                    _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                                }
+                                else
+                                {
+                                    lowerBodyState = LowerBodyState.FIRE;
+                                    _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+                                }
+                                _animator.speed = 1.0f;
+                            }
+                        }
+                      
 
                         fire_done = false;
                     }
@@ -1705,6 +1795,8 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.AIRFIRE:
             case LowerBodyState.SUBFIRE:
             case LowerBodyState.AIRSUBFIRE:
+            case LowerBodyState.HEAVYFIRE:
+            case LowerBodyState.AIRHEAVYFIRE:
                 {
                     targetSpeed = 0.0f;
 
@@ -1712,14 +1804,30 @@ public class RobotController : MonoBehaviour
                     float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
                     float speedOffset = 0.1f;
-                    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+                    float inputMagnitude = 1f;
 
-
+                    
                     targetSpeed = 0.0f;
 
                     _animationBlend = Mathf.Max(_animationBlend - 0.015f, 0.0f);
 
                     if (_animationBlend < 0.01f) _animationBlend = 0f;
+
+                    if((lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE) && event_heavyfired)
+                    {
+                        currentHorizontalSpeed = 50.0f;
+                    }
+
+                    float brakefactor = 1.0f;
+
+                    if(lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
+                    {
+                        brakefactor = 0.25f;
+                    }
+                    else if(lowerBodyState == LowerBodyState.HEAVYFIRE)
+                    {
+                        brakefactor = 0.5f;
+                    }
 
                     // accelerate or decelerate to target speed
                     if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -1728,7 +1836,7 @@ public class RobotController : MonoBehaviour
                         // creates curved result rather than a linear one giving a more organic speed change
                         // note T in Lerp is clamped, so we don't need to clamp our speed
                         _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                            Time.deltaTime * SpeedChangeRate);
+                            Time.deltaTime * SpeedChangeRate*brakefactor);
 
                         // round speed to 3 decimal places
                         _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -2495,6 +2603,14 @@ public class RobotController : MonoBehaviour
             MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
+        else if(lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
+        {
+            Vector3 targetDirection = transform.rotation * Vector3.back;
+
+            // move the player
+            MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
+                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+        }
         else
         {
             Vector3 targetDirection = transform.rotation * Vector3.forward;
@@ -2576,7 +2692,9 @@ public class RobotController : MonoBehaviour
                 }
 
                 if(lowerBodyState == LowerBodyState.AIRSUBFIRE 
-                    || lowerBodyState == LowerBodyState.SUBFIRE) // 地形が動いたり、押し出された落ちたりしたらこっちもありえるかも
+                    || lowerBodyState == LowerBodyState.AIRHEAVYFIRE
+                    || lowerBodyState == LowerBodyState.SUBFIRE
+                    || lowerBodyState == LowerBodyState.HEAVYFIRE) // 地形が動いたり、押し出された落ちたりしたらこっちもありえるかも
                 {
                     upperBodyState = UpperBodyState.STAND;
                 }
@@ -2834,5 +2952,10 @@ public class RobotController : MonoBehaviour
     void OnSubFireAnim()
     {
         event_subfired = true;
+    }
+
+    void OnHeavyFire()
+    {
+        event_heavyfired = true;
     }
 }

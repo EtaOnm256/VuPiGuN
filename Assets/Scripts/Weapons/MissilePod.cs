@@ -53,7 +53,7 @@ public class MissilePod : Weapon
 
     protected override void OnAwake()
     {
-        missile_prefab = Resources.Load<GameObject>("Missile Variant");
+        missile_prefab = Resources.Load<GameObject>("Projectile/Missile Variant");
         //beamemit_prefab = Resources.Load<GameObject>("BeamEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");

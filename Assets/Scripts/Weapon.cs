@@ -25,6 +25,11 @@ public class Weapon : MonoBehaviour
         protected set { _canHold = value; }
     }
 
+    virtual public bool heavy
+    {
+        get { return false; }
+    }
+
     private bool _canHold = false;
 
     protected int fire_followthrough = 0;
