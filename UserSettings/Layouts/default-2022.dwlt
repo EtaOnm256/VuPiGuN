@@ -655,7 +655,7 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: d40c0000
+      m_SelectedIDs: 4c780000
       m_LastClickedID: 0
       m_ExpandedIDs: fcfaffff
       m_RenameOverlay:
@@ -950,9 +950,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -19.791695, y: 30.448887, z: 160}
+    m_Target: {x: 1.256896, y: 4.1702642, z: -48.806347}
     speed: 2
-    m_Value: {x: -19.791695, y: 30.448887, z: 160}
+    m_Value: {x: 1.256896, y: 4.1702642, z: -48.806347}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -998,13 +998,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.061920777, y: 0.75121427, z: -0.07120087, w: -0.65328467}
+    m_Target: {x: -0.0018975895, y: 0.7748721, z: -0.002323635, w: -0.6321201}
     speed: 2
-    m_Value: {x: -0.06192055, y: 0.75121146, z: -0.07120061, w: -0.6532822}
+    m_Value: {x: -0.0018975787, y: 0.7748677, z: -0.0023236217, w: -0.63211644}
   m_Size:
-    m_Target: 10
+    m_Target: 2.7050526
     speed: 2
-    m_Value: 10
+    m_Value: 2.7050526
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1151,21 +1151,21 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/StarterAssets
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/StarterAssets
   m_LastFoldersGridSize: 16
   m_LastProjectPath: F:\VuPiGuN
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 424}
-    m_SelectedIDs: d0770000
-    m_LastClickedID: 30672
+    scrollPos: {x: 0, y: 364}
+    m_SelectedIDs: da770000
+    m_LastClickedID: 30682
     m_ExpandedIDs: 00000000487500004a7500004c7500004e75000050750000527500005475000056750000587500005a7500005c7500005e750000607500006275000064750000667500006875000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1221,22 +1221,22 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000747c00007a7500009a75000078700000587200005e7c000010830000c47500003e750000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: RobotController
-      m_OriginalName: RobotController
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 3284
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
@@ -1246,7 +1246,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 114}
+    m_ScrollPosition: {x: 0, y: 7}
     m_GridSize: 16
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207

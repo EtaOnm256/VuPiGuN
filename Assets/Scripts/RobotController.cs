@@ -1834,9 +1834,21 @@ public class RobotController : MonoBehaviour
 
                     if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-                    if((lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE) && event_heavyfired)
+                    if (event_heavyfired)
                     {
-                        currentHorizontalSpeed = 50.0f;
+                        if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
+                        {
+                            Vector3 backBlastDir = -(rightWeapon.gameObject.transform.rotation * (Vector3.forward));
+
+                            Vector3 backBlackDir_Horizontal = new Vector3(backBlastDir.x, 0.0f, backBlastDir.z);
+
+                            currentHorizontalSpeed += 50.0f * backBlackDir_Horizontal.magnitude;
+
+                            if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
+                            {
+                                _verticalVelocity += 50.0f * backBlastDir.y;
+                            }
+                        }
                     }
 
                     float brakefactor = 1.0f;
