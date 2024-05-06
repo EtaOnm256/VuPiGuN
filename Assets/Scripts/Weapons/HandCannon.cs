@@ -72,7 +72,7 @@ public class HandCannon : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if (energy >= Reload_Time && trigger && fire_followthrough <= 0)
+        if (energy >= Reload_Time && trigger)
         {
 
             GameObject beam_obj = GameObject.Instantiate(cannonball_prefab, firePoint.transform.position, firePoint.transform.rotation);

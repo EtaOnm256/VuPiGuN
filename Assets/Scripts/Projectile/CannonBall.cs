@@ -89,9 +89,7 @@ public class CannonBall : MonoBehaviour
 
                 }
 
-                GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
-
-                explode.transform.localScale = Vector3.one * 0.5f;
+                GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, transform.rotation);
 
                 GameObject.Destroy(gameObject);
                 return;

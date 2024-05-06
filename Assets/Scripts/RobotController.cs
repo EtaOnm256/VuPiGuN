@@ -400,7 +400,8 @@ public class RobotController : MonoBehaviour
 
         if (lowerBodyState != LowerBodyState.DOWN)
         {
-            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState == LowerBodyState.DASH)
+            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState == LowerBodyState.DASH
+                || lowerBodyState == LowerBodyState.AIRSUBFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
             {
                 TransitLowerBodyState(LowerBodyState.DOWN);
 
@@ -463,11 +464,15 @@ public class RobotController : MonoBehaviour
                 _controller.height = 7.0f;
 
                 _verticalVelocity = 0.0f;
+            }
 
+            Sword.emitting = false;
 
-
-                Sword.emitting = false;
-
+            // 射撃中にのけぞった場合に備えて
+            if (dualwielding)
+            {
+                _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                _animator.speed = 1.0f;
             }
         }
 
@@ -1175,23 +1180,22 @@ public class RobotController : MonoBehaviour
  
                         if (!shoulderWeapon.followthrough_now)
                         {
-                          
+
+                            upperBodyState = UpperBodyState.STAND;
+                            if (lowerBodyState == LowerBodyState.AIRSUBFIRE)
                             {
-                                upperBodyState = UpperBodyState.STAND;
-                                if (lowerBodyState == LowerBodyState.AIRSUBFIRE)
-                                {
-                                    TransitLowerBodyState(LowerBodyState.AIR);
-                                }
-                                else if (lowerBodyState == LowerBodyState.SUBFIRE)
-                                    TransitLowerBodyState(LowerBodyState.STAND);
+                                TransitLowerBodyState(LowerBodyState.AIR);
                             }
+                            else if (lowerBodyState == LowerBodyState.SUBFIRE)
+                                TransitLowerBodyState(LowerBodyState.STAND);
+                            
                         }
                     }
 
                     _chestaimwait = 0.0f;
                     _headaimwait = 0.0f;
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
-                    _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.16f);
+                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                 }
                 break;
             case UpperBodyState.HEAVYFIRE:
@@ -1228,15 +1232,18 @@ public class RobotController : MonoBehaviour
 
                         if (!rightWeapon.followthrough_now)
                         {
-
+                            upperBodyState = UpperBodyState.STAND;
+                            if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
                             {
-                                upperBodyState = UpperBodyState.STAND;
-                                if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
-                                {
-                                    TransitLowerBodyState(LowerBodyState.AIR);
-                                }
-                                else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
-                                    TransitLowerBodyState(LowerBodyState.STAND);
+                                TransitLowerBodyState(LowerBodyState.AIR);
+                            }
+                            else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
+                                TransitLowerBodyState(LowerBodyState.STAND);
+
+                            if (dualwielding)
+                            {
+                                _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                                _animator.speed = 1.0f;
                             }
                         }
                     }
@@ -1244,7 +1251,7 @@ public class RobotController : MonoBehaviour
                     _chestaimwait = 0.0f;
                     _headaimwait = 0.0f;
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
-                    _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.16f);
+                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                 }
                 break;
             case UpperBodyState.STAND:
@@ -1275,6 +1282,8 @@ public class RobotController : MonoBehaviour
                     {
                         if(rightWeapon.heavy)
                         {
+                            animator.Play("HeavyFire", 2, 0.0f);
+
                             //_input.subfire = false;
 
                             if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
@@ -1441,7 +1450,9 @@ public class RobotController : MonoBehaviour
                         fire_done = false;
                         _animator.CrossFadeInFixedTime(_animIDSubFire, 0.25f, 0);
                         _animator.speed = 1.0f;
-                        
+
+                        animator.Play("SubFire", 2, 0.0f);
+
                         lockonState = LockonState.SEEKING;
                     }
 
@@ -2696,7 +2707,7 @@ public class RobotController : MonoBehaviour
                     || lowerBodyState == LowerBodyState.SUBFIRE
                     || lowerBodyState == LowerBodyState.HEAVYFIRE) // 地形が動いたり、押し出された落ちたりしたらこっちもありえるかも
                 {
-                    upperBodyState = UpperBodyState.STAND;
+                    //upperBodyState = UpperBodyState.STAND;
                 }
 
                 break;

@@ -83,5 +83,5 @@ MonoBehaviour:
   target: {fileID: 0}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   direction: {x: 0, y: 0, z: 0}
-  hitEffect_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
+  hitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
   meshRenderer: {fileID: 0}

@@ -2555,6 +2555,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HandCannon Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 8399022032530343097, guid: b0ba637833460744fa2a6ed6bcb7106e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9206627185565556227, guid: b0ba637833460744fa2a6ed6bcb7106e, type: 3}
       propertyPath: m_RootOrder
       value: 0
