@@ -1251,16 +1251,10 @@ public class RobotController : MonoBehaviour
                             }
                         }
 
-                        _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
-                        _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
-                        _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
-                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                     }
-
+                    _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
                     _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
-
                     _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
-
                     _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                 }
                 break;
@@ -1541,7 +1535,7 @@ public class RobotController : MonoBehaviour
 
             target_rot_head = Head.transform.rotation;
             target_rot_chest = Chest.transform.rotation;
-            target_rot_rhand = RHand.transform.rotation * Quaternion.LookRotation(new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f));
+            target_rot_rhand = Chest.transform.rotation;
         }
 
         //Quaternion thisframe_rot_head
