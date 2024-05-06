@@ -1218,6 +1218,10 @@ public class RobotController : MonoBehaviour
                             rightWeapon.trigger = true;
                             fire_done = true;
                         }
+
+                      
+
+                        _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.0f) * 4, 0.0f, 1.0f);
                     }
                     else
                     {
@@ -1246,11 +1250,17 @@ public class RobotController : MonoBehaviour
                                 _animator.speed = 1.0f;
                             }
                         }
+
+                        _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
+                        _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
+                        _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
+                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                     }
 
-                    _chestaimwait = 0.0f;
-                    _headaimwait = 0.0f;
-                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
+                    _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
+
+                    _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
+
                     _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                 }
                 break;
