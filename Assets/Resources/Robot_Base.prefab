@@ -636,7 +636,7 @@ MonoBehaviour:
     m_WorldUpAxis: 2
     m_MaintainOffset: 0
     m_ConstrainedAxes:
-      x: 0
+      x: 1
       y: 1
       z: 0
 --- !u!1 &1504279445116113268
@@ -2874,13 +2874,12 @@ MonoBehaviour:
   Chest: {fileID: 7153603775768943075}
   RHand: {fileID: 2098590484211214698}
   LShoulder: {fileID: 5258992504347009597}
-  dualwielding: 1
   thrusters:
   - {fileID: 175234124548439368}
   - {fileID: 8418218240117876311}
   Target_Robot: {fileID: 0}
   lockingEnemy: []
-  fire_followthrough: 0
+  fire_done: 0
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   worldManager: {fileID: 0}

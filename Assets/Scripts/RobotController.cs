@@ -1061,7 +1061,9 @@ public class RobotController : MonoBehaviour
         bool head_no_aiming = false;
         bool chest_no_aiming = false;
 
-        float _rhandaimwait = 0.0f;
+        float rhandaimwait = 0.0f;
+
+        bool chest_pitch_aim = false;
 
         switch (upperBodyState)
         {
@@ -1078,11 +1080,11 @@ public class RobotController : MonoBehaviour
 
                     if (dualwielding)
                     {
-                        _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                        rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
                     }
                     else
                     {
-                        _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(1).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                        rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(1).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
                     }
 
                     if (!fire_done)
@@ -1192,7 +1194,8 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-                    _chestaimwait = 0.0f;
+                    _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.08f);
+                    chest_pitch_aim = true;
                     _headaimwait = 0.0f;
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
                     _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
@@ -1221,7 +1224,7 @@ public class RobotController : MonoBehaviour
 
                       
 
-                        _rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.0f) * 4, 0.0f, 1.0f);
+                        rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.0f) * 4, 0.0f, 1.0f);
                     }
                     else
                     {
@@ -1565,11 +1568,18 @@ public class RobotController : MonoBehaviour
             //= Head.transform.rotation;
         }
 
-        AimHelper_Chest.transform.position = Chest.transform.position + AimTargetRotation_Chest * Vector3.forward * 3;
 
+        Vector3 chestAim_Dir = AimTargetRotation_Chest * Vector3.forward * 3;
+
+        if (!chest_pitch_aim)
+            chestAim_Dir.y = 0.0f;
+
+        AimHelper_Chest.transform.position = Chest.transform.position + chestAim_Dir;
+
+        chestmultiAimConstraint.weight = _chestaimwait;
 
         AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
-        rhandmultiAimConstraint.weight = _rhandaimwait;
+        rhandmultiAimConstraint.weight = rhandaimwait;
 
         overrideTransform.weight = _rarmaimwait;
 
@@ -1577,8 +1587,6 @@ public class RobotController : MonoBehaviour
             animator.SetLayerWeight(2, _barmlayerwait);
         else
             animator.SetLayerWeight(1, _rarmaimwait);
-
-        chestmultiAimConstraint.weight = _chestaimwait;
 
         Sword.dir = transform.forward;
     }
