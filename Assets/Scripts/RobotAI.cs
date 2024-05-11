@@ -27,7 +27,7 @@ public class RobotAI : InputBase
     {
 
         //return;
-        //fire = true;
+        fire = true;
         //slash = true;
         subfire = false;
         if (boosting)

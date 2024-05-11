@@ -56,7 +56,7 @@ public class CannonBall : MonoBehaviour
                 {
                     Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 0.5f);
 
-                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 45.0f);
+                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 10.0f);
 
                     direction = qDirection_result * Vector3.forward;
                 }
@@ -98,8 +98,8 @@ public class CannonBall : MonoBehaviour
 
 
             transform.position += direction * speed;
-            transform.rotation = Quaternion.LookRotation(direction);
-
+            transform.rotation = Quaternion.LookRotation(transform.position-start_pos);
+ 
             if (time-- <= 0)
             {
                 GameObject.Destroy(gameObject);
