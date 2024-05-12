@@ -6,9 +6,7 @@ public class BeamSaber : InfightWeapon
 {
     public LineRenderer lineRenderer;
 
-    bool _slashing = false;
-
-
+    //
     RaycastHit[] rayCastHit = new RaycastHit[8];
 
     public GameObject hitEffect_prefab;
