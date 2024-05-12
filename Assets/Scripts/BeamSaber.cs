@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public class BeamSaber : MonoBehaviour
+public class BeamSaber : InfightWeapon
 {
     public LineRenderer lineRenderer;
 
     bool _slashing = false;
-    bool _emitting = false;
+
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
 
@@ -18,9 +18,9 @@ public class BeamSaber : MonoBehaviour
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
 
-    public Vector3 dir;
 
-    public bool slashing
+
+    override public bool slashing
     {
         set {
             _slashing = value;
@@ -41,7 +41,7 @@ public class BeamSaber : MonoBehaviour
         get { return _slashing; }
     }
 
-    public bool emitting
+    override public bool emitting
     {
         set
         {
@@ -58,8 +58,7 @@ public class BeamSaber : MonoBehaviour
     }
 
 
-    public bool strong = false;
-    public int damage = 250;
+ 
 
     // Start is called before the first frame update
     void Start()

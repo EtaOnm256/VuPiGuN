@@ -226,6 +226,7 @@ public class RobotController : MonoBehaviour
     public GameObject Head = null;
     public GameObject Chest = null;
     public GameObject RHand = null;
+    public GameObject LHand = null;
     public GameObject LShoulder = null;
 
     public bool dualwielding
@@ -378,7 +379,7 @@ public class RobotController : MonoBehaviour
 
     public Weapon shoulderWeapon;
 
-    public BeamSaber Sword;
+    public InfightWeapon Sword;
 
     public UIController_Overlay uIController_Overlay;
 

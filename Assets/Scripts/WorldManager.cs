@@ -12,7 +12,8 @@ public class WorldManager : MonoBehaviour
     public List<Team> teams = new List<Team>();
 
     public GameObject enemy_prefab = null;
-    public GameObject enemy_weapon_prefab = null;
+    public GameObject enemy_rweapon_prefab = null;
+    public GameObject enemy_lweapon_prefab = null;
     public GameObject enemy_subweapon_prefab = null;
 
 
@@ -122,15 +123,27 @@ public class WorldManager : MonoBehaviour
         robotController.worldManager = this;
         robotController._input = enemy.AddComponent<RobotAI>();
         {
-            GameObject enemyweapon = GameObject.Instantiate(enemy_weapon_prefab, raycastHit.point, rot);
+            GameObject enemyrweapon = GameObject.Instantiate(enemy_rweapon_prefab, raycastHit.point, rot);
 
-            enemyweapon.transform.parent = robotController.RHand.transform;
-            enemyweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-            enemyweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
-            enemyweapon.transform.localScale = new Vector3(1, 1, 1);
+            enemyrweapon.transform.parent = robotController.RHand.transform;
+            enemyrweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+            enemyrweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+            enemyrweapon.transform.localScale = new Vector3(1, 1, 1);
 
-            robotController.rightWeapon = enemyweapon.GetComponent<Weapon>();
+            robotController.rightWeapon = enemyrweapon.GetComponent<Weapon>();
         }
+
+        {
+            GameObject enemylweapon = GameObject.Instantiate(enemy_lweapon_prefab, raycastHit.point, rot);
+
+            enemylweapon.transform.parent = robotController.LHand.transform;
+            enemylweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+            enemylweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+            enemylweapon.transform.localScale = new Vector3(1, 1, 1);
+
+            robotController.Sword = enemylweapon.GetComponent<InfightWeapon>();
+        }
+
         {
             GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
 
