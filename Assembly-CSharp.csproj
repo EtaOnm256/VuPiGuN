@@ -59,7 +59,7 @@
     <Compile Include="Assets\Scripts\VectorUtil.cs" />
     <Compile Include="Assets\Scripts\Projectile\CannonBall.cs" />
     <Compile Include="Assets\Scripts\RobotController.cs" />
-    <Compile Include="Assets\Scripts\BeamSaber.cs" />
+    <Compile Include="Assets\Scripts\InfightWeapons\BeamSaber.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod.cs" />
     <Compile Include="Assets\Scripts\Projectile\Missile.cs" />
     <Compile Include="Assets\Scripts\Weapons\BeamRifle.cs" />
@@ -88,6 +88,7 @@
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\RobotAI.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
+    <Compile Include="Assets\Scripts\InfightWeapons\HeatAxe.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

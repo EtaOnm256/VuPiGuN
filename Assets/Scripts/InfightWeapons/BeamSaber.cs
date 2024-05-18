@@ -56,7 +56,23 @@ public class BeamSaber : InfightWeapon
     }
 
 
- 
+    private void Awake()
+    {
+       _slashMotionInfo = new Dictionary<RobotController.LowerBodyState, SlashMotionInfo>
+       {
+            { RobotController.LowerBodyState.GroundSlash,new SlashMotionInfo(3) },
+            { RobotController.LowerBodyState.AirSlash,new SlashMotionInfo(1) },
+            { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
+            { RobotController.LowerBodyState.QuickSlash,new SlashMotionInfo(2) },
+            { RobotController.LowerBodyState.DashSlash,new SlashMotionInfo(1) },
+       };
+
+        foreach (var slashmotion in slashMotionInfo)
+        {
+            for (int i = 0; i < slashmotion.Value.num; i++)
+                slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
+        }
+    }
 
     // Start is called before the first frame update
     void Start()

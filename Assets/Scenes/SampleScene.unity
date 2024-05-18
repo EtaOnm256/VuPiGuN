@@ -1631,7 +1631,7 @@ PrefabInstance:
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: Sword
       value: 
-      objectReference: {fileID: 1576002570}
+      objectReference: {fileID: 1576002576}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: HUDCanvas
       value: 
@@ -3409,22 +3409,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 28
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1576002570 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3268131938291168253, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
-  m_PrefabInstance: {fileID: 1883710183}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 136e6ee975b11a747909e1a024932875, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1576002573 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 605404575975640319, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
   m_PrefabInstance: {fileID: 1883710183}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1576002576 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2811911632490060217, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
+  m_PrefabInstance: {fileID: 1883710183}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e0f1621b495297468fa2a294fe1e986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1656737267
 GameObject:
   m_ObjectHideFlags: 0
