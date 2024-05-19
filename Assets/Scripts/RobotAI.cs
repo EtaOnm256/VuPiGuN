@@ -26,7 +26,7 @@ public class RobotAI : InputBase
     void FixedUpdate()
     {
 
-        //return;
+        return;
         //fire = true;
         slash = true;
         subfire = false;

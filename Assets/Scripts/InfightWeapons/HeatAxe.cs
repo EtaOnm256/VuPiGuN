@@ -34,7 +34,7 @@ public class HeatAxe : InfightWeapon
             { RobotController.LowerBodyState.GroundSlash,new SlashMotionInfo(2) },
             { RobotController.LowerBodyState.AirSlash,new SlashMotionInfo(1) },
             { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
-            { RobotController.LowerBodyState.QuickSlash,new SlashMotionInfo(1) },
+            { RobotController.LowerBodyState.QuickSlash,new SlashMotionInfo(2) },
             { RobotController.LowerBodyState.DashSlash,new SlashMotionInfo(1) },
         };
 
@@ -46,14 +46,12 @@ public class HeatAxe : InfightWeapon
                 {
                     case RobotController.LowerBodyState.GroundSlash:
                     case RobotController.LowerBodyState.AirSlash:
+                    case RobotController.LowerBodyState.QuickSlash:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}2_{i}");
                         break;
                     case RobotController.LowerBodyState.LowerSlash:
                     case RobotController.LowerBodyState.DashSlash:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
-                        break;
-                    case RobotController.LowerBodyState.QuickSlash:
-                        slashmotion.Value._animID[i] = Animator.StringToHash($"GroundSlash2_{i}");
                         break;
 
                 }
