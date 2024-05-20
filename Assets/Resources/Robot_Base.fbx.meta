@@ -1291,7 +1291,7 @@ ModelImporter:
       takeName: Armature|GroundSlash2_0
       internalID: 0
       firstFrame: 0
-      lastFrame: 150
+      lastFrame: 201
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1311,7 +1311,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0
+      - time: 0.27946126
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -1334,7 +1334,7 @@ ModelImporter:
       takeName: Armature|GroundSlash2_1
       internalID: 0
       firstFrame: 0
-      lastFrame: 150
+      lastFrame: 201
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1354,7 +1354,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0
+      - time: 0.23737374
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
