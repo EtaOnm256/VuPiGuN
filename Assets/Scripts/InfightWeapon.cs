@@ -53,8 +53,25 @@ public class InfightWeapon : MonoBehaviour
         get { return _slashing; }
     }
 
-  
+    virtual public bool can_dash_slash
+    {
+        get { return false; }
+    }
 
+    public struct MotionProperty
+    {
+        public float DashSpeed;
+        public int DashLength;
+    }
+
+    virtual public Dictionary<RobotController.LowerBodyState, MotionProperty> motionProperty
+    {
+        get { return _motionProperty; }
+    }
+
+    protected Dictionary<RobotController.LowerBodyState, MotionProperty> _motionProperty;
+
+  
 
     // Update is called once per frame
     void Update()

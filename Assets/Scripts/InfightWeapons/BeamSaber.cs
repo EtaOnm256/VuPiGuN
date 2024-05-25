@@ -55,6 +55,10 @@ public class BeamSaber : InfightWeapon
         get { return _emitting; }
     }
 
+    override public bool can_dash_slash
+    {
+        get { return true; }
+    }
 
     private void Awake()
     {
@@ -66,6 +70,15 @@ public class BeamSaber : InfightWeapon
             { RobotController.LowerBodyState.QuickSlash,new SlashMotionInfo(2) },
             { RobotController.LowerBodyState.DashSlash,new SlashMotionInfo(1) },
        };
+
+        _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
+            {
+                { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 45 } },
+                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2 } },
+              //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
+                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2 } },
+                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45/2 } },
+            };
 
         foreach (var slashmotion in slashMotionInfo)
         {

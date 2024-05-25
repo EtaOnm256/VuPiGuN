@@ -60,6 +60,16 @@ public class HeatAxe : InfightWeapon
             { RobotController.LowerBodyState.DashSlash,new SlashMotionInfo(1) },
         };
 
+            _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
+            {
+                { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 20.0f ,DashLength = 67 } },
+                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 67/2 } },
+              //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
+                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 67/2 } },
+                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 40.0f ,DashLength = 67/2 } },
+            };
+
+
         foreach (var slashmotion in slashMotionInfo)
         {
             for (int i = 0; i < slashmotion.Value.num; i++)

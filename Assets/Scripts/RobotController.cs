@@ -1348,8 +1348,8 @@ public class RobotController : MonoBehaviour
                                 upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                stepremain = StepLimit;
-
+                                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                                slash_reserved = false;
                                 Sword.emitting = true;
                                 lockonState = LockonState.SEEKING;
                             }
@@ -1361,8 +1361,8 @@ public class RobotController : MonoBehaviour
                                 upperBodyState = UpperBodyState.QUICKSLASH_DASH;
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                stepremain = StepLimit / 2;
-
+                                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                                slash_reserved = false;
                                 Sword.emitting = true;
                                 lockonState = LockonState.SEEKING;
                             }
@@ -1370,7 +1370,7 @@ public class RobotController : MonoBehaviour
                         }
                         else
                         {
-                            if (lowerBodyState == LowerBodyState.DASH)
+                            if (lowerBodyState == LowerBodyState.DASH && Sword.can_dash_slash)
                             {
                                 //_input.slash = false;
                                 lowerBodyState = LowerBodyState.DASHSLASH_DASH;
@@ -1378,8 +1378,8 @@ public class RobotController : MonoBehaviour
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[0], 0.0f, 0);
                                 _animator.speed = 0.0f;
-                                stepremain = StepLimit / 2;
-
+                                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                                slash_reserved = false;
                                 Sword.emitting = true;
                                 lockonState = LockonState.SEEKING;
                                 if (target_chest != null)
@@ -1399,8 +1399,8 @@ public class RobotController : MonoBehaviour
                                 event_stepbegin = event_stepped = false;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
                                 _animator.speed = 0.0f;
-                                stepremain = StepLimit / 2;
-
+                                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                                slash_reserved = false;
                                 Sword.emitting = true;
                                 lockonState = LockonState.SEEKING;
                                 if (target_chest != null)
@@ -2035,12 +2035,15 @@ public class RobotController : MonoBehaviour
                 {
                     float rotatespeed;
 
-                    if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
-                        _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed * 2.0f/* : 0.0f*/;
-                    else if (lowerBodyState == LowerBodyState.GROUNDSLASH_DASH)
-                        _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed/* : 0.0f*/;
-                    else
-                        _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed * 1.5f/* : 0.0f*/;
+                    /* if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+                         _speed = targetSpeed = SprintSpeed * 2.0f;
+                     else if (lowerBodyState == LowerBodyState.GROUNDSLASH_DASH)
+                         _speed = targetSpeed = SprintSpeed;
+                     else
+                         _speed = targetSpeed = SprintSpeed * 1.5f
+                    */
+
+                    _speed = targetSpeed = Sword.motionProperty[lowerBodyState].DashSpeed;
 
                     if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
                         rotatespeed = RotateSpeed / 2.0f;
