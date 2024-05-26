@@ -44,6 +44,11 @@ public class HeatAxe : InfightWeapon
         get { return _emitting; }
     }
 
+    override public float SlashDistance
+    {
+        get { return 4.5f; }
+    }
+
     Material material;
     int powerID;
     private void Awake()

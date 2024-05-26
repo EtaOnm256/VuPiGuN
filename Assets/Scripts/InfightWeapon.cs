@@ -71,7 +71,10 @@ public class InfightWeapon : MonoBehaviour
 
     protected Dictionary<RobotController.LowerBodyState, MotionProperty> _motionProperty;
 
-  
+    virtual public float SlashDistance
+    {
+        get { return 6.0f; }
+    }
 
     // Update is called once per frame
     void Update()

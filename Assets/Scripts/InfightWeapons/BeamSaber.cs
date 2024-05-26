@@ -60,6 +60,11 @@ public class BeamSaber : InfightWeapon
         get { return true; }
     }
 
+    override public float SlashDistance
+    {
+        get { return 6.0f; }
+    }
+
     private void Awake()
     {
        _slashMotionInfo = new Dictionary<RobotController.LowerBodyState, SlashMotionInfo>

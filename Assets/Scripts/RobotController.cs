@@ -93,8 +93,6 @@ public class RobotController : MonoBehaviour
 
     public int StepLimit = 30;
 
-    public float SlashDistance = 7.0f;
-
     int stepremain = 0;
 
     private bool is_player;
@@ -2067,7 +2065,7 @@ public class RobotController : MonoBehaviour
 
                             Vector3 targetOffset = dashslash_offset;
 
-                            Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (SlashDistance * transform.lossyScale.x * 0.9f);
+                            Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.SlashDistance * transform.lossyScale.x * 0.9f);
 
                             Vector3 targetDirection = (targetPos - Chest.transform.position).normalized;
 
@@ -2103,14 +2101,14 @@ public class RobotController : MonoBehaviour
                     {
                         if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
                         {
-                            if ((target_chest.transform.position - Chest.transform.position).magnitude < SlashDistance * transform.lossyScale.x)
+                            if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.SlashDistance * transform.lossyScale.x)
                             {
                                 slash = true;
                             }
                         }
                         else
                         {
-                            if ((target_chest.transform.position - Chest.transform.position).magnitude < SlashDistance * transform.lossyScale.x)
+                            if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.SlashDistance * transform.lossyScale.x)
                             {
                                 slash = true;
                             }
@@ -2280,7 +2278,7 @@ public class RobotController : MonoBehaviour
 
                             Vector3 targetOffset = dashslash_offset;
 
-                            Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (SlashDistance * transform.lossyScale.x * 0.9f);
+                            Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.SlashDistance * transform.lossyScale.x * 0.9f);
 
                             Vector3 targetDirection = (targetPos - Chest.transform.position).normalized;
 
@@ -2291,7 +2289,7 @@ public class RobotController : MonoBehaviour
                             // rotate to face input direction relative to camera position
                             //transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);*/
 
-                            //if ((target_chest.transform.position - Chest.transform.position).magnitude > SlashDistance * transform.lossyScale.x)
+                            //if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.SlashDistance * transform.lossyScale.x)
                             {
                                 _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed * 2/* : 0.0f*/;
                             }
@@ -2307,7 +2305,7 @@ public class RobotController : MonoBehaviour
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
-                            if ((target_chest.transform.position - Chest.transform.position).magnitude > SlashDistance * transform.lossyScale.x)
+                            if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.SlashDistance * transform.lossyScale.x)
                             {
                                 _speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
                             }
@@ -2563,7 +2561,7 @@ public class RobotController : MonoBehaviour
 
                 targetOffset.y = 0.0f;
 
-                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (SlashDistance * transform.lossyScale.x * 0.9f);
+                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.SlashDistance * transform.lossyScale.x * 0.9f);
 
                 targetDirection = (targetPos - Chest.transform.position).normalized;
 
@@ -2594,7 +2592,7 @@ public class RobotController : MonoBehaviour
             {
                 Vector3 targetOffset = dashslash_offset;
 
-                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (SlashDistance * transform.lossyScale.x * 0.9f);
+                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.SlashDistance * transform.lossyScale.x * 0.9f);
 
                 targetDirection = (targetPos - Chest.transform.position).normalized;
 
