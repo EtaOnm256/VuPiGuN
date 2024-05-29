@@ -35,6 +35,9 @@ public class HeatAxe : InfightWeapon
 
                 _emitting = value;
 
+                if (!_emitting)
+                    _slashing = false;
+
                 if (_emitting)
                     material.SetFloat(powerID, 5.0f);
                 else
@@ -108,12 +111,13 @@ public class HeatAxe : InfightWeapon
 
     }
 
-    const int num_points = 1;
+    const int num_points = 3;
 
     Vector3[] prev_points = new Vector3[num_points];
     Vector3[] points = new Vector3[num_points];
 
-    public GameObject hitpoint;
+    //public GameObject hitpoint;
+    public GameObject[] hitpoints;
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
 
@@ -129,7 +133,8 @@ public class HeatAxe : InfightWeapon
 
         for (int i = 0; i < num_points; i++)
         {
-            points[i] = hitpoint.transform.position;
+            //points[i] = hitpoint.transform.position;
+            points[i] = hitpoints[i].transform.position;
         }
 
 
