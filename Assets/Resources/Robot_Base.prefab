@@ -691,7 +691,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -5243988174349660497, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  - {fileID: -5243988174349660497, guid: 72e4107be106d6f43b935d45e847cdaf, type: 3}
   - {fileID: -1307981394404577805, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -717,7 +717,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4331891743736014817, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Mesh: {fileID: -8642857950240976080, guid: 72e4107be106d6f43b935d45e847cdaf, type: 3}
   m_Bones:
   - {fileID: 862114602242087773}
   - {fileID: 5737688583317284463}
@@ -2857,7 +2857,6 @@ MonoBehaviour:
   HP: 500
   MaxHP: 500
   StepLimit: 45
-  SlashDistance: 6
   offset: {x: 0, y: 8, z: -15}
   slash_camera_offset: {x: 0, y: 0, z: 0}
   slash_camera_offset_set: 0
