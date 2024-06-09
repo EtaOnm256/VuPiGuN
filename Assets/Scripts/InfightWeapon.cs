@@ -29,6 +29,7 @@ public class InfightWeapon : MonoBehaviour
     public Vector3 dir;
     public bool strong = false;
     public int damage = 250;
+    public bool autovanish = false;
 
     virtual public bool emitting
     {
@@ -38,7 +39,6 @@ public class InfightWeapon : MonoBehaviour
 
             if (!_emitting)
                 _slashing = false;
-
         }
         get { return _emitting; }
     }

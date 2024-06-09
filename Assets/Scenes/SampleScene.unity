@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy_prefab: {fileID: 4123517489741055787, guid: b33b50d8743964a438f0006a533e2b95, type: 3}
-  enemy_rweapon_prefab: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
+  enemy_rweapon_prefab: {fileID: 1241669158410538615, guid: 0700da4283e98704ea40a5d3a48d01da, type: 3}
   enemy_lweapon_prefab: {fileID: 228844574215034437, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
   enemy_subweapon_prefab: {fileID: 2794399005176561229, guid: 55deee3d9a546e941ba4d5e86755400e, type: 3}
 --- !u!114 &11316762
@@ -3487,13 +3487,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1645756876 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: -816810151819789262, guid: 0700da4283e98704ea40a5d3a48d01da, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3104683468701839796, guid: 0700da4283e98704ea40a5d3a48d01da, type: 3}
   m_PrefabInstance: {fileID: 705727490}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aff3b448863bd64ead86c083a940101, type: 3}
+  m_Script: {fileID: 11500000, guid: b8e91a505468b0348aa7a8d78237b5f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1656737267

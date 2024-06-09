@@ -211,7 +211,7 @@ public class RobotController : MonoBehaviour
 
     public bool dualwielding
     {
-        get { return rightWeapon.heavy; }
+        get { return rightWeapon.heavy || rightWeapon.dualwielded; }
     }
 
     public enum LockonState
@@ -564,6 +564,8 @@ public class RobotController : MonoBehaviour
             worldManager.AssignToTeam(this);
         }
 
+        
+        Sword.autovanish = dualwielding;
         Sword.emitting = false;
 
         spawn_completed = true;

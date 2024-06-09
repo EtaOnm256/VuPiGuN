@@ -42,6 +42,11 @@ public class HeatAxe : InfightWeapon
                     material.SetFloat(powerID, 5.0f);
                 else
                     material.SetFloat(powerID, 0.75f);
+
+                if(autovanish)
+                {
+                    meshRenderer.enabled = _emitting;
+                }
             }
         }
         get { return _emitting; }
@@ -54,9 +59,12 @@ public class HeatAxe : InfightWeapon
 
     Material material;
     int powerID;
+    MeshRenderer meshRenderer;
+
     private void Awake()
     {
         material = GetComponent<MeshRenderer>().materials[1];
+        meshRenderer = GetComponent<MeshRenderer>();
         powerID = Shader.PropertyToID("_Power");
 
         _slashMotionInfo = new Dictionary<RobotController.LowerBodyState, SlashMotionInfo>
@@ -103,6 +111,12 @@ public class HeatAxe : InfightWeapon
     void Start()
     {
         material.SetFloat(powerID, 0.75f);
+
+
+        if (autovanish && !_emitting)
+        {
+            meshRenderer.enabled = _emitting;
+        }
     }
 
     // Update is called once per frame
