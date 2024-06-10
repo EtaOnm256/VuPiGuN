@@ -69,9 +69,11 @@
     <Compile Include="Assets\Scripts\BeamHitEffect.cs" />
     <Compile Include="Assets\Scripts\WorldManager.cs" />
     <Compile Include="Assets\Scripts\Projectile\Beam.cs" />
+    <Compile Include="Assets\Scripts\Weapons\SolidRifle.cs" />
     <Compile Include="Assets\Scripts\InfightWeapon.cs" />
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\ThirdPersonController.cs" />
     <Compile Include="Assets\Scripts\UIController_Overlay_anotheraim.cs" />
+    <Compile Include="Assets\Scripts\Projectile\Bullet.cs" />
     <Compile Include="Assets\StarterAssets\InputSystem\StarterAssetsInputs.cs" />
     <Compile Include="Assets\Scripts\Weapons\HandCannon.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualButton.cs" />
@@ -89,8 +91,6 @@
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\RobotAI.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
-    <Compile Include="Assets\Scripts\Weapons\SolidRifle.cs" />
-    <Compile Include="Assets\Scripts\Projectile\Bullet.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
