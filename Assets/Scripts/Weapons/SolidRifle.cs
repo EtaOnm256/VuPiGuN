@@ -5,7 +5,7 @@ using UnityEngine;
 public class SolidRifle : Weapon
 {
     GameObject bullet_prefab;
-    //GameObject beamemit_prefab;
+    GameObject solidemit_prefab;
 
 
     private const int Max_Ammo = 6;
@@ -55,7 +55,7 @@ public class SolidRifle : Weapon
     protected override void OnAwake()
     {
         bullet_prefab = Resources.Load<GameObject>("Projectile/Bullet");
-        //beamemit_prefab = Resources.Load<GameObject>("BeamEmit");
+        solidemit_prefab = Resources.Load<GameObject>("SolidEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
@@ -82,7 +82,9 @@ public class SolidRifle : Weapon
             bullet.direction = gameObject.transform.forward;
             bullet.target = Target_Robot;
 
-           // GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+            GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+
+            solidemit_obj.transform.localScale = Vector3.one;
 
             energy -= Reload_Time;
 
