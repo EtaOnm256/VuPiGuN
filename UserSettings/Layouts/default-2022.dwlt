@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 997
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 371}
   m_MaxSize: {x: 10000, y: 10000}
@@ -984,9 +984,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 4.398838, y: 0.40953016, z: -58.880356}
+    m_Target: {x: -13.933988, y: 3.6506343, z: 36.36868}
     speed: 2
-    m_Value: {x: 4.398838, y: 0.40953016, z: -58.880356}
+    m_Value: {x: -13.933988, y: 3.6506343, z: 36.36868}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1032,13 +1032,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.07781641, y: 0.83807313, z: -0.12409236, w: -0.5255498}
+    m_Target: {x: -0.21678753, y: 0.34512782, z: -0.08227035, w: -0.90947586}
     speed: 2
-    m_Value: {x: -0.077815495, y: 0.83806324, z: -0.124090895, w: -0.52554363}
+    m_Value: {x: -0.21678485, y: 0.34512353, z: -0.082269326, w: -0.9094646}
   m_Size:
-    m_Target: 14.653098
+    m_Target: 10.09479
     speed: 2
-    m_Value: 14.653098
+    m_Value: 10.09479
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1280,7 +1280,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 180}
+    m_ScrollPosition: {x: 0, y: 240}
     m_GridSize: 16
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207
