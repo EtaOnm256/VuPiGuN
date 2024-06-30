@@ -245,6 +245,22 @@ public class RobotController : MonoBehaviour
 
     private float _barmlayerwait = 0.0f;
 
+    float firing_multiplier
+    {
+        get
+        {
+            return rightWeapon.firing_multiplier;
+        }
+    }
+
+    float lockon_multiplier
+    {
+        get
+        {
+            return rightWeapon.lockon_multiplier;
+        }
+    }
+
     public Animator animator;
 
     public GameObject explode_prefab;
@@ -581,7 +597,11 @@ public class RobotController : MonoBehaviour
         Sword.autovanish = dualwielding;
         Sword.emitting = false;
 
+        animator.SetFloat("FiringSpeed", firing_multiplier);
+
         spawn_completed = true;
+
+
 
     }
 
@@ -999,13 +1019,13 @@ public class RobotController : MonoBehaviour
 
                     float angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
 
-                    if (angle < 1.0f)
+                    if (angle < 1.0f* lockon_multiplier)
                     {
                         lockonState = LockonState.LOCKON;
                     }
                     else
                     {
-                        Quaternion q = Quaternion.RotateTowards(cameraRotation, GetTargetQuaternionForView(Target_Robot), 1.0f);
+                        Quaternion q = Quaternion.RotateTowards(cameraRotation, GetTargetQuaternionForView(Target_Robot), 1.0f* lockon_multiplier);
 
                         _cinemachineTargetYaw = q.eulerAngles.y;
                         _cinemachineTargetPitch = q.eulerAngles.x;
@@ -1061,14 +1081,14 @@ public class RobotController : MonoBehaviour
         {
             case UpperBodyState.FIRE:
                 {
-                    _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
+                    _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f* firing_multiplier);
 
 
-                    _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
+                    _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f * firing_multiplier);
 
-                    _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
+                    _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f * firing_multiplier);
 
-                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f * firing_multiplier);
 
                     if (dualwielding)
                     {

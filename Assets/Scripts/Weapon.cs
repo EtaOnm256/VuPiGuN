@@ -30,6 +30,16 @@ public class Weapon : MonoBehaviour
         get { return false; }
     }
 
+    virtual public float firing_multiplier
+    {
+        get { return 1.0f; }
+    }
+
+    virtual public float lockon_multiplier
+    {
+        get { return 1.0f; }
+    }
+
     //virtual public bool dualwielded
     //{
     //    get { return false; }

@@ -58,6 +58,14 @@ public class SMG : Weapon
         }
     }
 
+    override public float firing_multiplier
+    {
+        get { return 2.0f; }
+    }
+    override public float lockon_multiplier
+    {
+        get { return 3.0f; }
+    }
     protected override void OnAwake()
     {
         bullet_prefab = Resources.Load<GameObject>("Projectile/SMGBullet");
@@ -88,7 +96,7 @@ public class SMG : Weapon
             canHold = true;
         }
 
-        if (energy >= Reload_Time && trigger && fire_followthrough <= 40)
+        if (energy >= Reload_Time && trigger && fire_followthrough <= 25)
         {
 
             GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -104,7 +112,7 @@ public class SMG : Weapon
 
             energy -= Reload_Time;
 
-            fire_followthrough = 45;
+            fire_followthrough = 30;
 
             magazine--;
         }
