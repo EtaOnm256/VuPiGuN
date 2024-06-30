@@ -105,7 +105,7 @@ public class Bullet : MonoBehaviour
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(direction, 75, false);
+                    robotController.DoDamage(direction, 75, RobotController.KnockBackType.Weak);
 
                     dead = true;
                 }

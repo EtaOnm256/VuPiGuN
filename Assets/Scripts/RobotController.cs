@@ -209,10 +209,12 @@ public class RobotController : MonoBehaviour
     public GameObject LHand = null;
     public GameObject LShoulder = null;
 
-    public bool dualwielding
-    {
-        get { return rightWeapon.heavy || rightWeapon.dualwielded; }
-    }
+    //public bool dualwielding
+    //{
+    //    get { return rightWeapon.heavy || rightWeapon.dualwielded; }
+    //}
+
+    public bool dualwielding = false;
 
     public enum LockonState
     {
@@ -372,88 +374,99 @@ public class RobotController : MonoBehaviour
     Quaternion AimTargetRotation_Head;
     Quaternion AimTargetRotation_Chest;
 
-    public void DoDamage(Vector3 dir, int damage, bool strong)
+    public enum KnockBackType
+    {
+        None,
+        Weak,
+        Strong
+    }
+
+    public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
         if (!spawn_completed)
             return;
 
         _animator.speed = 1.0f;
 
-        if (lowerBodyState != LowerBodyState.DOWN)
+        if (knockBackType != KnockBackType.None)
         {
-            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState == LowerBodyState.DASH
-                || lowerBodyState == LowerBodyState.AIRSUBFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
-            {
-                TransitLowerBodyState(LowerBodyState.DOWN);
 
-                knockbackdir = dir;
-                knockbackdir.y = 0.0f;
-                if (strong)
+            if (lowerBodyState != LowerBodyState.DOWN)
+            {
+                if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState == LowerBodyState.DASH
+                    || lowerBodyState == LowerBodyState.AIRSUBFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
                 {
-                    _speed = SprintSpeed;
+                    TransitLowerBodyState(LowerBodyState.DOWN);
+
+                    knockbackdir = dir;
+                    knockbackdir.y = 0.0f;
+                    if (knockBackType == KnockBackType.Strong)
+                    {
+                        _speed = SprintSpeed;
+                    }
+                    else
+                    {
+                        _speed = SprintSpeed / 2;
+                    }
+                    _verticalVelocity = 0.0f;
                 }
                 else
                 {
-                    _speed = SprintSpeed / 2;
-                }
-                _verticalVelocity = 0.0f;
-            }
-            else
-            {
-                event_knockbacked = false;
+                    event_knockbacked = false;
 
 
 
-                upperBodyState = UpperBodyState.KNOCKBACK;
-                lowerBodyState = LowerBodyState.KNOCKBACK;
+                    upperBodyState = UpperBodyState.KNOCKBACK;
+                    lowerBodyState = LowerBodyState.KNOCKBACK;
 
-                knockbackdir = dir;
-                knockbackdir.y = 0.0f;
+                    knockbackdir = dir;
+                    knockbackdir.y = 0.0f;
 
-                float knockbackdegree = Mathf.Atan2(knockbackdir.x, knockbackdir.z) * Mathf.Rad2Deg;
+                    float knockbackdegree = Mathf.Atan2(knockbackdir.x, knockbackdir.z) * Mathf.Rad2Deg;
 
-                float stepmotiondegree = Mathf.Repeat(knockbackdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
+                    float stepmotiondegree = Mathf.Repeat(knockbackdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
-                if (strong)
-                {
-                    if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-                        _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
-                    else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-                        _animator.Play(_animIDKnockback_Strong_Back, 0, 0);
-                    else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-                        _animator.Play(_animIDKnockback_Strong_Left, 0, 0);
+                    if (knockBackType == KnockBackType.Strong)
+                    {
+                        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                            _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
+                        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                            _animator.Play(_animIDKnockback_Strong_Back, 0, 0);
+                        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                            _animator.Play(_animIDKnockback_Strong_Left, 0, 0);
+                        else
+                            _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
+
+                        _speed = SprintSpeed * 2;
+                    }
                     else
-                        _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
+                    {
 
-                    _speed = SprintSpeed * 2;
+                        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                            _animator.Play(_animIDKnockback_Right, 0, 0);
+                        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                            _animator.Play(_animIDKnockback_Back, 0, 0);
+                        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                            _animator.Play(_animIDKnockback_Left, 0, 0);
+                        else
+                            _animator.Play(_animIDKnockback_Front, 0, 0);
+
+                        _speed = SprintSpeed;
+                    }
+
+                    _controller.height = 7.0f;
+
+                    _verticalVelocity = 0.0f;
                 }
-                else
+
+                Sword.emitting = false;
+
+                // 射撃中にのけぞった場合に備えて
+                if (dualwielding)
                 {
-
-                    if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-                        _animator.Play(_animIDKnockback_Right, 0, 0);
-                    else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-                        _animator.Play(_animIDKnockback_Back, 0, 0);
-                    else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-                        _animator.Play(_animIDKnockback_Left, 0, 0);
-                    else
-                        _animator.Play(_animIDKnockback_Front, 0, 0);
-
-                    _speed = SprintSpeed;
+                    _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                    _animator.speed = 1.0f;
                 }
-
-                _controller.height = 7.0f;
-
-                _verticalVelocity = 0.0f;
-            }
-
-            Sword.emitting = false;
-
-            // 射撃中にのけぞった場合に備えて
-            if (dualwielding)
-            {
-                _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
-                _animator.speed = 1.0f;
             }
         }
 

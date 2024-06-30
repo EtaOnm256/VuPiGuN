@@ -30,10 +30,10 @@ public class Weapon : MonoBehaviour
         get { return false; }
     }
 
-    virtual public bool dualwielded
-    {
-        get { return false; }
-    }
+    //virtual public bool dualwielded
+    //{
+    //    get { return false; }
+    //}
 
     private bool _canHold = false;
 

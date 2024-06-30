@@ -2,20 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SolidRifle : Weapon
+public class SMG : Weapon
 {
     GameObject bullet_prefab;
     GameObject solidemit_prefab;
 
 
-    private const int Max_Ammo = 6;
+    private const int Max_Ammo = 30;
 
     private const int MaxEnergy = Max_Ammo* Reload_Time;
-    private const int Reload_Time = 150;
+    private const int Reload_Time = 30;
 
     int _energy = 0;
 
     public GameObject firePoint;
+
+    const int MaxMagazine = 5;
+
+    int magazine = MaxMagazine;
 
     //public override bool dualwielded
     //{
@@ -30,19 +34,21 @@ public class SolidRifle : Weapon
             {
                 _energy = value;
 
-                weaponPanelItem.ammoText.text = (_energy/ Reload_Time).ToString();
+                weaponPanelItem.ammoText.text = (_energy / Reload_Time).ToString();
                 weaponPanelItem.ammoSlider.value = _energy;
 
-                if((_energy / Reload_Time) <= 0)
+                if ((_energy / Reload_Time) <= 0)
                 {
                     weaponPanelItem.ammoText.color = Color.red;
                     weaponPanelItem.iconImage.color = Color.red;
-                }
+                  }
                 else
                 {
                     weaponPanelItem.ammoText.color = Color.white;
                     weaponPanelItem.iconImage.color = Color.white;
                 }
+
+
             }
         }
 
@@ -54,8 +60,8 @@ public class SolidRifle : Weapon
 
     protected override void OnAwake()
     {
-        bullet_prefab = Resources.Load<GameObject>("Projectile/Bullet");
-        solidemit_prefab = Resources.Load<GameObject>("SolidEmit");
+        bullet_prefab = Resources.Load<GameObject>("Projectile/SMGBullet");
+        solidemit_prefab = Resources.Load<GameObject>("SMGEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
@@ -72,27 +78,41 @@ public class SolidRifle : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if (energy >= Reload_Time && trigger)
+        if ((_energy / Reload_Time) <= 0 || magazine <= 0)
+        {
+            canHold = false;
+        }
+        else
+        {
+         
+            canHold = true;
+        }
+
+        if (energy >= Reload_Time && trigger && fire_followthrough <= 40)
         {
 
             GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
-            Bullet bullet = bullet_obj.GetComponent<Bullet>();
+            SMGBullet bullet = bullet_obj.GetComponent<SMGBullet>();
 
             bullet.direction = gameObject.transform.forward;
             bullet.target = Target_Robot;
 
             GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
-            solidemit_obj.transform.localScale = Vector3.one;
+            solidemit_obj.transform.localScale = Vector3.one/2.0f;
 
             energy -= Reload_Time;
 
             fire_followthrough = 45;
+
+            magazine--;
         }
 
         if (fire_followthrough > 0)
             fire_followthrough--;
+        else
+            magazine = MaxMagazine;
     }
 
  }

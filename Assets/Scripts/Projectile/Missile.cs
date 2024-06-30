@@ -86,7 +86,7 @@ public class Missile : MonoBehaviour
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(direction, 100, false);
+                    robotController.DoDamage(direction, 100, RobotController.KnockBackType.Weak);
 
 
                 }

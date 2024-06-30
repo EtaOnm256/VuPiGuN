@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public class Beam : MonoBehaviour
+public class SMGBullet : MonoBehaviour
 {
     public RobotController target = null;
 
@@ -12,19 +12,24 @@ public class Beam : MonoBehaviour
 
     public Vector3 direction;
 
-    public float MaxLength = 15.0f;
+    public float MaxLength = 3.0f;
 
     Vector3 start_pos;
+
+    const int positionCount = 4;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        lineRenderer.positionCount = 2;
+        //lineRenderer.positionCount = positionCount;
 
         start_pos = transform.position;
 
-        lineRenderer.SetPosition(0, start_pos);
-        lineRenderer.SetPosition(1, start_pos);
+        for (int i = 0; i < positionCount; i++)
+        {
+            lineRenderer.SetPosition(i, start_pos);
+        }
 
         initial_direction = Quaternion.LookRotation(direction);
     }
@@ -46,12 +51,20 @@ public class Beam : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        const float speed = 1.6f;
+        const float speed = 1.2f;
 
         if (!dead)
         {
 
-            
+            lineRenderer.SetPosition(positionCount - 1, lineRenderer.GetPosition(positionCount - 1) + direction * speed);
+
+            float length = (lineRenderer.GetPosition(positionCount - 1) - start_pos).magnitude;
+
+            length = Mathf.Min(length, MaxLength);
+
+            Vector3 view_dir = (lineRenderer.GetPosition(positionCount - 1) - start_pos).normalized;
+
+            lineRenderer.SetPosition(0, lineRenderer.GetPosition(positionCount - 1) - view_dir * length);
 
 
 
@@ -63,15 +76,15 @@ public class Beam : MonoBehaviour
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {
-                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 1.0f);
+                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 0.30f);
 
-                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 10.0f);
+                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 3.0f);
 
                     direction = qDirection_result * Vector3.forward;
                 }
             }
 
-            Ray ray = new Ray(lineRenderer.GetPosition(1), direction);
+            Ray ray = new Ray(lineRenderer.GetPosition(positionCount - 1), direction);
 
             int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
 
@@ -93,29 +106,23 @@ public class Beam : MonoBehaviour
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(direction, 100, RobotController.KnockBackType.Weak);
+                    robotController.DoDamage(direction, 10, RobotController.KnockBackType.None);
 
-                    
+                    dead = true;
                 }
                 else
                 {
                     dead = true;
                 }
 
-                GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
+                GameObject hitEffect = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.LookRotation(view_dir,Vector3.up));
+
+                hitEffect.transform.localScale = Vector3.one * 0.5f;
             }
 
 
 
-            lineRenderer.SetPosition(1, lineRenderer.GetPosition(1) + direction * speed);
-
-            float length = (lineRenderer.GetPosition(1) - start_pos).magnitude;
-
-            length = Mathf.Min(length, MaxLength);
-
-            Vector3 view_dir = (lineRenderer.GetPosition(1) - start_pos).normalized;
-
-            lineRenderer.SetPosition(0, lineRenderer.GetPosition(1) - view_dir * length);
+         
 
 
             if (time-- <= 0)
@@ -125,9 +132,9 @@ public class Beam : MonoBehaviour
         }
         else
         {
-            Vector3 view_dir = (lineRenderer.GetPosition(1) - start_pos).normalized;
+            Vector3 view_dir = (lineRenderer.GetPosition(positionCount - 1) - start_pos).normalized;
 
-            if ((lineRenderer.GetPosition(1) - lineRenderer.GetPosition(0)).magnitude <= speed)
+            if ((lineRenderer.GetPosition(positionCount - 1) - lineRenderer.GetPosition(0)).magnitude <= speed)
             {
                 GameObject.Destroy(gameObject);
             }
@@ -137,6 +144,11 @@ public class Beam : MonoBehaviour
             }
 
             
+        }
+
+        for(int i=1;i< positionCount - 1;i++)
+        {
+            lineRenderer.SetPosition(i, lineRenderer.GetPosition(0)+ (lineRenderer.GetPosition(positionCount - 1)- lineRenderer.GetPosition(0))*i/(positionCount-i));
         }
     }
 }
