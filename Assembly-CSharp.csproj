@@ -92,8 +92,8 @@
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\BasicRigidBodyPush.cs" />
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\RobotAI.cs" />
-    <Compile Include="Assets\Scripts\Weapon.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod_Weist.cs" />
+    <Compile Include="Assets\Scripts\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

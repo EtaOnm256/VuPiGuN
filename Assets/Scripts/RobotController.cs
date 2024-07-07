@@ -103,8 +103,8 @@ public class RobotController : MonoBehaviour
     public bool slash_camera_offset_set = false;
 
     // cinemachine
-    private float _cinemachineTargetYaw;
-    private float _cinemachineTargetPitch;
+    public  float _cinemachineTargetYaw;
+    public float _cinemachineTargetPitch;
 
     // player
     private float _speed;
