@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-
+    public RobotController owner;
     public RobotController Target_Robot;
     public UIController_Overlay uIController_Overlay = null;
     public GameObject weaponPanelItemObj = null;

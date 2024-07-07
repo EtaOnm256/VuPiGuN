@@ -76,6 +76,8 @@ public class BeamRifle : Weapon
 
             beam.direction = gameObject.transform.forward;
             beam.target = Target_Robot;
+            beam.team = owner.team;
+            beam.worldManager = owner.worldManager;
 
             GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 

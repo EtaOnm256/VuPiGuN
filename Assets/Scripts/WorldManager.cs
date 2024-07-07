@@ -7,6 +7,7 @@ public class WorldManager : MonoBehaviour
     public class Team
     {
         public List<RobotController> robotControllers;
+        public List<Projectile> projectiles;
     }
 
     public List<Team> teams = new List<Team>();
@@ -20,8 +21,8 @@ public class WorldManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Team friend_team = new Team { robotControllers = new List<RobotController>() };
-        Team enemy_team = new Team { robotControllers = new List<RobotController>() };
+        Team friend_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>() };
+        Team enemy_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>() };
   
 
         SpawnEnemy(new Vector3(-20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
@@ -161,5 +162,16 @@ public class WorldManager : MonoBehaviour
 
         team.robotControllers.Add(robotController);
         HandleEnemyAdd(robotController);
+    }
+
+    public void AddProjectile(Projectile projectile,Team team)
+    {
+        projectile.team = team;
+        team.projectiles.Add(projectile);
+    }
+
+    public void RemoveProjectile(Projectile projectile)
+    {
+        projectile.team.projectiles.Remove(projectile);
     }
 }

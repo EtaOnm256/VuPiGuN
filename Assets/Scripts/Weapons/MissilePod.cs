@@ -85,7 +85,8 @@ public class MissilePod : Weapon
                 beam.target = Target_Robot;
                 //beam.transform.localScale = Vector3.one;
                 // GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
-
+                beam.team = owner.team;
+                beam.worldManager = owner.worldManager;
                 energy -= Reload_Time;
 
                 fire_followthrough = 30;

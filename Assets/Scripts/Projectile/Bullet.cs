@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public class Bullet : MonoBehaviour
+public class Bullet : Projectile
 {
     public RobotController target = null;
 
     public LineRenderer lineRenderer;
 
     public Quaternion initial_direction;
-
-    public Vector3 direction;
 
     public float MaxLength = 15.0f;
 
@@ -19,7 +17,7 @@ public class Bullet : MonoBehaviour
     const int positionCount = 4;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void OnStart()
     {
         //lineRenderer.positionCount = positionCount;
 

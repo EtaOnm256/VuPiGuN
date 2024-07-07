@@ -65,7 +65,7 @@ public class RobotAI : InputBase
 
             
             fire = false;
-
+            sprint = false;
             if (robotController.upperBodyState == RobotController.UpperBodyState.FIRE)
             {
                 move = Vector2.zero;
@@ -99,19 +99,45 @@ public class RobotAI : InputBase
                 }
                 else
                 {
-                    if (System.Math.Sqrt(mindist) > 75.0f)
+                    bool dodge = false;
+
+                    foreach (var team in robotController.worldManager.teams)
                     {
-                        move.y = 1.0f;
-                        //moveDirChangeTimer = 60;
+                        if (team == robotController.team)
+                            continue;
+
+                        foreach (var projectile in team.projectiles)
+                        {
+                            if ( Vector3.Dot((robotController.GetCenter()-projectile.transform.position).normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
+                            {
+                                dodge = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (dodge)
+                    {
+                        move.x = 1.0f;
+                        sprint = true;
+                        moveDirChangeTimer = 60;
                     }
                     else
                     {
-                        
-
-                        if (moveDirChangeTimer == 0)
+                        if (System.Math.Sqrt(mindist) > 75.0f)
                         {
-                            move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
-                            moveDirChangeTimer = 60;
+                            move.y = 1.0f;
+                            //moveDirChangeTimer = 60;
+                        }
+                        else
+                        {
+
+
+                            if (moveDirChangeTimer == 0)
+                            {
+                                move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
+                                moveDirChangeTimer = 60;
+                            }
                         }
                     }
                     fire_wait--;

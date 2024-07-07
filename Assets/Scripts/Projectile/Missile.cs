@@ -2,18 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public class Missile : MonoBehaviour
+public class Missile : Projectile
 {
     public RobotController target = null;
 
     public Quaternion initial_direction;
 
-    public Vector3 direction;
-
     Vector3 start_pos;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void OnStart()
     {
      
 

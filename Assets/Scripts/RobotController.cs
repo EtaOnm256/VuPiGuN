@@ -552,6 +552,8 @@ public class RobotController : MonoBehaviour
             if(shoulderWeapon != null)
                 uIController_Overlay.AddWeapon(shoulderWeapon);
         }
+
+     
     }
 
     private void Start()
@@ -598,6 +600,12 @@ public class RobotController : MonoBehaviour
         Sword.emitting = false;
 
         animator.SetFloat("FiringSpeed", firing_multiplier);
+
+        if (rightWeapon != null)
+            rightWeapon.owner = this;
+
+        if (shoulderWeapon != null)
+            shoulderWeapon.owner = this;
 
         spawn_completed = true;
 
