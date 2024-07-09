@@ -108,7 +108,18 @@ public class RobotAI : InputBase
 
                         foreach (var projectile in team.projectiles)
                         {
-                            if ( Vector3.Dot((robotController.GetCenter()-projectile.transform.position).normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
+                            //if ( Vector3.Dot(.normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
+
+                            float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.transform.position)).magnitude;
+
+                            float dist = (robotController.GetCenter() - projectile.transform.position).magnitude;
+
+                            
+
+                            if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
+                                && (/*projectile.target == robotController || */shift < 3.0f)
+                                && dist/projectile.speed < 60.0f
+                                )
                             {
                                 dodge = true;
                                 break;

@@ -231,10 +231,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3505655535977820652}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
-      propertyPath: dualwielding
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: thrusters.Array.size
       value: 2
       objectReference: {fileID: 0}

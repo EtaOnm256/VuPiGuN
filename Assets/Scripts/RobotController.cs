@@ -475,7 +475,8 @@ public class RobotController : MonoBehaviour
                     _verticalVelocity = 0.0f;
                 }
 
-                Sword.emitting = false;
+                if(Sword != null)
+                    Sword.emitting = false;
 
                 // 射撃中にのけぞった場合に備えて
                 if (dualwielding)
@@ -595,9 +596,11 @@ public class RobotController : MonoBehaviour
             worldManager.AssignToTeam(this);
         }
 
-        
-        Sword.autovanish = dualwielding;
-        Sword.emitting = false;
+        if (Sword != null)
+        {
+            Sword.autovanish = dualwielding;
+            Sword.emitting = false;
+        }
 
         animator.SetFloat("FiringSpeed", firing_multiplier);
 
@@ -1608,7 +1611,8 @@ public class RobotController : MonoBehaviour
         else
             animator.SetLayerWeight(1, _rarmaimwait);
 
-        Sword.dir = transform.forward;
+        if(Sword != null)
+            Sword.dir = transform.forward;
     }
 
     //return angle in range -180 to 180

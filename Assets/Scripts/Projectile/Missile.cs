@@ -4,8 +4,6 @@ using UnityEngine;
 using System.Linq;
 public class Missile : Projectile
 {
-    public RobotController target = null;
-
     public Quaternion initial_direction;
 
     Vector3 start_pos;
@@ -18,6 +16,8 @@ public class Missile : Projectile
         start_pos = transform.position;
 
         initial_direction = Quaternion.LookRotation(direction);
+
+        speed = 1.2f;
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -42,7 +42,7 @@ public class Missile : Projectile
         if (!dead)
         {
 
-            const float speed = 1.2f;
+
 
 
 

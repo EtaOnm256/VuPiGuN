@@ -7,6 +7,8 @@ public class Projectile : MonoBehaviour
     public WorldManager.Team team;
     public WorldManager worldManager;
     public Vector3 direction;
+    public RobotController target = null;
+    public float speed;
     // Start is called before the first frame update
     void Start()
     {

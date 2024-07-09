@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 public class Beam : Projectile
 {
-    public RobotController target = null;
+
 
     public LineRenderer lineRenderer;
 
@@ -27,6 +27,8 @@ public class Beam : Projectile
         lineRenderer.SetPosition(1, start_pos);
 
         initial_direction = Quaternion.LookRotation(direction);
+
+        speed = 1.6f;
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -46,7 +48,7 @@ public class Beam : Projectile
     // Update is called once per frame
     void FixedUpdate()
     {
-        const float speed = 1.6f;
+
 
         if (!dead)
         {

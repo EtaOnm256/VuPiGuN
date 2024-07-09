@@ -123,6 +123,8 @@ public class WorldManager : MonoBehaviour
 
         robotController.worldManager = this;
         robotController._input = enemy.AddComponent<RobotAI>();
+
+        if(enemy_rweapon_prefab!=null)
         {
             GameObject enemyrweapon = GameObject.Instantiate(enemy_rweapon_prefab, raycastHit.point, rot);
 
@@ -134,6 +136,7 @@ public class WorldManager : MonoBehaviour
             robotController.rightWeapon = enemyrweapon.GetComponent<Weapon>();
         }
 
+        if(enemy_lweapon_prefab != null)
         {
             GameObject enemylweapon = GameObject.Instantiate(enemy_lweapon_prefab, raycastHit.point, rot);
 
@@ -145,6 +148,7 @@ public class WorldManager : MonoBehaviour
             robotController.Sword = enemylweapon.GetComponent<InfightWeapon>();
         }
 
+        if (enemy_subweapon_prefab != null)
         {
             GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
 

@@ -4,8 +4,6 @@ using UnityEngine;
 using System.Linq;
 public class SMGBullet : Projectile
 {
-    public RobotController target = null;
-
     public LineRenderer lineRenderer;
 
     public Quaternion initial_direction;
@@ -30,6 +28,8 @@ public class SMGBullet : Projectile
         }
 
         initial_direction = Quaternion.LookRotation(direction);
+
+        speed = 1.2f;
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -49,7 +49,7 @@ public class SMGBullet : Projectile
     // Update is called once per frame
     void FixedUpdate()
     {
-        const float speed = 1.2f;
+
 
         if (!dead)
         {

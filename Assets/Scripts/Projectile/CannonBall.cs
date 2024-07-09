@@ -4,8 +4,6 @@ using UnityEngine;
 using System.Linq;
 public class CannonBall : Projectile
 {
-    public RobotController target = null;
-
     public Quaternion initial_direction;
 
     Vector3 start_pos;
@@ -18,6 +16,8 @@ public class CannonBall : Projectile
         start_pos = transform.position;
 
         initial_direction = Quaternion.LookRotation(direction);
+
+        speed = 2.0f;
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -40,7 +40,7 @@ public class CannonBall : Projectile
        
         {
 
-            const float speed = 2.0f;
+
 
 
 
