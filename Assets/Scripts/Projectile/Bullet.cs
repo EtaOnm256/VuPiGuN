@@ -20,7 +20,7 @@ public class Bullet : Projectile
     {
         //lineRenderer.positionCount = positionCount;
 
-        start_pos = transform.position;
+        position = start_pos = transform.position;
 
         for (int i = 0; i < positionCount; i++)
         {
@@ -44,8 +44,6 @@ public class Bullet : Projectile
 
 	int time = 120;
 
-    bool dead = false;
-
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -53,6 +51,8 @@ public class Bullet : Projectile
 
         if (!dead)
         {
+
+            position = lineRenderer.GetPosition(1) + direction * speed;
 
             lineRenderer.SetPosition(positionCount - 1, lineRenderer.GetPosition(positionCount - 1) + direction * speed);
 

@@ -21,7 +21,7 @@ public class Beam : Projectile
     {
         lineRenderer.positionCount = 2;
 
-        start_pos = transform.position;
+        position = start_pos = transform.position;
 
         lineRenderer.SetPosition(0, start_pos);
         lineRenderer.SetPosition(1, start_pos);
@@ -42,8 +42,6 @@ public class Beam : Projectile
     int hitHistoryRCCount = 0;
 
 	int time = 120;
-
-    bool dead = false;
 
     // Update is called once per frame
     void FixedUpdate()
@@ -107,9 +105,10 @@ public class Beam : Projectile
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
             }
 
-
+            position = lineRenderer.GetPosition(1) + direction * speed;
 
             lineRenderer.SetPosition(1, lineRenderer.GetPosition(1) + direction * speed);
+
 
             float length = (lineRenderer.GetPosition(1) - start_pos).magnitude;
 

@@ -214,7 +214,12 @@ public class RobotController : MonoBehaviour
     //    get { return rightWeapon.heavy || rightWeapon.dualwielded; }
     //}
 
-    public bool dualwielding = false;
+    public bool dualwielding
+    {
+        get { return rightWeapon.heavy || dualwield_lightweapon; }
+    }
+
+    public bool dualwield_lightweapon = false;
 
     public enum LockonState
     {
@@ -1099,11 +1104,12 @@ public class RobotController : MonoBehaviour
 
                     _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f * firing_multiplier);
 
-                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f * firing_multiplier);
+                   
 
                     if (dualwielding)
                     {
                         rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f * firing_multiplier);
                     }
                     else
                     {
@@ -1488,7 +1494,11 @@ public class RobotController : MonoBehaviour
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
-                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+
+                    if(dualwielding)
+                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                    else
+                        _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
 
                     chest_no_aiming = true;
                 }
@@ -1606,9 +1616,10 @@ public class RobotController : MonoBehaviour
 
         overrideTransform.weight = _rarmaimwait;
 
-        if (dualwielding)
-            animator.SetLayerWeight(2, _barmlayerwait);
-        else
+        
+        animator.SetLayerWeight(2, _barmlayerwait);
+
+        if (!dualwielding)
             animator.SetLayerWeight(1, _rarmaimwait);
 
         if(Sword != null)

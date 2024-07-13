@@ -11,7 +11,7 @@ public class UIController_Overlay : MonoBehaviour
 
     public List<Weapon> weapons = new List<Weapon>();
 
-    public Camera camera;
+    public Camera uiCamera;
 
     public Canvas canvas;
 
@@ -115,8 +115,8 @@ public class UIController_Overlay : MonoBehaviour
         screenPoint_line_l_guide.z = 50.0f;
 
         guideline_lineRenderer.positionCount = 2;
-        guideline_lineRenderer.SetPosition(0, camera.ScreenToWorldPoint(screenPoint_line_l));
-        guideline_lineRenderer.SetPosition(1, camera.ScreenToWorldPoint(screenPoint_line_l_guide));
+        guideline_lineRenderer.SetPosition(0, uiCamera.ScreenToWorldPoint(screenPoint_line_l));
+        guideline_lineRenderer.SetPosition(1, uiCamera.ScreenToWorldPoint(screenPoint_line_l_guide));
 
         Vector3 screenPoint_line_l_far = RectTransformUtility.WorldToScreenPoint(Camera.main, RelToAbs(relative_l + relative_f_far, origin.GetCenter(), Camera.main.transform.rotation));
         screenPoint_line_l_far.z = 50.0f;
@@ -139,7 +139,7 @@ public class UIController_Overlay : MonoBehaviour
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     canvas.GetComponent<RectTransform>(),
                     screenPoint,
-                    camera,
+                    uiCamera,
                     out uiPoint
                 );
 
@@ -173,7 +173,7 @@ public class UIController_Overlay : MonoBehaviour
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 canvas.GetComponent<RectTransform>(),
                 screenPoint_guide,
-                camera,
+                uiCamera,
                 out uiPoint_guide
                 );
 
@@ -184,8 +184,8 @@ public class UIController_Overlay : MonoBehaviour
                 screenPoint_guide_line.z = 50.0f;
 
                 reticle.Value.guideline.lineRenderer.enabled = true;
-                reticle.Value.guideline.lineRenderer.SetPosition(0, camera.ScreenToWorldPoint(screenPoint_line));
-                reticle.Value.guideline.lineRenderer.SetPosition(1, camera.ScreenToWorldPoint(screenPoint_guide_line));
+                reticle.Value.guideline.lineRenderer.SetPosition(0, uiCamera.ScreenToWorldPoint(screenPoint_line));
+                reticle.Value.guideline.lineRenderer.SetPosition(1, uiCamera.ScreenToWorldPoint(screenPoint_guide_line));
                 if (target == reticle.Key)
                 {
                     switch (lockonState)

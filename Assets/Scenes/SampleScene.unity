@@ -502,7 +502,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -1319,17 +1319,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4735893393083617490, guid: edddf243ba22119469cc2571c045b697, type: 3}
   m_PrefabInstance: {fileID: 1678246314}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &592213720 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8466513833129878751, guid: edddf243ba22119469cc2571c045b697, type: 3}
-  m_PrefabInstance: {fileID: 1678246314}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f0a34ebf536756409faf8670fb264fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &593688493
 GameObject:
   m_ObjectHideFlags: 0
@@ -1707,7 +1696,11 @@ PrefabInstance:
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: rightWeapon
       value: 
-      objectReference: {fileID: 592213720}
+      objectReference: {fileID: 1284344047}
+    - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
+      propertyPath: dualwielding
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: worldManager
       value: 
@@ -2151,7 +2144,7 @@ MonoBehaviour:
   origin: {fileID: 0}
   target: {fileID: 0}
   weapons: []
-  camera: {fileID: 589278062}
+  uiCamera: {fileID: 589278062}
   canvas: {fileID: 806228394}
   weaponPanel: {fileID: 973725294}
   distance: 1000
@@ -3232,6 +3225,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1284344047 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -8375335882898073400, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
+  m_PrefabInstance: {fileID: 86783941}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aff3b448863bd64ead86c083a940101, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1357553651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3754,6 +3758,10 @@ PrefabInstance:
     - target: {fileID: 5400543135848598120, guid: edddf243ba22119469cc2571c045b697, type: 3}
       propertyPath: m_Name
       value: SMG Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400543135848598120, guid: edddf243ba22119469cc2571c045b697, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

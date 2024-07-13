@@ -29,7 +29,7 @@ public class RobotAI : InputBase
     void FixedUpdate()
     {
         float mindist = float.MaxValue;
-        float minangle = float.MaxValue;
+        
         RobotController nearest_robot = null;
 
         foreach (var team in robotController.worldManager.teams)
@@ -72,8 +72,8 @@ public class RobotAI : InputBase
             }
             else
             {
-              
-                if (fire_wait <= 0)
+                move = Vector2.zero;
+                /*if (fire_wait <= 0)
                 {
                     if (System.Math.Sqrt(mindist) < 100.0f)
                     {
@@ -97,7 +97,7 @@ public class RobotAI : InputBase
                         fire_prepare = 15;
                     }
                 }
-                else
+                else*/
                 {
                     bool dodge = false;
 
@@ -108,17 +108,18 @@ public class RobotAI : InputBase
 
                         foreach (var projectile in team.projectiles)
                         {
+                            if (projectile.dead)
+                                continue;
+
                             //if ( Vector3.Dot(.normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
 
-                            float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.transform.position)).magnitude;
+                            float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.position)).magnitude;
 
-                            float dist = (robotController.GetCenter() - projectile.transform.position).magnitude;
-
-                            
+                            float dist = (robotController.GetCenter() - projectile.position).magnitude;
 
                             if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
                                 && (/*projectile.target == robotController || */shift < 3.0f)
-                                && dist/projectile.speed < 60.0f
+                                && dist/projectile.speed < 20.0f
                                 )
                             {
                                 dodge = true;
@@ -133,7 +134,7 @@ public class RobotAI : InputBase
                         sprint = true;
                         moveDirChangeTimer = 60;
                     }
-                    else
+                    /*else
                     {
                         if (System.Math.Sqrt(mindist) > 75.0f)
                         {
@@ -150,7 +151,7 @@ public class RobotAI : InputBase
                                 moveDirChangeTimer = 60;
                             }
                         }
-                    }
+                    }*/
                     fire_wait--;
                     //moveDirChangeTimer--;
                 }

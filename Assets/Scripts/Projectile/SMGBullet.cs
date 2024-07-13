@@ -20,7 +20,7 @@ public class SMGBullet : Projectile
     {
         //lineRenderer.positionCount = positionCount;
 
-        start_pos = transform.position;
+        position = start_pos = transform.position;
 
         for (int i = 0; i < positionCount; i++)
         {
@@ -44,15 +44,14 @@ public class SMGBullet : Projectile
 
 	int time = 120;
 
-    bool dead = false;
-
     // Update is called once per frame
     void FixedUpdate()
     {
 
-
+        
         if (!dead)
         {
+            position = lineRenderer.GetPosition(positionCount - 1) + direction * speed;
 
             lineRenderer.SetPosition(positionCount - 1, lineRenderer.GetPosition(positionCount - 1) + direction * speed);
 

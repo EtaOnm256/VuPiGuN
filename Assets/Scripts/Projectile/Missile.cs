@@ -13,7 +13,7 @@ public class Missile : Projectile
     {
      
 
-        start_pos = transform.position;
+        position = start_pos = transform.position;
 
         initial_direction = Quaternion.LookRotation(direction);
 
@@ -32,7 +32,6 @@ public class Missile : Projectile
 
 	int time = 180;
 
-    bool dead = false;
 
     public MeshRenderer meshRenderer;
     public Effekseer.EffekseerEmitter boostEmitter;
@@ -99,7 +98,7 @@ public class Missile : Projectile
 
 
 
-            transform.position += direction * speed;
+            position = transform.position += direction * speed;
             transform.rotation = Quaternion.LookRotation(direction);
 
             if (time-- <= 0)

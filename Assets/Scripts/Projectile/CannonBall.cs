@@ -13,7 +13,7 @@ public class CannonBall : Projectile
     {
      
 
-        start_pos = transform.position;
+        position = start_pos = transform.position;
 
         initial_direction = Quaternion.LookRotation(direction);
 
@@ -96,6 +96,7 @@ public class CannonBall : Projectile
 
 
             transform.position += direction * speed;
+            position = transform.position;
             transform.rotation = Quaternion.LookRotation(transform.position-start_pos);
  
             if (time-- <= 0)
