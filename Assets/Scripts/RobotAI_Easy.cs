@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RobotAI : InputBase
+public class RobotAI_Easy : InputBase
 {
     int moveDirChangeTimer = 0;
 
