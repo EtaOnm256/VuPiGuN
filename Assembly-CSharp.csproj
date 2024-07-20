@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\HumanInput.cs" />
     <Compile Include="Assets\Scripts\UIController_Overlay.cs" />
     <Compile Include="Assets\Effekseer\Example\EfkBasic.cs" />
+    <Compile Include="Assets\Scripts\RobotAI_Medium.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\CanvasInputs\UICanvasControllerInput.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\Utilities\MobileDisableAutoSwitchControls.cs" />
     <Compile Include="Assets\Scripts\EffectSelfDelete.cs" />
@@ -95,7 +96,6 @@
     <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod_Weist.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
-    <Compile Include="Assets\Scripts\RobotAI_Medium.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

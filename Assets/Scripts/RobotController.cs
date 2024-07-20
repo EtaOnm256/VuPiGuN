@@ -164,7 +164,7 @@ public class RobotController : MonoBehaviour
        const int LowerSlash_Num = 1;
        private int[] _animIDLowerSlash = new int[LowerSlash_Num];*/
 
-  
+    
 
    
 
@@ -354,6 +354,7 @@ public class RobotController : MonoBehaviour
     Slider boostSlider;
 
     Vector3 knockbackdir;
+    bool speed_overrideby_knockback = false;
 
     public int Boost_Max = 200;
 
@@ -478,6 +479,8 @@ public class RobotController : MonoBehaviour
                     _controller.height = 7.0f;
 
                     _verticalVelocity = 0.0f;
+
+                    speed_overrideby_knockback = true;
                 }
 
                 if(Sword != null)
@@ -2291,8 +2294,12 @@ public class RobotController : MonoBehaviour
 
                     targetSpeed = 0.0f;
 
+                    if(speed_overrideby_knockback) // リセットはLowerBodyMoveの末尾で無条件。（こことかでやる作りだと漏れたときのバグが怖い）
+                    {
+
+                    }
                     // accelerate or decelerate to target speed
-                    if (
+                    else if (
                         //currentHorizontalSpeed < targetSpeed - speedOffset ||
                         currentHorizontalSpeed > targetSpeed + speedOffset
                         )
@@ -2698,6 +2705,8 @@ public class RobotController : MonoBehaviour
         {
             thruster.emitting = boosting;
         }
+
+        speed_overrideby_knockback = false;
     }
 
 

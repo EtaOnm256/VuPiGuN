@@ -79,6 +79,7 @@ public class RobotAI_Medium : InputBase
 
             fire = false;
             sprint = false;
+            slash = false;
 
             if (overheating)
             {
@@ -91,16 +92,16 @@ public class RobotAI_Medium : InputBase
                     overheating = true;
             }
 
-            if (robotController.upperBodyState == RobotController.UpperBodyState.FIRE)
-            {
+            //if (robotController.upperBodyState == RobotController.UpperBodyState.FIRE)
+            //{
                 
-            }
-            else
+            //}
+            //else
             {
                 bool Aim_blocked;
                 {
-                    RaycastHit hit;
-                    Aim_blocked = Physics.Raycast(robotController.GetCenter(), targetQ * Vector3.forward, out hit, mindist, 1 << 3);
+                    RaycastHit aimblockhit;
+                    Aim_blocked = Physics.Raycast(robotController.GetCenter(), targetQ * Vector3.forward, out aimblockhit, mindist, 1 << 3);
 
                     if (ascending)
                     {
@@ -119,7 +120,7 @@ public class RobotAI_Medium : InputBase
                     {
                         if (Aim_blocked)
                         {
-                            if (hit.distance < 10.0f)
+                            if (aimblockhit.distance < 10.0f)
                             {
                                 ascending = true;
                                 ascend_margin = 60;
@@ -146,7 +147,15 @@ public class RobotAI_Medium : InputBase
                 }
                 else
                 {
+                    RaycastHit floorhit;
+
+                    bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, 50.0f, 1 << 3);
+                    float target_angle = Vector3.Angle(nearest_robot.Chest.transform.position - transform.position, transform.forward);
+
                     jump = false;
+
+                    bool allow_fire = false;
+                    bool allow_infight = false;
 
                     switch (state)
                     {
@@ -215,16 +224,21 @@ public class RobotAI_Medium : InputBase
 
                                 if (!robotController.Grounded)
                                     state = State.Decend;
+
+                                if (nearest_robot.Grounded && mindist < 10.0f)
+                                    allow_infight = true;
+
+                                if(target_angle <= 60)
+                                    allow_fire = true;
                             }
                             break;
                         case State.Ascend:
                             {
                                 jump = true;
 
-                                RaycastHit hit;
-                                bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out hit, 50.0f, 1 << 3);
+                              
 
-                                if (hit.distance > 15.0f)
+                                if (floorhit.distance > 15.0f)
                                 {
                                     state = State.Dash;
                                 }
@@ -235,6 +249,8 @@ public class RobotAI_Medium : InputBase
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
+                                if (mindist < 10.0f)
+                                    allow_infight = true;
                             }
                             break;
                         case State.Dash:
@@ -263,16 +279,56 @@ public class RobotAI_Medium : InputBase
 
                                 if (robotController.Grounded)
                                     state = State.Ground;
+
+                                if (target_angle <= 60)
+                                    allow_fire = true;
+
+                                if (mindist < 10.0f)
+                                    allow_infight = true;
                             }
                             break;
                         case State.Decend:
                             {
                                 if (robotController.Grounded)
                                     state = State.Ground;
+
+                                if(floorhit.distance > 10.0f)
+                                    allow_fire = true;
+
+                                if (mindist < 10.0f)
+                                    allow_infight = true;
                             }
                             break;
                     }
-               
+
+
+
+                    if (allow_infight)
+                        slash = true;
+                    /*else if (fire_wait <= 0 && allow_fire)
+                    {
+                        if (mindist < 100.0f)
+                        {
+                            if (fire_prepare <= 0)
+                            {
+                                fire = true;
+                                fire_wait = Random.Range(60, 120);
+                                fire_prepare = 15;
+                            }
+                            else
+                            {
+                                fire_prepare--;
+                            }
+
+                            move = Vector2.zero;
+                            moveDirChangeTimer = 0;
+                        }
+                        else
+                        {
+                            fire_wait = Random.Range(60, 120);
+                            fire_prepare = 15;
+                        }
+                    }*/
 
                     fire_wait--;
                     moveDirChangeTimer--;
