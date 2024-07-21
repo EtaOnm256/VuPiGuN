@@ -138,7 +138,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GroundSlash_1
-  m_Speed: 12
+  m_Speed: 18
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -879,7 +879,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Getup
-  m_Speed: 2
+  m_Speed: 4
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []

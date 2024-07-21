@@ -138,7 +138,7 @@ ModelImporter:
     animationImportErrors: 
     animationImportWarnings: Event OnSlashEnd has a time (12.458333) outside the
       clip's valid range (0.000000..8.375000). It will never be firedEvent OnSlashEnd
-      has a time (12.458333) outside the clip's valid range (0.000000..10.416667).
+      has a time (12.458333) outside the clip's valid range (0.000000..9.166667).
       It will never be firedEvent OnStepped has a time (0.792789) outside the clip's
       valid range (0.000000..0.791667). It will never be firedEvent OnStepped has
       a time (0.792789) outside the clip's valid range (0.000000..0.791667). It will
@@ -435,7 +435,7 @@ ModelImporter:
       takeName: Armature|GroundSlash_0
       internalID: 0
       firstFrame: 0
-      lastFrame: 299
+      lastFrame: 220
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -478,7 +478,7 @@ ModelImporter:
       takeName: Armature|GroundSlash_1
       internalID: 0
       firstFrame: 0
-      lastFrame: 210
+      lastFrame: 180
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -521,7 +521,7 @@ ModelImporter:
       takeName: Armature|GroundSlash_2
       internalID: 0
       firstFrame: 0
-      lastFrame: 300
+      lastFrame: 280
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

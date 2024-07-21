@@ -184,12 +184,15 @@ public class HeatAxe : InfightWeapon
 
             if (robotController != null)
             {
+                if (robotController.team == owner.team)
+                    continue;
+
                 if (hitHistoryRC.Contains(robotController))
                     continue;
 
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                robotController.DoDamage(dir, damage, knockBackType) ;
+                robotController.DoDamage(dir, /*damage*/0, knockBackType) ;
 
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[idx_hit].point, Quaternion.identity);
             }

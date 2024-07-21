@@ -152,7 +152,7 @@ public class RobotController : MonoBehaviour
 
     private int _animIDHeavyFire;
 
-    int slash_count = 0;
+    public int slash_count = 0;
     bool slash_reserved = false;
 
     /*   const int GroundSlash_Num = 3;
@@ -418,8 +418,7 @@ public class RobotController : MonoBehaviour
             if (lowerBodyState != LowerBodyState.DOWN)
             {
                 if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState == LowerBodyState.DASH
-                    || lowerBodyState == LowerBodyState.AIRSUBFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE
-                    || knockBackType == KnockBackType.Finish)
+                    || lowerBodyState == LowerBodyState.AIRSUBFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
                 {
                     TransitLowerBodyState(LowerBodyState.DOWN);
 
@@ -427,7 +426,7 @@ public class RobotController : MonoBehaviour
                     knockbackdir.y = 0.0f;
                     if (knockBackType == KnockBackType.Finish)
                     {
-                        _speed = SprintSpeed*2;
+                        _speed = SprintSpeed;
                         _verticalVelocity = 0;
                     }
                     else
@@ -435,6 +434,8 @@ public class RobotController : MonoBehaviour
                         _speed = SprintSpeed / 2;
                         _verticalVelocity = 0.0f;
                     }
+
+                    animator.speed = 1.0f;
                 }
                 else
                 {
@@ -452,7 +453,7 @@ public class RobotController : MonoBehaviour
 
                     float stepmotiondegree = Mathf.Repeat(knockbackdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
-               /*     if (knockBackType == KnockBackType.Finish)
+                    if (knockBackType == KnockBackType.Finish)
                     {
                         if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
                             _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
@@ -468,7 +469,7 @@ public class RobotController : MonoBehaviour
                         animator.speed = 4.0f;
 
                     }
-                    else*/
+                    else
                     {
 
                         if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
@@ -499,7 +500,6 @@ public class RobotController : MonoBehaviour
                 if (dualwielding)
                 {
                     _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
-                    _animator.speed = 1.0f;
                 }
             }
         }
@@ -623,6 +623,9 @@ public class RobotController : MonoBehaviour
 
         if (rightWeapon != null)
             rightWeapon.owner = this;
+
+        if (Sword != null)
+            Sword.owner = this;
 
         if (shoulderWeapon != null)
             shoulderWeapon.owner = this;

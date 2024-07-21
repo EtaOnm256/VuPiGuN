@@ -26,6 +26,8 @@ public class RobotAI_Medium : InputBase
     public int fire_wait;
     public int fire_prepare = 15;
 
+    public int infight_reload = 0;
+
     bool overheating = false;
 
     bool prev_slash = false;
@@ -43,6 +45,7 @@ public class RobotAI_Medium : InputBase
     // Update is called once per frame
     void FixedUpdate()
     {
+        //return;
         float mindist = float.MaxValue;
         
         RobotController nearest_robot = null;
@@ -213,19 +216,19 @@ public class RobotAI_Medium : InputBase
 
                                         if (moveDirChangeTimer <= 0)
                                         {
-                                            move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
+                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-135.0f*2*Mathf.PI/360.0f, 135.0f * 2 * Mathf.PI / 360.0f));
                                             moveDirChangeTimer = 60;
                                         }
                                     }
 
                                     if (robotController.boost >= robotController.Boost_Max)
                                     {
-                                        state = State.Ascend;
+                                        jump = true;
                                     }
                                 }
 
                                 if (!robotController.Grounded)
-                                    state = State.Decend;
+                                    state = State.Ascend;
 
                                 if (nearest_robot.Grounded && mindist < 20.0f)
                                     allow_infight = true;
@@ -271,8 +274,8 @@ public class RobotAI_Medium : InputBase
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
-                                        moveDirChangeTimer = 60;
+                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-135.0f * 2 * Mathf.PI / 360.0f, 135.0f * 2 * Mathf.PI / 360.0f));
+                                         moveDirChangeTimer = 60;
                                     }
                                 }
 
@@ -303,11 +306,21 @@ public class RobotAI_Medium : InputBase
                             break;
                     }
 
+                    if (robotController.lowerBodyState == RobotController.LowerBodyState.AirSlash
+                        || robotController.lowerBodyState == RobotController.LowerBodyState.GroundSlash
+                        || robotController.lowerBodyState == RobotController.LowerBodyState.QuickSlash
+                        || robotController.lowerBodyState == RobotController.LowerBodyState.LowerSlash
+                        || robotController.lowerBodyState == RobotController.LowerBodyState.DashSlash)
+                    {
+                        if(robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.lowerBodyState].num-1)
+                            infight_reload = 60;
+                    }
+                    else if(infight_reload > 0)
+                        infight_reload--;
 
-
-                    if (allow_infight && !prev_slash)
+                    if (allow_infight && !prev_slash && infight_reload <= 0)
                         slash = true;
-                    /*else if (fire_wait <= 0 && allow_fire)
+                    else if (fire_wait <= 0 && allow_fire)
                     {
                         if (mindist < 100.0f)
                         {
@@ -330,7 +343,9 @@ public class RobotAI_Medium : InputBase
                             fire_wait = Random.Range(60, 120);
                             fire_prepare = 15;
                         }
-                    }*/
+                    }
+
+
 
                     fire_wait--;
                     moveDirChangeTimer--;

@@ -31,6 +31,7 @@ public class InfightWeapon : MonoBehaviour
     public int damage = 250;
     public bool autovanish = false;
     public int hitHistoryRCCount = 0;
+    public RobotController owner;
     virtual public bool emitting
     {
         set
