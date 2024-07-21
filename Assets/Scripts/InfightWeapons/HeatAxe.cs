@@ -140,7 +140,6 @@ public class HeatAxe : InfightWeapon
     GameObject[] hitHistory = new GameObject[16];
     RobotController[] hitHistoryRC = new RobotController[16];
     int hitHistoryCount = 0;
-    int hitHistoryRCCount = 0;
 
     void FixedUpdate()
     {
@@ -190,7 +189,7 @@ public class HeatAxe : InfightWeapon
 
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                robotController.DoDamage(dir, damage, strong ? RobotController.KnockBackType.Strong : RobotController.KnockBackType.Weak) ;
+                robotController.DoDamage(dir, damage, knockBackType) ;
 
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[idx_hit].point, Quaternion.identity);
             }

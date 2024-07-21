@@ -182,6 +182,7 @@ public class RobotController : MonoBehaviour
     private bool _hasAnimator;
 
     public InputBase _input;
+    bool prev_slash = false;
 
     public MultiAimConstraint headmultiAimConstraint;
     public MultiAimConstraint chestmultiAimConstraint;
@@ -400,7 +401,8 @@ public class RobotController : MonoBehaviour
     {
         None,
         Weak,
-        Strong
+        Strong,
+        Finish
     }
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
@@ -416,21 +418,23 @@ public class RobotController : MonoBehaviour
             if (lowerBodyState != LowerBodyState.DOWN)
             {
                 if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState == LowerBodyState.DASH
-                    || lowerBodyState == LowerBodyState.AIRSUBFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
+                    || lowerBodyState == LowerBodyState.AIRSUBFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE
+                    || knockBackType == KnockBackType.Finish)
                 {
                     TransitLowerBodyState(LowerBodyState.DOWN);
 
                     knockbackdir = dir;
                     knockbackdir.y = 0.0f;
-                    if (knockBackType == KnockBackType.Strong)
+                    if (knockBackType == KnockBackType.Finish)
                     {
-                        _speed = SprintSpeed;
+                        _speed = SprintSpeed*2;
+                        _verticalVelocity = 0;
                     }
                     else
                     {
                         _speed = SprintSpeed / 2;
+                        _verticalVelocity = 0.0f;
                     }
-                    _verticalVelocity = 0.0f;
                 }
                 else
                 {
@@ -448,7 +452,7 @@ public class RobotController : MonoBehaviour
 
                     float stepmotiondegree = Mathf.Repeat(knockbackdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
-                    if (knockBackType == KnockBackType.Strong)
+               /*     if (knockBackType == KnockBackType.Finish)
                     {
                         if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
                             _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
@@ -459,9 +463,12 @@ public class RobotController : MonoBehaviour
                         else
                             _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
 
-                        _speed = SprintSpeed * 2;
+                        _speed = SprintSpeed * 4;
+
+                        animator.speed = 4.0f;
+
                     }
-                    else
+                    else*/
                     {
 
                         if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
@@ -474,6 +481,8 @@ public class RobotController : MonoBehaviour
                             _animator.Play(_animIDKnockback_Front, 0, 0);
 
                         _speed = SprintSpeed;
+
+                        animator.speed = 1.0f;
                     }
 
                     _controller.height = 7.0f;
@@ -620,7 +629,7 @@ public class RobotController : MonoBehaviour
 
         spawn_completed = true;
 
-
+        prev_slash = _input.slash;
 
     }
 
@@ -813,6 +822,8 @@ public class RobotController : MonoBehaviour
 
             GameObject.Destroy(gameObject);
         }
+
+        prev_slash = _input.slash;
     }
 
 
@@ -2205,7 +2216,7 @@ public class RobotController : MonoBehaviour
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
-                                Sword.strong = true;
+                                Sword.knockBackType = KnockBackType.Finish;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
                             }
                             else
@@ -2218,7 +2229,7 @@ public class RobotController : MonoBehaviour
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
-                                Sword.strong = true;
+                                Sword.knockBackType = KnockBackType.Finish;
 
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.GroundSlash]._animID[slash_count], 0.0f, 0);
                             }
@@ -2235,7 +2246,7 @@ public class RobotController : MonoBehaviour
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
-                                Sword.strong = true;
+                                Sword.knockBackType = KnockBackType.Finish;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
                             }
                             else
@@ -2248,7 +2259,7 @@ public class RobotController : MonoBehaviour
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
-                                Sword.strong = true;
+                                Sword.knockBackType = KnockBackType.Finish;
                                 _verticalVelocity = 0.0f;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.QuickSlash]._animID[slash_count], 0.0f, 0);
                             }
@@ -2263,7 +2274,7 @@ public class RobotController : MonoBehaviour
                             Sword.slashing = false;
                             slash_count = 0;
                             Sword.damage = 100;
-                            Sword.strong = true;
+                            Sword.knockBackType = KnockBackType.Finish;
                             _verticalVelocity = 0.0f;
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
                         }
@@ -2277,7 +2288,7 @@ public class RobotController : MonoBehaviour
                             Sword.slashing = false;
                             slash_count = 0;
                             Sword.damage = 100;
-                            Sword.strong = true;
+                            Sword.knockBackType = KnockBackType.Finish;
                             _verticalVelocity = 0.0f;
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[slash_count], 0.0f, 0);
                         }
@@ -2391,9 +2402,14 @@ public class RobotController : MonoBehaviour
                     if (lowerBodyState == LowerBodyState.DashSlash)
                         boosting = true;
 
-                    if(_input.slash)
+                    if (_input.slash && ! prev_slash && Sword.hitHistoryRCCount == 0)
                     {
                         slash_reserved = true;
+
+                        if(slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1)
+                        {
+                            Sword.knockBackType = KnockBackType.Weak;
+                        }
                     }
 
 
@@ -2418,7 +2434,7 @@ public class RobotController : MonoBehaviour
                             Sword.slashing = false;
                             _verticalVelocity = 0.0f;
                             Sword.damage = 100;
-                            Sword.strong = false;
+                            Sword.knockBackType = KnockBackType.Finish;
 
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[slash_count], 0.0f, 0);
                         }
@@ -2453,17 +2469,11 @@ public class RobotController : MonoBehaviour
 
                             }
 
-                            if (slash_count == 1)
-                            {
 
-                                Sword.strong = true;
 
-                            }
-                            else
-                            {
+                            Sword.knockBackType = KnockBackType.Finish;
 
-                                Sword.strong = false;
-                            }
+
 
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.GroundSlash]._animID[slash_count], 0.0f, 0);
                         }
@@ -2498,17 +2508,8 @@ public class RobotController : MonoBehaviour
 
                             }
 
-                            if (slash_count == 1)
-                            {
+                            Sword.knockBackType = KnockBackType.Finish;
 
-                                Sword.strong = true;
-
-                            }
-                            else
-                            {
-
-                                Sword.strong = false;
-                            }
 
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
                         }
@@ -2532,6 +2533,8 @@ public class RobotController : MonoBehaviour
                             slash_reserved = false;
                             Sword.slashing = false;
 
+                            Sword.knockBackType = KnockBackType.Finish;
+
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.QuickSlash]._animID[slash_count], 0.0f, 0);
                         }
                     }
@@ -2554,7 +2557,10 @@ public class RobotController : MonoBehaviour
                             slash_reserved = false;
                             Sword.slashing = false;
 
+                            Sword.knockBackType = KnockBackType.Finish;
+
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
+
                         }
 
 
@@ -2711,7 +2717,7 @@ public class RobotController : MonoBehaviour
 
 
     // ここで扱わないもの
-    // KNOCKBACKは複雑すぎるのでDoDamageにべた書き
+    // KNOCKBACKへの移行は複雑すぎるのでDoDamageにべた書き
     private void TransitLowerBodyState(LowerBodyState newState)
     {
         if (lowerBodyState == LowerBodyState.DOWN && newState != LowerBodyState.DOWN)
@@ -2730,6 +2736,11 @@ public class RobotController : MonoBehaviour
         if (lowerBodyState == LowerBodyState.AirSlash && newState != LowerBodyState.AirSlash)
         {
             Sword.emitting = false;
+        }
+
+        if(lowerBodyState == LowerBodyState.KNOCKBACK)
+        {
+            animator.speed = 1.0f;
         }
 
         switch (newState)

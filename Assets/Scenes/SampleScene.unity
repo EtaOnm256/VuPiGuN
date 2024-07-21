@@ -435,7 +435,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -1596,7 +1596,7 @@ PrefabInstance:
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: Sword
       value: 
-      objectReference: {fileID: 1576002574}
+      objectReference: {fileID: 765138186}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: HUDCanvas
       value: 
@@ -1707,6 +1707,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1645756873}
   m_SourcePrefab: {fileID: 100100000, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
+--- !u!114 &765138186 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4914557549192127089, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
+  m_PrefabInstance: {fileID: 40212269}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5a4686c54e8e84c9ac84854ce7376d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &778312754
 GameObject:
   m_ObjectHideFlags: 0
@@ -3152,17 +3163,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 605404575975640319, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
   m_PrefabInstance: {fileID: 1883710183}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1576002574 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2811911632490060217, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
-  m_PrefabInstance: {fileID: 1883710183}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e0f1621b495297468fa2a294fe1e986, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1645756873 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1905193246014706893, guid: 0700da4283e98704ea40a5d3a48d01da, type: 3}
@@ -3402,7 +3402,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 228844574215034437, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 605404575975640319, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
       propertyPath: m_RootOrder

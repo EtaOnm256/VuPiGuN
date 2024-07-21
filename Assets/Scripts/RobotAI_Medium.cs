@@ -28,6 +28,8 @@ public class RobotAI_Medium : InputBase
 
     bool overheating = false;
 
+    bool prev_slash = false;
+
     public enum State
     {
         Ground,
@@ -225,7 +227,7 @@ public class RobotAI_Medium : InputBase
                                 if (!robotController.Grounded)
                                     state = State.Decend;
 
-                                if (nearest_robot.Grounded && mindist < 10.0f)
+                                if (nearest_robot.Grounded && mindist < 20.0f)
                                     allow_infight = true;
 
                                 if(target_angle <= 60)
@@ -249,7 +251,7 @@ public class RobotAI_Medium : InputBase
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (mindist < 10.0f)
+                                if (mindist < 20.0f)
                                     allow_infight = true;
                             }
                             break;
@@ -283,7 +285,7 @@ public class RobotAI_Medium : InputBase
                                 if (target_angle <= 60)
                                     allow_fire = true;
 
-                                if (mindist < 10.0f)
+                                if (mindist < 20.0f)
                                     allow_infight = true;
                             }
                             break;
@@ -295,7 +297,7 @@ public class RobotAI_Medium : InputBase
                                 if(floorhit.distance > 10.0f)
                                     allow_fire = true;
 
-                                if (mindist < 10.0f)
+                                if (mindist < 20.0f)
                                     allow_infight = true;
                             }
                             break;
@@ -303,7 +305,7 @@ public class RobotAI_Medium : InputBase
 
 
 
-                    if (allow_infight)
+                    if (allow_infight && !prev_slash)
                         slash = true;
                     /*else if (fire_wait <= 0 && allow_fire)
                     {
@@ -336,7 +338,7 @@ public class RobotAI_Medium : InputBase
             }
         }
 
-
+        prev_slash = slash;
         return;
     }
 }

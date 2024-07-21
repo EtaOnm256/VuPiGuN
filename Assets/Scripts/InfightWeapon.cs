@@ -27,10 +27,10 @@ public class InfightWeapon : MonoBehaviour
     protected bool _emitting = false;
     protected bool _slashing = false;
     public Vector3 dir;
-    public bool strong = false;
+    public RobotController.KnockBackType knockBackType;
     public int damage = 250;
     public bool autovanish = false;
-
+    public int hitHistoryRCCount = 0;
     virtual public bool emitting
     {
         set
