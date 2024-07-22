@@ -408,8 +408,8 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: e26e0000
-      m_LastClickedID: 28386
+      m_SelectedIDs: d60c0000
+      m_LastClickedID: 0
       m_ExpandedIDs: fcfaffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
@@ -468,14 +468,14 @@ MonoBehaviour:
     - {fileID: 5765110530667351623, guid: d5b57a89bbf723b45a15372d506be8e8, type: 2}
     - {fileID: 1164986259999253990, guid: d5b57a89bbf723b45a15372d506be8e8, type: 2}
     m_ValueSerializationHelper:
-    - e00: 0.5184309
+    - e00: 0.78846854
       e01: 0
       e02: 0
-      e03: 41.756584
+      e03: -39.626663
       e10: 0
-      e11: 0.5184309
+      e11: 0.78846854
       e12: 0
-      e13: -95.79652
+      e13: -292.06036
       e20: 0
       e21: 0
       e22: 1
@@ -1202,21 +1202,21 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources
+    - Assets/Scripts
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Resources
+  - Assets/Scripts
   m_LastFoldersGridSize: 16
   m_LastProjectPath: F:\VuPiGuN
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 298}
-    m_SelectedIDs: 68770000
-    m_LastClickedID: 30568
+    m_SelectedIDs: 80770000
+    m_LastClickedID: 30592
     m_ExpandedIDs: 000000005e77000060770000627700006477000066770000687700006a7700006c7700006e77000070770000727700007477000076770000787700007a7700007c7700007e7700008077000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1276,15 +1276,15 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: c6230000747c00007a7500009a75000078700000587200005e7c000010830000c47500003e7500008e750000bc700000b4360000f2700000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: Robot_Base
-      m_OriginalName: Robot_Base
+      m_Name: RobotController
+      m_OriginalName: RobotController
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 28926
+      m_UserData: 3286
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
       m_OriginalEventType: 0
@@ -1297,7 +1297,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 112.5}
+    m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 16
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207

@@ -339,6 +339,8 @@ public class RobotController : MonoBehaviour
         AIRHEAVYFIRE,
     }
 
+    bool strongdown = false;
+
     public enum StepDirection
     {
         FORWARD, LEFT, BACKWARD, RIGHT
@@ -417,8 +419,7 @@ public class RobotController : MonoBehaviour
 
             if (lowerBodyState != LowerBodyState.DOWN)
             {
-                if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRROTATE || lowerBodyState == LowerBodyState.DASH
-                    || lowerBodyState == LowerBodyState.AIRSUBFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
+                if (!Grounded)
                 {
                     TransitLowerBodyState(LowerBodyState.DOWN);
 
@@ -428,11 +429,13 @@ public class RobotController : MonoBehaviour
                     {
                         _speed = SprintSpeed;
                         _verticalVelocity = 0;
+                        strongdown = true;
                     }
                     else
                     {
                         _speed = SprintSpeed / 2;
                         _verticalVelocity = 0.0f;
+                        strongdown = false;
                     }
 
                     animator.speed = 1.0f;
@@ -2011,6 +2014,12 @@ public class RobotController : MonoBehaviour
                                     lowerBodyState = LowerBodyState.GETUP;
                                     upperBodyState = UpperBodyState.GETUP;
                                     _animator.Play(_animIDGetup, 0, 0);
+
+                                    if(strongdown)
+                                        _animator.speed = 0.5f;
+                                    else
+                                        _animator.speed = 1.0f;
+
                                     event_getup = false;
                                     origin = transform.position.y;
                                     _verticalVelocity = 0.0f;
@@ -2027,6 +2036,7 @@ public class RobotController : MonoBehaviour
                                 if (event_getup)
                                 {
                                     TransitLowerBodyState(LowerBodyState.STAND);
+                                    _animator.speed = 1.0f;
                                 }
                                 else
                                 {
