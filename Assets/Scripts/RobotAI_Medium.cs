@@ -32,6 +32,7 @@ public class RobotAI_Medium : InputBase
 
     bool prev_slash = false;
 
+    public int ground_step_remain = 2;
     public enum State
     {
         Ground,
@@ -202,6 +203,22 @@ public class RobotAI_Medium : InputBase
                                     sprint = true;
                                     moveDirChangeTimer = 60;
                                 }
+                                else if(ground_step_remain > 0)
+                                {
+                                    move.y = 1.0f;
+                                    move.x = 0.0f;
+                                    sprint = true;
+                                    moveDirChangeTimer = 60;
+
+                                    if (ground_step_remain != 1 && robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
+                                    {
+                                        ground_step_remain = 1;
+                                    }
+                                    if (ground_step_remain == 1 &&robotController.lowerBodyState == RobotController.LowerBodyState.GROUND)
+                                    {
+                                        ground_step_remain = 0;
+                                    }
+                                }
                                 else
                                 {
                                     if (mindist > 75.0f)
@@ -295,7 +312,10 @@ public class RobotAI_Medium : InputBase
                         case State.Decend:
                             {
                                 if (robotController.Grounded)
+                                {
                                     state = State.Ground;
+                                    ground_step_remain = 2;
+                                }
 
                                 if(floorhit.distance > 10.0f)
                                     allow_fire = true;
