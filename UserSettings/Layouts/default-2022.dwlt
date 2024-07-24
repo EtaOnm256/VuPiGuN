@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 115
+  controlID: 44
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -408,7 +408,7 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: b2220000
+      m_SelectedIDs: de770000
       m_LastClickedID: 0
       m_ExpandedIDs: fcfaffff
       m_RenameOverlay:
@@ -468,14 +468,14 @@ MonoBehaviour:
     - {fileID: 5765110530667351623, guid: d5b57a89bbf723b45a15372d506be8e8, type: 2}
     - {fileID: 1164986259999253990, guid: d5b57a89bbf723b45a15372d506be8e8, type: 2}
     m_ValueSerializationHelper:
-    - e00: 0.78846854
+    - e00: 0.6551188
       e01: 0
       e02: 0
-      e03: -39.626663
+      e03: -121.49562
       e10: 0
-      e11: 0.78846854
+      e11: 0.6551188
       e12: 0
-      e13: -292.06036
+      e13: -338.13315
       e20: 0
       e21: 0
       e22: 1
@@ -1202,21 +1202,21 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/Resources
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Resources
   m_LastFoldersGridSize: 16
   m_LastProjectPath: F:\VuPiGuN
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 298}
-    m_SelectedIDs: 80770000
-    m_LastClickedID: 30592
+    m_SelectedIDs: 68770000
+    m_LastClickedID: 30568
     m_ExpandedIDs: 000000005e77000060770000627700006477000066770000687700006a7700006c7700006e77000070770000727700007477000076770000787700007a7700007c7700007e7700008077000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1297,7 +1297,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 17}
+    m_ScrollPosition: {x: 0, y: 257}
     m_GridSize: 16
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207
@@ -1364,7 +1364,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectInstanceID: -1
-  m_LastVerticalScrollValue: 0
+  m_LastVerticalScrollValue: 1026
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:

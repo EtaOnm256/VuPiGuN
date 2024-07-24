@@ -233,7 +233,7 @@ public class RobotAI_Medium : InputBase
 
                                         if (moveDirChangeTimer <= 0)
                                         {
-                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-135.0f*2*Mathf.PI/360.0f, 135.0f * 2 * Mathf.PI / 360.0f));
+                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-90.0f*2*Mathf.PI/360.0f, 90.0f * 2 * Mathf.PI / 360.0f));
                                             moveDirChangeTimer = 60;
                                         }
                                     }
@@ -291,7 +291,7 @@ public class RobotAI_Medium : InputBase
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-135.0f * 2 * Mathf.PI / 360.0f, 135.0f * 2 * Mathf.PI / 360.0f));
+                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-90.0f * 2 * Mathf.PI / 360.0f, 90.0f * 2 * Mathf.PI / 360.0f));
                                          moveDirChangeTimer = 60;
                                     }
                                 }
