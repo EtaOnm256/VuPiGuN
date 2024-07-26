@@ -2829,7 +2829,7 @@ MonoBehaviour:
   SprintSpeed: 30
   RotateSpeed: 4
   DashRotateSpeed: 1
-  AirDashRotateSpeed: 8
+  AirDashRotateSpeed: 10
   AirMoveSpeed: 8
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 0}
@@ -2860,6 +2860,9 @@ MonoBehaviour:
   offset: {x: 0, y: 8, z: -15}
   slash_camera_offset: {x: 0, y: 0, z: 0}
   slash_camera_offset_set: 0
+  _cinemachineTargetYaw: 0
+  _cinemachineTargetPitch: 0
+  slash_count: 0
   _input: {fileID: 3918500435415403674}
   headmultiAimConstraint: {fileID: 8240275247160239941}
   chestmultiAimConstraint: {fileID: 4152913449269264376}
@@ -2874,6 +2877,7 @@ MonoBehaviour:
   RHand: {fileID: 2098590484211214698}
   LHand: {fileID: 7964940703550676874}
   LShoulder: {fileID: 5258992504347009597}
+  dualwield_lightweapon: 0
   thrusters:
   - {fileID: 175234124548439368}
   - {fileID: 8418218240117876311}
