@@ -2856,7 +2856,7 @@ MonoBehaviour:
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   HP: 500
   MaxHP: 500
-  StepLimit: 45
+  StepLimit: 30
   offset: {x: 0, y: 8, z: -15}
   slash_camera_offset: {x: 0, y: 0, z: 0}
   slash_camera_offset_set: 0

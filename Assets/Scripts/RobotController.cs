@@ -1440,7 +1440,22 @@ public class RobotController : MonoBehaviour
                         }
                         else
                         {
-                            if (lowerBodyState == LowerBodyState.DASH && Sword.can_dash_slash)
+                            bool dashslash = false;
+
+                            if(lowerBodyState == LowerBodyState.DASH && Sword.can_dash_slash)
+                            {
+                                if (target_chest != null)
+                                {
+                                    Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                                    if(Vector3.Dot(target_dir.normalized,transform.rotation*Vector3.forward) >= Mathf.Cos(45.0f*Mathf.Deg2Rad))
+                                    {
+                                        dashslash = true;
+                                    }
+                                }
+                            }
+
+                            if (dashslash)
                             {
                                 //_input.slash = false;
                                 lowerBodyState = LowerBodyState.DASHSLASH_DASH;
