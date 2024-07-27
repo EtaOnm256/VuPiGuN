@@ -1013,13 +1013,18 @@ public class RobotController : MonoBehaviour
 
         if (dist_enemy < 20.0f)
         {
-            if (!slash_camera_offset_set)
-            {
-                Vector3 off_hori = GetCenter() - Target_Robot.GetCenter();
-                off_hori.y = 0.0f;
+            Vector3 off_hori = GetCenter() - Target_Robot.GetCenter();
+            off_hori.y = 0.0f;
 
-                slash_camera_offset = Quaternion.AngleAxis(90.0f, Vector3.up) * (off_hori).normalized * 20.0f;
+            if (lowerBodyState == LowerBodyState.DashSlash || lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+            {
+                if (!slash_camera_offset_set)
+                {
+                    slash_camera_offset = Quaternion.AngleAxis(180.0f, Vector3.up) * (off_hori).normalized * 20.0f;
+                }
             }
+            else
+                slash_camera_offset = Quaternion.AngleAxis(90.0f, Vector3.up) * (off_hori).normalized * 20.0f;
 
             slash_camera_offset_set = true;
 
