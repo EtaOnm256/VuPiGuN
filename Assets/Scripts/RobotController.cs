@@ -99,9 +99,6 @@ public class RobotController : MonoBehaviour
 
     public Vector3 offset;
 
-    public Vector3 slash_camera_offset;
-    public bool slash_camera_offset_set = false;
-
     // cinemachine
     public  float _cinemachineTargetYaw;
     public float _cinemachineTargetPitch;
@@ -1013,15 +1010,10 @@ public class RobotController : MonoBehaviour
 
         if (dist_enemy < 20.0f)
         {
-            if (!slash_camera_offset_set)
-            {
-                Vector3 off_hori = GetCenter() - Target_Robot.GetCenter();
-                off_hori.y = 0.0f;
+            Vector3 off_hori = GetCenter() - Target_Robot.GetCenter();
+            off_hori.y = 0.0f;
 
-                slash_camera_offset = Quaternion.AngleAxis(90.0f, Vector3.up) * (off_hori).normalized * 20.0f;
-            }
-
-            slash_camera_offset_set = true;
+            Vector3 slash_camera_offset = Quaternion.AngleAxis(90.0f, Vector3.up) * (off_hori).normalized * 20.0f;
 
             Vector3 lookat = (GetCenter() + Target_Robot.GetCenter()) / 2;
 
@@ -1041,8 +1033,6 @@ public class RobotController : MonoBehaviour
         }
         else
         {
-            slash_camera_offset_set = false;
-
             if (Target_Robot != null)
             {
                 if (lockonState == LockonState.FREE)
