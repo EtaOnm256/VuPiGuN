@@ -17,6 +17,7 @@ public class WorldManager : MonoBehaviour
     public GameObject enemy_lweapon_prefab = null;
     public GameObject enemy_subweapon_prefab = null;
 
+    public bool weapon_chest_paired = false;
 
     // Start is called before the first frame update
     void Start()
@@ -150,14 +151,43 @@ public class WorldManager : MonoBehaviour
 
         if (enemy_subweapon_prefab != null)
         {
-            GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
+            if (weapon_chest_paired)
+            {
+                GameObject enemysubweapon_r = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
 
-            enemysubweapon.transform.parent = robotController.LShoulder.transform;
-            enemysubweapon.transform.localPosition = new Vector3(0.01043f, 0.0114f, 0.00055f);
-            enemysubweapon.transform.localEulerAngles = new Vector3(-0.103f, 1.591f, -86.308f);
-            enemysubweapon.transform.localScale = new Vector3(1, 1, 1);
+                enemysubweapon_r.transform.parent = robotController.chestWeapon_anchor[1].transform;
+                enemysubweapon_r.transform.localPosition = Vector3.zero;
+                enemysubweapon_r.transform.localEulerAngles = Vector3.zero;
+                enemysubweapon_r.transform.localScale = Vector3.one;
 
-            robotController.shoulderWeapon = enemysubweapon.GetComponent<Weapon>();
+                enemysubweapon_r.GetComponent<Weapon>().this_is_slave = true;
+
+                GameObject enemysubweapon_l = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
+
+                enemysubweapon_l.transform.parent = robotController.chestWeapon_anchor[0].transform;
+                enemysubweapon_l.transform.localPosition = Vector3.zero;
+                enemysubweapon_l.transform.localEulerAngles = Vector3.zero;
+                enemysubweapon_l.transform.localScale = Vector3.one;
+                enemysubweapon_l.GetComponent<Weapon>().this_is_slave = false;
+                enemysubweapon_l.GetComponent<Weapon>().another = enemysubweapon_r.GetComponent<Weapon>();
+
+                robotController.shoulderWeapon = enemysubweapon_l.GetComponent<Weapon>();
+
+         
+            }
+            else
+            {
+
+                GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
+
+                enemysubweapon.transform.parent = robotController.LShoulder.transform;
+                enemysubweapon.transform.localPosition = new Vector3(0.01043f, 0.0114f, 0.00055f);
+                enemysubweapon.transform.localEulerAngles = new Vector3(-0.103f, 1.591f, -86.308f);
+                enemysubweapon.transform.localScale = new Vector3(1, 1, 1);
+
+                robotController.shoulderWeapon = enemysubweapon.GetComponent<Weapon>();
+            }
+            
         }
         DestroyImmediate(enemy.GetComponent<HumanInput>());
         DestroyImmediate(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());

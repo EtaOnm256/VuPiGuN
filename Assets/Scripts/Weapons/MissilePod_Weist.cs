@@ -10,21 +10,26 @@ public class MissilePod_Weist : Weapon
 
     private const int Max_Ammo = 2;
 
-    private const int MaxEnergy = Max_Ammo* Reload_Time;
+    public override int MaxEnergy
+    {
+        get
+        {
+            return Max_Ammo * Reload_Time;
+        }
+    }
+
+
     private const int Reload_Time = 120;
 
     int _energy = 0;
 
     public List<GameObject> firePoints;
 
-    public Weapon another;
+
     MissilePod_Weist anothermissilepod;
-
-    public bool this_is_slave = false;
-
     private int current_cycle = 0;
 
-    int energy
+    public override int energy
     {
         set
         {

@@ -210,6 +210,8 @@ public class RobotController : MonoBehaviour
     public GameObject LHand = null;
     public GameObject LShoulder = null;
 
+    public GameObject[] chestWeapon_anchor;
+
     //public bool dualwielding
     //{
     //    get { return rightWeapon.heavy || rightWeapon.dualwielded; }

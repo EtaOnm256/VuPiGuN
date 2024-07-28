@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1333666362038269751
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9018510432452168786}
+  m_Layer: 0
+  m_Name: ChestWeapon_Anchor_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9018510432452168786
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333666362038269751}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
+  m_LocalPosition: {x: -0.00662, y: 0.001540003, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2513129377539528410}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: -180, y: 180, z: 0}
+--- !u!1 &7067554942869571916
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3012939355840987663}
+  m_Layer: 0
+  m_Name: ChestWeapon_Anchor_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3012939355840987663
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7067554942869571916}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
+  m_LocalPosition: {x: 0.00662, y: 0.001540003, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2513129377539528410}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: -180, y: 180, z: 0}
 --- !u!1001 &672475924169244797
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -242,6 +304,18 @@ PrefabInstance:
       propertyPath: thrusters.Array.data[1]
       value: 
       objectReference: {fileID: 177410597451924033}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: chestWeapon_anchor.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: chestWeapon_anchor.Array.data[0]
+      value: 
+      objectReference: {fileID: 7067554942869571916}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: chestWeapon_anchor.Array.data[1]
+      value: 
+      objectReference: {fileID: 1333666362038269751}
     m_RemovedComponents: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
@@ -250,6 +324,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8882190596826746040}
+    - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3012939355840987663}
+    - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9018510432452168786}
   m_SourcePrefab: {fileID: 100100000, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
 --- !u!4 &2513129377539528410 stripped
 Transform:

@@ -10,7 +10,13 @@ public class HandCannon : Weapon
 
     private const int Max_Ammo = 6;
 
-    private const int MaxEnergy = Max_Ammo* Reload_Time;
+    override public int MaxEnergy
+    {
+        get
+        {
+            return Max_Ammo * Reload_Time;
+        }
+    }
     private const int Reload_Time = 150;
 
     int _energy = 0;
@@ -22,7 +28,7 @@ public class HandCannon : Weapon
         get { return true; }
     }
 
-    int energy
+    override public int energy
     {
         set
         {

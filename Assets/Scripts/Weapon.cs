@@ -11,6 +11,8 @@ public class Weapon : MonoBehaviour
     public GameObject weaponPanelItem_prefab = null;
     public WeaponPanelItem weaponPanelItem = null;
 
+    public Weapon another = null;
+    public bool this_is_slave = false;
     private bool _trigger;
 
     public bool trigger
@@ -54,8 +56,35 @@ public class Weapon : MonoBehaviour
         get { return fire_followthrough != 0; }
     }
 
+    virtual public int MaxEnergy
+
+    {
+        set
+        {
+
+        }
+
+        get
+        {
+            return 0;
+        }
+    }
+ 
+    virtual public int energy
+    {
+        set
+        {
+            
+        }
+
+        get
+        {
+            return 0;
+        }
+    }
+
     // Start is called before the first frame update
-   
+
     private void Awake()
     {
         weaponPanelItem_prefab = Resources.Load<GameObject>("UI/WeaponPanelItem");

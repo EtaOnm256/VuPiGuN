@@ -10,7 +10,14 @@ public class SolidRifle : Weapon
 
     private const int Max_Ammo = 6;
 
-    private const int MaxEnergy = Max_Ammo* Reload_Time;
+    public override int MaxEnergy
+    {
+        get
+        {
+            return Max_Ammo * Reload_Time;
+        }
+    }
+
     private const int Reload_Time = 150;
 
     int _energy = 0;
@@ -22,7 +29,7 @@ public class SolidRifle : Weapon
     //    get { return true; }
     //}
 
-    int energy
+    public override int energy
     {
         set
         {

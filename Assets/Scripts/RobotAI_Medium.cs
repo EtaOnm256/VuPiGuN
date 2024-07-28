@@ -86,7 +86,7 @@ public class RobotAI_Medium : InputBase
             fire = false;
             sprint = false;
             slash = false;
-
+            subfire = false;
             if (overheating)
             {
                 if (robotController.boost >= robotController.Boost_Max)
@@ -307,6 +307,7 @@ public class RobotAI_Medium : InputBase
 
                                 if (mindist < 20.0f)
                                     allow_infight = true;
+                              
                             }
                             break;
                         case State.Decend:
@@ -322,6 +323,13 @@ public class RobotAI_Medium : InputBase
 
                                 if (mindist < 20.0f)
                                     allow_infight = true;
+
+                                if (robotController.shoulderWeapon != null
+                                   && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy
+                                   || robotController.shoulderWeapon.followthrough_now && robotController.shoulderWeapon.canHold))
+                                {
+                                    subfire = true;
+                                }
                             }
                             break;
                     }

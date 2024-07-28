@@ -10,7 +10,13 @@ public class SMG : Weapon
 
     private const int Max_Ammo = 30;
 
-    private const int MaxEnergy = Max_Ammo* Reload_Time;
+    override public int MaxEnergy
+    {
+        get
+        {
+            return Max_Ammo * Reload_Time;
+        }
+    }
     private const int Reload_Time = 30;
 
     int _energy = 0;
@@ -26,7 +32,7 @@ public class SMG : Weapon
     //    get { return true; }
     //}
 
-    int energy
+    override public int energy
     {
         set
         {
