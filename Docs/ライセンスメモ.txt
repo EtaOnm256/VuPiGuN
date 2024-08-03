@@ -15,3 +15,6 @@ https://assetstore.unity.com/packages/3d/environments/low-poly-rock-pack-57874
 
 skybox
 https://assetstore.unity.com/packages/2d/textures-materials/sky/free-stylized-skybox-212257
+
+建物のテクスチャ
+https://www.textures.com/download/BuildingsIndustrial0095/69856
