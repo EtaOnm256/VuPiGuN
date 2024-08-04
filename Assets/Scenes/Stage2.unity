@@ -649,7 +649,7 @@ TerrainCollider:
   m_GameObject: {fileID: 245068853}
   m_Material: {fileID: 0}
   m_Enabled: 1
-  m_TerrainData: {fileID: 15600000, guid: 8e6cc0c228f511e478c4590e361b80cd, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: 19030d7680299a84f864cba0323fea6e, type: 2}
   m_EnableTreeColliders: 0
 --- !u!218 &245068855
 Terrain:
@@ -660,7 +660,7 @@ Terrain:
   m_GameObject: {fileID: 245068853}
   m_Enabled: 1
   serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: 8e6cc0c228f511e478c4590e361b80cd, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: 19030d7680299a84f864cba0323fea6e, type: 2}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 256
   m_TreeCrossFadeLength: 5
@@ -750,7 +750,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.7528758, b: 0.21960783, a: 1}
-  m_Intensity: 0.2
+  m_Intensity: 0.1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1421,7 +1421,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 0.35
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -1934,7 +1934,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.25
+  m_Intensity: 0.2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
