@@ -114,6 +114,7 @@
     <None Include="Assets\Effekseer\Materials\Texture2DArrayBlitShader.shader" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderDistortionCommonPS.cginc" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderAdCommonPS.cginc" />
+    <None Include="Assets\FREE Skyboxes - Terrestrial\Readme.txt" />
     <None Include="Assets\Shaders\TerrainLitInput_SkyboxFog.hlsl" />
     <None Include="Assets\Effekseer\Materials\EffekseerShader_Linear_sRGB.cginc" />
     <None Include="Assets\Shaders\TerrainLitPasses_DrawBorder.hlsl" />
