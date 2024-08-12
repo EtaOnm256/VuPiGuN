@@ -8,6 +8,8 @@ public class CannonBall : Projectile
 
     Vector3 start_pos;
 
+    static public float Speed = 2.0f;
+
     // Start is called before the first frame update
     protected override void OnStart()
     {
@@ -17,7 +19,7 @@ public class CannonBall : Projectile
 
         initial_direction = Quaternion.LookRotation(direction);
 
-        speed = 2.0f;
+        speed = Speed;
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -32,6 +34,7 @@ public class CannonBall : Projectile
 
 	int time = 180;
 
+    static public float Gravity = -0.5f;
 
     public MeshRenderer meshRenderer;
     // Update is called once per frame
@@ -44,7 +47,7 @@ public class CannonBall : Projectile
 
 
 
-            if (target != null)
+           /* if (target != null)
             {
                 Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
@@ -58,7 +61,7 @@ public class CannonBall : Projectile
 
                     direction = qDirection_result * Vector3.forward;
                 }
-            }
+            }*/
 
             Ray ray = new Ray(transform.position, direction);
 
@@ -93,7 +96,12 @@ public class CannonBall : Projectile
                 return;
             }
 
+            Vector3 Velocity = direction * speed;
 
+            Velocity.y += Gravity * Time.deltaTime;
+
+            direction = Velocity.normalized;
+            speed = Velocity.magnitude;
 
             transform.position += direction * speed;
             position = transform.position;

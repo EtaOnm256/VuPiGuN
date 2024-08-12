@@ -1602,7 +1602,37 @@ public class RobotController : MonoBehaviour
 
             target_rot_head = Quaternion.LookRotation(target_head.transform.position - Head.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
             target_rot_chest = Quaternion.LookRotation(target_chest.transform.position - Chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
-            target_rot_rhand = Quaternion.LookRotation(target_chest.transform.position - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+
+            if (rightWeapon.trajectory == Weapon.Trajectory.Straight)
+                target_rot_rhand = Quaternion.LookRotation(target_chest.transform.position - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+            else
+            {
+                Vector3 relative = target_chest.transform.position - RHand.transform.position;
+
+                float h = relative.y;
+
+                relative.y = 0.0f;
+
+                float v = rightWeapon.projectile_speed;
+                float g = rightWeapon.projectile_gravity;
+                float L = relative.magnitude;
+
+                //float rad = Mathf.Asin(L * g / (v * v))/2;
+
+                float a = g;
+                float b = -2 * v * v / L;
+                float c = 2 * h * v * v / L / L+g;
+
+                float rad = Mathf.Atan( (-b-Mathf.Sqrt(b*b-4*a*c))/(2*a)    );
+
+                Debug.Log($"{(-b + Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a)}→ {rad*Mathf.Rad2Deg}");
+
+                relative.y = relative.magnitude * Mathf.Tan(rad);
+
+
+                target_rot_rhand = Quaternion.LookRotation(relative, new Vector3(0.0f, 1.0f, 0.0f));
+            }
+
         }
         else
         {

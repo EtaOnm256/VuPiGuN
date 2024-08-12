@@ -71,6 +71,10 @@ public class HandCannon : Weapon
     {
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
+
+        trajectory = Trajectory.Curved;
+        projectile_gravity = -CannonBall.Gravity / Time.deltaTime;
+        projectile_speed = CannonBall.Speed / Time.deltaTime;
     }
 
     // Update is called once per frame

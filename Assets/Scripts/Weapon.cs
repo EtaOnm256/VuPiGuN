@@ -15,6 +15,16 @@ public class Weapon : MonoBehaviour
     public bool this_is_slave = false;
     private bool _trigger;
 
+    public enum Trajectory
+    {
+        Straight,
+        Curved
+    }
+
+    public Trajectory trajectory = Trajectory.Straight;
+    public float projectile_gravity;
+    public float projectile_speed;
+
     public bool trigger
     {
         get { return _trigger; }
