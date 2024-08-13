@@ -40,16 +40,54 @@ public class CannonBall : Projectile
     // Update is called once per frame
     void FixedUpdate()
     {
-       
+        float Gravity_thisFrame = Gravity;
         {
 
 
 
 
 
-           /* if (target != null)
+            if (target != null)
             {
-                Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
+                Vector3 relative = (target.GetCenter() - transform.position);
+                
+                float h = relative.y;
+
+                relative.y = 0.0f;
+
+                float l = relative.magnitude;
+                Vector3 velocity_h = direction * speed / Time.deltaTime;
+                float v = velocity_h.y;
+
+                velocity_h.y = 0.0f;
+                
+                float t = l / velocity_h.magnitude;
+
+                float g = Gravity / Time.deltaTime;
+
+                float hp = v*t+g * t * t / 2;
+
+                if(hp < h)
+                {
+                    Gravity_thisFrame = 0.0f;
+                }
+                else
+                    Gravity_thisFrame = Gravity*2;
+
+                Quaternion qDirection = Quaternion.LookRotation(velocity_h, Vector3.up);
+
+                Quaternion qTarget = Quaternion.LookRotation(relative);
+
+                if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
+                {
+                    Quaternion qDirection_toward = Quaternion.RotateTowards(qDirection, qTarget, 0.5f);
+                    Quaternion qDirection_fix = Quaternion.Inverse(qDirection)* qDirection_toward;
+
+                    direction = qDirection_fix * direction;
+                }
+
+
+                /*Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
                 Quaternion qTarget = Quaternion.LookRotation(target.GetCenter() - transform.position);
 
@@ -60,8 +98,8 @@ public class CannonBall : Projectile
                     Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 10.0f);
 
                     direction = qDirection_result * Vector3.forward;
-                }
-            }*/
+                }*/
+            }
 
             Ray ray = new Ray(transform.position, direction);
 
@@ -98,7 +136,7 @@ public class CannonBall : Projectile
 
             Vector3 Velocity = direction * speed;
 
-            Velocity.y += Gravity * Time.deltaTime;
+            Velocity.y += Gravity_thisFrame * Time.deltaTime;
 
             direction = Velocity.normalized;
             speed = Velocity.magnitude;

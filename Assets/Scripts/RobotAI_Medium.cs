@@ -43,10 +43,15 @@ public class RobotAI_Medium : InputBase
 
     public State state = State.Ground;
 
+    //public float movedirection_range = 90.0f;
+    public float movedirection_range = 180.0f;
+
+    //public float lock_range = 75.0f;
+    public float lock_range = 150.0f;
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        return;
         float mindist = float.MaxValue;
         
         RobotController nearest_robot = null;
@@ -221,7 +226,7 @@ public class RobotAI_Medium : InputBase
                                 }
                                 else
                                 {
-                                    if (mindist > 75.0f)
+                                    if (mindist > lock_range)
                                     {
                                         move.y = 1.0f;
                                         move.x = 0.0f;
@@ -233,7 +238,7 @@ public class RobotAI_Medium : InputBase
 
                                         if (moveDirChangeTimer <= 0)
                                         {
-                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-90.0f*2*Mathf.PI/360.0f, 90.0f * 2 * Mathf.PI / 360.0f));
+                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2*Mathf.PI/360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
                                             moveDirChangeTimer = 60;
                                         }
                                     }
@@ -279,7 +284,7 @@ public class RobotAI_Medium : InputBase
                             {
                                 sprint = true;
 
-                                if (mindist > 75.0f)
+                                if (mindist > lock_range)
                                 {
                                     move.y = 1.0f;
                                     move.x = 0.0f;
@@ -291,7 +296,7 @@ public class RobotAI_Medium : InputBase
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-90.0f * 2 * Mathf.PI / 360.0f, 90.0f * 2 * Mathf.PI / 360.0f));
+                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
                                          moveDirChangeTimer = 60;
                                     }
                                 }
@@ -345,7 +350,6 @@ public class RobotAI_Medium : InputBase
                     }
                     else if(infight_reload > 0)
                         infight_reload--;
-
                     if (allow_infight && !prev_slash && infight_reload <= 0)
                         slash = true;
                     else if (fire_wait <= 0 && allow_fire)
@@ -382,6 +386,13 @@ public class RobotAI_Medium : InputBase
         }
 
         prev_slash = slash;
+
+        //
+        fire = false;
+        slash = false;
+        subfire = false;
+        //
+
         return;
     }
 }
