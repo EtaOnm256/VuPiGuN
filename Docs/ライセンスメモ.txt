@@ -36,3 +36,6 @@ https://www.textures.com/download/SoilRough0043/9532
 
 skybox - 曇り
 https://assetstore.unity.com/packages/2d/textures-materials/sky/free-skyboxes-terrestrial-184682
+
+水面シェーダー
+https://assetstore.unity.com/packages/vfx/shaders/urp-stylized-water-shader-proto-series-187485
