@@ -437,9 +437,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 20b80000
-      m_LastClickedID: 47136
-      m_ExpandedIDs: 8459ffff8ccbffff56e0ffff74ecfffff8fafffffcfaffff707f00009a7f0000a07f0000069a0000309a0000369a0000849c000020b80000
+      m_SelectedIDs: dcb0feff
+      m_LastClickedID: -85796
+      m_ExpandedIDs: a8befefff6fafffff8fafffffcfaffff246f00003679000066790000ee790000b47b0000e47b0000ac7c0000a07d0000067e0000f08b0000268c00007a8d0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -830,9 +830,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -205.26248, y: -148.33725, z: 578.2512}
+    m_Target: {x: -199.50081, y: -14.134056, z: -10.44149}
     speed: 2
-    m_Value: {x: -205.26248, y: -148.33725, z: 578.2512}
+    m_Value: {x: -199.50081, y: -14.134056, z: -10.44149}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -878,13 +878,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.1398741, y: 0.09575623, z: -0.013689842, w: -0.9854971}
+    m_Target: {x: 0.089519456, y: -0.90592736, z: 0.23895086, w: 0.33816758}
     speed: 2
-    m_Value: {x: -0.1398653, y: 0.095750205, z: -0.013688981, w: -0.98543507}
+    m_Value: {x: 0.08951172, y: -0.9058491, z: 0.23893021, w: 0.33813834}
   m_Size:
-    m_Target: 734.309
+    m_Target: 37.203156
     speed: 2
-    m_Value: 734.309
+    m_Value: 37.203156
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1231,22 +1231,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/IgniteCoders/Simple Water Shader/Resources
+    - Assets
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/IgniteCoders/Simple Water Shader/Resources
+  - Assets/Bitgem
   m_LastFoldersGridSize: 16
   m_LastProjectPath: F:\VuPiGuN
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 179}
-    m_SelectedIDs: 3c7f0000
-    m_LastClickedID: 32572
-    m_ExpandedIDs: 000000001270000014700000de73000024740000267400003a7f0000447f0000bc8e0000c48f000000ca9a3b
+    scrollPos: {x: 0, y: 60}
+    m_SelectedIDs: 56750000
+    m_LastClickedID: 30038
+    m_ExpandedIDs: 0000000056750000587500005a7500005c7500005e750000607500006275000064750000667500008c8b000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1274,7 +1274,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000001270000014700000
+    m_ExpandedIDs: 0000000056750000587500005a7500005c7500005e75000060750000627500006475000066750000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1301,7 +1301,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000747c00007a75000078700000587200005e7c000010830000c47500003e7500008e750000bc700000b4360000f270000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
