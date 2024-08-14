@@ -53,7 +53,7 @@ https://www.textures.com/download/Roads0141/87543
 https://www.textures.com/download/FloorsRegular0298/85761
 
 基地の壁
-https://www.textures.com/download/ConcretePlates0007/35237
+https://www.textures.com/download/ConcretePlates0200/108838
 
 生コンクリート
 https://www.textures.com/download/ConcreteBare0428/94360
@@ -66,3 +66,6 @@ https://www.textures.com/download/ConcreteFence0040/51587
 
 基地の床4
 https://www.textures.com/download/ConcreteRough0091/76068
+
+基地の床5
+https://www.textures.com/download/MetalBare0262/135098
