@@ -1625,8 +1625,6 @@ public class RobotController : MonoBehaviour
 
                 float rad = Mathf.Atan( (-b-Mathf.Sqrt(b*b-4*a*c))/(2*a)    );
 
-                Debug.Log($"{(-b + Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a)}→ {rad*Mathf.Rad2Deg}");
-
                 relative.y = relative.magnitude * Mathf.Tan(rad);
 
 

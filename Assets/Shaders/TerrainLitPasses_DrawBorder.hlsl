@@ -392,7 +392,7 @@ half4 SplatmapFragment(Varyings IN) : SV_TARGET
                 && inputData.positionWS.x < _BorderDistance + _BorderWidth && inputData.positionWS.x > -_BorderDistance - _BorderWidth)
     )
     {
-        return half4(1.0f,0.25f,0.0f, 1.0h);
+        return half4(1.0f,0.25f,0.0f, 0.0f);
     }
 
 #if defined(_DBUFFER)
