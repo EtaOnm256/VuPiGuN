@@ -69,3 +69,6 @@ https://www.textures.com/download/ConcreteRough0091/76068
 
 基地の床5
 https://www.textures.com/download/MetalBare0262/135098
+
+基地のブロックの壁と天井
+https://www.textures.com/download/MetalPlatesBare0154/123165
