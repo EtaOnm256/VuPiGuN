@@ -1116,7 +1116,7 @@ public class RobotController : MonoBehaviour
         bool head_no_aiming = false;
         bool chest_no_aiming = false;
 
-        float rhandaimwait = 0.0f;
+        float rhandaimwait_thisframe = 0.0f;
 
         bool chest_pitch_aim = false;
 
@@ -1135,12 +1135,12 @@ public class RobotController : MonoBehaviour
 
                     if (dualwielding)
                     {
-                        rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                        rhandaimwait_thisframe = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
                         _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f * firing_multiplier);
                     }
                     else
                     {
-                        rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(1).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                        rhandaimwait_thisframe = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(1).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
                     }
 
                     if (!fire_done)
@@ -1278,9 +1278,9 @@ public class RobotController : MonoBehaviour
                             fire_done = true;
                         }
 
-                      
 
-                        rhandaimwait = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.0f) * 4, 0.0f, 1.0f);
+
+                        rhandaimwait_thisframe = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.0f) * 4, 0.0f, 1.0f);
                     }
                     else
                     {
@@ -1310,11 +1310,14 @@ public class RobotController : MonoBehaviour
                             }
                         }
 
+                        rhandaimwait_thisframe = 1.0f;
+
                     }
                     _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
                     _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
                     _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
                     _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                    chest_pitch_aim = true;
                 }
                 break;
             case UpperBodyState.STAND:
@@ -1595,16 +1598,21 @@ public class RobotController : MonoBehaviour
         if (target_chest != null)
         {
 
-            Quaternion q_aim_global = Quaternion.LookRotation(aiming_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
-
-            overrideTransform.data.position = shoulder_hint.transform.position;
-            overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+       
 
             target_rot_head = Quaternion.LookRotation(target_head.transform.position - Head.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
-            target_rot_chest = Quaternion.LookRotation(target_chest.transform.position - Chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
-            if (rightWeapon.trajectory == Weapon.Trajectory.Straight)
+
+            if (rightWeapon.trajectory == Weapon.Trajectory.Straight || upperBodyState != UpperBodyState.HEAVYFIRE)
+            {
+                Quaternion q_aim_global = Quaternion.LookRotation(aiming_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+
+                overrideTransform.data.position = shoulder_hint.transform.position;
+                overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+
                 target_rot_rhand = Quaternion.LookRotation(target_chest.transform.position - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+                target_rot_chest = Quaternion.LookRotation(target_chest.transform.position - Chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+            }
             else
             {
                 Vector3 relative = target_chest.transform.position - RHand.transform.position;
@@ -1621,14 +1629,21 @@ public class RobotController : MonoBehaviour
 
                 float a = g;
                 float b = -2 * v * v / L;
-                float c = 2 * h * v * v / L / L+g;
+                float c = 2 * h * v * v / L / L + g;
 
-                float rad = Mathf.Atan( (-b-Mathf.Sqrt(b*b-4*a*c))/(2*a)    );
+                float rad = Mathf.Atan((-b - Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a));
 
                 relative.y = relative.magnitude * Mathf.Tan(rad);
+                
+
+                target_rot_chest = target_rot_rhand = Quaternion.LookRotation(relative, new Vector3(0.0f, 1.0f, 0.0f));
 
 
-                target_rot_rhand = Quaternion.LookRotation(relative, new Vector3(0.0f, 1.0f, 0.0f));
+                Quaternion q_aim_global = Quaternion.LookRotation(-relative, new Vector3(0.0f, 1.0f, 0.0f));
+
+                overrideTransform.data.position = shoulder_hint.transform.position;
+                overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+
             }
 
         }
@@ -1682,7 +1697,7 @@ public class RobotController : MonoBehaviour
         chestmultiAimConstraint.weight = _chestaimwait;
 
         AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
-        rhandmultiAimConstraint.weight = rhandaimwait;
+        rhandmultiAimConstraint.weight = rhandaimwait_thisframe;
 
         overrideTransform.weight = _rarmaimwait;
 
