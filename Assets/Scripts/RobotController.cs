@@ -250,6 +250,7 @@ public class RobotController : MonoBehaviour
     private float _rarmaimwait = 0.0f;
 
     public bool fire_done = false;
+    public int fire_followthrough = 0;
 
     private float _barmlayerwait = 0.0f;
 
@@ -1120,6 +1121,9 @@ public class RobotController : MonoBehaviour
 
         bool chest_pitch_aim = false;
 
+        bool rightWeapon_trigger_thisframe = false;
+        bool shoulderWeapon_trigger_thisframe = false;
+
         switch (upperBodyState)
         {
             case UpperBodyState.FIRE:
@@ -1169,21 +1173,26 @@ public class RobotController : MonoBehaviour
                                 lockonState = LockonState.FREE;
                             }
 
-                            rightWeapon.trigger = true;
+                            rightWeapon_trigger_thisframe = true;
+
+                            fire_followthrough = rightWeapon.fire_followthrough;
                         }
                     }
                     else
                     {
-                        if (rightWeapon.canHold)
+                        fire_followthrough--;
+
+                        if (rightWeapon.canHold && _input.fire)
                         {
-                            rightWeapon.trigger = _input.fire;
+                            rightWeapon_trigger_thisframe = true;
+                            fire_followthrough = rightWeapon.fire_followthrough;
                         }
                         else
                         {
-                            rightWeapon.trigger = false;
+                            //rightWeapon.trigger = false;
                         }
 
-                        if (!rightWeapon.followthrough_now)
+                        if (fire_followthrough <= 0)
                         {
                             upperBodyState = UpperBodyState.STAND;
 
@@ -1221,22 +1230,25 @@ public class RobotController : MonoBehaviour
                                 lockonState = LockonState.FREE;
                             }
 
-                            shoulderWeapon.trigger = true;
+                            shoulderWeapon_trigger_thisframe = true;
                             fire_done = true;
+                            fire_followthrough = shoulderWeapon.fire_followthrough;
                         }
                     }
                     else
                     {
-                        if (shoulderWeapon.canHold)
+                        fire_followthrough--;
+
+                        if (shoulderWeapon.canHold && _input.subfire)
                         {
-                            shoulderWeapon.trigger = _input.subfire;
+                            shoulderWeapon_trigger_thisframe = _input.subfire;
+                            fire_followthrough = shoulderWeapon.fire_followthrough;
                         }
                         else
                         {
-                            shoulderWeapon.trigger = false;
                         }
  
-                        if (!shoulderWeapon.followthrough_now)
+                        if (fire_followthrough <= 0)
                         {
 
                             upperBodyState = UpperBodyState.STAND;
@@ -1274,8 +1286,10 @@ public class RobotController : MonoBehaviour
                             }
 
                             event_heavyfired = false; // 撃った瞬間をLowerBodyMove()で判定するため
-                            rightWeapon.trigger = true;
+                            //rightWeapon.trigger = true;
+                            rightWeapon_trigger_thisframe = true;
                             fire_done = true;
+                            fire_followthrough = rightWeapon.fire_followthrough;
                         }
 
 
@@ -1284,16 +1298,18 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
+                        fire_followthrough--;
+
                         //if (rightWeapon.canHold)
-                       // {
+                        // {
                         //    shoulderWeapon.trigger = _input.subfire;
                         //}
                         //else
                         {
-                            rightWeapon.trigger = false;
+                            //rightWeapon.trigger = false;
                         }
 
-                        if (!rightWeapon.followthrough_now)
+                        if (fire_followthrough <= 0)
                         {
                             upperBodyState = UpperBodyState.STAND;
                             if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
@@ -1363,8 +1379,7 @@ public class RobotController : MonoBehaviour
 
                             upperBodyState = UpperBodyState.HEAVYFIRE;
                             event_heavyfired = false;
-                            fire_done = false;
-                            _animator.CrossFadeInFixedTime(_animIDHeavyFire, 0.25f, 0);
+                              _animator.CrossFadeInFixedTime(_animIDHeavyFire, 0.25f, 0);
                             _animator.speed = 1.0f;
 
                             lockonState = LockonState.SEEKING;
@@ -1401,6 +1416,7 @@ public class RobotController : MonoBehaviour
                       
 
                         fire_done = false;
+                        rightWeapon.ResetCycle();
                     }
 
                     if (_input.slash)
@@ -1529,6 +1545,7 @@ public class RobotController : MonoBehaviour
                         upperBodyState = UpperBodyState.SUBFIRE;
                         event_subfired = false;
                         fire_done = false;
+                        shoulderWeapon.ResetCycle();
                         _animator.CrossFadeInFixedTime(_animIDSubFire, 0.25f, 0);
                         _animator.speed = 1.0f;
 
@@ -1707,7 +1724,10 @@ public class RobotController : MonoBehaviour
         if (!dualwielding)
             animator.SetLayerWeight(1, _rarmaimwait);
 
-        if(Sword != null)
+        rightWeapon.trigger = rightWeapon_trigger_thisframe;
+        shoulderWeapon.trigger = shoulderWeapon_trigger_thisframe;
+
+        if (Sword != null)
             Sword.dir = transform.forward;
     }
 
@@ -1874,38 +1894,7 @@ public class RobotController : MonoBehaviour
                         }
                         else
                         {
-                            if (_input.sprint && upperBodyState == UpperBodyState.STAND)
-                            {
-                                if (ConsumeBoost())
-                                {
-
-                                    // normalise input direction
-                                    Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
-
-                                    // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-                                    // if there is a move input rotate player when the player is moving
-                                    if (_input.move != Vector2.zero)
-                                    {
-                                        _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                                            cameraRotation.eulerAngles.y;
-                                    }
-
-                                    float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
-
-                                    if (degree < RotateSpeed && degree > -RotateSpeed)
-                                    {
-                                        lowerBodyState = LowerBodyState.DASH;
-                                        _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
-                                        event_dashed = false;
-                                    }
-                                    else
-                                    {
-                                        lowerBodyState = LowerBodyState.AIRROTATE;
-                                    }
-
-                                    boosting = true;
-                                }
-                            }
+                            AcceptDash();
                         }
                         _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                     }
@@ -2001,6 +1990,8 @@ public class RobotController : MonoBehaviour
                         _speed = targetSpeed;
                     }
 
+                 
+
                     if (target_chest != null)
                     {
                         Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -2024,6 +2015,11 @@ public class RobotController : MonoBehaviour
                     if (lowerBodyState == LowerBodyState.FIRE)
                     {
                         RegenBoost();
+                    }
+                    
+                    if(lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE)
+                    {
+                        AcceptDash();
                     }
 
                     JumpAndGravity();
@@ -3128,5 +3124,40 @@ public class RobotController : MonoBehaviour
     void OnHeavyFire()
     {
         event_heavyfired = true;
+    }
+
+    void AcceptDash()
+    {
+        if (_input.sprint/* && upperBodyState == UpperBodyState.STAND*/)
+        {
+            if (ConsumeBoost())
+            {
+                upperBodyState = UpperBodyState.STAND; /***/
+                
+                // normalise input direction
+                Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+                // if there is a move input rotate player when the player is moving
+                if (_input.move != Vector2.zero)
+                {
+                    _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                        cameraRotation.eulerAngles.y;
+                }
+
+                float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
+
+                if (degree < RotateSpeed && degree > -RotateSpeed)
+                {
+                    lowerBodyState = LowerBodyState.DASH;
+                    _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
+                    event_dashed = false;
+                }
+                else
+                {
+                    lowerBodyState = LowerBodyState.AIRROTATE;
+                }
+            }
+        }
     }
 }

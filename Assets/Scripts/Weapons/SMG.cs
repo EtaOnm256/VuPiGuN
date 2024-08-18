@@ -27,6 +27,13 @@ public class SMG : Weapon
 
     int magazine = MaxMagazine;
 
+    int Duration_Time = 0;
+
+    override public int fire_followthrough
+    {
+        get { return 30; }
+    }
+
     //public override bool dualwielded
     //{
     //    get { return true; }
@@ -102,7 +109,7 @@ public class SMG : Weapon
             canHold = true;
         }
 
-        if (energy >= Reload_Time && trigger && fire_followthrough <= 25)
+        if (energy >= Reload_Time && trigger && Duration_Time <= 25)
         {
 
             GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -119,15 +126,18 @@ public class SMG : Weapon
 
             energy -= Reload_Time;
 
-            fire_followthrough = 30;
+            Duration_Time = 30;
 
             magazine--;
         }
 
-        if (fire_followthrough > 0)
-            fire_followthrough--;
-        else
-            magazine = MaxMagazine;
+        if (Duration_Time > 0)
+            Duration_Time--;
     }
 
- }
+    public override void ResetCycle()
+    {
+        magazine = MaxMagazine;
+    }
+
+}

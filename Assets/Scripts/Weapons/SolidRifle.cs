@@ -23,7 +23,6 @@ public class SolidRifle : Weapon
     int _energy = 0;
 
     public GameObject firePoint;
-
     //public override bool dualwielded
     //{
     //    get { return true; }
@@ -95,12 +94,7 @@ public class SolidRifle : Weapon
             solidemit_obj.transform.localScale = Vector3.one;
 
             energy -= Reload_Time;
-
-            fire_followthrough = 45;
         }
-
-        if (fire_followthrough > 0)
-            fire_followthrough--;
     }
 
  }

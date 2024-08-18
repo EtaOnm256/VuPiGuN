@@ -96,12 +96,7 @@ public class HandCannon : Weapon
             //GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             energy -= Reload_Time;
-
-            fire_followthrough = 45;
         }
-
-        if (fire_followthrough > 0)
-            fire_followthrough--;
-    }
+       }
 
  }

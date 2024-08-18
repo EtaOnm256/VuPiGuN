@@ -333,7 +333,7 @@ public class RobotAI_Medium : InputBase
 
                                 if (robotController.shoulderWeapon != null
                                    && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy
-                                   || robotController.shoulderWeapon.followthrough_now && robotController.shoulderWeapon.canHold))
+                                   || robotController.fire_followthrough > 0 && robotController.shoulderWeapon.canHold))
                                 {
                                     subfire = true;
                                 }

@@ -29,6 +29,13 @@ public class MissilePod_Weist : Weapon
     MissilePod_Weist anothermissilepod;
     private int current_cycle = 0;
 
+    int Duration_Time = 0;
+
+    override public int fire_followthrough
+    {
+        get { return 30; }
+    }
+
     public override int energy
     {
         set
@@ -89,7 +96,7 @@ public class MissilePod_Weist : Weapon
 
             energy = Mathf.Min(MaxEnergy, energy + 1);
 
-            if (trigger && fire_followthrough <= 20)
+            if (trigger && Duration_Time <= 0)
             {
                 if (energy >= Reload_Time)
                 {
@@ -125,12 +132,12 @@ public class MissilePod_Weist : Weapon
                     beam.worldManager = owner.worldManager;
                     energy -= Reload_Time;
 
-                    fire_followthrough = 30;
+                    Duration_Time = 10;
                 }
             }
 
-            if (fire_followthrough > 0)
-                fire_followthrough--;
+            if (Duration_Time > 0)
+                Duration_Time--;
         }
     }
 

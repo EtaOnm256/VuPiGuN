@@ -59,12 +59,15 @@ public class Weapon : MonoBehaviour
 
     private bool _canHold = false;
 
-    protected int fire_followthrough = 0;
-
-    public bool followthrough_now
+    virtual public int fire_followthrough
     {
-        get { return fire_followthrough != 0; }
+        get { return 45; }
     }
+
+    //public bool followthrough_now
+    //{
+    //    get { return fire_followthrough != 0; }
+    //}
 
     virtual public int MaxEnergy
 
@@ -123,4 +126,6 @@ public class Weapon : MonoBehaviour
     protected virtual void OnAwake() { }
 
     protected virtual void OnStart() { }
+
+    public virtual void ResetCycle() { }
 }
