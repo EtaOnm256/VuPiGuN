@@ -183,6 +183,7 @@ public class RobotController : MonoBehaviour
 
     public InputBase _input;
     bool prev_slash = false;
+    bool prev_sprint = false;
 
     public MultiAimConstraint headmultiAimConstraint;
     public MultiAimConstraint chestmultiAimConstraint;
@@ -639,6 +640,7 @@ public class RobotController : MonoBehaviour
         spawn_completed = true;
 
         prev_slash = _input.slash;
+        prev_sprint = _input.sprint;
 
     }
 
@@ -833,6 +835,7 @@ public class RobotController : MonoBehaviour
         }
 
         prev_slash = _input.slash;
+        prev_sprint = _input.sprint;
     }
 
 
@@ -2368,7 +2371,8 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-
+                    if (lowerBodyState == LowerBodyState.AIRSLASH_DASH || lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+                        AcceptDash();
                 }
                 break;
             case LowerBodyState.KNOCKBACK:
@@ -2643,6 +2647,10 @@ public class RobotController : MonoBehaviour
 
                     JumpAndGravity();
                     GroundedCheck();
+
+                    if (lowerBodyState == LowerBodyState.AirSlash || lowerBodyState == LowerBodyState.DashSlash)
+                        AcceptDash();
+
                     break;
 
             
@@ -3128,7 +3136,7 @@ public class RobotController : MonoBehaviour
 
     void AcceptDash()
     {
-        if (_input.sprint/* && upperBodyState == UpperBodyState.STAND*/)
+        if (_input.sprint && !prev_sprint/* && upperBodyState == UpperBodyState.STAND*/)
         {
             if (ConsumeBoost())
             {
@@ -3156,6 +3164,17 @@ public class RobotController : MonoBehaviour
                 else
                 {
                     lowerBodyState = LowerBodyState.AIRROTATE;
+                }
+
+                _animator.speed = 1.0f;
+
+                if (Sword != null)
+                    Sword.emitting = false;
+
+                // 射撃中にのけぞった場合に備えて
+                if (dualwielding)
+                {
+                    _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
                 }
             }
         }
