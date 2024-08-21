@@ -1809,7 +1809,7 @@ public class RobotController : MonoBehaviour
                         if (_input.move != Vector2.zero)
                         {
                             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                              cameraRotation.eulerAngles.y;
+                                              _cinemachineTargetYaw;
                             //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                             //    RotationSmoothTime);
 
@@ -2134,7 +2134,7 @@ public class RobotController : MonoBehaviour
                     if (_input.move != Vector2.zero)
                     {
                         _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                          cameraRotation.eulerAngles.y;
+                                          _cinemachineTargetYaw;
                         //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                         //    RotationSmoothTime);
                     }
@@ -2917,7 +2917,7 @@ public class RobotController : MonoBehaviour
         Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
         float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                        cameraRotation.eulerAngles.y;
+                        _cinemachineTargetYaw;
 
 
 
@@ -3150,7 +3150,7 @@ public class RobotController : MonoBehaviour
                 if (_input.move != Vector2.zero)
                 {
                     _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                        cameraRotation.eulerAngles.y;
+                                        _cinemachineTargetYaw;
                 }
 
                 float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
