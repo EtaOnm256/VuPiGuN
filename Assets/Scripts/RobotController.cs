@@ -411,6 +411,14 @@ public class RobotController : MonoBehaviour
         Finish
     }
 
+    [Flags] public enum ItemFlag
+    {
+        NextDrive = 1 << 0,
+        ExtremeThrust = 1 << 1
+    }
+
+    ItemFlag itemFlag = ItemFlag.ExtremeThrust;
+
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
         if (!spawn_completed)
@@ -503,7 +511,7 @@ public class RobotController : MonoBehaviour
                 if(Sword != null)
                     Sword.emitting = false;
 
-                // 射撃中にのけぞった場合に備えて
+                // 射撃中だった場合に備えて
                 if (dualwielding)
                 {
                     _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
@@ -1873,13 +1881,10 @@ public class RobotController : MonoBehaviour
                             lowerBodyState = LowerBodyState.JUMP;
                             _animator.CrossFadeInFixedTime(_animIDJump, 0.5f, 0);
                         }
-                        else if (_input.sprint && upperBodyState == UpperBodyState.STAND)
+                        else
                         {
-                            StartStep();
-
-
-
-
+                            AcceptStep();
+                          
                         }
 
                         RegenBoost();
@@ -2022,7 +2027,13 @@ public class RobotController : MonoBehaviour
                     
                     if(lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE)
                     {
-                        AcceptDash();
+                        if(itemFlag.HasFlag(ItemFlag.NextDrive))
+                            AcceptDash();
+                    }
+                    else
+                    {
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeThrust))
+                            AcceptStep();
                     }
 
                     JumpAndGravity();
@@ -2372,7 +2383,15 @@ public class RobotController : MonoBehaviour
                     }
 
                     if (lowerBodyState == LowerBodyState.AIRSLASH_DASH || lowerBodyState == LowerBodyState.DASHSLASH_DASH)
-                        AcceptDash();
+                    {
+                        if (itemFlag.HasFlag(ItemFlag.NextDrive))
+                            AcceptDash();
+                    }
+                    else
+                    {
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeThrust))
+                            AcceptStep();
+                    }
                 }
                 break;
             case LowerBodyState.KNOCKBACK:
@@ -2649,7 +2668,15 @@ public class RobotController : MonoBehaviour
                     GroundedCheck();
 
                     if (lowerBodyState == LowerBodyState.AirSlash || lowerBodyState == LowerBodyState.DashSlash)
-                        AcceptDash();
+                    {
+                        if (itemFlag.HasFlag(ItemFlag.NextDrive))
+                            AcceptDash();
+                    }
+                    else
+                    {
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeThrust))
+                            AcceptStep();
+                    }
 
                     break;
 
@@ -2959,6 +2986,17 @@ public class RobotController : MonoBehaviour
         }
 
         stepremain = StepLimit;
+
+        _animator.speed = 1.0f;
+
+        if (Sword != null)
+            Sword.emitting = false;
+
+        // 射撃中だった場合に備えて
+        if (dualwielding)
+        {
+            _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+        }
     }
     private void JumpAndGravity()
     {
@@ -3136,11 +3174,12 @@ public class RobotController : MonoBehaviour
 
     void AcceptDash()
     {
-        if (_input.sprint && !prev_sprint/* && upperBodyState == UpperBodyState.STAND*/)
+        if (_input.sprint && !prev_sprint && (upperBodyState == UpperBodyState.STAND || itemFlag.HasFlag(ItemFlag.NextDrive)))
         {
             if (ConsumeBoost())
             {
-                upperBodyState = UpperBodyState.STAND; /***/
+                if (itemFlag.HasFlag(ItemFlag.NextDrive))
+                    upperBodyState = UpperBodyState.STAND; 
                 
                 // normalise input direction
                 Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
@@ -3171,12 +3210,23 @@ public class RobotController : MonoBehaviour
                 if (Sword != null)
                     Sword.emitting = false;
 
-                // 射撃中にのけぞった場合に備えて
+                // 射撃中だった場合に備えて
                 if (dualwielding)
                 {
                     _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
                 }
             }
+        }
+    }
+
+    void AcceptStep()
+    {
+        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || itemFlag.HasFlag(ItemFlag.ExtremeThrust)))
+        {
+            if (itemFlag.HasFlag(ItemFlag.ExtremeThrust))
+                upperBodyState = UpperBodyState.STAND;
+
+            StartStep();
         }
     }
 }
