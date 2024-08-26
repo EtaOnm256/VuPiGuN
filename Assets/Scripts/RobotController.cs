@@ -414,10 +414,11 @@ public class RobotController : MonoBehaviour
     [Flags] public enum ItemFlag
     {
         NextDrive = 1 << 0,
-        ExtremeThrust = 1 << 1
+        ExtremeSlide = 1 << 1,
+        HoverDash = 1 << 2
     }
 
-    ItemFlag itemFlag = ItemFlag.ExtremeThrust;
+    ItemFlag itemFlag = ItemFlag.ExtremeSlide | ItemFlag.HoverDash;
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
@@ -2032,7 +2033,7 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeThrust))
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
                             AcceptStep();
                     }
 
@@ -2180,9 +2181,29 @@ public class RobotController : MonoBehaviour
                     stepremain--;
 
 
-                    if (event_stepped && (!_input.sprint || stepremain <= 0))
+                    if (event_stepped)
                     {
-                        TransitLowerBodyState(LowerBodyState.GROUND);
+                      
+
+                         bool stop = false;
+
+                        if (!_input.sprint)
+                            stop = true;
+                        else
+                        {
+                            if(stepremain <= 0)
+                            {
+                                if (itemFlag.HasFlag(ItemFlag.HoverDash) && ConsumeBoost())
+                                {
+
+                                }
+                                else
+                                    stop = true;
+                            }
+                        }
+
+                        if(stop)
+                            TransitLowerBodyState(LowerBodyState.GROUND);
                     }
                 }
                 break;
@@ -2389,7 +2410,7 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeThrust))
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
                             AcceptStep();
                     }
                 }
@@ -2674,7 +2695,7 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeThrust))
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
                             AcceptStep();
                     }
 
@@ -3221,9 +3242,9 @@ public class RobotController : MonoBehaviour
 
     void AcceptStep()
     {
-        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || itemFlag.HasFlag(ItemFlag.ExtremeThrust)))
+        if (_input.sprint && !prev_sprint && (upperBodyState == UpperBodyState.STAND || itemFlag.HasFlag(ItemFlag.ExtremeSlide)))
         {
-            if (itemFlag.HasFlag(ItemFlag.ExtremeThrust))
+            if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
                 upperBodyState = UpperBodyState.STAND;
 
             StartStep();
