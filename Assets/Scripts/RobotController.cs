@@ -415,10 +415,11 @@ public class RobotController : MonoBehaviour
     {
         NextDrive = 1 << 0,
         ExtremeSlide = 1 << 1,
-        HoverDash = 1 << 2
+        Hovercraft = 1 << 2,
+        VerticalVernier = 1 << 3
     }
 
-    ItemFlag itemFlag = ItemFlag.ExtremeSlide | ItemFlag.HoverDash;
+    ItemFlag itemFlag = ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier;
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
@@ -653,11 +654,11 @@ public class RobotController : MonoBehaviour
 
     }
 
-    private bool ConsumeBoost()
+    private bool ConsumeBoost(int amount)
     {
-        if (boost > 0)
+        if (boost >= amount)
         {
-            boost -= 4;
+            boost -= amount;
             return true;
         }
         else
@@ -1895,7 +1896,7 @@ public class RobotController : MonoBehaviour
                     {
                         if (_input.jump)
                         {
-                            if (ConsumeBoost())
+                            if (ConsumeBoost(4))
                             {
                                 _verticalVelocity = Mathf.Min(_verticalVelocity + 1.8f, AscendingVelocity);
                                 boosting = true;
@@ -1913,7 +1914,7 @@ public class RobotController : MonoBehaviour
                     {
                         _verticalVelocity = 0.0f;
 
-                        bool boost_remain = ConsumeBoost();
+                        bool boost_remain = ConsumeBoost(4);
 
                         if ((!_input.sprint || !boost_remain) && event_dashed)
                         {
@@ -2154,7 +2155,7 @@ public class RobotController : MonoBehaviour
                     {
                         _targetRotation = transform.eulerAngles.y;
                     }*/
-                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, AirDashRotateSpeed);
+                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, itemFlag.HasFlag(ItemFlag.VerticalVernier) ? 360.0f : AirDashRotateSpeed);
 
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -2193,7 +2194,7 @@ public class RobotController : MonoBehaviour
                         {
                             if(stepremain <= 0)
                             {
-                                if (itemFlag.HasFlag(ItemFlag.HoverDash) && ConsumeBoost())
+                                if (itemFlag.HasFlag(ItemFlag.Hovercraft) && ConsumeBoost(4))
                                 {
 
                                 }
@@ -2204,6 +2205,61 @@ public class RobotController : MonoBehaviour
 
                         if(stop)
                             TransitLowerBodyState(LowerBodyState.GROUND);
+                        else if(itemFlag.HasFlag(ItemFlag.VerticalVernier))
+                        {
+                            // normalise input direction
+                            Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+
+                            if(inputDirection != Vector3.zero)
+                            { 
+
+                                float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                                _cinemachineTargetYaw;
+
+
+
+
+                                float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
+
+                                StepDirection stepDirection_old = stepDirection;
+
+                                if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                                    stepDirection = StepDirection.RIGHT;
+                                else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                                    stepDirection = StepDirection.BACKWARD;
+                                else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                                    stepDirection = StepDirection.LEFT;
+                                else
+                                    stepDirection = StepDirection.FORWARD;
+
+                                if (stepDirection != stepDirection_old && ConsumeBoost(40))
+                                {
+                                    event_stepbegin = false;
+                                    event_stepped = false;
+
+                                    switch (stepDirection)
+                                    {
+                                        case StepDirection.LEFT:
+                                            _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
+                                            steptargetrotation = steptargetdegree + 90.0f;
+                                            break;
+                                        case StepDirection.BACKWARD:
+                                            _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
+                                            steptargetrotation = steptargetdegree + 180.0f;
+                                            break;
+                                        case StepDirection.RIGHT:
+                                            _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
+                                            steptargetrotation = steptargetdegree - 90.0f;
+                                            break;
+                                        default:
+                                            //case StepDirection.FORWARD:
+                                            _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
+                                            steptargetrotation = steptargetdegree;
+                                            break;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 break;
@@ -3197,7 +3253,7 @@ public class RobotController : MonoBehaviour
     {
         if (_input.sprint && !prev_sprint && (upperBodyState == UpperBodyState.STAND || itemFlag.HasFlag(ItemFlag.NextDrive)))
         {
-            if (ConsumeBoost())
+            if (ConsumeBoost(4))
             {
                 if (itemFlag.HasFlag(ItemFlag.NextDrive))
                     upperBodyState = UpperBodyState.STAND; 
