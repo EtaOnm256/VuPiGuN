@@ -416,10 +416,11 @@ public class RobotController : MonoBehaviour
         NextDrive = 1 << 0,
         ExtremeSlide = 1 << 1,
         Hovercraft = 1 << 2,
-        VerticalVernier = 1 << 3
+        VerticalVernier = 1 << 3,
+        QuickIgniter = 1 << 4
     }
 
-    ItemFlag itemFlag = ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier;
+    ItemFlag itemFlag = ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
@@ -2168,14 +2169,40 @@ public class RobotController : MonoBehaviour
                         lowerBodyState = LowerBodyState.DASH;
                         _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
                         event_dashed = false;
+
+                        if(itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                        {
+                            _speed = SprintSpeed * 2;
+                        }
                     }
                 }
                 break;
             case LowerBodyState.STEP:
                 {
+                    // a reference to the players current horizontal velocity
+                    float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
+                    float speedOffset = 0.1f;
+                    float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
-                    _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed/* : 0.0f*/;
+                    targetSpeed = SprintSpeed;
+
+                    // accelerate or decelerate to target speed
+                    if (currentHorizontalSpeed < targetSpeed - speedOffset ||
+                        currentHorizontalSpeed > targetSpeed + speedOffset)
+                    {
+                        // creates curved result rather than a linear one giving a more organic speed change
+                        // note T in Lerp is clamped, so we don't need to clamp our speed
+                        _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                            Time.deltaTime * SpeedChangeRate);
+
+                        // round speed to 3 decimal places
+                        _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                    }
+                    else
+                    {
+                        _speed = targetSpeed;
+                    }
 
                     _animationBlend = 0.0f;
 
@@ -3276,6 +3303,11 @@ public class RobotController : MonoBehaviour
                     lowerBodyState = LowerBodyState.DASH;
                     _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
                     event_dashed = false;
+
+                    if (itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                    {
+                        _speed = SprintSpeed * 2;
+                    }
                 }
                 else
                 {
@@ -3304,6 +3336,13 @@ public class RobotController : MonoBehaviour
                 upperBodyState = UpperBodyState.STAND;
 
             StartStep();
+
+            if(itemFlag.HasFlag(ItemFlag.QuickIgniter))
+            {
+                _speed = SprintSpeed * 2;
+            }
+            else
+                _speed = SprintSpeed;
         }
     }
 }
