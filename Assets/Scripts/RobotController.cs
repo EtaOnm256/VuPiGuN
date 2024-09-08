@@ -3278,7 +3278,7 @@ public class RobotController : MonoBehaviour
 
     void AcceptDash()
     {
-        if (_input.sprint && !prev_sprint && (upperBodyState == UpperBodyState.STAND || itemFlag.HasFlag(ItemFlag.NextDrive)))
+        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint) ))
         {
             if (ConsumeBoost(4))
             {
@@ -3330,7 +3330,7 @@ public class RobotController : MonoBehaviour
 
     void AcceptStep()
     {
-        if (_input.sprint && !prev_sprint && (upperBodyState == UpperBodyState.STAND || itemFlag.HasFlag(ItemFlag.ExtremeSlide)))
+        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)))
         {
             if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
                 upperBodyState = UpperBodyState.STAND;

@@ -71,8 +71,10 @@
     <Compile Include="Assets\Scripts\Projectile\Beam.cs" />
     <Compile Include="Assets\Scripts\Projectile\SMGBullet.cs" />
     <Compile Include="Assets\Scripts\Weapons\SolidRifle.cs" />
+    <Compile Include="Assets\Scripts\Drone.cs" />
     <Compile Include="Assets\Scripts\InfightWeapon.cs" />
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\ThirdPersonController.cs" />
+    <Compile Include="Assets\Scripts\Weapons\DronePlatform.cs" />
     <Compile Include="Assets\Scripts\UIController_Overlay_anotheraim.cs" />
     <Compile Include="Assets\Scripts\Projectile\Bullet.cs" />
     <Compile Include="Assets\Scripts\Weapons\SMG.cs" />
