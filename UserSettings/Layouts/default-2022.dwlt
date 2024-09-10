@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 997
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 89
+  controlID: 106
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -439,7 +439,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 72f7ffff
       m_LastClickedID: -2190
-      m_ExpandedIDs: 72f7ffff74faffff78faffff7cfaffff84faffff88faffffacfaffffbcfafffffcfaffff
+      m_ExpandedIDs: 74faffff78faffff7cfaffff84faffff88faffffacfaffffbcfafffffcfaffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -830,9 +830,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 1.1396272, y: 6.396827, z: -47.746094}
+    m_Target: {x: -0.25834668, y: 7.4264364, z: -45.78732}
     speed: 2
-    m_Value: {x: 1.1396272, y: 6.396827, z: -47.746094}
+    m_Value: {x: -0.25834668, y: 7.4264364, z: -45.78732}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -878,13 +878,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.2998169, y: -0.34845996, z: 0.11925234, w: -0.8801904}
+    m_Target: {x: -0.17944026, y: -0.10509557, z: 0.019763201, w: -0.9780784}
     speed: 2
-    m_Value: {x: -0.29977635, y: -0.3484128, z: 0.11923621, w: -0.8800713}
+    m_Value: {x: -0.17941588, y: -0.10508129, z: 0.019760516, w: -0.9779455}
   m_Size:
-    m_Target: 3.5436182
+    m_Target: 3.8697197
     speed: 2
-    m_Value: 3.5436182
+    m_Value: 3.8697197
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1231,22 +1231,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/Resources/Projectile
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Resources/Projectile
   m_LastFoldersGridSize: 16
   m_LastProjectPath: F:\VuPiGuN
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 207}
-    m_SelectedIDs: a0790000
-    m_LastClickedID: 31136
-    m_ExpandedIDs: 00000000ee750000f0750000f2750000f4750000f6750000f8750000fa750000fc750000fe75000000760000027600000476000006760000087600000a76000000ca9a3b
+    m_SelectedIDs: 867d0000
+    m_LastClickedID: 32134
+    m_ExpandedIDs: 00000000ee750000f0750000f2750000f4750000f6750000f8750000fa750000fc750000fe75000000760000027600000476000006760000087600000a760000947900009879000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1301,7 +1301,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000747c00007a75000078700000587200005e7c000010830000c47500003e7500008e750000bc700000b4360000f270000000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1326,7 +1326,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 15}
+    m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 16
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 207

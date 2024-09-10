@@ -36,7 +36,17 @@ public class Drone : MonoBehaviour
 
     void Awake()
     {
-        beam_prefab = Resources.Load<GameObject>("Projectile/Beam");
+        beam_prefab = Resources.Load<GameObject>("Projectile/DroneBeam");
+    }
+
+    void Heading(Vector3 goal_dir,float maxangle,out float angle,out Quaternion q)
+    {
+        //float angle = Quaternion.Angle(transform.rotation, Quaternion.LookRotation(goal_dir, Vector3.up));
+        //Quaternion q = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(goal_dir, Vector3.up), maxangle);
+
+        Quaternion qGoal = Quaternion.FromToRotation(transform.rotation * Vector3.forward, goal_dir) * transform.rotation;
+        angle = Quaternion.Angle(transform.rotation, qGoal);
+        q = Quaternion.RotateTowards(transform.rotation, qGoal, maxangle);
     }
 
     void FixedUpdate()
@@ -73,9 +83,10 @@ public class Drone : MonoBehaviour
                     {
                         Vector3 goal_dir = (goal_pos - transform.position).normalized;
 
-                        float angle = Quaternion.Angle(transform.rotation, Quaternion.LookRotation(goal_dir, Vector3.up));
+                        float angle;
+                        Quaternion q;
 
-                        Quaternion q = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(goal_dir, Vector3.up), 10.0f);
+                        Heading(goal_dir,10.0f, out angle, out q);
 
                         float factor = Mathf.LerpAngle(0.0f,1.0f,Mathf.Clamp(90.0f-angle, 0.0f, 10.0f)/10.0f);
                         
@@ -101,12 +112,10 @@ public class Drone : MonoBehaviour
                     Vector3 goal_pos = target.GetCenter();
                     Vector3 goal_dir = (goal_pos - transform.position).normalized;
 
-                    float angle = Quaternion.Angle(transform.rotation, Quaternion.LookRotation(goal_dir, Vector3.up));
-                    Quaternion q = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(goal_dir, Vector3.up), 10.0f);
+                    float angle;
+                    Quaternion q;
 
-                    //Quaternion qGoal = Quaternion.FromToRotation(transform.rotation * Vector3.forward, goal_dir) * transform.rotation;
-                    //float angle = Quaternion.Angle(transform.rotation, qGoal);
-                    //Quaternion q = Quaternion.RotateTowards(transform.rotation, qGoal, 10.0f);
+                    Heading(goal_dir,10.0f, out angle, out q);
 
                     transform.rotation = q;
 
@@ -115,7 +124,7 @@ public class Drone : MonoBehaviour
 
                         GameObject beam_obj = GameObject.Instantiate(beam_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
-                        Beam beam = beam_obj.GetComponent<Beam>();
+                        DroneBeam beam = beam_obj.GetComponent<DroneBeam>();
 
                         beam.direction = gameObject.transform.forward;
                         beam.target = target;
@@ -130,9 +139,10 @@ public class Drone : MonoBehaviour
                     Vector3 goal_pos = anchor.transform.position;
                     Vector3 goal_dir = (goal_pos - transform.position).normalized;
 
-                    float angle = Quaternion.Angle(transform.rotation, Quaternion.LookRotation(goal_dir, Vector3.up));
+                    float angle;
+                    Quaternion q;
 
-                    Quaternion q = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(goal_dir, Vector3.up), 10.0f);
+                    Heading(goal_dir,10.0f, out angle, out q);
 
                     transform.rotation = q;
 
@@ -153,9 +163,12 @@ public class Drone : MonoBehaviour
                     Vector3 goal_dir = (goal_pos - transform.position).normalized;
 
 
-                  
+                    float angle;
+                    Quaternion q;
 
-                    if(Vector3.Distance(goal_pos, transform.position) <= speed)
+                    Heading(goal_dir,360.0f, out angle, out q);
+
+                    if (Vector3.Distance(goal_pos, transform.position) <= speed)
                     {
                         transform.parent = anchor.transform;
                         transform.localPosition = offset;
@@ -166,7 +179,7 @@ public class Drone : MonoBehaviour
                     else
                     {
                         transform.position += goal_dir * speed;
-                        transform.rotation = Quaternion.LookRotation(goal_dir, Vector3.up);
+                        transform.rotation = q;
                     }
                 }
                 break;
