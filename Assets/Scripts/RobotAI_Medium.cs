@@ -221,7 +221,7 @@ public class RobotAI_Medium : InputBase
                                     {
                                         ground_step_remain = 1;
                                     }
-                                    if (ground_step_remain == 1 &&robotController.lowerBodyState == RobotController.LowerBodyState.GROUND)
+                                    if (ground_step_remain == 1 &&robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND)
                                     {
                                         ground_step_remain = 0;
                                     }

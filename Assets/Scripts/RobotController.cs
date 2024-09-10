@@ -323,6 +323,7 @@ public class RobotController : MonoBehaviour
         JUMP,
         AIRFIRE,
         STEP,
+        STEPGROUND,
         DASH,
         AIRROTATE,
         KNOCKBACK,
@@ -420,7 +421,7 @@ public class RobotController : MonoBehaviour
         QuickIgniter = 1 << 4
     }
 
-    ItemFlag itemFlag = ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
+    ItemFlag itemFlag = ItemFlag.ExtremeSlide/* | ItemFlag.Hovercraft*/ | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
@@ -1886,7 +1887,7 @@ public class RobotController : MonoBehaviour
                         }
                         else
                         {
-                            AcceptStep();
+                            AcceptStep(false);
                           
                         }
 
@@ -2035,8 +2036,8 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
-                            AcceptStep();
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                            AcceptStep(true);
                     }
 
                     JumpAndGravity();
@@ -2047,6 +2048,7 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.JUMP:
             case LowerBodyState.DOWN:
             case LowerBodyState.GETUP:
+            case LowerBodyState.STEPGROUND:
                 {
                     targetSpeed = 0.0f;
 
@@ -2063,6 +2065,20 @@ public class RobotController : MonoBehaviour
                         case LowerBodyState.GROUND:
                             {
                                 _speed = 0.0f;
+                                if (event_grounded)
+                                {
+                                    TransitLowerBodyState(LowerBodyState.STAND);
+                                }
+                            }
+                            break;
+
+                        case LowerBodyState.STEPGROUND:
+                            {
+                                _speed = 0.0f;
+
+                                if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                    AcceptStep(true);
+
                                 if (event_grounded)
                                 {
                                     TransitLowerBodyState(LowerBodyState.STAND);
@@ -2231,58 +2247,64 @@ public class RobotController : MonoBehaviour
                         }
 
                         if(stop)
-                            TransitLowerBodyState(LowerBodyState.GROUND);
-                        else if(itemFlag.HasFlag(ItemFlag.VerticalVernier))
+                            TransitLowerBodyState(LowerBodyState.STEPGROUND);
+                        else
                         {
-                            // normalise input direction
-                            Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+                            if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                AcceptStep(true);
 
-                            if(inputDirection != Vector3.zero)
-                            { 
+                            if (itemFlag.HasFlag(ItemFlag.VerticalVernier))
+                            {
+                                // normalise input direction
+                                Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-                                float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                                _cinemachineTargetYaw;
-
-
-
-
-                                float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
-
-                                StepDirection stepDirection_old = stepDirection;
-
-                                if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-                                    stepDirection = StepDirection.RIGHT;
-                                else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-                                    stepDirection = StepDirection.BACKWARD;
-                                else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-                                    stepDirection = StepDirection.LEFT;
-                                else
-                                    stepDirection = StepDirection.FORWARD;
-
-                                if (stepDirection != stepDirection_old && ConsumeBoost(40))
+                                if (inputDirection != Vector3.zero)
                                 {
-                                    event_stepbegin = false;
-                                    event_stepped = false;
 
-                                    switch (stepDirection)
+                                    float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                                                    _cinemachineTargetYaw;
+
+
+
+
+                                    float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
+
+                                    StepDirection stepDirection_old = stepDirection;
+
+                                    if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                                        stepDirection = StepDirection.RIGHT;
+                                    else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                                        stepDirection = StepDirection.BACKWARD;
+                                    else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                                        stepDirection = StepDirection.LEFT;
+                                    else
+                                        stepDirection = StepDirection.FORWARD;
+
+                                    if (stepDirection != stepDirection_old && ConsumeBoost(40))
                                     {
-                                        case StepDirection.LEFT:
-                                            _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
-                                            steptargetrotation = steptargetdegree + 90.0f;
-                                            break;
-                                        case StepDirection.BACKWARD:
-                                            _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
-                                            steptargetrotation = steptargetdegree + 180.0f;
-                                            break;
-                                        case StepDirection.RIGHT:
-                                            _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
-                                            steptargetrotation = steptargetdegree - 90.0f;
-                                            break;
-                                        default:
-                                            //case StepDirection.FORWARD:
-                                            _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
-                                            steptargetrotation = steptargetdegree;
-                                            break;
+                                        event_stepbegin = false;
+                                        event_stepped = false;
+
+                                        switch (stepDirection)
+                                        {
+                                            case StepDirection.LEFT:
+                                                _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
+                                                steptargetrotation = steptargetdegree + 90.0f;
+                                                break;
+                                            case StepDirection.BACKWARD:
+                                                _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
+                                                steptargetrotation = steptargetdegree + 180.0f;
+                                                break;
+                                            case StepDirection.RIGHT:
+                                                _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
+                                                steptargetrotation = steptargetdegree - 90.0f;
+                                                break;
+                                            default:
+                                                //case StepDirection.FORWARD:
+                                                _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
+                                                steptargetrotation = steptargetdegree;
+                                                break;
+                                        }
                                     }
                                 }
                             }
@@ -2493,8 +2515,8 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
-                            AcceptStep();
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                            AcceptStep(true);
                     }
                 }
                 break;
@@ -2778,8 +2800,8 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
-                            AcceptStep();
+                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                            AcceptStep(true);
                     }
 
                     break;
@@ -2985,6 +3007,7 @@ public class RobotController : MonoBehaviour
                 _controller.height = min_controller_height;
                 break;
             case LowerBodyState.GROUND:
+            case LowerBodyState.STEPGROUND:
 
                 if (lowerBodyState == LowerBodyState.STEP)
                 {
@@ -3015,6 +3038,7 @@ public class RobotController : MonoBehaviour
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                         break;
                     case LowerBodyState.GROUND:
+                    case LowerBodyState.STEPGROUND:
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                         break;
                     case LowerBodyState.GETUP:
@@ -3328,9 +3352,19 @@ public class RobotController : MonoBehaviour
         }
     }
 
-    void AcceptStep()
+    void AcceptStep(bool canceling)
     {
-        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)))
+        if(upperBodyState != UpperBodyState.STAND)
+        {
+            if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+            {
+                canceling = true;
+            }
+            else
+                return;
+        }
+
+        if (_input.sprint && (!canceling || ConsumeBoost(40)))
         {
             if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
                 upperBodyState = UpperBodyState.STAND;
