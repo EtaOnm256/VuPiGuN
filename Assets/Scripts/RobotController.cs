@@ -147,6 +147,7 @@ public class RobotController : MonoBehaviour
     private int _animIDGetup;
 
     private int _animIDStand2;
+    private int _animIDStand3;
 
     private int _animIDSubFire;
 
@@ -222,6 +223,8 @@ public class RobotController : MonoBehaviour
     {
         get { return rightWeapon.heavy || dualwield_lightweapon; }
     }
+
+    public bool carrying_weapon = false;
 
     public bool dualwield_lightweapon = false;
 
@@ -518,7 +521,7 @@ public class RobotController : MonoBehaviour
                 // 射撃中だった場合に備えて
                 if (dualwielding)
                 {
-                    _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                    _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
                 }
             }
         }
@@ -885,6 +888,7 @@ public class RobotController : MonoBehaviour
 
 
         _animIDStand2 = Animator.StringToHash("Stand2");
+        _animIDStand3 = Animator.StringToHash("Stand3");
 
         _animIDSubFire = Animator.StringToHash("SubFire");
 
@@ -1222,7 +1226,7 @@ public class RobotController : MonoBehaviour
 
                             if (dualwielding)
                             {
-                                _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                                _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
                                 _animator.speed = 1.0f;
                             }
                         }
@@ -1336,7 +1340,7 @@ public class RobotController : MonoBehaviour
 
                             if (dualwielding)
                             {
-                                _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                                _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
                                 _animator.speed = 1.0f;
                             }
                         }
@@ -1405,7 +1409,7 @@ public class RobotController : MonoBehaviour
                             //_input.fire = false;
 
                             if (dualwielding)
-                                animator.Play("Fire2", 2, 0.0f);
+                                animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
                             else
                                 animator.Play("Fire", 1, 0.0f);
 
@@ -3123,7 +3127,7 @@ public class RobotController : MonoBehaviour
         // 射撃中だった場合に備えて
         if (dualwielding)
         {
-            _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+            _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
         }
     }
     private void JumpAndGravity()
@@ -3346,7 +3350,7 @@ public class RobotController : MonoBehaviour
                 // 射撃中だった場合に備えて
                 if (dualwielding)
                 {
-                    _animator.CrossFadeInFixedTime(_animIDStand2, 0.5f, 2);
+                    _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
                 }
             }
         }

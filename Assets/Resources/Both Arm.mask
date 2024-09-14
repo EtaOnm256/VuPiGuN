@@ -32,7 +32,7 @@ AvatarMask:
   - m_Path: Armature/Weist
     m_Weight: 0
   - m_Path: Armature/Weist/Chest
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Armature/Weist/Chest/ChestShoulder.L
     m_Weight: 1
   - m_Path: Armature/Weist/Chest/ChestShoulder.L/AimBase.L
