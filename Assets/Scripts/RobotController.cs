@@ -643,6 +643,9 @@ public class RobotController : MonoBehaviour
 
         animator.SetFloat("FiringSpeed", firing_multiplier);
 
+        if (carrying_weapon)
+            animator.Play(_animIDStand3, 2);
+
         if (rightWeapon != null)
             rightWeapon.owner = this;
 

@@ -16,8 +16,6 @@ public class Missile : Projectile
         position = start_pos = transform.position;
 
         initial_direction = Quaternion.LookRotation(direction);
-
-        speed = 1.2f;
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -32,6 +30,9 @@ public class Missile : Projectile
 
 	int time = 180;
 
+    public float homing_strength = 0.75f;
+    public float homing_limit = 45.0f;
+   
 
     public MeshRenderer meshRenderer;
     public Effekseer.EffekseerEmitter boostEmitter;
@@ -53,9 +54,9 @@ public class Missile : Projectile
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {
-                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 0.75f);
+                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, homing_strength);
 
-                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 45.0f);
+                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, homing_limit);
 
                     direction = qDirection_result * Vector3.forward;
                 }
