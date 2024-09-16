@@ -390,9 +390,9 @@ public class RobotAI_Medium : InputBase
         prev_slash = slash;
 
         //
-        fire = false;
+        /*fire = false;
         slash = false;
-        subfire = false;
+        subfire = false;*/
         //
 
         return;

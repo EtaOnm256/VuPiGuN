@@ -128,4 +128,8 @@ public class Weapon : MonoBehaviour
     protected virtual void OnStart() { }
 
     public virtual void ResetCycle() { }
+
+    public virtual void OnKnockback() { }
+
+    public virtual void OnDestroy_Called_By_Unit() { }
 }

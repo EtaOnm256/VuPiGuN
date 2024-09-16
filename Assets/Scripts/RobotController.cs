@@ -524,6 +524,9 @@ public class RobotController : MonoBehaviour
                     _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
                 }
             }
+
+            rightWeapon.OnKnockback();
+            shoulderWeapon.OnKnockback();
         }
 
         HP = Math.Max(0, HP - damage);
@@ -846,6 +849,9 @@ public class RobotController : MonoBehaviour
                 uIController_Overlay.origin = null;
 
             worldManager.HandleRemoveUnit(this);
+
+            rightWeapon.OnDestroy_Called_By_Unit();
+            shoulderWeapon.OnDestroy_Called_By_Unit();
 
             GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
 

@@ -147,5 +147,22 @@ public class DronePlatform : Weapon
             Duration_Time--;
     }
 
+    public override void OnKnockback()
+    {
+        foreach (var drone in drones)
+        {
+            if(drone.state == Drone.State.Going || drone.state == Drone.State.Firing)
+            {
+                drone.state = Drone.State.Homing;
+            }
+        }
+    }
 
+    public override void OnDestroy_Called_By_Unit()
+    {
+        foreach (var drone_obj in drone_objs)
+        {
+            GameObject.Destroy(drone_obj);
+        }
+    }
 }
