@@ -66,6 +66,19 @@ public class DronePlatform : Weapon
         }
     }
 
+    override public bool allrange
+    {
+        set
+        {
+
+        }
+
+        get
+        {
+            return true;
+        }
+    }
+
     protected override void OnAwake()
     {
         drone_prefab = Resources.Load<GameObject>("Drone Variant");

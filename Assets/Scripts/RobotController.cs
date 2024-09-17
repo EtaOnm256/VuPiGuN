@@ -1290,11 +1290,48 @@ public class RobotController : MonoBehaviour
                         }
                     }
 
-                    _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.08f);
-                    chest_pitch_aim = true;
-                    _headaimwait = 0.0f;
-                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
-                    _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                    if (shoulderWeapon.allrange)
+                    {
+                        _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
+                        _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
+
+                        if (dualwielding)
+                            _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                        else
+                            _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+
+                        chest_no_aiming = true;
+
+                        
+
+                        if (target_chest)
+                        {
+                            float angle;
+
+                            angle = Vector3.Angle(target_chest.transform.position - transform.position, transform.forward);
+
+                            if (angle > 60)
+                            {
+                                _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.1f);
+                                head_no_aiming = true;
+                            }
+                            else
+                                _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.1f);
+                        }
+                        else
+                        {
+                            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.1f);
+                            head_no_aiming = true;
+                        }
+                    }
+                    else
+                    {
+                        _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.08f);
+                        chest_pitch_aim = true;
+                        _headaimwait = 0.0f;
+                        _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
+                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                    }
                 }
                 break;
             case UpperBodyState.HEAVYFIRE:
@@ -2024,11 +2061,17 @@ public class RobotController : MonoBehaviour
                         _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
                         float rotation;
-                        
-                        if(lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.AIRFIRE)
-                            rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed*2);
+
+                        if (!((lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE) && shoulderWeapon.allrange))
+                        {
+
+                            if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.AIRFIRE)
+                                rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed * 2);
+                            else
+                                rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed * 4);
+                        }
                         else
-                            rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed * 4);
+                            rotation = transform.eulerAngles.y;
 
                         // rotate to face input direction relative to camera position
                         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);

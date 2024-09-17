@@ -96,6 +96,19 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    virtual public bool allrange
+    {
+        set
+        {
+
+        }
+
+        get
+        {
+            return false;
+        }
+    }
+
     // Start is called before the first frame update
 
     private void Awake()
