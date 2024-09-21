@@ -2685,7 +2685,7 @@ public class RobotController : MonoBehaviour
                             }
                             else if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
                             {
-                                _speed = targetSpeed = /*event_stepbegin ? */-MoveSpeed/* : 0.0f*/;
+                                _speed = targetSpeed = /*event_stepbegin ? */-SprintSpeed/* : 0.0f*/;
                             }
                         }
                     }

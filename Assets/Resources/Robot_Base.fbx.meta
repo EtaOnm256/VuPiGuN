@@ -1564,7 +1564,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.30101874
+      - time: 0.26304406
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
