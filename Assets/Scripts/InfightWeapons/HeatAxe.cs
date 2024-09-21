@@ -52,10 +52,7 @@ public class HeatAxe : InfightWeapon
         get { return _emitting; }
     }
 
-    override public float SlashDistance
-    {
-        get { return 4.5f; }
-    }
+   
 
     Material material;
     int powerID;
@@ -78,11 +75,11 @@ public class HeatAxe : InfightWeapon
 
             _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
             {
-                { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 20.0f ,DashLength = 67 } },
-                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 67/2 } },
+                { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 20.0f ,DashLength = 67 ,SlashDistance = 4.5f,SlashDistance_Min = float.MaxValue} },
+                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 67/2,SlashDistance = 4.5f,SlashDistance_Min = float.MaxValue } },
               //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
-                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 67/2 } },
-                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 40.0f ,DashLength = 67/2 } },
+                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 67/2,SlashDistance = 4.5f,SlashDistance_Min = float.MaxValue } },
+                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 40.0f ,DashLength = 67/2,SlashDistance = 4.5f,SlashDistance_Min = float.MaxValue } },
             };
 
 

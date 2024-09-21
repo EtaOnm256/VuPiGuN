@@ -13,6 +13,7 @@ public class InfightWeapon : MonoBehaviour
         {
             num = _num;
             _animID = new int[_num];
+
         }
     }
 
@@ -63,6 +64,8 @@ public class InfightWeapon : MonoBehaviour
     {
         public float DashSpeed;
         public int DashLength;
+        public float SlashDistance;
+        public float SlashDistance_Min;
     }
 
     virtual public Dictionary<RobotController.LowerBodyState, MotionProperty> motionProperty
@@ -72,10 +75,10 @@ public class InfightWeapon : MonoBehaviour
 
     protected Dictionary<RobotController.LowerBodyState, MotionProperty> _motionProperty;
 
-    virtual public float SlashDistance
+   /* virtual public float SlashDistance
     {
         get { return 6.0f; }
-    }
+    }*/
 
     // Update is called once per frame
     void Update()

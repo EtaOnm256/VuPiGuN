@@ -52,10 +52,7 @@ public class Halberd : InfightWeapon
         get { return _emitting; }
     }
 
-    override public float SlashDistance
-    {
-        get { return 6.5f; }
-    }
+ 
 
     //Material material;
     int powerID;
@@ -78,11 +75,11 @@ public class Halberd : InfightWeapon
 
             _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
             {
-                   { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 45 } },
-                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2 } },
+                   { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 45, SlashDistance=6.5f,SlashDistance_Min = 5.0f } },
+                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2, SlashDistance=6.5f,SlashDistance_Min = 5.0f } },
               //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
-                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2 } },
-                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45/2 } },
+                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2, SlashDistance=8.0f,SlashDistance_Min = 6.5f } },
+                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45/2, SlashDistance=6.5f,SlashDistance_Min = 5.0f } },
             };
 
 
@@ -93,10 +90,11 @@ public class Halberd : InfightWeapon
                 switch (slashmotion.Key)
                 {
                     case RobotController.LowerBodyState.GroundSlash:
+                    case RobotController.LowerBodyState.QuickSlash:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}3_{i}");
                         break;
                     case RobotController.LowerBodyState.AirSlash:
-                    case RobotController.LowerBodyState.QuickSlash:
+                    
                       
                     case RobotController.LowerBodyState.LowerSlash:
                     case RobotController.LowerBodyState.DashSlash:
