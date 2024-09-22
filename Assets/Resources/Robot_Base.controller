@@ -514,6 +514,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-2445855298545509233
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AirSlash3_0
+  m_Speed: 24
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 556929988735398419, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-2194650621922855480
 AnimatorState:
   serializedVersion: 6
@@ -766,10 +792,19 @@ AnimatorStateMachine:
     m_Position: {x: 120, y: 1450, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -209537748126318683}
-    m_Position: {x: 370, y: 1310, z: 0}
+    m_Position: {x: 820, y: 1310, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4403967296725834182}
-    m_Position: {x: 370, y: 1370, z: 0}
+    m_Position: {x: 820, y: 1370, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -2445855298545509233}
+    m_Position: {x: 590, y: 1310, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 2290634815453576783}
+    m_Position: {x: 350, y: 1310, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 269373331001844349}
+    m_Position: {x: 1040, y: 1310, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -838,6 +873,32 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!1102 &269373331001844349
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DashSlash3_0
+  m_Speed: 6
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 3053037623367240881, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &457223940899965206
 AnimatorState:
   serializedVersion: 6
@@ -987,6 +1048,32 @@ AnimatorState:
   m_Motion: {fileID: 2277895206181588948, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
   m_Tag: 
   m_SpeedParameter: FiringSpeed
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1102 &2290634815453576783
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LowerSlash3_0
+  m_Speed: 16
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -3466125076419191652, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 

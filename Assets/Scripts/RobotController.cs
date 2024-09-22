@@ -411,7 +411,7 @@ public class RobotController : MonoBehaviour
     {
         None,
         Weak,
-        Strong,
+        Away,
         Finish
     }
 
@@ -424,7 +424,7 @@ public class RobotController : MonoBehaviour
         QuickIgniter = 1 << 4
     }
 
-    ItemFlag itemFlag = ItemFlag.ExtremeSlide/* | ItemFlag.Hovercraft*/ | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
+    ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
@@ -438,7 +438,7 @@ public class RobotController : MonoBehaviour
 
             if (lowerBodyState != LowerBodyState.DOWN)
             {
-                if (!Grounded)
+                if (!Grounded || knockBackType == KnockBackType.Away)
                 {
                     TransitLowerBodyState(LowerBodyState.DOWN);
 
@@ -448,6 +448,12 @@ public class RobotController : MonoBehaviour
                     {
                         _speed = SprintSpeed;
                         _verticalVelocity = 0;
+                        strongdown = true;
+                    }
+                    else if (knockBackType == KnockBackType.Away)
+                    {
+                        _speed = SprintSpeed*2;
+                        _verticalVelocity = 0.0f;
                         strongdown = true;
                     }
                     else
@@ -1021,7 +1027,6 @@ public class RobotController : MonoBehaviour
         return Quaternion.Euler(vtarget);
     }
 
-
     private void CameraAndLockon()
     {
         float dist_enemy = float.MaxValue;
@@ -1047,7 +1052,7 @@ public class RobotController : MonoBehaviour
             Vector3 off_hori = GetCenter() - Target_Robot.GetCenter();
             off_hori.y = 0.0f;
 
-            if (lowerBodyState == LowerBodyState.DashSlash || lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+            if (Sword.dashslash_cutthrough && (lowerBodyState == LowerBodyState.DashSlash || lowerBodyState == LowerBodyState.DASHSLASH_DASH))
             {
                 if (!slash_camera_offset_set)
                 {
@@ -1644,7 +1649,6 @@ public class RobotController : MonoBehaviour
                 _headaimwait = 1.0f;
                 _rarmaimwait = 0.0f;
                 _barmlayerwait = 0.0f;
-                lockonState = LockonState.FREE;
                 break;
             case UpperBodyState.GROUNDSLASH_DASH:
             case UpperBodyState.AIRSLASH_DASH:
@@ -2402,7 +2406,7 @@ public class RobotController : MonoBehaviour
 
                     if (target_chest != null)
                     {
-                        if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+                        if (Sword.dashslash_cutthrough && lowerBodyState == LowerBodyState.DASHSLASH_DASH)
                         {
 
                             Vector3 targetOffset = dashslash_offset;
@@ -2441,12 +2445,13 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
-                        if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+                        if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && Sword.dashslash_cutthrough)
                         {
                             if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x)
                             {
                                 slash = true;
                             }
+                          
                         }
                         else
                         {
@@ -2544,7 +2549,10 @@ public class RobotController : MonoBehaviour
                             Sword.slashing = false;
                             slash_count = 0;
                             Sword.damage = 100;
-                            Sword.knockBackType = KnockBackType.Finish;
+                            if(Sword.dashslash_cutthrough)
+                                Sword.knockBackType = KnockBackType.Finish;
+                            else
+                                Sword.knockBackType = KnockBackType.Away;
                             _verticalVelocity = 0.0f;
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
                         }
@@ -2628,9 +2636,9 @@ public class RobotController : MonoBehaviour
 
                     if (target_chest != null)
                     {
-                        if (lowerBodyState == LowerBodyState.DashSlash)
+                        if (Sword.dashslash_cutthrough && lowerBodyState == LowerBodyState.DashSlash)
                         {
-
+                            
                             Vector3 targetOffset = dashslash_offset;
 
                             Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].SlashDistance * transform.lossyScale.x * 0.9f);
@@ -2681,7 +2689,14 @@ public class RobotController : MonoBehaviour
 
                             if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.motionProperty[motionProperty_key].SlashDistance * transform.lossyScale.x)
                             {
-                                _speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
+                                if (lowerBodyState == LowerBodyState.DashSlash)// !Sword.dashslash_cutthroughのとき
+                                {
+                                    _speed = targetSpeed = SprintSpeed;
+                                }
+                                else
+                                {
+                                    _speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
+                                }
                             }
                             else if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
                             {
@@ -2864,8 +2879,6 @@ public class RobotController : MonoBehaviour
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
 
                         }
-
-
                     }
 
 
@@ -2935,7 +2948,7 @@ public class RobotController : MonoBehaviour
             MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
-        else if (lowerBodyState == LowerBodyState.AIRSLASH_DASH)
+        else if (lowerBodyState == LowerBodyState.AIRSLASH_DASH || (!Sword.dashslash_cutthrough && lowerBodyState == LowerBodyState.DASHSLASH_DASH))
         {
             Vector3 targetDirection;
 
@@ -2968,7 +2981,7 @@ public class RobotController : MonoBehaviour
             MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
-        else if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+        else if (lowerBodyState == LowerBodyState.DASHSLASH_DASH) // Sword.dashslash_cutthrough有効時のDASHSLASH_DASH
         {
             Vector3 targetDirection;
 

@@ -38,10 +38,10 @@ public class Halberd : InfightWeapon
                 if (!_emitting)
                     _slashing = false;
 
-/*                if (_emitting)
+                if (_emitting)
                     material.SetFloat(powerID, 5.0f);
                 else
-                    material.SetFloat(powerID, 0.75f);*/
+                    material.SetFloat(powerID, 0.75f);
 
                 if(autovanish)
                 {
@@ -52,15 +52,23 @@ public class Halberd : InfightWeapon
         get { return _emitting; }
     }
 
- 
+    override public bool can_dash_slash
+    {
+        get { return true; }
+    }
 
-    //Material material;
+    override public bool dashslash_cutthrough
+    {
+        get { return false; }
+    }
+
+    Material material;
     int powerID;
     MeshRenderer meshRenderer;
 
     private void Awake()
     {
-        //material = GetComponent<MeshRenderer>().materials[1];
+        material = GetComponent<MeshRenderer>().materials[1];
         meshRenderer = GetComponent<MeshRenderer>();
         powerID = Shader.PropertyToID("_Power");
 
@@ -79,7 +87,7 @@ public class Halberd : InfightWeapon
                 { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2, SlashDistance=6.5f,SlashDistance_Min = 6.0f } },
               //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
                  { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2, SlashDistance=8.0f,SlashDistance_Min = 7.5f } },
-                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45/2, SlashDistance=6.5f,SlashDistance_Min = 6.0f } },
+                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45/2, SlashDistance=8.0f,SlashDistance_Min = 7.5f} },
             };
 
 
@@ -91,16 +99,11 @@ public class Halberd : InfightWeapon
                 {
                     case RobotController.LowerBodyState.GroundSlash:
                     case RobotController.LowerBodyState.QuickSlash:
-                        slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}3_{i}");
-                        break;
                     case RobotController.LowerBodyState.AirSlash:
-                    
-                      
                     case RobotController.LowerBodyState.LowerSlash:
                     case RobotController.LowerBodyState.DashSlash:
-                        slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
+                        slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}3_{i}");
                         break;
-
                 }
             }
         }
@@ -109,7 +112,7 @@ public class Halberd : InfightWeapon
     // Start is called before the first frame update
     void Start()
     {
-        //material.SetFloat(powerID, 0.75f);
+        material.SetFloat(powerID, 0.75f);
 
 
         if (autovanish && !_emitting)

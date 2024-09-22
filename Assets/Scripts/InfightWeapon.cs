@@ -60,6 +60,11 @@ public class InfightWeapon : MonoBehaviour
         get { return false; }
     }
 
+    virtual public bool dashslash_cutthrough
+    {
+        get { return true; }
+    }
+
     public struct MotionProperty
     {
         public float DashSpeed;
