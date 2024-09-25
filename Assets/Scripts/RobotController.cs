@@ -85,6 +85,8 @@ public class RobotController : MonoBehaviour
     public float TerminalVelocity = 53.0f;
     public float AscendingVelocity = 20.0f;
 
+    public float KnockbackSpeed = 5.335f;
+
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
 
@@ -411,7 +413,7 @@ public class RobotController : MonoBehaviour
     {
         None,
         Weak,
-        Away,
+        Down,
         Finish
     }
 
@@ -438,7 +440,7 @@ public class RobotController : MonoBehaviour
 
             if (lowerBodyState != LowerBodyState.DOWN)
             {
-                if (!Grounded || knockBackType == KnockBackType.Away)
+                if (!Grounded || knockBackType == KnockBackType.Down)
                 {
                     TransitLowerBodyState(LowerBodyState.DOWN);
 
@@ -446,19 +448,13 @@ public class RobotController : MonoBehaviour
                     knockbackdir.y = 0.0f;
                     if (knockBackType == KnockBackType.Finish)
                     {
-                        _speed = SprintSpeed;
+                        _speed = KnockbackSpeed;
                         _verticalVelocity = 0;
-                        strongdown = true;
-                    }
-                    else if (knockBackType == KnockBackType.Away)
-                    {
-                        _speed = SprintSpeed*2;
-                        _verticalVelocity = 0.0f;
                         strongdown = true;
                     }
                     else
                     {
-                        _speed = SprintSpeed / 2;
+                        _speed = KnockbackSpeed / 2;
                         _verticalVelocity = 0.0f;
                         strongdown = false;
                     }
@@ -492,7 +488,7 @@ public class RobotController : MonoBehaviour
                         else
                             _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
 
-                        _speed = SprintSpeed * 4;
+                        _speed = KnockbackSpeed * 4;
 
                         animator.speed = 4.0f;
 
@@ -509,7 +505,7 @@ public class RobotController : MonoBehaviour
                         else
                             _animator.Play(_animIDKnockback_Front, 0, 0);
 
-                        _speed = SprintSpeed;
+                        _speed = KnockbackSpeed*2;
 
                         animator.speed = 1.0f;
                     }
@@ -2379,13 +2375,6 @@ public class RobotController : MonoBehaviour
                 {
                     float rotatespeed;
 
-                    /* if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
-                         _speed = targetSpeed = SprintSpeed * 2.0f;
-                     else if (lowerBodyState == LowerBodyState.GROUNDSLASH_DASH)
-                         _speed = targetSpeed = SprintSpeed;
-                     else
-                         _speed = targetSpeed = SprintSpeed * 1.5f
-                    */
 
                     _speed = targetSpeed = Sword.motionProperty[lowerBodyState].DashSpeed;
 
@@ -2549,10 +2538,7 @@ public class RobotController : MonoBehaviour
                             Sword.slashing = false;
                             slash_count = 0;
                             Sword.damage = 100;
-                            if(Sword.dashslash_cutthrough)
-                                Sword.knockBackType = KnockBackType.Finish;
-                            else
-                                Sword.knockBackType = KnockBackType.Away;
+                            Sword.knockBackType = KnockBackType.Down;
                             _verticalVelocity = 0.0f;
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
                         }
@@ -2632,7 +2618,24 @@ public class RobotController : MonoBehaviour
 
                     _speed = 0.0f;
 
+                    LowerBodyState motionProperty_key;
 
+                    switch (lowerBodyState)
+                    {
+                        case LowerBodyState.GroundSlash:
+                            motionProperty_key = LowerBodyState.GROUNDSLASH_DASH;
+                            break;
+                        case LowerBodyState.AirSlash:
+                            motionProperty_key = LowerBodyState.AIRSLASH_DASH;
+                            break;
+                        case LowerBodyState.LowerSlash:
+                            motionProperty_key = LowerBodyState.GROUNDSLASH_DASH;
+                            break;
+                        default:
+                            motionProperty_key = LowerBodyState.QUICKSLASH_DASH;
+                            break;
+
+                    }
 
                     if (target_chest != null)
                     {
@@ -2654,7 +2657,7 @@ public class RobotController : MonoBehaviour
 
                             //if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.SlashDistance * transform.lossyScale.x)
                             {
-                                _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed * 2/* : 0.0f*/;
+                                _speed = targetSpeed = Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].DashSpeed;
                             }
                         }
                         else
@@ -2668,24 +2671,9 @@ public class RobotController : MonoBehaviour
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
-                            LowerBodyState motionProperty_key;
+                    
 
-                            switch(lowerBodyState)
-                            {
-                                case LowerBodyState.GroundSlash:
-                                    motionProperty_key = LowerBodyState.GROUNDSLASH_DASH;
-                                    break;
-                                case LowerBodyState.AirSlash:
-                                    motionProperty_key = LowerBodyState.AIRSLASH_DASH;
-                                    break;
-                                case LowerBodyState.LowerSlash:
-                                    motionProperty_key = LowerBodyState.GROUNDSLASH_DASH;
-                                    break;
-                                default:
-                                    motionProperty_key = LowerBodyState.QUICKSLASH_DASH;
-                                    break;
-              
-                            }
+                       
 
                             if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.motionProperty[motionProperty_key].SlashDistance * transform.lossyScale.x)
                             {
@@ -2698,17 +2686,17 @@ public class RobotController : MonoBehaviour
                                     _speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
                                 }
                             }
-                            else if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
-                            {
-                                _speed = targetSpeed = /*event_stepbegin ? */-SprintSpeed/* : 0.0f*/;
-                            }
+                            //else if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
+                            //{
+                                //_speed = targetSpeed = /*event_stepbegin ? */-SprintSpeed/* : 0.0f*/;
+                            //}
                         }
                     }
                     else
                     {
                         if (lowerBodyState == LowerBodyState.DashSlash)
                         {
-                            _speed = targetSpeed = /*event_stepbegin ? */SprintSpeed * 2/* : 0.0f*/;
+                            _speed = targetSpeed = Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].DashSpeed;
                         }
                     }
 

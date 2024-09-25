@@ -107,6 +107,9 @@ public class Halberd : InfightWeapon
                 }
             }
         }
+
+        prev_points = new Vector3[hitpoints.Length];
+        points = new Vector3[hitpoints.Length];
     }
 
     // Start is called before the first frame update
@@ -127,10 +130,9 @@ public class Halberd : InfightWeapon
 
     }
 
-    const int num_points = 3;
-
-    Vector3[] prev_points = new Vector3[num_points];
-    Vector3[] points = new Vector3[num_points];
+ 
+    Vector3[] prev_points;
+    Vector3[] points;
 
     //public GameObject hitpoint;
     public GameObject[] hitpoints;
@@ -146,7 +148,7 @@ public class Halberd : InfightWeapon
     void FixedUpdate()
     {
 
-        for (int i = 0; i < num_points; i++)
+        for (int i = 0; i < hitpoints.Length; i++)
         {
             //points[i] = hitpoint.transform.position;
             points[i] = hitpoints[i].transform.position;
@@ -156,7 +158,7 @@ public class Halberd : InfightWeapon
 
         if (slashing)
         {
-            for (int idx_point = 0; idx_point < num_points; idx_point++)
+            for (int idx_point = 0; idx_point < hitpoints.Length; idx_point++)
             {
                 EvalHit(points[idx_point], prev_points[idx_point]);
             }

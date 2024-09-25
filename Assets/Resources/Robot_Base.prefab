@@ -2852,6 +2852,7 @@ MonoBehaviour:
   LockCameraPosition: 0
   TerminalVelocity: 53
   AscendingVelocity: 20
+  KnockbackSpeed: 30
   cameraPosition: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   HP: 500
@@ -2877,6 +2878,8 @@ MonoBehaviour:
   RHand: {fileID: 2098590484211214698}
   LHand: {fileID: 7964940703550676874}
   LShoulder: {fileID: 5258992504347009597}
+  chestWeapon_anchor: []
+  carrying_weapon: 0
   dualwield_lightweapon: 0
   thrusters:
   - {fileID: 175234124548439368}
@@ -2884,6 +2887,7 @@ MonoBehaviour:
   Target_Robot: {fileID: 0}
   lockingEnemy: []
   fire_done: 0
+  fire_followthrough: 0
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   worldManager: {fileID: 0}

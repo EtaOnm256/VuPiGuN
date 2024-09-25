@@ -430,6 +430,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Halberd Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 5630119180694491290, guid: 49d8dc65ba1194d4eb8caa4e15c02216, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 49d8dc65ba1194d4eb8caa4e15c02216, type: 3}
@@ -495,7 +499,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -1656,7 +1660,7 @@ PrefabInstance:
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: Sword
       value: 
-      objectReference: {fileID: 1895521541}
+      objectReference: {fileID: 944165013}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: HUDCanvas
       value: 
@@ -2164,6 +2168,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3282107885855745271, guid: 55deee3d9a546e941ba4d5e86755400e, type: 3}
   m_PrefabInstance: {fileID: 1357553651}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &944165013 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4914557549192127089, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
+  m_PrefabInstance: {fileID: 40212269}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c5a4686c54e8e84c9ac84854ce7376d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -3585,17 +3600,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5001778708728039968, guid: 49d8dc65ba1194d4eb8caa4e15c02216, type: 3}
   m_PrefabInstance: {fileID: 34721126}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1895521541 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4248927938490960793, guid: 49d8dc65ba1194d4eb8caa4e15c02216, type: 3}
-  m_PrefabInstance: {fileID: 34721126}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0c50618d89ba9646b9c8380e8bb87ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2024541071
 PrefabInstance:
   m_ObjectHideFlags: 0
