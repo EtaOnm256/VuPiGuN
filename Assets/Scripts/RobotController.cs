@@ -85,7 +85,8 @@ public class RobotController : MonoBehaviour
     public float TerminalVelocity = 53.0f;
     public float AscendingVelocity = 20.0f;
 
-    public float KnockbackSpeed = 5.335f;
+    public float KnockbackSpeed = 30.0f;
+    public float InfightCorrectSpeed = 30.0f;
 
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
@@ -2662,34 +2663,38 @@ public class RobotController : MonoBehaviour
                         }
                         else
                         {
-                            Vector3 target_dir = target_chest.transform.position - transform.position;
-
-                            _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
-
-                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
-
-                            // rotate to face input direction relative to camera position
-                            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-
-                    
-
-                       
-
-                            if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.motionProperty[motionProperty_key].SlashDistance * transform.lossyScale.x)
+                            if (!Sword.slashing)
                             {
-                                if (lowerBodyState == LowerBodyState.DashSlash)// !Sword.dashslash_cutthroughのとき
+
+                                Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                                _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                                float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
+
+                                // rotate to face input direction relative to camera position
+                                transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+
+
+
+
+
+                                if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.motionProperty[motionProperty_key].SlashDistance * transform.lossyScale.x)
                                 {
-                                    _speed = targetSpeed = SprintSpeed;
+                                    //if (lowerBodyState == LowerBodyState.DashSlash)// !Sword.dashslash_cutthroughのとき
+                                    {
+                                        _speed = targetSpeed = InfightCorrectSpeed;
+                                    }
+                                    /*else
+                                    {
+                                        _speed = targetSpeed = MoveSpeed;
+                                    }*/
                                 }
-                                else
-                                {
-                                    _speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
-                                }
-                            }
-                            //else if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
-                            //{
+                                //else if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
+                                //{
                                 //_speed = targetSpeed = /*event_stepbegin ? */-SprintSpeed/* : 0.0f*/;
-                            //}
+                                //}
+                            }
                         }
                     }
                     else
@@ -2704,7 +2709,7 @@ public class RobotController : MonoBehaviour
                     //_speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
 
 
-                    if (lowerBodyState == LowerBodyState.DashSlash)
+                    if (lowerBodyState == LowerBodyState.DashSlash && Sword.dashslash_cutthrough)
                         boosting = true;
 
                     if (_input.slash && ! prev_slash && Sword.hitHistoryRCCount == 0)

@@ -87,7 +87,7 @@ public class Halberd : InfightWeapon
                 { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2, SlashDistance=6.5f,SlashDistance_Min = 6.0f } },
               //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
                  { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2, SlashDistance=8.0f,SlashDistance_Min = 7.5f } },
-                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45/2, SlashDistance=8.0f,SlashDistance_Min = 7.5f} },
+                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45*3/4, SlashDistance=8.0f,SlashDistance_Min = 7.5f} },
             };
 
 
