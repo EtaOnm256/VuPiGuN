@@ -156,6 +156,8 @@ public class RobotController : MonoBehaviour
 
     private int _animIDHeavyFire;
 
+    private int _animIDJumpSlashJump;
+
     public int slash_count = 0;
     bool slash_reserved = false;
 
@@ -317,6 +319,8 @@ public class RobotController : MonoBehaviour
         DashSlash,
         SUBFIRE,
         HEAVYFIRE,
+        JumpSlash,
+        JUMPSLASH_JUMP
     }
 
     public enum LowerBodyState
@@ -348,6 +352,8 @@ public class RobotController : MonoBehaviour
         AIRSUBFIRE,
         HEAVYFIRE,
         AIRHEAVYFIRE,
+        JumpSlash,
+        JUMPSLASH_JUMP
     }
 
     bool strongdown = false;
@@ -905,6 +911,8 @@ public class RobotController : MonoBehaviour
         _animIDSubFire = Animator.StringToHash("SubFire");
 
         _animIDHeavyFire = Animator.StringToHash("HeavyFire");
+
+        _animIDJumpSlashJump = Animator.StringToHash("JumpSlashJump");
     }
 
     private void GroundedCheck()
@@ -1488,9 +1496,8 @@ public class RobotController : MonoBehaviour
 
                     if (_input.slash)
                     {
-                        if (Grounded)
+                        if (Sword.can_jump_slash && _input.move.y < 0.0f)
                         {
-
                             if (target_chest != null)
                             {
                                 Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -1503,84 +1510,22 @@ public class RobotController : MonoBehaviour
                                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
                             }
 
-                            if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
-                            {
-
-                                //_input.slash = false;
-                                lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
-                                upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
-                                event_stepbegin = event_stepped = false;
-                                _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                                slash_reserved = false;
-                                Sword.emitting = true;
-                                lockonState = LockonState.SEEKING;
-                            }
-                            else
-                            {
-
-                                //_input.slash = false;
-                                lowerBodyState = LowerBodyState.QUICKSLASH_DASH;
-                                upperBodyState = UpperBodyState.QUICKSLASH_DASH;
-                                event_stepbegin = event_stepped = false;
-                                _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                                slash_reserved = false;
-                                Sword.emitting = true;
-                                lockonState = LockonState.SEEKING;
-                            }
+                            //_input.slash = false;
+                            event_jumped = false;
+                            lowerBodyState = LowerBodyState.JUMPSLASH_JUMP;
+                            upperBodyState = UpperBodyState.JUMPSLASH_JUMP;
+                            _animator.CrossFadeInFixedTime(_animIDJumpSlashJump, 0.0f, 0);
+                            slash_reserved = false;
+                            Sword.emitting = true;
+                            lockonState = LockonState.SEEKING;
+                      
                             _animator.speed = 1.0f;
                         }
                         else
                         {
-                            bool dashslash = false;
-
-                            if(lowerBodyState == LowerBodyState.DASH && Sword.can_dash_slash)
+                            if (Grounded)
                             {
-                                if (target_chest != null)
-                                {
-                                    Vector3 target_dir = target_chest.transform.position - transform.position;
 
-                                    if(Vector3.Dot(target_dir.normalized,transform.rotation*Vector3.forward) >= Mathf.Cos(45.0f*Mathf.Deg2Rad))
-                                    {
-                                        dashslash = true;
-                                    }
-                                }
-                            }
-
-                            if (dashslash)
-                            {
-                                //_input.slash = false;
-                                lowerBodyState = LowerBodyState.DASHSLASH_DASH;
-                                upperBodyState = UpperBodyState.DASHSLASH_DASH;
-                                event_stepbegin = event_stepped = false;
-                                _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[0], 0.0f, 0);
-                                _animator.speed = 0.0f;
-                                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                                slash_reserved = false;
-                                Sword.emitting = true;
-                                lockonState = LockonState.SEEKING;
-                                if (target_chest != null)
-                                {
-                                    dashslash_offset = (Chest.transform.position - target_chest.transform.position);
-
-                                    dashslash_offset.y = 0.0f;
-
-                                    dashslash_offset = Quaternion.AngleAxis(-45, new Vector3(0.0f, 1.0f, 0.0f)) * dashslash_offset;
-                                }
-                            }
-                            else
-                            {
-                                //_input.slash = false;
-                                lowerBodyState = LowerBodyState.AIRSLASH_DASH;
-                                upperBodyState = UpperBodyState.AIRSLASH_DASH;
-                                event_stepbegin = event_stepped = false;
-                                _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
-                                _animator.speed = 0.0f;
-                                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                                slash_reserved = false;
-                                Sword.emitting = true;
-                                lockonState = LockonState.SEEKING;
                                 if (target_chest != null)
                                 {
                                     Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -1591,6 +1536,97 @@ public class RobotController : MonoBehaviour
 
                                     // rotate to face input direction relative to camera position
                                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                                }
+
+                                if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
+                                {
+
+                                    //_input.slash = false;
+                                    lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
+                                    upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
+                                    event_stepbegin = event_stepped = false;
+                                    _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                                    slash_reserved = false;
+                                    Sword.emitting = true;
+                                    lockonState = LockonState.SEEKING;
+                                }
+                                else
+                                {
+
+                                    //_input.slash = false;
+                                    lowerBodyState = LowerBodyState.QUICKSLASH_DASH;
+                                    upperBodyState = UpperBodyState.QUICKSLASH_DASH;
+                                    event_stepbegin = event_stepped = false;
+                                    _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                                    slash_reserved = false;
+                                    Sword.emitting = true;
+                                    lockonState = LockonState.SEEKING;
+                                }
+                                _animator.speed = 1.0f;
+                            }
+                            else
+                            {
+                                bool dashslash = false;
+
+                                if (lowerBodyState == LowerBodyState.DASH && Sword.can_dash_slash)
+                                {
+                                    if (target_chest != null)
+                                    {
+                                        Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                                        if (Vector3.Dot(target_dir.normalized, transform.rotation * Vector3.forward) >= Mathf.Cos(45.0f * Mathf.Deg2Rad))
+                                        {
+                                            dashslash = true;
+                                        }
+                                    }
+                                }
+
+                                if (dashslash)
+                                {
+                                    //_input.slash = false;
+                                    lowerBodyState = LowerBodyState.DASHSLASH_DASH;
+                                    upperBodyState = UpperBodyState.DASHSLASH_DASH;
+                                    event_stepbegin = event_stepped = false;
+                                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[0], 0.0f, 0);
+                                    _animator.speed = 0.0f;
+                                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                                    slash_reserved = false;
+                                    Sword.emitting = true;
+                                    lockonState = LockonState.SEEKING;
+                                    if (target_chest != null)
+                                    {
+                                        dashslash_offset = (Chest.transform.position - target_chest.transform.position);
+
+                                        dashslash_offset.y = 0.0f;
+
+                                        dashslash_offset = Quaternion.AngleAxis(-45, new Vector3(0.0f, 1.0f, 0.0f)) * dashslash_offset;
+                                    }
+                                }
+                                else
+                                {
+                                    //_input.slash = false;
+                                    lowerBodyState = LowerBodyState.AIRSLASH_DASH;
+                                    upperBodyState = UpperBodyState.AIRSLASH_DASH;
+                                    event_stepbegin = event_stepped = false;
+                                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
+                                    _animator.speed = 0.0f;
+                                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                                    slash_reserved = false;
+                                    Sword.emitting = true;
+                                    lockonState = LockonState.SEEKING;
+                                    if (target_chest != null)
+                                    {
+                                        Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                                        float rotation = _targetRotation;
+
+                                        // rotate to face input direction relative to camera position
+                                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                                    }
                                 }
                             }
                         }
@@ -1659,6 +1695,18 @@ public class RobotController : MonoBehaviour
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+                break;
+            case UpperBodyState.JUMPSLASH_JUMP:
+                _chestaimwait = 0.0f;
+                _headaimwait = 0.0f;
+                _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
+                _barmlayerwait = 0.0f;
+                break;
+            case UpperBodyState.JumpSlash:
+                _chestaimwait = 0.0f;
+                _headaimwait = 0.0f;
+                _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
+                _barmlayerwait = 1.0f;
                 break;
             default:
                 _chestaimwait = 0.0f;
@@ -2106,7 +2154,8 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.DOWN:
             case LowerBodyState.GETUP:
             case LowerBodyState.STEPGROUND:
-                {
+            case LowerBodyState.JUMPSLASH_JUMP:
+            {
                     targetSpeed = 0.0f;
 
                     _animationBlend = 0.0f;
@@ -2150,6 +2199,33 @@ public class RobotController : MonoBehaviour
                                 {
                                     TransitLowerBodyState(LowerBodyState.AIR);
                                     _verticalVelocity = AscendingVelocity;
+
+                                    _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
+                                }
+                            }
+                            break;
+                        case LowerBodyState.JUMPSLASH_JUMP:
+                            {
+                                _speed = 0.0f;
+                                if (event_jumped)
+                                {
+                                    lowerBodyState = LowerBodyState.JumpSlash;
+                                    upperBodyState = UpperBodyState.JumpSlash;
+                                    _animator.speed = 1.0f;
+                                    event_slash = false;
+                                    slash_reserved = false;
+                                    Sword.slashing = false;
+                                    slash_count = 0;
+                                    Sword.damage = 100;
+                                    Sword.knockBackType = KnockBackType.Finish;
+                                    stepremain = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashLength;
+
+                                    _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.JumpSlash]._animID[slash_count], 0.0f, 2);
+                                    _animator.SetLayerWeight(2, 1.0f);
+                                    _animator.SetFloat("SlashSpeed", 0.0f);
+
+                                    _verticalVelocity = AscendingVelocity*2;
 
                                     _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
                                 }
@@ -2379,10 +2455,7 @@ public class RobotController : MonoBehaviour
 
                     _speed = targetSpeed = Sword.motionProperty[lowerBodyState].DashSpeed;
 
-                    if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
-                        rotatespeed = RotateSpeed / 2.0f;
-                    else
-                        rotatespeed = RotateSpeed;
+                    rotatespeed = Sword.motionProperty[lowerBodyState].RotateSpeed;
 
                     _animationBlend = 0.0f;
 
@@ -2407,7 +2480,7 @@ public class RobotController : MonoBehaviour
 
                             _targetRotation = Mathf.Atan2(targetDirection.x, targetDirection.z) * Mathf.Rad2Deg;
 
-                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
+                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, rotatespeed);
 
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -2614,6 +2687,7 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.QuickSlash:
             case LowerBodyState.DashSlash:
                 {
+                  
 
                     _animationBlend = 0.0f;
 
@@ -2638,6 +2712,10 @@ public class RobotController : MonoBehaviour
 
                     }
 
+                    float rotatespeed;
+
+                    rotatespeed = Sword.motionProperty[motionProperty_key].RotateSpeed;
+
                     if (target_chest != null)
                     {
                         if (Sword.dashslash_cutthrough && lowerBodyState == LowerBodyState.DashSlash)
@@ -2651,7 +2729,7 @@ public class RobotController : MonoBehaviour
 
                             //_targetRotation = Mathf.Atan2(targetDirection.x, targetDirection.z) * Mathf.Rad2Deg;
 
-                            //float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
+                            //float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, rotatespeed);
 
                             // rotate to face input direction relative to camera position
                             //transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);*/
@@ -2670,7 +2748,7 @@ public class RobotController : MonoBehaviour
 
                                 _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                                float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed);
+                                float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, rotatespeed);
 
                                 // rotate to face input direction relative to camera position
                                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -2893,6 +2971,72 @@ public class RobotController : MonoBehaviour
 
             
                }
+            case LowerBodyState.JumpSlash:
+                {
+                    _speed = targetSpeed = 0.0f;
+
+                    float dist_xz = float.MinValue;
+
+                    if (target_chest != null)
+                    {
+
+                        Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].RotateSpeed);
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+
+                        Vector3 sub_xz = (target_chest.transform.position - Chest.transform.position);
+                        sub_xz.y = 0.0f;
+
+                        dist_xz = sub_xz.magnitude;
+                    }
+
+                  
+
+                   
+
+                    if (dist_xz > Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].SlashDistance * transform.lossyScale.x)
+                    {
+                        _speed = targetSpeed = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
+                    }
+                    else
+                    {
+                        if (stepremain < 10)
+                            stepremain = 0;
+                    }
+
+                    if (stepremain > 0)
+                    {
+                        stepremain--;
+                        _verticalVelocity = AscendingVelocity*2;
+                    }
+                    else 
+                    {
+                        _animator.SetFloat("SlashSpeed", 1.0f);
+
+           
+                         _verticalVelocity = Mathf.Max(_verticalVelocity- SpeedChangeRate, -AscendingVelocity*2);
+
+                        if (event_slash && _verticalVelocity == -AscendingVelocity*2)
+                        {
+                            GroundedCheck();
+                            if (Grounded)
+                            {
+                                TransitLowerBodyState(LowerBodyState.GROUND);
+                                upperBodyState = UpperBodyState.STAND;
+                            }
+                        }
+                    }
+
+                    
+                    _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
+                    
+                }
+                break;
         }
 
 

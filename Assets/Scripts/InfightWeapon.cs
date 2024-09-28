@@ -65,12 +65,18 @@ public class InfightWeapon : MonoBehaviour
         get { return true; }
     }
 
+    virtual public bool can_jump_slash
+    {
+        get { return false; }
+    }
+
     public struct MotionProperty
     {
         public float DashSpeed;
         public int DashLength;
         public float SlashDistance;
         public float SlashDistance_Min;
+        public float RotateSpeed;
     }
 
     virtual public Dictionary<RobotController.LowerBodyState, MotionProperty> motionProperty
