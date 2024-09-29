@@ -12,6 +12,7 @@ using System.Collections;
  */
 
 using StarterAssets;
+using System.Linq;
 
 [RequireComponent(typeof(CharacterController))]
 public class RobotController : MonoBehaviour
@@ -282,6 +283,8 @@ public class RobotController : MonoBehaviour
     public Animator animator;
 
     public GameObject explode_prefab;
+
+    public GameObject stompHitEffect_prefab;
 
     public WorldManager worldManager;
 
@@ -915,6 +918,8 @@ public class RobotController : MonoBehaviour
         _animIDJumpSlashJump = Animator.StringToHash("JumpSlashJump");
     }
 
+    Collider[] stompHit = new Collider[16];
+
     private void GroundedCheck()
     {
         // set sphere position, with offset
@@ -952,6 +957,57 @@ public class RobotController : MonoBehaviour
                 if (!Grounded)
                 {
                     TransitLowerBodyState(LowerBodyState.AIR);
+                }
+                break;
+            case LowerBodyState.JumpSlash:
+                if(Sword.slashing)
+                {
+                    Vector3 point0 = transform.position + _controller.center;
+                    Vector3 point1 = transform.position + _controller.center;
+
+                    point0.y -= _controller.height / 2+ _controller.radius;
+
+                    int numhit = Physics.OverlapCapsuleNonAlloc(point0, point1, _controller.radius, stompHit, 1 << 6);
+
+                    for (int idx_hit = 0; idx_hit < numhit; idx_hit++)
+                    {
+
+
+                        if (Sword.hitHistory.Contains(stompHit[idx_hit].gameObject))
+                            continue;
+
+                        Sword.hitHistory[Sword.hitHistoryCount++] = stompHit[idx_hit].gameObject;
+
+                    
+
+                        RobotController robotController = stompHit[idx_hit].gameObject.GetComponentInParent<RobotController>();
+
+
+                        if (robotController != null)
+                        {
+                            Debug.Log(stompHit[idx_hit].gameObject);
+
+                            if (robotController.team == team)
+                                continue;
+
+                            if (Sword.hitHistoryRC.Contains(robotController))
+                                continue;
+
+                            
+
+                            Sword.hitHistoryRC[Sword.hitHistoryRCCount++] = robotController;
+
+                            Vector3 diff = robotController.GetCenter() - GetCenter();
+
+                            diff.y = 0.0f;
+
+                            robotController.DoDamage(diff.normalized, Sword.damage, KnockBackType.Finish);
+
+                            GameObject.Instantiate(stompHitEffect_prefab, point0 + Vector3.down * _controller.radius, Quaternion.identity);
+                        }
+
+
+                    }
                 }
                 break;
         }
@@ -1046,6 +1102,8 @@ public class RobotController : MonoBehaviour
                         || lowerBodyState == LowerBodyState.QuickSlash
                         || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
                         || lowerBodyState == LowerBodyState.LowerSlash
+                        || lowerBodyState == LowerBodyState.JUMPSLASH_JUMP
+                        || lowerBodyState == LowerBodyState.JumpSlash
                    ) && lockonState != LockonState.FREE
                    )
         {
@@ -3026,6 +3084,7 @@ public class RobotController : MonoBehaviour
                             GroundedCheck();
                             if (Grounded)
                             {
+                                Sword.emitting = false;
                                 TransitLowerBodyState(LowerBodyState.GROUND);
                                 upperBodyState = UpperBodyState.STAND;
                             }
@@ -3280,7 +3339,7 @@ public class RobotController : MonoBehaviour
                     case LowerBodyState.GroundSlash:
                     case LowerBodyState.LowerSlash:
                     case LowerBodyState.QuickSlash:
-
+                    case LowerBodyState.JumpSlash:
                         upperBodyState = UpperBodyState.STAND;
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                         break;

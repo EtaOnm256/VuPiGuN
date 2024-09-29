@@ -31,7 +31,10 @@ public class InfightWeapon : MonoBehaviour
     public RobotController.KnockBackType knockBackType;
     public int damage = 250;
     public bool autovanish = false;
+    public int hitHistoryCount = 0;
     public int hitHistoryRCCount = 0;
+    [System.NonSerialized] public GameObject[] hitHistory = new GameObject[64];
+    [System.NonSerialized] public RobotController[] hitHistoryRC = new RobotController[16];
     public RobotController owner;
     virtual public bool emitting
     {

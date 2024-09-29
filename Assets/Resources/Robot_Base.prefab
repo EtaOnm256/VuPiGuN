@@ -2806,13 +2806,13 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 7
+  m_Height: 6.5
   m_Radius: 2
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 3.5, z: 0}
+  m_Center: {x: 0, y: 3.25, z: 0}
 --- !u!114 &8480790362381077383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2853,6 +2853,7 @@ MonoBehaviour:
   TerminalVelocity: 53
   AscendingVelocity: 20
   KnockbackSpeed: 30
+  InfightCorrectSpeed: 30
   cameraPosition: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   HP: 500
@@ -2890,6 +2891,7 @@ MonoBehaviour:
   fire_followthrough: 0
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
+  stompHitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
   worldManager: {fileID: 0}
   upperBodyState: 0
   lowerBodyState: 0

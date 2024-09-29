@@ -11,11 +11,6 @@ public class BeamSaber : InfightWeapon
 
     public GameObject hitEffect_prefab;
 
-    GameObject[] hitHistory = new GameObject[16];
-    RobotController[] hitHistoryRC = new RobotController[16];
-    int hitHistoryCount = 0;
-
-
 
 
     override public bool slashing
