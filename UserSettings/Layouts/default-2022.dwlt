@@ -437,23 +437,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 3af9ffff
-      m_LastClickedID: -1734
+      m_SelectedIDs: 70750000
+      m_LastClickedID: 0
       m_ExpandedIDs: fcfaffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: Robot2
-        m_OriginalName: Robot2
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: -1734
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 8}
       m_SearchString: 
@@ -483,9 +483,9 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 427
+    x: 426
     y: 73
-    width: 1045
+    width: 1041
     height: 710
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
@@ -500,11 +500,11 @@ MonoBehaviour:
     - e00: 0.678592
       e01: 0
       e02: 0
-      e03: 0.00015258789
+      e03: 0.00018310547
       e10: 0
       e11: 0.678592
       e12: 0
-      e13: 50.60459
+      e13: 169.648
       e20: 0
       e21: 0
       e22: 1
@@ -516,11 +516,11 @@ MonoBehaviour:
     - e00: 0.678592
       e01: 0
       e02: 0
-      e03: -200.0877
+      e03: 0.00018310547
       e10: 0
       e11: 0.678592
       e12: 0
-      e13: -117.22562
+      e13: 169.64796
       e20: 0
       e21: 0
       e22: 1
@@ -548,7 +548,7 @@ MonoBehaviour:
   m_PreviewAnimator: {fileID: 0}
   m_AnimatorController: {fileID: 9100000, guid: d5b57a89bbf723b45a15372d506be8e8, type: 2}
   m_BreadCrumbs:
-  - m_Target: {fileID: -120279293109889307, guid: d5b57a89bbf723b45a15372d506be8e8, type: 2}
+  - m_Target: {fileID: 5765110530667351623, guid: d5b57a89bbf723b45a15372d506be8e8, type: 2}
     m_ScrollPosition: {x: 0, y: 0}
   stateMachineGraph: {fileID: 0}
   stateMachineGraphGUI: {fileID: 0}
@@ -560,7 +560,7 @@ MonoBehaviour:
     m_IsLocked: 0
   m_CurrentEditor: 0
   m_LayerEditor:
-    m_SelectedLayerIndex: 0
+    m_SelectedLayerIndex: 2
 --- !u!114 &16
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -812,8 +812,8 @@ MonoBehaviour:
     - dockPosition: 0
       containerId: overlay-toolbar__left
       floating: 0
-      collapsed: 1
-      displayed: 1
+      collapsed: 0
+      displayed: 0
       snapOffset: {x: 0, y: 25}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0

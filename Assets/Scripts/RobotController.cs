@@ -323,7 +323,8 @@ public class RobotController : MonoBehaviour
         SUBFIRE,
         HEAVYFIRE,
         JumpSlash,
-        JUMPSLASH_JUMP
+        JUMPSLASH_JUMP,
+        JUMPSLASH_GROUND
     }
 
     public enum LowerBodyState
@@ -356,7 +357,8 @@ public class RobotController : MonoBehaviour
         HEAVYFIRE,
         AIRHEAVYFIRE,
         JumpSlash,
-        JUMPSLASH_JUMP
+        JUMPSLASH_JUMP,
+        JUMPSLASH_GROUND
     }
 
     bool strongdown = false;
@@ -1761,6 +1763,7 @@ public class RobotController : MonoBehaviour
                 _barmlayerwait = 0.0f;
                 break;
             case UpperBodyState.JumpSlash:
+            case UpperBodyState.JUMPSLASH_GROUND:
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
@@ -2213,7 +2216,8 @@ public class RobotController : MonoBehaviour
             case LowerBodyState.GETUP:
             case LowerBodyState.STEPGROUND:
             case LowerBodyState.JUMPSLASH_JUMP:
-            {
+            case LowerBodyState.JUMPSLASH_GROUND:
+                {
                     targetSpeed = 0.0f;
 
                     _animationBlend = 0.0f;
@@ -2237,6 +2241,7 @@ public class RobotController : MonoBehaviour
                             break;
 
                         case LowerBodyState.STEPGROUND:
+                        case LowerBodyState.JUMPSLASH_GROUND:
                             {
                                 _speed = 0.0f;
 
@@ -2245,6 +2250,11 @@ public class RobotController : MonoBehaviour
 
                                 if (event_grounded)
                                 {
+                                    if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND)
+                                    {
+                                        Sword.emitting = false;
+                                    }
+
                                     TransitLowerBodyState(LowerBodyState.STAND);
                                 }
                             }
@@ -3084,9 +3094,8 @@ public class RobotController : MonoBehaviour
                             GroundedCheck();
                             if (Grounded)
                             {
-                                Sword.emitting = false;
-                                TransitLowerBodyState(LowerBodyState.GROUND);
-                                upperBodyState = UpperBodyState.STAND;
+                                TransitLowerBodyState(LowerBodyState.JUMPSLASH_GROUND);
+                                upperBodyState = UpperBodyState.JUMPSLASH_GROUND;
                             }
                         }
                     }
@@ -3296,6 +3305,7 @@ public class RobotController : MonoBehaviour
                 break;
             case LowerBodyState.GROUND:
             case LowerBodyState.STEPGROUND:
+            case LowerBodyState.JUMPSLASH_GROUND:
 
                 if (lowerBodyState == LowerBodyState.STEP)
                 {
@@ -3339,9 +3349,15 @@ public class RobotController : MonoBehaviour
                     case LowerBodyState.GroundSlash:
                     case LowerBodyState.LowerSlash:
                     case LowerBodyState.QuickSlash:
-                    case LowerBodyState.JumpSlash:
+                    case LowerBodyState.JUMPSLASH_GROUND:
                         upperBodyState = UpperBodyState.STAND;
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
+
+                        if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND)
+                        {
+                            _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
+                        }
+
                         break;
                   }
                 break;
