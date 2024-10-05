@@ -1900,7 +1900,9 @@ public class RobotController : MonoBehaviour
             animator.SetLayerWeight(1, _rarmaimwait);
 
         rightWeapon.trigger = rightWeapon_trigger_thisframe;
-        shoulderWeapon.trigger = shoulderWeapon_trigger_thisframe;
+
+        if(shoulderWeapon!=null)
+            shoulderWeapon.trigger = shoulderWeapon_trigger_thisframe;
 
         if (Sword != null)
             Sword.dir = transform.forward;

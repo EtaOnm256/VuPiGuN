@@ -237,6 +237,7 @@ MonoBehaviour:
   knockBackType: 0
   damage: 250
   autovanish: 0
+  hitHistoryCount: 0
   hitHistoryRCCount: 0
   owner: {fileID: 0}
   hitpoints:
