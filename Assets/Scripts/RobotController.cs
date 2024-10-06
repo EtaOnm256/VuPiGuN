@@ -152,6 +152,17 @@ public class RobotController : MonoBehaviour
 
     private int _animIDStand2;
     private int _animIDStand3;
+    private int _animIDStand4;
+
+    int ChooseStandMotion()
+    {
+        if (Sword.dualwielded)
+            return _animIDStand4;
+        if (carrying_weapon)
+            return _animIDStand3;
+        else
+            return _animIDStand2;
+    }
 
     private int _animIDSubFire;
 
@@ -227,7 +238,12 @@ public class RobotController : MonoBehaviour
 
     public bool dualwielding
     {
-        get { return rightWeapon.heavy || dualwield_lightweapon; }
+        get {
+            bool rightWeapon_heavy = rightWeapon == null ? false : rightWeapon.heavy;
+            bool Sword_dualwielded = Sword == null ? false : Sword.dualwielded;
+
+                return rightWeapon_heavy || dualwield_lightweapon || Sword_dualwielded; 
+        }
     }
 
     public bool carrying_weapon = false;
@@ -268,7 +284,10 @@ public class RobotController : MonoBehaviour
     {
         get
         {
-            return rightWeapon.firing_multiplier;
+            if(rightWeapon != null)
+                return rightWeapon.firing_multiplier;
+            else
+                return 1.0f;
         }
     }
 
@@ -276,7 +295,10 @@ public class RobotController : MonoBehaviour
     {
         get
         {
-            return rightWeapon.lockon_multiplier;
+            if (rightWeapon != null)
+                return rightWeapon.lockon_multiplier;
+            else
+                return 1.0f;
         }
     }
 
@@ -535,12 +557,15 @@ public class RobotController : MonoBehaviour
                 // 射撃中だった場合に備えて
                 if (dualwielding)
                 {
-                    _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
+                    _animator.CrossFadeInFixedTime(ChooseStandMotion(), 0.5f, 2);
                 }
             }
 
-            rightWeapon.OnKnockback();
-            shoulderWeapon.OnKnockback();
+            if(rightWeapon!=null)
+                rightWeapon.OnKnockback();
+            if(shoulderWeapon!=null)
+                shoulderWeapon.OnKnockback();
+
         }
 
         HP = Math.Max(0, HP - damage);
@@ -604,7 +629,8 @@ public class RobotController : MonoBehaviour
 
             uIController_Overlay.origin = this;
 
-            uIController_Overlay.AddWeapon(rightWeapon);
+            if(rightWeapon != null)
+                uIController_Overlay.AddWeapon(rightWeapon);
 
             if(shoulderWeapon != null)
                 uIController_Overlay.AddWeapon(shoulderWeapon);
@@ -654,14 +680,14 @@ public class RobotController : MonoBehaviour
 
         if (Sword != null)
         {
-            Sword.autovanish = dualwielding;
+            Sword.autovanish = dualwielding && !Sword.dualwielded;
             Sword.emitting = false;
         }
 
         animator.SetFloat("FiringSpeed", firing_multiplier);
 
-        if (carrying_weapon)
-            animator.Play(_animIDStand3, 2);
+        if (dualwielding)
+            animator.Play(ChooseStandMotion(), 2);
 
         if (rightWeapon != null)
             rightWeapon.owner = this;
@@ -843,7 +869,8 @@ public class RobotController : MonoBehaviour
             if (HUDCanvas != null)
                 uIController_Overlay.lockonState = lockonState;
 
-            rightWeapon.Target_Robot = Target_Robot;
+            if (rightWeapon != null)
+                rightWeapon.Target_Robot = Target_Robot;
             if(shoulderWeapon != null)
                 shoulderWeapon.Target_Robot = Target_Robot;
             LowerBodyMove(); // 順番入れ替えるとHEAVYFIREの反動が処理できないので注意
@@ -864,8 +891,10 @@ public class RobotController : MonoBehaviour
 
             worldManager.HandleRemoveUnit(this);
 
-            rightWeapon.OnDestroy_Called_By_Unit();
-            shoulderWeapon.OnDestroy_Called_By_Unit();
+            if(rightWeapon != null)
+                rightWeapon.OnDestroy_Called_By_Unit();
+            if(shoulderWeapon != null)
+                shoulderWeapon.OnDestroy_Called_By_Unit();
 
             GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
 
@@ -907,11 +936,9 @@ public class RobotController : MonoBehaviour
         _animIDDown = Animator.StringToHash("Down");
         _animIDGetup = Animator.StringToHash("Getup");
 
-      
-
-
         _animIDStand2 = Animator.StringToHash("Stand2");
         _animIDStand3 = Animator.StringToHash("Stand3");
+        _animIDStand4 = Animator.StringToHash("Stand4");
 
         _animIDSubFire = Animator.StringToHash("SubFire");
 
@@ -1305,7 +1332,7 @@ public class RobotController : MonoBehaviour
 
                             if (dualwielding)
                             {
-                                _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
+                                _animator.CrossFadeInFixedTime(ChooseStandMotion(), 0.5f, 2);
                                 _animator.speed = 1.0f;
                             }
                         }
@@ -1456,7 +1483,7 @@ public class RobotController : MonoBehaviour
 
                             if (dualwielding)
                             {
-                                _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
+                                _animator.CrossFadeInFixedTime(ChooseStandMotion(), 0.5f, 2);
                                 _animator.speed = 1.0f;
                             }
                         }
@@ -1795,7 +1822,7 @@ public class RobotController : MonoBehaviour
             target_rot_head = Quaternion.LookRotation(target_head.transform.position - Head.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
 
-            if (rightWeapon.trajectory == Weapon.Trajectory.Straight || upperBodyState != UpperBodyState.HEAVYFIRE)
+            if (rightWeapon == null || rightWeapon.trajectory == Weapon.Trajectory.Straight || upperBodyState != UpperBodyState.HEAVYFIRE)
             {
                 Quaternion q_aim_global = Quaternion.LookRotation(aiming_hint.transform.position - target_chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
@@ -1899,7 +1926,8 @@ public class RobotController : MonoBehaviour
         if (!dualwielding)
             animator.SetLayerWeight(1, _rarmaimwait);
 
-        rightWeapon.trigger = rightWeapon_trigger_thisframe;
+        if (rightWeapon != null)
+            rightWeapon.trigger = rightWeapon_trigger_thisframe;
 
         if(shoulderWeapon!=null)
             shoulderWeapon.trigger = shoulderWeapon_trigger_thisframe;
@@ -3357,7 +3385,7 @@ public class RobotController : MonoBehaviour
 
                         if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND)
                         {
-                            _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
+                            _animator.CrossFadeInFixedTime(ChooseStandMotion(), 0.5f, 2);
                         }
 
                         break;
@@ -3429,7 +3457,7 @@ public class RobotController : MonoBehaviour
         // 射撃中だった場合に備えて
         if (dualwielding)
         {
-            _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
+            _animator.CrossFadeInFixedTime(ChooseStandMotion(), 0.5f, 2);
         }
     }
     private void JumpAndGravity()
@@ -3652,7 +3680,7 @@ public class RobotController : MonoBehaviour
                 // 射撃中だった場合に備えて
                 if (dualwielding)
                 {
-                    _animator.CrossFadeInFixedTime(carrying_weapon ? _animIDStand3 : _animIDStand2, 0.5f, 2);
+                    _animator.CrossFadeInFixedTime(ChooseStandMotion(), 0.5f, 2);
                 }
             }
         }

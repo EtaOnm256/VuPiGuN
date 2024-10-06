@@ -72,6 +72,10 @@ public class InfightWeapon : MonoBehaviour
     {
         get { return false; }
     }
+    virtual public bool dualwielded
+    {
+        get { return false; }
+    }
 
     public struct MotionProperty
     {

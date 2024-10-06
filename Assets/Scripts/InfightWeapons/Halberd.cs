@@ -65,6 +65,10 @@ public class Halberd : InfightWeapon
     {
         get { return true; }
     }
+    override public bool dualwielded
+    {
+        get { return true; }
+    }
 
     Material material;
     int powerID;
