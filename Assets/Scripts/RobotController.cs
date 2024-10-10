@@ -173,6 +173,8 @@ public class RobotController : MonoBehaviour
     public int slash_count = 0;
     bool slash_reserved = false;
 
+    bool jumpslash_end_forward = false;
+
     /*   const int GroundSlash_Num = 3;
        private int[] _animIDGroundSlash;
 
@@ -1131,8 +1133,8 @@ public class RobotController : MonoBehaviour
                         || lowerBodyState == LowerBodyState.QuickSlash
                         || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
                         || lowerBodyState == LowerBodyState.LowerSlash
-                        || lowerBodyState == LowerBodyState.JUMPSLASH_JUMP
-                        || lowerBodyState == LowerBodyState.JumpSlash
+                        //|| lowerBodyState == LowerBodyState.JUMPSLASH_JUMP
+                        //|| lowerBodyState == LowerBodyState.JumpSlash
                    ) && lockonState != LockonState.FREE
                    )
         {
@@ -1603,6 +1605,7 @@ public class RobotController : MonoBehaviour
                             upperBodyState = UpperBodyState.JUMPSLASH_JUMP;
                             _animator.CrossFadeInFixedTime(_animIDJumpSlashJump, 0.0f, 0);
                             slash_reserved = false;
+                            jumpslash_end_forward = false;
                             Sword.emitting = true;
                             lockonState = LockonState.SEEKING;
                       
@@ -1794,7 +1797,7 @@ public class RobotController : MonoBehaviour
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
-                _barmlayerwait = 1.0f;
+                _barmlayerwait = 0.0f;
                 break;
             default:
                 _chestaimwait = 0.0f;
@@ -2318,12 +2321,13 @@ public class RobotController : MonoBehaviour
                                     Sword.knockBackType = KnockBackType.Finish;
                                     stepremain = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashLength;
 
-                                    _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
-                                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.JumpSlash]._animID[slash_count], 0.0f, 2);
-                                    _animator.SetLayerWeight(2, 1.0f);
+                                    //_animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
+                                    //_animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.JumpSlash]._animID[slash_count], 0.0f, 2);
+                                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.JumpSlash]._animID[slash_count], 0.0f, 0);
+                                    //_animator.SetLayerWeight(2, 1.0f);
                                     _animator.SetFloat("SlashSpeed", 0.0f);
 
-                                    _verticalVelocity = AscendingVelocity*2;
+                                    _verticalVelocity = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
 
                                     _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
                                 }
@@ -3071,13 +3075,13 @@ public class RobotController : MonoBehaviour
                }
             case LowerBodyState.JumpSlash:
                 {
-                    _speed = targetSpeed = 0.0f;
+                    //_speed = targetSpeed = 0.0f;
 
                     float dist_xz = float.MinValue;
+                    float dist_y = float.MaxValue;
 
                     if (target_chest != null)
                     {
-
                         Vector3 target_dir = target_chest.transform.position - transform.position;
 
                         _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
@@ -3088,38 +3092,71 @@ public class RobotController : MonoBehaviour
                         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
                         Vector3 sub_xz = (target_chest.transform.position - Chest.transform.position);
+                        dist_y = sub_xz.y;
+
                         sub_xz.y = 0.0f;
 
                         dist_xz = sub_xz.magnitude;
                     }
 
-                  
 
-                   
+                    
 
                     if (dist_xz > Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].SlashDistance * transform.lossyScale.x)
                     {
-                        _speed = targetSpeed = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
+                        
                     }
                     else
                     {
-                        if (stepremain < 10)
-                            stepremain = 0;
+                        jumpslash_end_forward = true;
+                        _speed = targetSpeed = 0.0f;
+                    }
+                    
+                    if(!jumpslash_end_forward)
+                        _speed = targetSpeed = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
+                    else
+                        _speed = targetSpeed = Mathf.Max(_speed-SpeedChangeRate,0.0f);
+
+
+
+                 /*   if (dist_xz > -dist_y + Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].SlashDistance * transform.lossyScale.x)
+                    {
+                       
+                    }
+                    else
+                    {
+                        //if (stepremain < 10)
+                        //    stepremain = 0;
+
+                        
+                    }*/
+
+                    _verticalVelocity = Mathf.Max(_verticalVelocity + Gravity * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed/*float.MinValue*/);
+
+
+                    if (_verticalVelocity < 0.0f)
+                    {
+                        _animator.SetFloat("SlashSpeed", 0.5f);
+                        jumpslash_end_forward = true;
                     }
 
                     if (stepremain > 0)
                     {
                         stepremain--;
-                        _verticalVelocity = AscendingVelocity*2;
+                        //_verticalVelocity = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
+
+                        //_verticalVelocity = AscendingVelocity * 2;
                     }
                     else 
                     {
-                        _animator.SetFloat("SlashSpeed", 1.0f);
 
-           
-                         _verticalVelocity = Mathf.Max(_verticalVelocity- SpeedChangeRate, -AscendingVelocity*2);
 
-                        if (event_slash && _verticalVelocity == -AscendingVelocity*2)
+
+                        // _verticalVelocity = Mathf.Max(_verticalVelocity- SpeedChangeRate, -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed);
+
+                     
+
+                        if (event_slash/* && _verticalVelocity == -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed*/)
                         {
                             GroundedCheck();
                             if (Grounded)
@@ -3131,7 +3168,7 @@ public class RobotController : MonoBehaviour
                     }
 
                     
-                    _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
+                    //_animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                     
                 }
                 break;

@@ -43,16 +43,16 @@ public class RobotAI_Medium : InputBase
 
     public State state = State.Ground;
 
-    public float movedirection_range = 90.0f;
-    //public float movedirection_range = 180.0f;
+    //public float movedirection_range = 90.0f;
+    public float movedirection_range = 180.0f;
 
-    public float lock_range = 75.0f;
-    //public float lock_range = 150.0f;
+    //public float lock_range = 75.0f;
+    public float lock_range = 150.0f;
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        //return;
+        return;
 
         float mindist = float.MaxValue;
         
@@ -391,7 +391,7 @@ public class RobotAI_Medium : InputBase
 
         //
         fire = false;
-        //slash = false;
+        slash = false;
         subfire = false;
         //
 
