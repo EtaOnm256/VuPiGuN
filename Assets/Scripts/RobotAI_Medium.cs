@@ -27,6 +27,7 @@ public class RobotAI_Medium : InputBase
     public int fire_prepare = 15;
 
     public int infight_reload = 0;
+    public int jumpinfight_reload = 0;
 
     bool overheating = false;
 
@@ -43,16 +44,16 @@ public class RobotAI_Medium : InputBase
 
     public State state = State.Ground;
 
-    //public float movedirection_range = 90.0f;
-    public float movedirection_range = 180.0f;
+    public float movedirection_range = 90.0f;
+    //public float movedirection_range = 180.0f;
 
-    //public float lock_range = 75.0f;
-    public float lock_range = 150.0f;
+    public float lock_range = 75.0f;
+    //public float lock_range = 150.0f;
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        return;
+        //return;
 
         float mindist = float.MaxValue;
         
@@ -352,8 +353,28 @@ public class RobotAI_Medium : InputBase
                     }
                     else if(infight_reload > 0)
                         infight_reload--;
-                    if (allow_infight && !prev_slash && infight_reload <= 0)
-                        slash = true;
+
+                    if (robotController.lowerBodyState == RobotController.LowerBodyState.JumpSlash)
+                        jumpinfight_reload = 60;
+                    else if(jumpinfight_reload > 0)
+                        jumpinfight_reload--;
+
+                    if (allow_infight)
+                    {
+                        if (!prev_slash && jumpinfight_reload <= 0)
+                        {
+                            move.x = 0.0f;
+                            move.y = -1.0f;
+                            slash = true;
+                        }
+                        else if (!prev_slash && infight_reload <= 0)
+                        {
+                            move.x = 0.0f;
+                            move.y = 0.0f;
+                            slash = true;
+                        }
+                        
+                    }
                     else if (fire_wait <= 0 && allow_fire)
                     {
                         if (mindist < 100.0f)
@@ -391,7 +412,7 @@ public class RobotAI_Medium : InputBase
 
         //
         fire = false;
-        slash = false;
+        //slash = false;
         subfire = false;
         //
 

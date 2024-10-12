@@ -169,6 +169,7 @@ public class RobotController : MonoBehaviour
     private int _animIDHeavyFire;
 
     private int _animIDJumpSlashJump;
+    private int _animIDJumpSlashGround;
 
     public int slash_count = 0;
     bool slash_reserved = false;
@@ -462,7 +463,8 @@ public class RobotController : MonoBehaviour
         QuickIgniter = 1 << 4
     }
 
-    ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
+    ItemFlag itemFlag = 0;
+    //ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
@@ -947,6 +949,7 @@ public class RobotController : MonoBehaviour
         _animIDHeavyFire = Animator.StringToHash("HeavyFire");
 
         _animIDJumpSlashJump = Animator.StringToHash("JumpSlashJump");
+        _animIDJumpSlashGround = Animator.StringToHash("JumpSlashGround");
     }
 
     Collider[] stompHit = new Collider[16];
@@ -3372,7 +3375,7 @@ public class RobotController : MonoBehaviour
                 break;
             case LowerBodyState.GROUND:
             case LowerBodyState.STEPGROUND:
-            case LowerBodyState.JUMPSLASH_GROUND:
+            
 
                 if (lowerBodyState == LowerBodyState.STEP)
                 {
@@ -3393,6 +3396,10 @@ public class RobotController : MonoBehaviour
                     //upperBodyState = UpperBodyState.STAND;
                 }
 
+                break;
+            case LowerBodyState.JUMPSLASH_GROUND:
+                _animator.Play(_animIDJumpSlashGround, 0, 0);
+                event_grounded = false;
                 break;
             case LowerBodyState.STAND:
                 switch (lowerBodyState)

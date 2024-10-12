@@ -514,6 +514,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-3499029126582884561
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: JumpSlashGround
+  m_Speed: 4
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -2288172636802838608, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-3115779097724359075
 AnimatorState:
   serializedVersion: 6
@@ -889,6 +915,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -4838281695237741325}
     m_Position: {x: 1260, y: 1310, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -3499029126582884561}
+    m_Position: {x: 910, y: 0, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -1012,32 +1041,6 @@ AnimatorState:
   m_Motion: {fileID: -1192654317039134918, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
   m_Tag: 
   m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
---- !u!1102 &486122357206658481
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: JumpSlash_0
-  m_Speed: 16
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 1
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7421272662677388454, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
-  m_Tag: 
-  m_SpeedParameter: SlashSpeed
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
@@ -1506,9 +1509,6 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 7103840342622742800}
     m_Position: {x: 310, y: 410, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 486122357206658481}
-    m_Position: {x: 560, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8018824995852611300}
     m_Position: {x: 310, y: 560, z: 0}
