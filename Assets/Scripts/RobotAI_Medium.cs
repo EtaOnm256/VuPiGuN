@@ -27,11 +27,13 @@ public class RobotAI_Medium : InputBase
     public int fire_prepare = 15;
 
     public int infight_reload = 0;
+    public int infight_wait = 0;
     public int jumpinfight_reload = 0;
 
     bool overheating = false;
 
     bool prev_slash = false;
+    bool prev_sprint = false;
 
     public int ground_step_remain = 2;
     public enum State
@@ -208,58 +210,79 @@ public class RobotAI_Medium : InputBase
                                 {
                                     move.x = 1.0f;
                                     move.y = 0.0f;
-                                    sprint = true;
-                                    moveDirChangeTimer = 60;
-                                }
-                                else if(ground_step_remain > 0)
-                                {
-                                    move.y = 1.0f;
-                                    move.x = 0.0f;
-                                    sprint = true;
-                                    moveDirChangeTimer = 60;
 
-                                    if (ground_step_remain != 1 && robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
-                                    {
-                                        ground_step_remain = 1;
-                                    }
-                                    if (ground_step_remain == 1 &&robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND)
-                                    {
-                                        ground_step_remain = 0;
-                                    }
+                                    if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
+                                        sprint = true;
+                                    else
+                                        sprint = !prev_sprint;
+
+                                    moveDirChangeTimer = 60;
                                 }
                                 else
                                 {
-                                    if (mindist > lock_range)
+                                    if (ground_step_remain > 0)
                                     {
-                                        move.y = 1.0f;
-                                        move.x = 0.0f;
-                                        //moveDirChangeTimer = 60;
+                                        if (mindist > lock_range / 2)
+                                        {
+                                            move.y = 1.0f;
+                                            move.x = 0.0f;
+                                        }
+                                        else
+                                        {
+                                            move.x = 1.0f;
+                                            move.y = 0.0f;
+                                        }
+
+                                        if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
+                                            sprint = true;
+                                        else
+                                            sprint = !prev_sprint;
+
+                                        moveDirChangeTimer = 60;
+
+                                        if (ground_step_remain != 1 && robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
+                                        {
+                                            ground_step_remain = 1;
+                                        }
+                                        if (ground_step_remain == 1 && robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND)
+                                        {
+                                            ground_step_remain = 0;
+                                        }
                                     }
                                     else
                                     {
-
-
-                                        if (moveDirChangeTimer <= 0)
+                                        if (mindist > lock_range)
                                         {
-                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2*Mathf.PI/360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
-                                            moveDirChangeTimer = 60;
+                                            move.y = 1.0f;
+                                            move.x = 0.0f;
+                                            //moveDirChangeTimer = 60;
+                                        }
+                                        else
+                                        {
+
+
+                                            if (moveDirChangeTimer <= 0)
+                                            {
+                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                                moveDirChangeTimer = 60;
+                                            }
+                                        }
+
+                                        if (robotController.boost >= robotController.Boost_Max)
+                                        {
+                                            jump = true;
                                         }
                                     }
 
-                                    if (robotController.boost >= robotController.Boost_Max)
-                                    {
-                                        jump = true;
-                                    }
+                                    if (nearest_robot.Grounded && mindist < 20.0f)
+                                        allow_infight = true;
+
+                                    if (target_angle <= 60)
+                                        allow_fire = true;
                                 }
 
                                 if (!robotController.Grounded)
                                     state = State.Ascend;
-
-                                if (nearest_robot.Grounded && mindist < 20.0f)
-                                    allow_infight = true;
-
-                                if(target_angle <= 60)
-                                    allow_fire = true;
                             }
                             break;
                         case State.Ascend:
@@ -355,65 +378,86 @@ public class RobotAI_Medium : InputBase
                         infight_reload--;
 
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.JumpSlash)
-                        jumpinfight_reload = 60;
+                        jumpinfight_reload = 90;
                     else if(jumpinfight_reload > 0)
                         jumpinfight_reload--;
 
+                    /*if(robotController.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide) && robotController.lowerBodyState == RobotController.LowerBodyState.JUMPSLASH_GROUND)
+                    {
+                        robotController.
+                    }*/
+
+                    if (robotController.Sword == null)
+                        allow_infight = false;
+                    if (robotController.rightWeapon == null)
+                        allow_fire = false;
+
+
                     if (allow_infight)
                     {
-                        if (!prev_slash && jumpinfight_reload <= 0)
+                        if (infight_wait <= 0)
                         {
-                            move.x = 0.0f;
-                            move.y = -1.0f;
-                            slash = true;
-                        }
-                        else if (!prev_slash && infight_reload <= 0)
-                        {
-                            move.x = 0.0f;
-                            move.y = 0.0f;
-                            slash = true;
-                        }
-                        
-                    }
-                    else if (fire_wait <= 0 && allow_fire)
-                    {
-                        if (mindist < 100.0f)
-                        {
-                            if (fire_prepare <= 0)
+
+                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0)
                             {
-                                fire = true;
-                                fire_wait = Random.Range(60, 120);
-                                fire_prepare = 15;
+                                move.x = 0.0f;
+                                move.y = -1.0f;
+                                slash = true;
+                            }
+                            else if (!prev_slash && infight_reload <= 0)
+                            {
+                                move.x = 0.0f;
+                                move.y = 0.0f;
+                                slash = true;
+                            }
+                        }
+                        else
+                            infight_wait--;
+                    }
+                    else
+                    {
+                        infight_wait = 15;
+
+                        if (fire_wait <= 0 && allow_fire)
+                        {
+                            if (mindist < 100.0f)
+                            {
+                                if (fire_prepare <= 0)
+                                {
+                                    fire = true;
+                                    fire_wait = Random.Range(60, 120);
+                                    fire_prepare = 15;
+                                }
+                                else
+                                {
+                                    fire_prepare--;
+                                }
+
+                                move = Vector2.zero;
+                                moveDirChangeTimer = 0;
                             }
                             else
                             {
-                                fire_prepare--;
+                                fire_wait = Random.Range(60, 120);
+                                fire_prepare = 15;
                             }
-
-                            move = Vector2.zero;
-                            moveDirChangeTimer = 0;
-                        }
-                        else
-                        {
-                            fire_wait = Random.Range(60, 120);
-                            fire_prepare = 15;
                         }
                     }
 
 
-
                     fire_wait--;
+                    infight_wait--;
                     moveDirChangeTimer--;
                 }
             }
         }
 
         prev_slash = slash;
-
+        prev_sprint = sprint;
         //
-        fire = false;
+        //fire = false;
         //slash = false;
-        subfire = false;
+        //subfire = false;
         //
 
         return;
