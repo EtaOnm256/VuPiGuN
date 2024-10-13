@@ -463,8 +463,8 @@ public class RobotController : MonoBehaviour
         QuickIgniter = 1 << 4
     }
 
-    //public ItemFlag itemFlag = 0;
-    ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
+    public ItemFlag itemFlag = 0;
+    //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {

@@ -2906,6 +2906,7 @@ MonoBehaviour:
   AimHelper_Head: {fileID: 8747842198656981557}
   AimHelper_Chest: {fileID: 2621356082494473596}
   AimHelper_RHand: {fileID: 4754426859814798826}
+  itemFlag: 0
 --- !u!114 &7418367242443623617
 MonoBehaviour:
   m_ObjectHideFlags: 0
