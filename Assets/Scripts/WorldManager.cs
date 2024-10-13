@@ -123,7 +123,7 @@ public class WorldManager : MonoBehaviour
         RobotController robotController = enemy.GetComponent<RobotController>();
 
         robotController.worldManager = this;
-        robotController._input = enemy.AddComponent<RobotAI_Medium>();
+        robotController._input = enemy.AddComponent<RobotAI_Shenlong>();
 
         if(enemy_rweapon_prefab!=null)
         {

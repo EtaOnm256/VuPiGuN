@@ -408,7 +408,7 @@ public class RobotController : MonoBehaviour
 
     public int Boost_Max = 200;
 
-    int _boost;
+    [SerializeField]int _boost;
 
     public bool dead = false;
 
@@ -2280,7 +2280,7 @@ public class RobotController : MonoBehaviour
                             {
                                 _speed = 0.0f;
 
-                                if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND && itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                                     AcceptStep(true);
 
                                 if (event_grounded)
