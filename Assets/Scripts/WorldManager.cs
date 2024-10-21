@@ -178,14 +178,23 @@ public class WorldManager : MonoBehaviour
             else
             {
 
-                GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
+                /*GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
 
                 enemysubweapon.transform.parent = robotController.LShoulder.transform;
                 enemysubweapon.transform.localPosition = new Vector3(0.01043f, 0.0114f, 0.00055f);
                 enemysubweapon.transform.localEulerAngles = new Vector3(-0.103f, 1.591f, -86.308f);
                 enemysubweapon.transform.localScale = new Vector3(1, 1, 1);
 
-                robotController.shoulderWeapon = enemysubweapon.GetComponent<Weapon>();
+                robotController.shoulderWeapon = enemysubweapon.GetComponent<Weapon>();*/
+
+                GameObject enemysubweapon_l = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
+
+                enemysubweapon_l.transform.parent = robotController.chestWeapon_anchor[0].transform;
+                enemysubweapon_l.transform.localPosition = Vector3.zero;
+                enemysubweapon_l.transform.localEulerAngles = Vector3.zero;
+                enemysubweapon_l.transform.localScale = Vector3.one;
+
+                robotController.shoulderWeapon = enemysubweapon_l.GetComponent<Weapon>();
             }
             
         }
