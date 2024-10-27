@@ -622,29 +622,30 @@ public class RobotController : MonoBehaviour
     {
 
 
+     
+     
+    }
+
+    private void Start()
+    {
         //HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
         if (HUDCanvas != null)
         {
             boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
 
 
-            uIController_Overlay = HUDCanvas.GetComponent<UIController_Overlay>();
-
+           
 
             uIController_Overlay.origin = this;
 
-            if(rightWeapon != null)
+            if (rightWeapon != null)
                 uIController_Overlay.AddWeapon(rightWeapon);
 
-            if(shoulderWeapon != null)
+            if (shoulderWeapon != null)
                 uIController_Overlay.AddWeapon(shoulderWeapon);
         }
 
-     
-    }
 
-    private void Start()
-    {
         if (CinemachineCameraTarget != null)
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
