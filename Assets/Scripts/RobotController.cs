@@ -253,6 +253,7 @@ public class RobotController : MonoBehaviour
 
     public bool dualwield_lightweapon = false;
 
+    public bool step_boost = false;
     public enum LockonState
     {
         FREE,
@@ -458,13 +459,14 @@ public class RobotController : MonoBehaviour
     {
         NextDrive = 1 << 0,
         ExtremeSlide = 1 << 1,
-        Hovercraft = 1 << 2,
+        GroundBoost = 1 << 2,
         VerticalVernier = 1 << 3,
-        QuickIgniter = 1 << 4
+        QuickIgniter = 1 << 4,
+        Hovercraft = 1 << 5
     }
 
     public ItemFlag itemFlag = 0;
-    //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.Hovercraft | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
+    //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
     public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
     {
@@ -2153,7 +2155,8 @@ public class RobotController : MonoBehaviour
 
                     if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-                    if (event_heavyfired)
+                    // 滑り撃ちのときは、LowerBodyMove()末尾の別個処理でやってる
+                    if (event_heavyfired && ! (itemFlag.HasFlag(ItemFlag.Hovercraft) && lowerBodyState == LowerBodyState.HEAVYFIRE))
                     {
                         if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
                         {
@@ -2226,7 +2229,7 @@ public class RobotController : MonoBehaviour
                     if (lowerBodyState == LowerBodyState.AIRFIRE)
                         animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
 
-                    if (lowerBodyState == LowerBodyState.FIRE)
+                    if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
                     {
                         RegenBoost();
                     }
@@ -2462,6 +2465,8 @@ public class RobotController : MonoBehaviour
 
                     stepremain--;
 
+                    if (step_boost)
+                        boosting = true;
 
                     if (event_stepped)
                     {
@@ -2475,7 +2480,7 @@ public class RobotController : MonoBehaviour
                         {
                             if(stepremain <= 0)
                             {
-                                if (itemFlag.HasFlag(ItemFlag.Hovercraft) && ConsumeBoost(4))
+                                if (itemFlag.HasFlag(ItemFlag.GroundBoost) && ConsumeBoost(4))
                                 {
 
                                 }
@@ -3126,16 +3131,19 @@ public class RobotController : MonoBehaviour
                     {
                         _animator.SetFloat("SlashSpeed", 0.5f);
                         jumpslash_end_forward = true;
+                        boosting = false;
                     }
+                    else
+                        boosting = true;
 
-                   /* if (stepremain > 0)
-                    {
-                        stepremain--;
-                        //_verticalVelocity = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
+                    /* if (stepremain > 0)
+                     {
+                         stepremain--;
+                         //_verticalVelocity = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
 
-                        //_verticalVelocity = AscendingVelocity * 2;
-                    }
-                    else*/ 
+                         //_verticalVelocity = AscendingVelocity * 2;
+                     }
+                     else*/
                     {
 
 
@@ -3276,21 +3284,96 @@ public class RobotController : MonoBehaviour
             MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
-        else if(lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
+        else if(itemFlag.HasFlag(ItemFlag.Hovercraft) &&
+            (lowerBodyState == LowerBodyState.STEPGROUND || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.FIRE
+            || lowerBodyState == LowerBodyState.HEAVYFIRE))
         {
-            Vector3 targetDirection = transform.rotation * Vector3.back;
+           
+            float speedOffset = 0.1f;
+
+            targetSpeed = 0.0f;
+
+            //float brakefactor = 0.25f;
+            float brakefactor = 0.10f;
+
+
+            // a reference to the players current horizontal velocity
+            float currentHorizontalSpeed_X = _controller.velocity.x;
+
+
+            // accelerate or decelerate to target speed
+            if (currentHorizontalSpeed_X < targetSpeed - speedOffset ||
+                currentHorizontalSpeed_X > targetSpeed + speedOffset)
+            {
+                // creates curved result rather than a linear one giving a more organic speed change
+                // note T in Lerp is clamped, so we don't need to clamp our speed
+                currentHorizontalSpeed_X = Mathf.Lerp(currentHorizontalSpeed_X, 0.0f,Time.deltaTime * SpeedChangeRate * brakefactor);
+
+                // round speed to 3 decimal places
+                currentHorizontalSpeed_X = Mathf.Round(currentHorizontalSpeed_X * 1000f) / 1000f;
+            }
+            else
+            {
+                currentHorizontalSpeed_X = targetSpeed;
+            }
+
+            // a reference to the players current horizontal velocity
+            float currentHorizontalSpeed_Z = _controller.velocity.z;
+
+
+            // accelerate or decelerate to target speed
+            if (currentHorizontalSpeed_Z < targetSpeed - speedOffset ||
+                currentHorizontalSpeed_Z > targetSpeed + speedOffset)
+            {
+                // creates curved result rather than a linear one giving a more organic speed change
+                // note T in Lerp is clamped, so we don't need to clamp our speed
+                currentHorizontalSpeed_Z = Mathf.Lerp(currentHorizontalSpeed_Z, 0.0f, Time.deltaTime * SpeedChangeRate * brakefactor);
+
+                // round speed to 3 decimal places
+                currentHorizontalSpeed_Z = Mathf.Round(currentHorizontalSpeed_Z * 1000f) / 1000f;
+            }
+            else
+            {
+                currentHorizontalSpeed_Z = targetSpeed;
+            }
+
+            if (lowerBodyState == LowerBodyState.HEAVYFIRE)
+            {
+                if (event_heavyfired)
+                {
+                    Vector3 backBlastDir = -(rightWeapon.gameObject.transform.rotation * (Vector3.forward));
+
+                    Vector3 backBlackDir_Horizontal = new Vector3(backBlastDir.x, 0.0f, backBlastDir.z);
+
+                    currentHorizontalSpeed_X += 50.0f * backBlackDir_Horizontal.x;
+                    currentHorizontalSpeed_Z += 50.0f * backBlackDir_Horizontal.z;
+
+
+                }
+            }
 
             // move the player
-            MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
+            MoveAccordingTerrain(new Vector3(currentHorizontalSpeed_X ,0.0f, currentHorizontalSpeed_Z)* Time.deltaTime +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
         else
         {
-            Vector3 targetDirection = transform.rotation * Vector3.forward;
+            if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
+            {
+                Vector3 targetDirection = transform.rotation * Vector3.back;
 
-            // move the player
-            MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
-                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+                // move the player
+                MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
+                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            }
+            else
+            {
+                Vector3 targetDirection = transform.rotation * Vector3.forward;
+
+                // move the player
+                MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
+                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            }
         }
 
 
