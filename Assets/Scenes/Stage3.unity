@@ -184,11 +184,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32b4ad5a991e7fa4cbdf73e57a090369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player_prefab: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
+  player_rweapon_prefab: {fileID: 0}
+  player_lweapon_prefab: {fileID: 0}
+  player_subweapon_prefab: {fileID: 0}
+  player_weapon_chest_paired: 0
   enemy_prefab: {fileID: 803051568401146564, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
   enemy_rweapon_prefab: {fileID: 8399022032530343097, guid: b0ba637833460744fa2a6ed6bcb7106e, type: 3}
   enemy_lweapon_prefab: {fileID: 228844574215034437, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
   enemy_subweapon_prefab: {fileID: 0}
-  weapon_chest_paired: 1
+  enemy_weapon_chest_paired: 0
 --- !u!114 &11316762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1568,7 +1573,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4423220419937112734, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: m_RootOrder
