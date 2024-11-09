@@ -72,3 +72,9 @@ https://www.textures.com/download/MetalBare0262/135098
 
 基地のブロックの壁と天井
 https://www.textures.com/download/MetalPlatesBare0154/123165
+
+雪
+https://www.textures.com/download/snow-0158/122090
+
+雪の絶壁
+https://www.textures.com/download/cliffs-0464/94319

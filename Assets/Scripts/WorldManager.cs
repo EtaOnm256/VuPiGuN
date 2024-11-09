@@ -122,7 +122,7 @@ public class WorldManager : MonoBehaviour
     {
         RaycastHit raycastHit;
 
-        Physics.Raycast(pos + new Vector3(0.0f, 200.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
+        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
 
         GameObject player = GameObject.Instantiate(player_prefab, raycastHit.point, rot);
 
@@ -224,7 +224,7 @@ public class WorldManager : MonoBehaviour
     {
         RaycastHit raycastHit;
 
-        Physics.Raycast(pos+new Vector3(0.0f,200.0f,0.0f), -Vector3.up,out raycastHit, float.MaxValue, 1 << 3);
+        Physics.Raycast(pos+new Vector3(0.0f,500.0f,0.0f), -Vector3.up,out raycastHit, float.MaxValue, 1 << 3);
 
         GameObject enemy = GameObject.Instantiate(enemy_prefab, raycastHit.point, rot);
       
