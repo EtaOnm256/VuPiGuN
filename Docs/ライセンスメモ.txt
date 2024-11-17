@@ -81,3 +81,9 @@ https://www.textures.com/download/cliffs-0464/94319
 
 雨エフェクト（雪のため）
 https://id.unity.com/en/conversations/88805a00-7c25-4296-ad7c-077ccee27d6a00df
+
+夜砂漠の空の元
+https://assetstore.unity.com/packages/2d/textures-materials/sky/allsky-free-10-sky-skybox-set-146014
+
+砂漠
+https://www.textures.com/download/soil-sand-0179/48700
