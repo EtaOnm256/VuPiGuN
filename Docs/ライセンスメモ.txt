@@ -87,3 +87,9 @@ https://assetstore.unity.com/packages/2d/textures-materials/sky/allsky-free-10-s
 
 砂漠
 https://www.textures.com/download/soil-sand-0179/48700
+
+宇宙基地タイル
+https://www.textures.com/download/floors-hexagonal-0028/46312
+
+宇宙基地外壁
+https://www.textures.com/download/high-rise-glass-0067/73564

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   k_AssetVersion: 2
   lightLayerName0: Light Layer default
-  lightLayerName1: Light Layer 1
-  lightLayerName2: Light Layer 2
-  lightLayerName3: Light Layer 3
+  lightLayerName1: Floor
+  lightLayerName2: Ceil
+  lightLayerName3: Wall
   lightLayerName4: Light Layer 4
   lightLayerName5: Light Layer 5
   lightLayerName6: Light Layer 6

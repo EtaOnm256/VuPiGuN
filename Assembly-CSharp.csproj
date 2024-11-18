@@ -154,6 +154,7 @@
     <None Include="Assets\Effekseer\Materials\EffekseerShaderVS.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\RainMaker\Prefab\RainShader.shader" />
+    <None Include="Assets\Customizable Skybox\Stylized Sky\Shaders\Stylized Sky.shader" />
     <None Include="Assets\Day-Night Skyboxes\readme.txt" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderAdVS.cginc" />
     <None Include="Assets\Effekseer\Texture\error.txt" />
