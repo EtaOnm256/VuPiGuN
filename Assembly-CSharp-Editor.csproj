@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
     <Compile Include="Assets\RainMaker\Editor\RainMakerEditor.cs" />
+    <Compile Include="Assets\LightProbeHelper\Editor\LightProbeGenEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

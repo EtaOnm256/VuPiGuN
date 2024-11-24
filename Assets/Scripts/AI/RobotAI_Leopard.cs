@@ -57,7 +57,7 @@ public class RobotAI_Leopard : InputBase
     // Update is called once per frame
     void FixedUpdate()
     {
-        return;
+        //return;
 
         float mindist = float.MaxValue;
 

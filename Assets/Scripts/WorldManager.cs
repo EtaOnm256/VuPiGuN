@@ -232,9 +232,10 @@ public class WorldManager : MonoBehaviour
         RobotController robotController = enemy.GetComponent<RobotController>();
 
         robotController.worldManager = this;
-        robotController._input = enemy.AddComponent<RobotAI_Leopard>();
+        //robotController._input = enemy.AddComponent<RobotAI_Leopard>();
+        robotController._input = enemy.AddComponent<RobotAI_Medium>();
 
-        if(enemy_rweapon_prefab!=null)
+        if (enemy_rweapon_prefab!=null)
         {
             GameObject enemyrweapon = GameObject.Instantiate(enemy_rweapon_prefab, raycastHit.point, rot);
 

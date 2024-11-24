@@ -111,6 +111,7 @@
     <Compile Include="Assets\RainMaker\Demo\DemoScript.cs" />
     <Compile Include="Assets\RainMaker\Demo\DemoScript2D.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
+    <Compile Include="Assets\LightProbeHelper\LightProbeGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -149,6 +150,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\Shaders\TerrainLit_DrawBorder.shader" />
+    <None Include="Assets\LightProbeHelper\Readme.txt" />
     <None Include="Assets\BrokenVector\LowPolyTreePack\README.txt" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderSoftParticlePS.cginc" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderVS.cginc" />
