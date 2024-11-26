@@ -185,8 +185,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player_prefab: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
-  player_rweapon_prefab: {fileID: 0}
-  player_lweapon_prefab: {fileID: 0}
+  player_rweapon_prefab: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
+  player_lweapon_prefab: {fileID: 228844574215034437, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
   player_subweapon_prefab: {fileID: 0}
   player_weapon_chest_paired: 0
   enemy_prefab: {fileID: 803051568401146564, guid: 7e306587d0663164d853049beebecdf9, type: 3}
@@ -1073,7 +1073,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.15
+  m_Intensity: 0.05
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2796,7 +2796,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1501615584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3096,7 +3096,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1714299145
 MonoBehaviour:
   m_ObjectHideFlags: 0

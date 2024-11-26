@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scripts\VectorUtil.cs" />
     <Compile Include="Assets\Scripts\Projectile\CannonBall.cs" />
     <Compile Include="Assets\Scripts\RobotController.cs" />
+    <Compile Include="Assets\LightProbeHelper\LightProbeGenerator.cs" />
     <Compile Include="Assets\Scripts\Weapons\Bazooka.cs" />
     <Compile Include="Assets\Scripts\InfightWeapons\BeamSaber.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod.cs" />
@@ -111,7 +112,6 @@
     <Compile Include="Assets\RainMaker\Demo\DemoScript.cs" />
     <Compile Include="Assets\RainMaker\Demo\DemoScript2D.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
-    <Compile Include="Assets\LightProbeHelper\LightProbeGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
