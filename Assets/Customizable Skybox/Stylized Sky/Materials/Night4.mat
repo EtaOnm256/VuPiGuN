@@ -81,7 +81,7 @@ Material:
     - _SunDiscContribution: 1
     - _SunDiscExponent: 250000
     - _SunDiscMultiplier: 500
-    - _SunHaloContribution: 0.5
+    - _SunHaloContribution: 0.1
     - _SunHaloExponent: 500
     - _UVSec: 0
     - _ZWrite: 1
