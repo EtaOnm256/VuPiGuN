@@ -92,7 +92,30 @@ public class RobotController : MonoBehaviour
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
 
-    public int HP = 500;
+    public int _HP = 500;
+
+    public int HP
+    {
+        get { return _HP; }
+        set
+        {
+            if (value != _HP)
+            {
+
+                _HP = value;
+
+                if (HUDCanvas != null)
+                {
+                    HPSlider.value = _HP;
+                    HPText.text = $"{_HP}/{MaxHP}";
+                }
+
+
+            }
+        }
+    }
+
+
     public int MaxHP = 500;
 
     public int StepLimit = 30;
@@ -403,6 +426,8 @@ public class RobotController : MonoBehaviour
 
     public Canvas HUDCanvas;
     Slider boostSlider;
+    Slider HPSlider;
+    TMPro.TextMeshProUGUI HPText;
 
     Vector3 knockbackdir;
     bool speed_overrideby_knockback = false;
@@ -635,8 +660,16 @@ public class RobotController : MonoBehaviour
         {
             boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
 
+            GameObject RobotInfo = HUDCanvas.gameObject.transform.Find("RobotInfo").gameObject;
 
-           
+            HPSlider = RobotInfo.gameObject.transform.Find("HPSlider").GetComponent<Slider>();
+            HPSlider.maxValue = MaxHP;
+            HPSlider.minValue = 0;
+            HPSlider.value = HP;
+
+            HPText = RobotInfo.gameObject.transform.Find("HPText").GetComponent<TMPro.TextMeshProUGUI>();
+
+            HPText.text = $"{HP}/{MaxHP}";
 
             uIController_Overlay.origin = this;
 
@@ -645,6 +678,8 @@ public class RobotController : MonoBehaviour
 
             if (shoulderWeapon != null)
                 uIController_Overlay.AddWeapon(shoulderWeapon);
+
+
         }
 
 

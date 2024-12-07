@@ -55,8 +55,6 @@ public class RobotAI_Medium : InputBase
     // Update is called once per frame
     void FixedUpdate()
     {
-        return;
-
         float mindist = float.MaxValue;
         
         RobotController nearest_robot = null;
