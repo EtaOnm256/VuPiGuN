@@ -27,8 +27,6 @@ public class UIController_Overlay : MonoBehaviour
     {
         public Reticle reticle;
         public Guideline guideline;
-
-        
     }
 
     public class Reticle
@@ -36,6 +34,8 @@ public class UIController_Overlay : MonoBehaviour
         public GameObject gameObject;
         public RectTransform rectTfm;
         public Image image;
+        public Slider HPslider;
+        public RectTransform HPrectTransform;
     }
     public class Guideline
     {
@@ -54,6 +54,8 @@ public class UIController_Overlay : MonoBehaviour
         reticle.rectTfm = reticle.gameObject.GetComponent<RectTransform>();
         reticle.rectTfm.localScale = Vector3.one;
         reticle.image = reticle.gameObject.GetComponent<Image>();
+        reticle.HPrectTransform = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<RectTransform>();
+        reticle.HPslider = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<Slider>();
 
         Guideline guideline = new Guideline();
 
@@ -131,7 +133,9 @@ public class UIController_Overlay : MonoBehaviour
     {
         foreach(var reticle in robotReticle)
         {
-            if (Camera.main.transform.InverseTransformPoint(reticle.Key.transform.position).z >= 0)
+            float z = Camera.main.transform.InverseTransformPoint(reticle.Key.transform.position).z;
+
+            if (z >= 0)
             {
                 Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, reticle.Key.GetCenter());
                 Vector2 uiPoint;
@@ -203,11 +207,19 @@ public class UIController_Overlay : MonoBehaviour
                 }
                 else
                     reticle.Value.reticle.image.color = Color.green;
+
+                reticle.Value.reticle.HPslider.enabled = true;
+                reticle.Value.reticle.HPslider.value = reticle.Key.HP;
+                reticle.Value.reticle.HPslider.maxValue = reticle.Key.MaxHP;
+
+                reticle.Value.reticle.HPrectTransform.anchoredPosition = new Vector3(0.0f, 2500.0f/z, 0.0f);
+
             }
             else
             {
                 reticle.Value.reticle.image.enabled = false;
                 reticle.Value.guideline.lineRenderer.enabled = false;
+                reticle.Value.reticle.HPslider.enabled = false;
             }
 
 
