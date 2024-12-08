@@ -84,7 +84,7 @@ public class Missile : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(direction, 100, RobotController.KnockBackType.Weak);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, 100, RobotController.KnockBackType.Weak);
 
 
                 }

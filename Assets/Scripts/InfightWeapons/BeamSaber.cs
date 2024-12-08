@@ -155,7 +155,7 @@ public class BeamSaber : InfightWeapon
 
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                robotController.DoDamage(dir, damage, knockBackType);
+                robotController.TakeDamage(rayCastHit[idx_hit].point,dir, damage, knockBackType);
 
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[idx_hit].point, Quaternion.identity);
             }

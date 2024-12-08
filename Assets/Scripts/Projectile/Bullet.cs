@@ -104,7 +104,7 @@ public class Bullet : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(direction, 75, RobotController.KnockBackType.Weak);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, 75, RobotController.KnockBackType.Weak);
 
                     dead = true;
                 }

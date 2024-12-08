@@ -132,7 +132,7 @@ public class WorldManager : MonoBehaviour
 
         robotController.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
         robotController.uIController_Overlay = robotController.HUDCanvas.GetComponent<UIController_Overlay>(); ;
-
+        robotController.is_player = true;
         robotController.CinemachineCameraTarget = GameObject.Find("Main Camera");
 
         robotController.worldManager = this;
@@ -232,6 +232,8 @@ public class WorldManager : MonoBehaviour
         RobotController robotController = enemy.GetComponent<RobotController>();
 
         robotController.worldManager = this;
+        robotController.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+        robotController.uIController_Overlay = robotController.HUDCanvas.GetComponent<UIController_Overlay>(); ;
         //robotController._input = enemy.AddComponent<RobotAI_Leopard>();
         robotController._input = enemy.AddComponent<RobotAI_Medium>();
 

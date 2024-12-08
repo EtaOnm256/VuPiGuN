@@ -93,7 +93,7 @@ public class DroneBeam : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.DoDamage(direction, 50, RobotController.KnockBackType.Weak);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, 50, RobotController.KnockBackType.Weak);
 
                     
                 }

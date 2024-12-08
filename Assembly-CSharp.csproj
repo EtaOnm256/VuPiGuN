@@ -107,6 +107,7 @@
     <Compile Include="Assets\Scripts\AI\RobotAI_Easy.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\RainMaker\Prefab\RainScript2D.cs" />
+    <Compile Include="Assets\Scripts\UI\DamageText.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod_Weist.cs" />
     <Compile Include="Assets\IgniteCoders\Simple Water Shader\Resources\WaterReflection.cs" />
     <Compile Include="Assets\RainMaker\Demo\DemoScript.cs" />

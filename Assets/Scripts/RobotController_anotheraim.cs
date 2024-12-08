@@ -363,7 +363,7 @@
 
 //    public UIController_Overlay uIController_Overlay;
 
-//    private bool spawn_completed = false; // スポーンしたフレームにDoDamage呼ばれると落ちるので
+//    private bool spawn_completed = false; // スポーンしたフレームにTakeDamage呼ばれると落ちるので
 
 //    public GameObject AimHelper_Head = null;
 //    public GameObject AimHelper_Chest = null;
@@ -372,7 +372,7 @@
 //    Quaternion AimTargetRotation_Head;
 //    Quaternion AimTargetRotation_Chest;
 
-//    public void DoDamage(Vector3 dir,int damage,bool strong)
+//    public void TakeDamage(Vector3 dir,int damage,bool strong)
 //    {
 //        if (!spawn_completed)
 //            return;
@@ -2418,7 +2418,7 @@
     
 
 //    // ここで扱わないもの
-//    // KNOCKBACKは複雑すぎるのでDoDamageにべた書き
+//    // KNOCKBACKは複雑すぎるのでTakeDamageにべた書き
 //    private void TransitLowerBodyState(LowerBodyState newState)
 //    {
 //        if(lowerBodyState == LowerBodyState.DOWN && newState != LowerBodyState.DOWN)

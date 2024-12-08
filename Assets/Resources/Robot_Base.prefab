@@ -2856,7 +2856,7 @@ MonoBehaviour:
   InfightCorrectSpeed: 30
   cameraPosition: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
-  HP: 500
+  _HP: 500
   MaxHP: 500
   StepLimit: 30
   offset: {x: 0, y: 8, z: -15}
@@ -2882,6 +2882,7 @@ MonoBehaviour:
   chestWeapon_anchor: []
   carrying_weapon: 0
   dualwield_lightweapon: 0
+  step_boost: 0
   thrusters:
   - {fileID: 175234124548439368}
   - {fileID: 8418218240117876311}
@@ -2896,7 +2897,9 @@ MonoBehaviour:
   upperBodyState: 0
   lowerBodyState: 0
   HUDCanvas: {fileID: 0}
+  damageText_prefab: {fileID: 6989266500122269803, guid: dc6f8e0a26bc39b429934140b2983572, type: 3}
   Boost_Max: 500
+  _boost: 0
   dead: 0
   Rhand: {fileID: 9119824526815872400}
   rightWeapon: {fileID: 0}

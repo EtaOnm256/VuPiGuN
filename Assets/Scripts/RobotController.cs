@@ -104,7 +104,7 @@ public class RobotController : MonoBehaviour
 
                 _HP = value;
 
-                if (HUDCanvas != null)
+                if (is_player)
                 {
                     HPSlider.value = _HP;
                     HPText.text = $"{_HP}/{MaxHP}";
@@ -122,7 +122,7 @@ public class RobotController : MonoBehaviour
 
     int stepremain = 0;
 
-    private bool is_player;
+    public bool is_player;
 
     public Vector3 offset;
 
@@ -429,6 +429,8 @@ public class RobotController : MonoBehaviour
     Slider HPSlider;
     TMPro.TextMeshProUGUI HPText;
 
+    public GameObject damageText_prefab;
+
     Vector3 knockbackdir;
     bool speed_overrideby_knockback = false;
 
@@ -445,7 +447,7 @@ public class RobotController : MonoBehaviour
         {
             _boost = value;
 
-            if (HUDCanvas != null)
+            if (is_player)
                 boostSlider.value = _boost;
         }
     }
@@ -463,7 +465,7 @@ public class RobotController : MonoBehaviour
 
     public UIController_Overlay uIController_Overlay;
 
-    private bool spawn_completed = false; // スポーンしたフレームにDoDamage呼ばれると落ちるので
+    private bool spawn_completed = false; // スポーンしたフレームにTakeDamage呼ばれると落ちるので
 
     public GameObject AimHelper_Head = null;
     public GameObject AimHelper_Chest = null;
@@ -493,7 +495,7 @@ public class RobotController : MonoBehaviour
     public ItemFlag itemFlag = 0;
     //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
-    public void DoDamage(Vector3 dir, int damage, KnockBackType knockBackType)
+    public void TakeDamage(Vector3 pos,Vector3 dir, int damage, KnockBackType knockBackType)
     {
         if (!spawn_completed)
             return;
@@ -601,6 +603,17 @@ public class RobotController : MonoBehaviour
 
         HP = Math.Max(0, HP - damage);
 
+        GameObject damageText_obj = GameObject.Instantiate(damageText_prefab,HUDCanvas.transform);
+        RectTransform rectTransform = damageText_obj.GetComponent<RectTransform>();
+        DamageText damageText = damageText_obj.GetComponent<DamageText>();
+
+        damageText.Position = pos;
+        damageText.rectTransform = rectTransform;
+        damageText.canvasTransform = HUDCanvas.GetComponent<RectTransform>();
+        damageText.uiCamera = uIController_Overlay.uiCamera ;
+        damageText.canvas = HUDCanvas;
+
+
         if (HP <= 0)
         {
             dead = true;
@@ -620,7 +633,7 @@ public class RobotController : MonoBehaviour
 
         Target_Robot.lockingEnemy.Add(this);
 
-        if (HUDCanvas != null)
+        if (is_player)
             uIController_Overlay.target = Target_Robot;
     }
 
@@ -641,7 +654,7 @@ public class RobotController : MonoBehaviour
 
         //rigBuilder.Build();
 
-        if (HUDCanvas != null)
+        if (is_player)
             uIController_Overlay.target = null;
     }
 
@@ -655,8 +668,16 @@ public class RobotController : MonoBehaviour
 
     private void Start()
     {
+      
+
+
+        if (CinemachineCameraTarget != null)
+            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+
+        //is_player = GetComponent<HumanInput>() != null; 作成直後に判定して代入させるようにした
+
         //HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
-        if (HUDCanvas != null)
+        if (is_player)
         {
             boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
 
@@ -682,12 +703,6 @@ public class RobotController : MonoBehaviour
 
         }
 
-
-        if (CinemachineCameraTarget != null)
-            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-
-        is_player = GetComponent<HumanInput>() != null;
-
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
 
@@ -702,7 +717,7 @@ public class RobotController : MonoBehaviour
         _jumpTimeoutDelta = JumpTimeout;
         _fallTimeoutDelta = FallTimeout;
 
-        if (HUDCanvas != null)
+        if (is_player)
             boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
 
         AimTargetRotation_Head = Head.transform.rotation;
@@ -772,13 +787,13 @@ public class RobotController : MonoBehaviour
 
     public void OnEnemyAdded(RobotController robotController)
     {
-        if (HUDCanvas != null)
+        if (is_player)
             uIController_Overlay.AddRobot(robotController);
     }
 
     public void OnEnemyRemoved(RobotController robotController)
     {
-        if (HUDCanvas != null)
+        if (is_player)
             uIController_Overlay.RemoveRobot(robotController);
     }
 
@@ -900,7 +915,7 @@ public class RobotController : MonoBehaviour
                 target_chest = null;
                 target_head = null;
 
-                if (HUDCanvas != null)
+                if (is_player)
                     uIController_Overlay.target = null;
             }
             else
@@ -908,7 +923,7 @@ public class RobotController : MonoBehaviour
                 if (Target_Robot != nearest_robot)
                     TargetEnemy(nearest_robot);
             }
-            if (HUDCanvas != null)
+            if (is_player)
                 uIController_Overlay.lockonState = lockonState;
 
             if (rightWeapon != null)
@@ -928,7 +943,7 @@ public class RobotController : MonoBehaviour
                 lockingEnemy[i].PurgeTarget(this);
             }
 
-            if (uIController_Overlay != null)
+            if (is_player)
                 uIController_Overlay.origin = null;
 
             worldManager.HandleRemoveUnit(this);
@@ -1071,7 +1086,7 @@ public class RobotController : MonoBehaviour
 
                             diff.y = 0.0f;
 
-                            robotController.DoDamage(diff.normalized, Sword.damage, KnockBackType.Finish);
+                            robotController.TakeDamage(point0 + Vector3.down * _controller.radius,diff.normalized, Sword.damage, KnockBackType.Finish);
 
                             GameObject.Instantiate(stompHitEffect_prefab, point0 + Vector3.down * _controller.radius, Quaternion.identity);
                         }
@@ -3422,7 +3437,7 @@ public class RobotController : MonoBehaviour
 
 
     // ここで扱わないもの
-    // KNOCKBACKへの移行は複雑すぎるのでDoDamageにべた書き
+    // KNOCKBACKへの移行は複雑すぎるのでTakeDamageにべた書き
     private void TransitLowerBodyState(LowerBodyState newState)
     {
         if (lowerBodyState == LowerBodyState.DOWN && newState != LowerBodyState.DOWN)
