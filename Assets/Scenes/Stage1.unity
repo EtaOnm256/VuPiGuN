@@ -185,15 +185,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player_prefab: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
-  player_rweapon_prefab: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
+  player_rweapon_prefab: {fileID: 8644445284198780509, guid: 8bef375028f1e5a4db0058f4eda103f0, type: 3}
   player_lweapon_prefab: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
   player_subweapon_prefab: {fileID: 3801535860100975786, guid: bfb56cbb3957a474193ab57c8b8d3674, type: 3}
   player_weapon_chest_paired: 1
-  enemy_prefab: {fileID: 803051568401146564, guid: 7e306587d0663164d853049beebecdf9, type: 3}
-  enemy_rweapon_prefab: {fileID: 8399022032530343097, guid: b0ba637833460744fa2a6ed6bcb7106e, type: 3}
+  enemy_prefab: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
+  enemy_rweapon_prefab: {fileID: 5400543135848598120, guid: edddf243ba22119469cc2571c045b697, type: 3}
   enemy_lweapon_prefab: {fileID: 0}
-  enemy_subweapon_prefab: {fileID: 2794399005176561229, guid: 55deee3d9a546e941ba4d5e86755400e, type: 3}
-  enemy_weapon_chest_paired: 0
+  enemy_subweapon_prefab: {fileID: 3801535860100975786, guid: bfb56cbb3957a474193ab57c8b8d3674, type: 3}
+  enemy_weapon_chest_paired: 1
 --- !u!114 &11316762
 MonoBehaviour:
   m_ObjectHideFlags: 0
