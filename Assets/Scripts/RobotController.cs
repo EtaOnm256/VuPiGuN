@@ -85,6 +85,7 @@ public class RobotController : MonoBehaviour
 
     public float TerminalVelocity = 53.0f;
     public float AscendingVelocity = 20.0f;
+    public float AscendingAccelerate = 1.8f;
 
     public float KnockbackSpeed = 30.0f;
     public float InfightCorrectSpeed = 30.0f;
@@ -139,7 +140,7 @@ public class RobotController : MonoBehaviour
     private float _targetRotation = 0.0f;
     private float _rotationVelocity;
     private float _verticalVelocity;
-
+    
 
     // timeout deltatime
     private float _jumpTimeoutDelta;
@@ -2148,7 +2149,7 @@ public class RobotController : MonoBehaviour
                         {
                             if (ConsumeBoost(4))
                             {
-                                _verticalVelocity = Mathf.Min(_verticalVelocity + 1.8f, AscendingVelocity);
+                                _verticalVelocity = Mathf.Min(_verticalVelocity+AscendingAccelerate, AscendingVelocity);
                                 boosting = true;
                             }
                         }

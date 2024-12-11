@@ -2836,7 +2836,7 @@ MonoBehaviour:
   FootstepAudioClips: []
   FootstepAudioVolume: 0.5
   JumpHeight: 7
-  Gravity: -40
+  Gravity: -60
   JumpTimeout: 0.5
   FallTimeout: 0.15
   Grounded: 1
@@ -2852,6 +2852,7 @@ MonoBehaviour:
   LockCameraPosition: 0
   TerminalVelocity: 53
   AscendingVelocity: 20
+  AscendingAccelerate: 2.2
   KnockbackSpeed: 30
   InfightCorrectSpeed: 30
   cameraPosition: {x: 0, y: 0, z: 0}
@@ -2859,6 +2860,7 @@ MonoBehaviour:
   _HP: 500
   MaxHP: 500
   StepLimit: 30
+  is_player: 0
   offset: {x: 0, y: 8, z: -15}
   slash_camera_offset: {x: 0, y: 0, z: 0}
   slash_camera_offset_set: 0
