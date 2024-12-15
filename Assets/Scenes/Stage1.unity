@@ -184,16 +184,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32b4ad5a991e7fa4cbdf73e57a090369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player_prefab: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
-  player_rweapon_prefab: {fileID: 8644445284198780509, guid: 8bef375028f1e5a4db0058f4eda103f0, type: 3}
-  player_lweapon_prefab: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
-  player_subweapon_prefab: {fileID: 3801535860100975786, guid: bfb56cbb3957a474193ab57c8b8d3674, type: 3}
-  player_weapon_chest_paired: 1
-  enemy_prefab: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
-  enemy_rweapon_prefab: {fileID: 5400543135848598120, guid: edddf243ba22119469cc2571c045b697, type: 3}
-  enemy_lweapon_prefab: {fileID: 0}
-  enemy_subweapon_prefab: {fileID: 3801535860100975786, guid: bfb56cbb3957a474193ab57c8b8d3674, type: 3}
-  enemy_weapon_chest_paired: 1
+  player_variant: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
+  sequence:
+    waves:
+    - spawns:
+      - variant: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
+        pos: {x: -20, y: 0, z: 40}
+        rot: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+      - variant: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
+        pos: {x: 0, y: 0, z: 40}
+        rot: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+      - variant: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
+        pos: {x: 20, y: 0, z: 40}
+        rot: {x: 0, y: 1, z: 0, w: -0.00000004371139}
 --- !u!114 &11316762
 MonoBehaviour:
   m_ObjectHideFlags: 0

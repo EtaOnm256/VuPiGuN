@@ -13,6 +13,9 @@ public class DamageText : MonoBehaviour
        public Canvas canvas;
 
     public Vector3 Position;
+
+    public TMPro.TextMeshProUGUI text;
+
     // Start is called before the first frame update
     void Start()
     {

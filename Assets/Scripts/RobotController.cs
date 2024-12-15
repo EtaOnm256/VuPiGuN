@@ -613,7 +613,7 @@ public class RobotController : MonoBehaviour
         damageText.canvasTransform = HUDCanvas.GetComponent<RectTransform>();
         damageText.uiCamera = uIController_Overlay.uiCamera ;
         damageText.canvas = HUDCanvas;
-
+        damageText.text.text = damage.ToString();
 
         if (HP <= 0)
         {

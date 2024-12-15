@@ -148,3 +148,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58d371a2236fd7a4293903ce5bd3f286, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
+  canvasTransform: {fileID: 0}
+  uiCamera: {fileID: 0}
+  canvas: {fileID: 0}
+  Position: {x: 0, y: 0, z: 0}
+  text: {fileID: 6989266500122269801}

@@ -12,17 +12,42 @@ public class WorldManager : MonoBehaviour
 
     public List<Team> teams = new List<Team>();
 
-    public GameObject player_prefab = null;
+    /*public GameObject player_prefab = null;
     public GameObject player_rweapon_prefab = null;
     public GameObject player_lweapon_prefab = null;
     public GameObject player_subweapon_prefab = null;
-    public bool player_weapon_chest_paired = false;
+    public bool player_weapon_chest_paired = false;*/
 
-    public GameObject enemy_prefab = null;
+    public GameObject player_variant;
+
+   /* public GameObject enemy_prefab = null;
     public GameObject enemy_rweapon_prefab = null;
     public GameObject enemy_lweapon_prefab = null;
     public GameObject enemy_subweapon_prefab = null;
-    public bool enemy_weapon_chest_paired = false;
+    public bool enemy_weapon_chest_paired = false;*/
+
+  
+    [System.Serializable]
+    public class Sequence
+    {
+        [System.Serializable]
+        public class Wave
+        {
+            [System.Serializable]
+            public class OneSpawn
+            {
+                public GameObject variant;
+                public Vector3 pos;
+                public Quaternion rot;
+            }
+
+            public List<OneSpawn> spawns;
+        }
+
+        public List<Wave> waves;
+    }
+
+    public Sequence sequence;
 
     // Start is called before the first frame update
     void Start()
@@ -33,8 +58,18 @@ public class WorldManager : MonoBehaviour
         teams.Add(friend_team);
         teams.Add(enemy_team);
 
-        SpawnPlayer(new Vector3(0, 0, -40),Quaternion.Euler(0.0f, 180.0f, 0.0f), friend_team);
-        SpawnEnemy(new Vector3(-20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
+        SpawnPlayer(new Vector3(0, 0, -40),Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
+
+        SpawnEnemy(sequence.waves[0].spawns[0].variant, new Vector3(20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
+        SpawnEnemy(sequence.waves[0].spawns[0].variant, new Vector3(-20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
+
+        foreach(var spawn in sequence.waves[0].spawns)
+        {
+            SpawnEnemy(spawn.variant, spawn.pos,spawn.rot, enemy_team);
+        }
+
+       
+        //SpawnEnemy(new Vector3(-20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
         //SpawnEnemy(new Vector3(20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
      
 
@@ -74,7 +109,7 @@ public class WorldManager : MonoBehaviour
 
     public void AssignToTeam(RobotController robotController)
     {
-        player = robotController;
+        //player = robotController;
 
         robotController.team = teams[0];
 
@@ -105,7 +140,7 @@ public class WorldManager : MonoBehaviour
        
     }
 
-    RobotController player;
+    //RobotController player;
 
     public void HandleRemoveUnit(RobotController robotController)
     {
@@ -114,115 +149,121 @@ public class WorldManager : MonoBehaviour
 
         robotController.team.robotControllers.Remove(robotController);
 
-        if (player == robotController)
-            player = null;
+        //if (player == robotController)
+        //    player = null;
     }
 
     private void SpawnPlayer(Vector3 pos, Quaternion rot, Team team)
     {
+        /*   RaycastHit raycastHit;
+
+          Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
+
+         GameObject player = GameObject.Instantiate(player_prefab, raycastHit.point, rot);
+
+
+
+          RobotController robotController = player.GetComponent<RobotController>();
+
+          robotController.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+          robotController.uIController_Overlay = robotController.HUDCanvas.GetComponent<UIController_Overlay>(); ;
+          robotController.is_player = true;
+          robotController.CinemachineCameraTarget = GameObject.Find("Main Camera");
+
+          robotController.worldManager = this;
+
+          if (player_rweapon_prefab != null)
+          {
+              GameObject playerrweapon = GameObject.Instantiate(player_rweapon_prefab, raycastHit.point, rot);
+
+              playerrweapon.transform.parent = robotController.RHand.transform;
+              playerrweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+              playerrweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+              playerrweapon.transform.localScale = new Vector3(1, 1, 1);
+
+              robotController.rightWeapon = playerrweapon.GetComponent<Weapon>();
+          }
+
+          if (player_lweapon_prefab != null)
+          {
+              GameObject playerlweapon = GameObject.Instantiate(player_lweapon_prefab, raycastHit.point, rot);
+
+              playerlweapon.transform.parent = robotController.LHand.transform;
+              playerlweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+              playerlweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+              playerlweapon.transform.localScale = new Vector3(1, 1, 1);
+
+              robotController.Sword = playerlweapon.GetComponent<InfightWeapon>();
+          }
+
+          if (player_subweapon_prefab != null)
+          {
+              if (player_weapon_chest_paired)
+              {
+                  GameObject playersubweapon_r = GameObject.Instantiate(player_subweapon_prefab, raycastHit.point, rot);
+
+                  playersubweapon_r.transform.parent = robotController.chestWeapon_anchor[1].transform;
+                  playersubweapon_r.transform.localPosition = Vector3.zero;
+                  playersubweapon_r.transform.localEulerAngles = Vector3.zero;
+                  playersubweapon_r.transform.localScale = Vector3.one;
+
+                  playersubweapon_r.GetComponent<Weapon>().this_is_slave = true;
+
+                  GameObject playersubweapon_l = GameObject.Instantiate(player_subweapon_prefab, raycastHit.point, rot);
+
+                  playersubweapon_l.transform.parent = robotController.chestWeapon_anchor[0].transform;
+                  playersubweapon_l.transform.localPosition = Vector3.zero;
+                  playersubweapon_l.transform.localEulerAngles = Vector3.zero;
+                  playersubweapon_l.transform.localScale = Vector3.one;
+                  playersubweapon_l.GetComponent<Weapon>().this_is_slave = false;
+                  playersubweapon_l.GetComponent<Weapon>().another = playersubweapon_l.GetComponent<Weapon>();
+
+                  robotController.shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
+
+
+              }
+              else
+              {
+                  GameObject playersubweapon_l = GameObject.Instantiate(player_subweapon_prefab, raycastHit.point, rot);
+
+                  playersubweapon_l.transform.parent = robotController.chestWeapon_anchor[0].transform;
+                  playersubweapon_l.transform.localPosition = Vector3.zero;
+                  playersubweapon_l.transform.localEulerAngles = Vector3.zero;
+                  playersubweapon_l.transform.localScale = Vector3.one;
+
+                  robotController.shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
+              }
+
+          }
+
+          //DestroyImmediate(enemy.GetComponent<HumanInput>());
+          //DestroyImmediate(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());
+      */
+
+        RobotVariant variant = player_variant.GetComponent<RobotVariant>();
+
         RaycastHit raycastHit;
 
         Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
 
-        GameObject player = GameObject.Instantiate(player_prefab, raycastHit.point, rot);
+        RobotController robot = variant.Spawn(raycastHit.point, rot);
 
-      
+        robot.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+        robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
+        robot.is_player = true;
 
-        RobotController robotController = player.GetComponent<RobotController>();
+        robot.CinemachineCameraTarget = GameObject.Find("Main Camera");
 
-        robotController.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
-        robotController.uIController_Overlay = robotController.HUDCanvas.GetComponent<UIController_Overlay>(); ;
-        robotController.is_player = true;
-        robotController.CinemachineCameraTarget = GameObject.Find("Main Camera");
+        robot.worldManager = this;
+        robot.team = team;
 
-        robotController.worldManager = this;
-        //robotController._input = enemy.AddComponent<RobotAI_Medium>();
-
-        if (player_rweapon_prefab != null)
-        {
-            GameObject playerrweapon = GameObject.Instantiate(player_rweapon_prefab, raycastHit.point, rot);
-
-            playerrweapon.transform.parent = robotController.RHand.transform;
-            playerrweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-            playerrweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
-            playerrweapon.transform.localScale = new Vector3(1, 1, 1);
-
-            robotController.rightWeapon = playerrweapon.GetComponent<Weapon>();
-        }
-
-        if (player_lweapon_prefab != null)
-        {
-            GameObject playerlweapon = GameObject.Instantiate(player_lweapon_prefab, raycastHit.point, rot);
-
-            playerlweapon.transform.parent = robotController.LHand.transform;
-            playerlweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-            playerlweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
-            playerlweapon.transform.localScale = new Vector3(1, 1, 1);
-
-            robotController.Sword = playerlweapon.GetComponent<InfightWeapon>();
-        }
-
-        if (player_subweapon_prefab != null)
-        {
-            if (player_weapon_chest_paired)
-            {
-                GameObject playersubweapon_r = GameObject.Instantiate(player_subweapon_prefab, raycastHit.point, rot);
-
-                playersubweapon_r.transform.parent = robotController.chestWeapon_anchor[1].transform;
-                playersubweapon_r.transform.localPosition = Vector3.zero;
-                playersubweapon_r.transform.localEulerAngles = Vector3.zero;
-                playersubweapon_r.transform.localScale = Vector3.one;
-
-                playersubweapon_r.GetComponent<Weapon>().this_is_slave = true;
-
-                GameObject playersubweapon_l = GameObject.Instantiate(player_subweapon_prefab, raycastHit.point, rot);
-
-                playersubweapon_l.transform.parent = robotController.chestWeapon_anchor[0].transform;
-                playersubweapon_l.transform.localPosition = Vector3.zero;
-                playersubweapon_l.transform.localEulerAngles = Vector3.zero;
-                playersubweapon_l.transform.localScale = Vector3.one;
-                playersubweapon_l.GetComponent<Weapon>().this_is_slave = false;
-                playersubweapon_l.GetComponent<Weapon>().another = playersubweapon_l.GetComponent<Weapon>();
-
-                robotController.shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
-
-
-            }
-            else
-            {
-
-                /*GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
-
-                enemysubweapon.transform.parent = robotController.LShoulder.transform;
-                enemysubweapon.transform.localPosition = new Vector3(0.01043f, 0.0114f, 0.00055f);
-                enemysubweapon.transform.localEulerAngles = new Vector3(-0.103f, 1.591f, -86.308f);
-                enemysubweapon.transform.localScale = new Vector3(1, 1, 1);
-
-                robotController.shoulderWeapon = enemysubweapon.GetComponent<Weapon>();*/
-
-                GameObject playersubweapon_l = GameObject.Instantiate(player_subweapon_prefab, raycastHit.point, rot);
-
-                playersubweapon_l.transform.parent = robotController.chestWeapon_anchor[0].transform;
-                playersubweapon_l.transform.localPosition = Vector3.zero;
-                playersubweapon_l.transform.localEulerAngles = Vector3.zero;
-                playersubweapon_l.transform.localScale = Vector3.one;
-
-                robotController.shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
-            }
-
-        }
-        //DestroyImmediate(enemy.GetComponent<HumanInput>());
-        //DestroyImmediate(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());
-
-        robotController.team = team;
-
-        team.robotControllers.Add(robotController);
-        HandleEnemyAdd(robotController);
+        team.robotControllers.Add(robot);
+        HandleEnemyAdd(robot);
     }
 
-    private void SpawnEnemy(Vector3 pos, Quaternion rot, Team team)
+    private void SpawnEnemy(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team)
     {
-        RaycastHit raycastHit;
+        /*RaycastHit raycastHit;
 
         Physics.Raycast(pos+new Vector3(0.0f,500.0f,0.0f), -Vector3.up,out raycastHit, float.MaxValue, 1 << 3);
 
@@ -290,14 +331,7 @@ public class WorldManager : MonoBehaviour
             else
             {
 
-                /*GameObject enemysubweapon = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
 
-                enemysubweapon.transform.parent = robotController.LShoulder.transform;
-                enemysubweapon.transform.localPosition = new Vector3(0.01043f, 0.0114f, 0.00055f);
-                enemysubweapon.transform.localEulerAngles = new Vector3(-0.103f, 1.591f, -86.308f);
-                enemysubweapon.transform.localScale = new Vector3(1, 1, 1);
-
-                robotController.shoulderWeapon = enemysubweapon.GetComponent<Weapon>();*/
 
                 GameObject enemysubweapon_l = GameObject.Instantiate(enemy_subweapon_prefab, raycastHit.point, rot);
 
@@ -312,11 +346,27 @@ public class WorldManager : MonoBehaviour
         }
         DestroyImmediate(enemy.GetComponent<HumanInput>());
         DestroyImmediate(enemy.GetComponent<UnityEngine.InputSystem.PlayerInput>());
+*/
+        RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
 
-        robotController.team = team;
+        RaycastHit raycastHit;
 
-        team.robotControllers.Add(robotController);
-        HandleEnemyAdd(robotController);
+        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
+
+        RobotController robot = variant.Spawn(raycastHit.point, rot);
+
+        robot.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+        robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
+        robot.is_player = false;
+        DestroyImmediate(robot.GetComponent<HumanInput>());
+        DestroyImmediate(robot.GetComponent<UnityEngine.InputSystem.PlayerInput>());
+        robot._input = robot.gameObject.AddComponent<RobotAI_Medium>();
+
+        robot.worldManager = this;
+        robot.team = team;
+
+        team.robotControllers.Add(robot);
+        HandleEnemyAdd(robot);
     }
 
     public void AddProjectile(Projectile projectile,Team team)
