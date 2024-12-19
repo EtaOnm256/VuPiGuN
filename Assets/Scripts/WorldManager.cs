@@ -31,23 +31,22 @@ public class WorldManager : MonoBehaviour
     public class Sequence
     {
         [System.Serializable]
-        public class Wave
+        public class OneSpawn
         {
-            [System.Serializable]
-            public class OneSpawn
-            {
-                public GameObject variant;
-                public Vector3 pos;
-                public Quaternion rot;
-            }
-
-            public List<OneSpawn> spawns;
+            public GameObject variant;
+            public Vector3 pos;
+            public Quaternion rot;
+            public int squadCount;
         }
 
-        public List<Wave> waves;
+  
+
+        public List<OneSpawn> spawns;
     }
 
     public Sequence sequence;
+    public int currentSpawn = -1;
+    public bool spawned = false;
 
     // Start is called before the first frame update
     void Start()
@@ -60,20 +59,17 @@ public class WorldManager : MonoBehaviour
 
         SpawnPlayer(new Vector3(0, 0, -40),Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
 
-        SpawnEnemy(sequence.waves[0].spawns[0].variant, new Vector3(20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
-        SpawnEnemy(sequence.waves[0].spawns[0].variant, new Vector3(-20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
+        SpawnEnemy(player_variant, new Vector3(20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
+        //SpawnEnemy(sequence.waves[0].spawns[0].variant, new Vector3(-20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
 
-        foreach(var spawn in sequence.waves[0].spawns)
-        {
-            SpawnEnemy(spawn.variant, spawn.pos,spawn.rot, enemy_team);
-        }
+        currentSpawn = 0;
 
-       
+
         //SpawnEnemy(new Vector3(-20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
         //SpawnEnemy(new Vector3(20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
-     
 
-       
+
+
 
 
     }
@@ -122,21 +118,42 @@ public class WorldManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-       /* if(player==null)
+        /* if(player==null)
+         {
+             GameObject player_obj = GameObject.Instantiate(enemy_prefab, new Vector3(0, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f));
+
+
+             player = player_obj.GetComponent<RobotController>();
+
+             player.worldManager = this;
+
+             player.team = teams[0];
+
+             teams[0].robotControllers.Add(player);
+             HandleEnemyAdd(player);
+         }*/
+
+        if (currentSpawn < sequence.spawns.Count)
         {
-            GameObject player_obj = GameObject.Instantiate(enemy_prefab, new Vector3(0, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f));
+            if (spawned)
+            {
+                if (teams[1].robotControllers.Count < sequence.spawns[currentSpawn].squadCount)
+                {
+                    currentSpawn++;
+                    spawned = false;
+                }
+            }
+            else
+            {
+                if (teams[1].robotControllers.Count < sequence.spawns[currentSpawn].squadCount)
+                {
+                    Sequence.OneSpawn spawn = sequence.spawns[currentSpawn];
 
-
-            player = player_obj.GetComponent<RobotController>();
-
-            player.worldManager = this;
-          
-            player.team = teams[0];
-
-            teams[0].robotControllers.Add(player);
-            HandleEnemyAdd(player);
-        }*/
-
+                    SpawnEnemy(spawn.variant, spawn.pos, spawn.rot, teams[1]);
+                    spawned = true;
+                }
+            }
+        }
        
     }
 

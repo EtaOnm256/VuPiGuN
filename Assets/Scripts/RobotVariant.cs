@@ -9,7 +9,8 @@ public class RobotVariant : MonoBehaviour
     public GameObject lweapon_prefab = null;
     public GameObject subweapon_prefab = null;
     public bool weapon_chest_paired = false;
-
+    public bool carrying_weapon = false;
+    public bool dualwield_lightweapon = false;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,9 @@ public class RobotVariant : MonoBehaviour
 
     void ArmWeapon(RobotController robotController)
     {
+        robotController.carrying_weapon = carrying_weapon;
+        robotController.dualwield_lightweapon = dualwield_lightweapon;
+
         if (rweapon_prefab != null)
         {
             GameObject playerrweapon = GameObject.Instantiate(rweapon_prefab);

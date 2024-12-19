@@ -186,17 +186,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player_variant: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
   sequence:
-    waves:
-    - spawns:
-      - variant: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
-        pos: {x: -20, y: 0, z: 40}
-        rot: {x: 0, y: 1, z: 0, w: -0.00000004371139}
-      - variant: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
-        pos: {x: 0, y: 0, z: 40}
-        rot: {x: 0, y: 1, z: 0, w: -0.00000004371139}
-      - variant: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
-        pos: {x: 20, y: 0, z: 40}
-        rot: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+    spawns:
+    - variant: {fileID: 5889029644028591830, guid: ec7bea3c6b2d7e54aa54ba596ab4ac36, type: 3}
+      pos: {x: -40, y: 0, z: 40}
+      rot: {x: 0, y: 0, z: 0, w: 0}
+      squadCount: 2
+    - variant: {fileID: 5889029644028591830, guid: ec7bea3c6b2d7e54aa54ba596ab4ac36, type: 3}
+      pos: {x: 40, y: 0, z: 40}
+      rot: {x: 0, y: 0, z: 0, w: 0}
+      squadCount: 2
+    - variant: {fileID: 5889029644028591830, guid: 1f8693cf28fb7914c85bc210cf05c82e, type: 3}
+      pos: {x: 0, y: 0, z: 40}
+      rot: {x: 0, y: 0, z: 0, w: 0}
+      squadCount: 1
+    - variant: {fileID: 5889029644028591830, guid: ec7bea3c6b2d7e54aa54ba596ab4ac36, type: 3}
+      pos: {x: -40, y: 0, z: 40}
+      rot: {x: 0, y: 0, z: 0, w: 0}
+      squadCount: 2
+    - variant: {fileID: 5889029644028591830, guid: ec7bea3c6b2d7e54aa54ba596ab4ac36, type: 3}
+      pos: {x: 40, y: 0, z: 40}
+      rot: {x: 0, y: 0, z: 0, w: 0}
+      squadCount: 2
+  currentSpawn: -1
+  spawned: 0
 --- !u!114 &11316762
 MonoBehaviour:
   m_ObjectHideFlags: 0
