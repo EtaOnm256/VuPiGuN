@@ -144,5 +144,13 @@ public class Weapon : MonoBehaviour
 
     public virtual void OnKnockback() { }
 
-    public virtual void OnDestroy_Called_By_Unit() { }
+    public void Destroy_Called_By_Unit()
+    {
+        OnDestroy_Called_By_Unit();
+
+        GameObject.Destroy(weaponPanelItemObj);
+    }
+
+
+    protected virtual void OnDestroy_Called_By_Unit() { }
 }

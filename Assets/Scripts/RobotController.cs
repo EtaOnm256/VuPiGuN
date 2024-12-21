@@ -119,6 +119,8 @@ public class RobotController : MonoBehaviour
 
     public int MaxHP = 500;
 
+    public int Cost = 100;
+
     public int StepLimit = 30;
 
     int stepremain = 0;
@@ -869,18 +871,22 @@ public class RobotController : MonoBehaviour
                     }
                     else
                     {
-                        nearest_robot = Target_Robot;
+                        if (Target_Robot)
+                        {
 
-                        Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
-                        Vector3 startingPoint = transform.position;
+                            nearest_robot = Target_Robot;
 
-                        Ray ray = new Ray(GetCenter(), direction);
-                        float shift = Vector3.Cross(ray.direction, Target_Robot.GetCenter() - ray.origin).magnitude;
+                            Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
+                            Vector3 startingPoint = transform.position;
 
-                        float dot = Vector3.Dot(ray.direction, Target_Robot.GetCenter() - ray.origin);
+                            Ray ray = new Ray(GetCenter(), direction);
+                            float shift = Vector3.Cross(ray.direction, Target_Robot.GetCenter() - ray.origin).magnitude;
 
-                        mindist = dot;
-                        blocked = true;
+                            float dot = Vector3.Dot(ray.direction, Target_Robot.GetCenter() - ray.origin);
+
+                            mindist = dot;
+                            blocked = true;
+                        }
 
                     }
                     if (blocked)
@@ -947,12 +953,21 @@ public class RobotController : MonoBehaviour
             if (is_player)
                 uIController_Overlay.origin = null;
 
+            if (rightWeapon != null)
+            {
+                uIController_Overlay.RemoveWeapon(rightWeapon);
+                rightWeapon.Destroy_Called_By_Unit();
+
+            }
+            if (shoulderWeapon != null)
+            {
+                uIController_Overlay.RemoveWeapon(shoulderWeapon);
+                shoulderWeapon.Destroy_Called_By_Unit();
+            }
+
             worldManager.HandleRemoveUnit(this);
 
-            if(rightWeapon != null)
-                rightWeapon.OnDestroy_Called_By_Unit();
-            if(shoulderWeapon != null)
-                shoulderWeapon.OnDestroy_Called_By_Unit();
+           
 
             GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
 

@@ -48,6 +48,17 @@ public class DamageText : MonoBehaviour
            
 
             Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, Position);
+            float z = Camera.main.transform.InverseTransformPoint(Position).z;
+
+            if (z <= 0.0f)
+            {
+                text.enabled = false;
+            }
+            else
+            {
+                text.enabled = true;
+            }
+
             Vector2 uiPoint;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -56,6 +67,7 @@ public class DamageText : MonoBehaviour
                 uiCamera,
                 out uiPoint
             );
+
 
 
 

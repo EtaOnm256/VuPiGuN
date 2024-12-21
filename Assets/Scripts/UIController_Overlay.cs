@@ -9,7 +9,7 @@ public class UIController_Overlay : MonoBehaviour
    
     public Dictionary<RobotController, ReticleAndGuideline> robotReticle = new Dictionary<RobotController, ReticleAndGuideline>();
 
-    public List<Weapon> weapons = new List<Weapon>();
+    //public List<Weapon> weapons = new List<Weapon>();
 
     public Camera uiCamera;
 
@@ -79,12 +79,12 @@ public class UIController_Overlay : MonoBehaviour
     {
         weapon.uIController_Overlay = this;
 
-        weapons.Add(weapon);
+    //    weapons.Add(weapon);
     }
 
     public void RemoveWeapon(Weapon weapon)
     {
-        weapons.Remove(weapon);
+    //    weapons.Remove(weapon);
     }
 
     private void Awake()
@@ -131,6 +131,10 @@ public class UIController_Overlay : MonoBehaviour
 
     void Update()
     {
+        if (!origin)
+            return;
+
+
         foreach(var reticle in robotReticle)
         {
             float z = Camera.main.transform.InverseTransformPoint(reticle.Key.transform.position).z;
@@ -148,7 +152,8 @@ public class UIController_Overlay : MonoBehaviour
                 );
 
                 reticle.Value.reticle.rectTfm.localPosition = uiPoint;
-                reticle.Value.reticle.image.enabled = true;
+                //reticle.Value.reticle.image.enabled = true;
+                reticle.Value.reticle.gameObject.SetActive(true);
 
                 reticle.Value.guideline.lineRenderer.positionCount = 2;
 
@@ -208,7 +213,7 @@ public class UIController_Overlay : MonoBehaviour
                 else
                     reticle.Value.reticle.image.color = Color.green;
 
-                reticle.Value.reticle.HPslider.enabled = true;
+                //reticle.Value.reticle.HPslider.enabled = true;
                 reticle.Value.reticle.HPslider.value = reticle.Key.HP;
                 reticle.Value.reticle.HPslider.maxValue = reticle.Key.MaxHP;
 
@@ -217,9 +222,11 @@ public class UIController_Overlay : MonoBehaviour
             }
             else
             {
-                reticle.Value.reticle.image.enabled = false;
+                //reticle.Value.reticle.image.enabled = false;
                 reticle.Value.guideline.lineRenderer.enabled = false;
-                reticle.Value.reticle.HPslider.enabled = false;
+                //reticle.Value.reticle.HPslider.enabled = false;
+
+                reticle.Value.reticle.gameObject.SetActive(false);
             }
 
 

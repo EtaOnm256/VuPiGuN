@@ -171,7 +171,7 @@ public class DronePlatform : Weapon
         }
     }
 
-    public override void OnDestroy_Called_By_Unit()
+    protected override void OnDestroy_Called_By_Unit()
     {
         foreach (var drone_obj in drone_objs)
         {
