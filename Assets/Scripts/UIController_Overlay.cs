@@ -21,8 +21,12 @@ public class UIController_Overlay : MonoBehaviour
 
     public RobotController.LockonState lockonState;
 
-    GameObject reticle_prefab;
-    GameObject guideline_prefab;
+    [SerializeField] GameObject reticle_prefab;
+    [SerializeField] GameObject guideline_prefab;
+    [SerializeField] GameObject icon_prefab;
+
+    public GameObject radarPanel;
+
     public class ReticleAndGuideline
     {
         public Reticle reticle;
@@ -36,6 +40,9 @@ public class UIController_Overlay : MonoBehaviour
         public Image image;
         public Slider HPslider;
         public RectTransform HPrectTransform;
+        public GameObject radaricon_obj;
+        public Image radaricon_image;
+        public RectTransform radarrectTransform;
     }
     public class Guideline
     {
@@ -48,6 +55,9 @@ public class UIController_Overlay : MonoBehaviour
 
     public void AddRobot(RobotController robotController)
     {
+        if (robotReticle.ContainsKey(robotController))
+            return;
+
         Reticle reticle = new Reticle();
 
         reticle.gameObject = Instantiate(reticle_prefab,transform);
@@ -56,6 +66,10 @@ public class UIController_Overlay : MonoBehaviour
         reticle.image = reticle.gameObject.GetComponent<Image>();
         reticle.HPrectTransform = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<RectTransform>();
         reticle.HPslider = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<Slider>();
+
+        reticle.radaricon_obj = Instantiate(icon_prefab, radarPanel.transform);
+        reticle.radaricon_image = reticle.radaricon_obj.GetComponent<Image>();
+        reticle.radarrectTransform = reticle.radaricon_obj.GetComponent<RectTransform>();
 
         Guideline guideline = new Guideline();
 
@@ -69,8 +83,12 @@ public class UIController_Overlay : MonoBehaviour
 
     public void RemoveRobot(RobotController robotController)
     {
+        if (!robotReticle.ContainsKey(robotController))
+            return;
+
         Destroy(robotReticle[robotController].reticle.gameObject);
         Destroy(robotReticle[robotController].guideline.gameObject);
+        Destroy(robotReticle[robotController].reticle.radaricon_obj);
 
         robotReticle.Remove(robotController);
     }
@@ -89,8 +107,9 @@ public class UIController_Overlay : MonoBehaviour
 
     private void Awake()
     {
-        reticle_prefab = Resources.Load<GameObject>("UI/Reticle");
-        guideline_prefab = Resources.Load<GameObject>("UI/GuideLine");
+       // reticle_prefab = Resources.Load<GameObject>("UI/Reticle");
+       // guideline_prefab = Resources.Load<GameObject>("UI/GuideLine");
+
     }
 
     void Start()
@@ -137,9 +156,11 @@ public class UIController_Overlay : MonoBehaviour
 
         foreach(var reticle in robotReticle)
         {
+            Vector3 relative = AbsToRel(reticle.Key.GetCenter(), origin.GetCenter(), Camera.main.transform.rotation);
+
             float z = Camera.main.transform.InverseTransformPoint(reticle.Key.transform.position).z;
 
-            if (z >= 0)
+            if (reticle.Key.team != origin.team && z >= 0)
             {
                 Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, reticle.Key.GetCenter());
                 Vector2 uiPoint;
@@ -156,8 +177,6 @@ public class UIController_Overlay : MonoBehaviour
                 reticle.Value.reticle.gameObject.SetActive(true);
 
                 reticle.Value.guideline.lineRenderer.positionCount = 2;
-
-                Vector3 relative = AbsToRel(reticle.Key.GetCenter(), origin.GetCenter(), Camera.main.transform.rotation);
 
                 float length = relative.magnitude;
 
@@ -229,8 +248,18 @@ public class UIController_Overlay : MonoBehaviour
                 reticle.Value.reticle.gameObject.SetActive(false);
             }
 
+            reticle.Value.reticle.radarrectTransform.anchoredPosition = new Vector3(relative.x, relative.z, 0.0f);
 
-
+            if (reticle.Key.team != origin.team)
+            {
+                reticle.Value.reticle.radaricon_image.color = Color.red;
+            }
+            else if (reticle.Key == origin)
+            {
+                reticle.Value.reticle.radaricon_image.color = Color.blue;
+            }
+            else
+                reticle.Value.reticle.radaricon_image.color = Color.green;
         }
 
       

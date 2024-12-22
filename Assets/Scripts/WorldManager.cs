@@ -118,30 +118,30 @@ public class WorldManager : MonoBehaviour
 
     }
 
-    public void HandleEnemyAdd(RobotController robotController)
+    public void HandleRobotAdd(RobotController robotController)
     {
         foreach (var team in teams)
         {
-            if (team == robotController.team) continue;
+            //if (team == robotController.team) continue;
 
             foreach (var robot in team.robotControllers)
             {
-                robot.OnEnemyAdded(robotController);
-                robotController.OnEnemyAdded(robot);
+                robot.OnRobotAdded(robotController);
+                robotController.OnRobotAdded(robot);
             }
         }
     }
 
-    public void HandleEnemyRemove(RobotController robotController)
+    public void HandleRobotRemove(RobotController robotController)
     {
         foreach (var team in teams)
         {
-            if (team == robotController.team) continue;
+            //if (team == robotController.team) continue;
 
             foreach (var robot in team.robotControllers)
             {
-                robot.OnEnemyRemoved(robotController);
-                robotController.OnEnemyRemoved(robot);
+                robot.OnRobotRemoved(robotController);
+                robotController.OnRobotRemoved(robot);
             }
         }
     }
@@ -152,7 +152,7 @@ public class WorldManager : MonoBehaviour
         robotController.team = teams[0];
 
         teams[0].robotControllers.Add(robotController);
-        HandleEnemyAdd(robotController);
+        HandleRobotAdd(robotController);
 
 
     }
@@ -215,7 +215,7 @@ public class WorldManager : MonoBehaviour
 
     public void HandleRemoveUnit(RobotController robotController)
     {
-        HandleEnemyRemove(robotController);
+        HandleRobotRemove(robotController);
 
         robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.Cost);
 
@@ -247,7 +247,7 @@ public class WorldManager : MonoBehaviour
         player = robot;
 
         team.robotControllers.Add(robot);
-        HandleEnemyAdd(robot);
+        HandleRobotAdd(robot);
     }
 
     private void SpawnEnemy(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team)
@@ -271,7 +271,7 @@ public class WorldManager : MonoBehaviour
         robot.team = team;
 
         team.robotControllers.Add(robot);
-        HandleEnemyAdd(robot);
+        HandleRobotAdd(robot);
     }
 
     public void AddProjectile(Projectile projectile,Team team)

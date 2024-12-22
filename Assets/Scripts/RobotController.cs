@@ -788,13 +788,13 @@ public class RobotController : MonoBehaviour
         return Vector3.Cross(ray.direction, point - ray.origin).magnitude;
     }
 
-    public void OnEnemyAdded(RobotController robotController)
+    public void OnRobotAdded(RobotController robotController)
     {
         if (is_player)
             uIController_Overlay.AddRobot(robotController);
     }
 
-    public void OnEnemyRemoved(RobotController robotController)
+    public void OnRobotRemoved(RobotController robotController)
     {
         if (is_player)
             uIController_Overlay.RemoveRobot(robotController);
