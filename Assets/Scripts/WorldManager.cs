@@ -73,6 +73,10 @@ public class WorldManager : MonoBehaviour
     public Sequence sequence_friend;
 
     public Canvas HUDCanvas;
+    public Canvas ResultCanvas;
+    public bool finished = false;
+    public bool victory = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -196,15 +200,30 @@ public class WorldManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-         if(player==null)
-         {
+        if (finished)
+        {
+            if(!ResultCanvas.gameObject.activeSelf)
+            {
+                ResultCanvas resultCanvas = ResultCanvas.GetComponent<ResultCanvas>();
 
-            SpawnPlayer(new Vector3(0, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), teams[0]);
-         }
+                resultCanvas.power = teams[0].power;
+                resultCanvas.victory = victory;
+                ResultCanvas.gameObject.SetActive(true);
 
-        ProcessSpawn(sequence_friend, teams[0]);
-        ProcessSpawn(sequence_enemy, teams[1]);
+                HUDCanvas.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            if (player == null)
+            {
 
+                SpawnPlayer(new Vector3(0, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), teams[0]);
+            }
+
+            ProcessSpawn(sequence_friend, teams[0]);
+            ProcessSpawn(sequence_enemy, teams[1]);
+        }
 
 
 
@@ -218,6 +237,14 @@ public class WorldManager : MonoBehaviour
         HandleRobotRemove(robotController);
 
         robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.Cost);
+
+        if(robotController.team.power <= 0)
+        {
+            finished = true;
+
+            victory = robotController.team != teams[0];
+            
+        }
 
         robotController.team.robotControllers.Remove(robotController);
 

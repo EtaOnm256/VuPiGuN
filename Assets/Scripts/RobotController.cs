@@ -804,6 +804,12 @@ public class RobotController : MonoBehaviour
     {
         if (!dead)
         {
+            if(worldManager.finished)
+            {
+                _input.jump = _input.fire = _input.slash = _input.sprint = false;
+                _input.move = Vector2.zero;
+            }
+
             _hasAnimator = TryGetComponent(out _animator);
 
             float mindist = float.MaxValue;
@@ -1151,7 +1157,7 @@ public class RobotController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!(Target_Robot != null && lockonState != LockonState.FREE))
+        if (!(Target_Robot != null && lockonState != LockonState.FREE) && !worldManager.finished)
         {
 
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
