@@ -229,6 +229,7 @@ MonoBehaviour:
   ResultCanvas: {fileID: 213073169}
   finished: 0
   victory: 0
+  gameState: {fileID: 11400000, guid: c86ac7e4de34aea4aa0c382ffee862c3, type: 2}
 --- !u!114 &11316762
 MonoBehaviour:
   m_ObjectHideFlags: 0

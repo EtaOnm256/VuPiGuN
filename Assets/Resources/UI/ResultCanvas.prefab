@@ -389,6 +389,7 @@ MonoBehaviour:
   summaryLabel: {fileID: 179789235488594205}
   summaryValue: {fileID: 680556037446521037}
   background: {fileID: 8417059625329713928}
+  gameState: {fileID: 11400000, guid: c86ac7e4de34aea4aa0c382ffee862c3, type: 2}
   victory: 0
   power: 0
 --- !u!1 &1643127050561665422
@@ -782,7 +783,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1887430621775370241}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5322136379494371888}
+        m_TargetAssemblyTypeName: ResultCanvas, Assembly-CSharp
+        m_MethodName: OnClickProceed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7295392456768400768
 GameObject:
   m_ObjectHideFlags: 0

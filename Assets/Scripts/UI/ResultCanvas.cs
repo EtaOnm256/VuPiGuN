@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ResultCanvas : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class ResultCanvas : MonoBehaviour
     [SerializeField]TextMeshProUGUI summaryLabel;
     [SerializeField] TextMeshProUGUI summaryValue;
     [SerializeField] Image background;
+    [SerializeField] GameState gameState;
 
     public bool victory;
 
@@ -37,5 +39,27 @@ public class ResultCanvas : MonoBehaviour
         }
 
 
+    }
+
+    public void OnClickProceed()
+    {
+        if (victory)
+        {
+
+            gameState.stage++;
+
+            if (gameState.stage >= 1 && gameState.stage <= 6)
+            {
+                SceneManager.LoadScene($"Stage{gameState.stage}");
+            }
+            else
+            {
+                SceneManager.LoadScene($"Title");
+            }
+        }
+        else
+        {
+            SceneManager.LoadScene($"Title");
+        }
     }
 }

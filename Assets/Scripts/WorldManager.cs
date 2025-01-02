@@ -77,13 +77,15 @@ public class WorldManager : MonoBehaviour
     public bool finished = false;
     public bool victory = false;
 
+    [SerializeField] GameState gameState;
+
     // Start is called before the first frame update
     void Start()
     {
         Slider friendPowerSlider = HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>(),power = 1000,powerslider = friendPowerSlider };
+        Team friend_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>(),power = 100,powerslider = friendPowerSlider };
         Team enemy_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>(), power = 1000, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
