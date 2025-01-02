@@ -14,7 +14,10 @@ public class DamageText : MonoBehaviour
 
     public Vector3 Position;
 
-    public TMPro.TextMeshProUGUI text;
+    [SerializeField]TMPro.TextMeshProUGUI text;
+
+    public int damage;
+    public bool from_player;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +34,25 @@ public class DamageText : MonoBehaviour
         );
 
         rectTransform.localPosition =  uiPoint+Vector2.up*delta_y;
+
+        text.text = damage.ToString();
+
+        
+/*
+        if (!from_player)
+        {
+            text.fontSize = 36;
+            text.faceColor = new Color(1.0f, 1.0f, 1.0f);
+            text.outlineColor = new Color(0.25f, 0.25f, 0.25f);
+        }
+        else
+        {
+            text.fontSize = 48;
+            text.faceColor = new Color(1.0f, 0.0f, 0.0f);
+            text.outlineColor = new Color(0.0f, 0.0f, 0.0f);
+        }*/
+
+        
     }
 
     // Update is called once per frame

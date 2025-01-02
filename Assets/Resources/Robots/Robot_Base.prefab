@@ -2859,6 +2859,7 @@ MonoBehaviour:
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   _HP: 500
   MaxHP: 500
+  Cost: 100
   StepLimit: 30
   is_player: 0
   offset: {x: 0, y: 8, z: -15}
@@ -2900,6 +2901,7 @@ MonoBehaviour:
   lowerBodyState: 0
   HUDCanvas: {fileID: 0}
   damageText_prefab: {fileID: 6989266500122269803, guid: dc6f8e0a26bc39b429934140b2983572, type: 3}
+  damageText_player_prefab: {fileID: 6989266500122269803, guid: 7d21b07b96c8db04594519fbbd010e5f, type: 3}
   Boost_Max: 500
   _boost: 0
   dead: 0

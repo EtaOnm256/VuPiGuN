@@ -11,6 +11,8 @@ public class Projectile : MonoBehaviour
     public RobotController target = null;
     public float speed;
     public bool dead = false;
+    public RobotController owner = null;
+
     // Start is called before the first frame update
     void Start()
     {

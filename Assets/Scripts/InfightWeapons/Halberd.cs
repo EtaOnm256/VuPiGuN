@@ -206,7 +206,7 @@ public class Halberd : InfightWeapon
 
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                robotController.TakeDamage(rayCastHit[idx_hit].point,dir, /*damage*/0, knockBackType) ;
+                robotController.TakeDamage(rayCastHit[idx_hit].point,dir, /*damage*/0, knockBackType, owner) ;
 
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[idx_hit].point, Quaternion.identity);
             }

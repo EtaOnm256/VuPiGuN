@@ -433,6 +433,7 @@ public class RobotController : MonoBehaviour
     TMPro.TextMeshProUGUI HPText;
 
     public GameObject damageText_prefab;
+    public GameObject damageText_player_prefab;
 
     Vector3 knockbackdir;
     bool speed_overrideby_knockback = false;
@@ -498,7 +499,7 @@ public class RobotController : MonoBehaviour
     public ItemFlag itemFlag = 0;
     //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
-    public void TakeDamage(Vector3 pos,Vector3 dir, int damage, KnockBackType knockBackType)
+    public void TakeDamage(Vector3 pos,Vector3 dir, int damage, KnockBackType knockBackType,RobotController dealer)
     {
         if (!spawn_completed)
             return;
@@ -606,16 +607,20 @@ public class RobotController : MonoBehaviour
 
         HP = Math.Max(0, HP - damage);
 
-        GameObject damageText_obj = GameObject.Instantiate(damageText_prefab,HUDCanvas.transform);
-        RectTransform rectTransform = damageText_obj.GetComponent<RectTransform>();
-        DamageText damageText = damageText_obj.GetComponent<DamageText>();
+        if (is_player || dealer.is_player)
+        {
+            GameObject damageText_obj = GameObject.Instantiate(is_player ? damageText_player_prefab : damageText_prefab, HUDCanvas.transform);
+            RectTransform rectTransform = damageText_obj.GetComponent<RectTransform>();
+            DamageText damageText = damageText_obj.GetComponent<DamageText>();
 
-        damageText.Position = pos;
-        damageText.rectTransform = rectTransform;
-        damageText.canvasTransform = HUDCanvas.GetComponent<RectTransform>();
-        damageText.uiCamera = uIController_Overlay.uiCamera ;
-        damageText.canvas = HUDCanvas;
-        damageText.text.text = damage.ToString();
+            damageText.Position = pos;
+            damageText.rectTransform = rectTransform;
+            damageText.canvasTransform = HUDCanvas.GetComponent<RectTransform>();
+            damageText.uiCamera = uIController_Overlay.uiCamera;
+            damageText.canvas = HUDCanvas;
+            damageText.from_player = dealer.is_player;
+            damageText.damage = damage;
+        }
 
         if (HP <= 0)
         {
@@ -1108,7 +1113,7 @@ public class RobotController : MonoBehaviour
 
                             diff.y = 0.0f;
 
-                            robotController.TakeDamage(point0 + Vector3.down * _controller.radius,diff.normalized, Sword.damage, KnockBackType.Finish);
+                            robotController.TakeDamage(point0 + Vector3.down * _controller.radius,diff.normalized, Sword.damage, KnockBackType.Finish, this);
 
                             GameObject.Instantiate(stompHitEffect_prefab, point0 + Vector3.down * _controller.radius, Quaternion.identity);
                         }

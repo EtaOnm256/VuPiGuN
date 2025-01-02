@@ -103,7 +103,7 @@ public class SMGBullet : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, 10, RobotController.KnockBackType.None);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, 10, RobotController.KnockBackType.None, owner);
 
                     dead = true;
                 }

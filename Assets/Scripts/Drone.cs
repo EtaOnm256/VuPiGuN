@@ -130,6 +130,7 @@ public class Drone : MonoBehaviour
                         beam.target = target;
                         beam.team = owner.team;
                         beam.worldManager = owner.worldManager;
+                        beam.owner = owner;
                         state = State.Homing;
                     }
                 }

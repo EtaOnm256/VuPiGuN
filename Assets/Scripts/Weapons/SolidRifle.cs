@@ -89,6 +89,7 @@ public class SolidRifle : Weapon
             bullet.target = Target_Robot;
             bullet.team = owner.team;
             bullet.worldManager = owner.worldManager;
+            bullet.owner = owner;
             GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             solidemit_obj.transform.localScale = Vector3.one;
