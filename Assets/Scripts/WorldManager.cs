@@ -46,7 +46,9 @@ public class WorldManager : MonoBehaviour
      public bool enemy_weapon_chest_paired = false;*/
 
     RobotController player;
-  
+
+    [SerializeField]GameObject spawn_prefab;
+
     [System.Serializable]
     public class Sequence
     {
@@ -54,8 +56,8 @@ public class WorldManager : MonoBehaviour
         public class OneSpawn
         {
             public GameObject variant;
-            public Vector3 pos;
-            public Quaternion rot;
+            //public Vector3 pos;
+            //public Quaternion rot;
             public int squadCount;
             public bool loop;
         }
@@ -85,7 +87,7 @@ public class WorldManager : MonoBehaviour
         Slider friendPowerSlider = HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>(),power = 100,powerslider = friendPowerSlider };
+        Team friend_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>(),power = 1000,powerslider = friendPowerSlider };
         Team enemy_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>(), power = 1000, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
@@ -93,7 +95,7 @@ public class WorldManager : MonoBehaviour
 
 		SpawnPlayer(new Vector3(0, 0, -40),Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
 
-        SpawnEnemy(player_variant, new Vector3(20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
+        //SpawnNPC(player_variant, new Vector3(20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
         //SpawnEnemy(sequence_enemy.waves[0].spawns[0].variant, new Vector3(-20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
 
         for (int i = 0; i < sequence_enemy.spawns.Count; i++)
@@ -193,7 +195,55 @@ public class WorldManager : MonoBehaviour
             {
                 Sequence.OneSpawn spawn = sequence.spawns[sequence.currentSpawn];
 
-                SpawnEnemy(spawn.variant, spawn.pos, spawn.rot, team);
+                float distance;
+                Quaternion rot;
+
+                if (team == teams[0])
+                {
+                    distance = 25.0f;
+                }
+                else
+                {
+                    distance = 100.0f;
+                }
+
+                Vector3 pos;
+                
+
+                if(player && !player.dead)
+                {
+                    pos = player.GetCenter()+Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f)*Vector3.forward* distance;
+
+                    if (team == teams[0])
+                        rot = player.transform.rotation;
+                    else
+                        rot = Quaternion.LookRotation(player.GetCenter() - pos, Vector3.up);
+                }
+                else
+                {
+                    pos = Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                    rot = Quaternion.LookRotation( - pos, Vector3.up);
+                }
+
+                if(pos.x >= 150.0f)
+                {
+                    pos.x -= distance*2;
+                }
+                else if (pos.x <= -150.0f)
+                {
+                    pos.x += distance * 2f;
+                }
+
+                if (pos.z >= 150.0f)
+                {
+                    pos.z -= distance * 2;
+                }
+                else if (pos.z <= -150.0f)
+                {
+                    pos.z += distance * 2;
+                }
+
+                SpawnNPC(spawn.variant,pos, rot, team);
                 sequence.spawned = true;
             }
         }
@@ -273,13 +323,15 @@ public class WorldManager : MonoBehaviour
         robot.worldManager = this;
         robot.team = team;
 
+        GameObject.Instantiate(spawn_prefab, robot.transform.position,Quaternion.identity);
+
         player = robot;
 
         team.robotControllers.Add(robot);
         HandleRobotAdd(robot);
     }
 
-    private void SpawnEnemy(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team)
+    private void SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team)
     {
         RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
 
@@ -298,6 +350,8 @@ public class WorldManager : MonoBehaviour
 
         robot.worldManager = this;
         robot.team = team;
+
+        GameObject.Instantiate(spawn_prefab, robot.transform.position, Quaternion.identity);
 
         team.robotControllers.Add(robot);
         HandleRobotAdd(robot);
