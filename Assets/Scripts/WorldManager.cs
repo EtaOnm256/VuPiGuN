@@ -34,6 +34,8 @@ public class WorldManager : MonoBehaviour
             public Vector3 pos;
             public Quaternion rot;
             public bool player;
+            public int wait;
+            public GameObject variant;
         }
     }
 
@@ -54,7 +56,7 @@ public class WorldManager : MonoBehaviour
      public bool enemy_weapon_chest_paired = false;*/
 
     RobotController player;
-    int player_spawn_wait = 60;
+    //int player_spawn_wait = 60;
 
     GameObject CinemachineCameraTarget;
 
@@ -90,6 +92,8 @@ public class WorldManager : MonoBehaviour
     public bool finished = false;
     public bool victory = false;
 
+    public bool initial_spawn = true;
+
     [SerializeField] GameState gameState;
 
     // Start is called before the first frame update
@@ -106,7 +110,8 @@ public class WorldManager : MonoBehaviour
         teams.Add(friend_team);
         teams.Add(enemy_team);
 
-		//SpawnPlayer(new Vector3(0, 0, -40),Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
+        while (ProcessSpawn(sequence_friend, friend_team, true)) ;
+        while (ProcessSpawn(sequence_enemy, enemy_team, true)) ;
 
         for (int i = 0; i < sequence_enemy.spawns.Count; i++)
         {
@@ -125,14 +130,6 @@ public class WorldManager : MonoBehaviour
                 break;
             }
         }
-
-
-        //SpawnEnemy(new Vector3(-20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
-        //SpawnEnemy(new Vector3(20, 0, 40), Quaternion.Euler(0.0f, 180.0f, 0.0f), enemy_team);
-
-
-
-
 
     }
 
@@ -175,8 +172,32 @@ public class WorldManager : MonoBehaviour
 
     }
 
-    void ProcessSpawn(Sequence sequence,Team team)
+    
+
+    bool ProcessSpawn(Sequence sequence,Team team,bool instant)
     {
+        bool hav_progress = false;
+
+        for(int i=0;i<team.spawnings.Count;)
+        {
+            if(team.spawnings[i].player)
+            {
+                i++;
+                continue;
+            }
+
+            if(team.spawnings[i].wait <= 0)
+            {
+                SpawnNPC(team.spawnings[i].variant, team.spawnings[i].pos, team.spawnings[i].rot, team);
+                team.spawnings.RemoveAt(i);
+            }
+            else
+            {
+                team.spawnings[i].wait--;
+                i++;
+            }
+        }
+
         if (sequence.spawned)
         {
             if (team.robotControllers.Count+team.spawnings.Count < sequence.spawns[sequence.currentSpawn].squadCount)
@@ -185,6 +206,7 @@ public class WorldManager : MonoBehaviour
                 {
                     sequence.currentSpawn++;
                     sequence.spawned = false;
+                    hav_progress = true;
                 }
                 else
                 {
@@ -192,6 +214,7 @@ public class WorldManager : MonoBehaviour
                     {
                         sequence.currentSpawn = sequence.loop_index;
                         sequence.spawned = false;
+                        hav_progress = true;
                     }
                 }
 
@@ -253,10 +276,59 @@ public class WorldManager : MonoBehaviour
                     pos.z += distance * 2;
                 }
 
-                SpawnNPC(spawn.variant,pos, rot, team);
+                if (instant)
+                    SpawnNPC(spawn.variant, pos, rot, team);
+                else
+                    team.spawnings.Add(new Team.Spawning { player = false, pos = pos, rot = rot, variant = spawn.variant, wait = 60 });
+                
                 sequence.spawned = true;
+                hav_progress = true;
             }
         }
+
+        return hav_progress;
+    }
+
+    void PlacePlayerSpawn(int wait)
+    {
+        Vector3 pos = new Vector3(Random.value * 200.0f - 100.0f, 0, Random.value * 200.0f - 100.0f);
+        RaycastHit raycastHit;
+
+        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
+        float min_dist = float.MaxValue;
+        RobotController nearest_robot = null;
+
+        foreach (var team in teams)
+        {
+            if (team == teams[0]) continue;
+
+            foreach (var robot in team.robotControllers)
+            {
+                float dist = (robot.transform.position - raycastHit.point).magnitude;
+
+                if (dist < min_dist)
+                {
+                    min_dist = dist;
+                    nearest_robot = robot;
+                }
+            }
+        }
+
+        Quaternion quaternion = Quaternion.identity;
+
+        if (nearest_robot != null)
+        {
+            Vector3 rel = nearest_robot.transform.position - raycastHit.point;
+            rel.y = 0.0f;
+
+            quaternion = Quaternion.LookRotation(rel, Vector3.up);
+
+            CinemachineCameraTarget.transform.rotation = RobotController.GetTargetQuaternionForView_FromTransform(nearest_robot, new RobotController.Transform2 { position = raycastHit.point, rotation = quaternion });
+        }
+
+        CinemachineCameraTarget.transform.position = raycastHit.point + CinemachineCameraTarget.transform.rotation * RobotController.offset;
+
+        teams[0].spawnings.Add(new Team.Spawning { player = true, pos = raycastHit.point, rot = quaternion, wait = 60 });
     }
 
     // Update is called once per frame
@@ -277,75 +349,44 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
-            ProcessSpawn(sequence_friend, teams[0]);
-            ProcessSpawn(sequence_enemy, teams[1]);
-
             if (player == null)
             {
-                if(teams[0].spawnings.Count <= 0)
+                Team.Spawning player_spawning = null;
+                foreach(var spawning in teams[0].spawnings)
                 {
-                    Vector3 pos = new Vector3(Random.value * 200.0f - 100.0f, 0, Random.value * 200.0f - 100.0f);
-                    RaycastHit raycastHit;
-
-                    Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
-                    float min_dist = float.MaxValue;
-                    RobotController nearest_robot = null;
-
-                    foreach (var team in teams)
+                    if (spawning.player)
                     {
-                        if (team == teams[0]) continue;
-
-                        foreach (var robot in team.robotControllers)
-                        {
-                            float dist = (robot.transform.position - raycastHit.point).magnitude;
-
-                            if (dist < min_dist)
-                            {
-                                min_dist = dist;
-                                nearest_robot = robot;
-                            }
-                        }
+                        player_spawning = spawning;
+                        break;
                     }
+                }
 
-                    Quaternion quaternion = Quaternion.identity;
-
-                    if (nearest_robot != null)
-                    {
-                        Vector3 rel = nearest_robot.transform.position - raycastHit.point;
-                        rel.y = 0.0f;
-
-                        quaternion = Quaternion.LookRotation(rel, Vector3.up);
-
-                        CinemachineCameraTarget.transform.rotation = RobotController.GetTargetQuaternionForView_FromTransform(nearest_robot, new RobotController.Transform2 { position = raycastHit.point, rotation = quaternion });
-                    }
-
-                    CinemachineCameraTarget.transform.position = raycastHit.point + CinemachineCameraTarget.transform.rotation * RobotController.offset;
-
-                    teams[0].spawnings.Add(new Team.Spawning { player = true, pos = raycastHit.point, rot = quaternion});
-                   
-                    player_spawn_wait = 60;
+                if(player_spawning == null)
+                {
+                    PlacePlayerSpawn(60);
                 }
                 else
                 {
-                    if (player_spawn_wait == 0)
+                    if (player_spawning.wait == 0)
                     {
-                        SpawnPlayer(teams[0].spawnings[0].pos, teams[0].spawnings[0].rot, teams[0]);
-                        teams[0].spawnings.RemoveAt(0);
+                        SpawnPlayer(player_spawning.pos, player_spawning.rot, teams[0]);
+                        teams[0].spawnings.Remove(player_spawning);
                     }
                     else
                     {
-                        player_spawn_wait--;
+                        player_spawning.wait--;
                     }
                 }
               
             }
 
-         
+            ProcessSpawn(sequence_friend, teams[0], false);
+            ProcessSpawn(sequence_enemy, teams[1], false);
         }
 
+      
 
-
-
+        initial_spawn = false;
     }
 
     //RobotController player;
