@@ -127,7 +127,7 @@ public class RobotController : MonoBehaviour
 
     public bool is_player;
 
-    public Vector3 offset;
+    static public Vector3 offset = new Vector3(0.0f,8.0f,-15.0f);
 
     public Vector3 slash_camera_offset;
     public bool slash_camera_offset_set = false;
@@ -676,11 +676,14 @@ public class RobotController : MonoBehaviour
 
     private void Start()
     {
-      
+
 
 
         if (CinemachineCameraTarget != null)
+        {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+            _cinemachineTargetPitch = CinemachineCameraTarget.transform.rotation.eulerAngles.x;
+        }
 
         //is_player = GetComponent<HumanInput>() != null; 作成直後に判定して代入させるようにした
 
@@ -1177,16 +1180,21 @@ public class RobotController : MonoBehaviour
         }
     }
 
-    // AIから呼びされるので
-    public Quaternion GetTargetQuaternionForView(RobotController target)
+    static public Quaternion GetTargetQuaternionForView_FromTransform(RobotController target,Transform2 _transform)
     {
-        Quaternion qtarget = Quaternion.LookRotation(target.GetCenter() - GetCenter(), Vector3.up);
+        Quaternion qtarget = Quaternion.LookRotation(target.GetCenter() - GetCenterFromTransform(_transform), Vector3.up);
 
         Vector3 vtarget = qtarget.eulerAngles;
 
         vtarget.x += 10.0f;
 
         return Quaternion.Euler(vtarget);
+    }
+
+    // AIから呼びされるので
+    public Quaternion GetTargetQuaternionForView(RobotController target)
+    {
+        return GetTargetQuaternionForView_FromTransform(target, new Transform2(transform));
     }
 
     private Quaternion GetCurrentAimQuaternion()
@@ -3766,9 +3774,39 @@ public class RobotController : MonoBehaviour
         }
     }
 
+    public class Transform2
+    {
+        public Vector3 position;
+        public Quaternion rotation;
+        public Vector3 localScale;
+
+        public Vector3 TransformPoint(Vector3 p)
+        {
+            Vector3 scaled = p;
+
+            scaled.Scale(localScale);
+
+            return rotation* scaled + position;
+        }
+
+        public Transform2(Transform transform)
+        {
+            position = transform.position;
+            rotation = transform.rotation;
+            localScale = transform.localScale;
+        }
+
+        public Transform2() { }
+    }
+
+    static public Vector3 GetCenterFromTransform(Transform2 _transform)
+    {
+        return _transform.TransformPoint(new Vector3(0, 3.805078f, 0));
+    }
+
     public Vector3 GetCenter()
     {
-        return transform.TransformPoint(new Vector3(0, 3.805078f, 0));
+        return GetCenterFromTransform(new Transform2(transform));
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)

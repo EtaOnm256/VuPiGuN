@@ -7,8 +7,9 @@ public class WorldManager : MonoBehaviour
 {
     public class Team
     {
-        public List<RobotController> robotControllers;
-        public List<Projectile> projectiles;
+        public List<RobotController> robotControllers = new List<RobotController>();
+        public List<Projectile> projectiles = new List<Projectile>();
+        public List<Spawning> spawnings = new List<Spawning>();
 
         public Slider powerslider;
 
@@ -19,13 +20,20 @@ public class WorldManager : MonoBehaviour
             set
             {
                 _power = value;
-                if(powerslider != null)
+                if (powerslider != null)
                 {
                     powerslider.value = _power;
                 }
             }
 
             get { return _power; }
+        }
+
+        public class Spawning 
+        {
+            public Vector3 pos;
+            public Quaternion rot;
+            public bool player;
         }
     }
 
@@ -46,6 +54,9 @@ public class WorldManager : MonoBehaviour
      public bool enemy_weapon_chest_paired = false;*/
 
     RobotController player;
+    int player_spawn_wait = 60;
+
+    GameObject CinemachineCameraTarget;
 
     [SerializeField]GameObject spawn_prefab;
 
@@ -84,19 +95,18 @@ public class WorldManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        CinemachineCameraTarget = GameObject.Find("Main Camera");
+
         Slider friendPowerSlider = HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>(),power = 1000,powerslider = friendPowerSlider };
-        Team enemy_team = new Team { robotControllers = new List<RobotController>(), projectiles = new List<Projectile>(), power = 1000, powerslider = enemyPowerSlider };
+        Team friend_team = new Team {power = 1000,powerslider = friendPowerSlider };
+        Team enemy_team = new Team { power = 1000, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
 
-		SpawnPlayer(new Vector3(0, 0, -40),Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
-
-        //SpawnNPC(player_variant, new Vector3(20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
-        //SpawnEnemy(sequence_enemy.waves[0].spawns[0].variant, new Vector3(-20, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
+		//SpawnPlayer(new Vector3(0, 0, -40),Quaternion.Euler(0.0f, 0.0f, 0.0f), friend_team);
 
         for (int i = 0; i < sequence_enemy.spawns.Count; i++)
         {
@@ -169,7 +179,7 @@ public class WorldManager : MonoBehaviour
     {
         if (sequence.spawned)
         {
-            if (team.robotControllers.Count < sequence.spawns[sequence.currentSpawn].squadCount)
+            if (team.robotControllers.Count+team.spawnings.Count < sequence.spawns[sequence.currentSpawn].squadCount)
             {
                 if (sequence.currentSpawn < sequence.spawns.Count - 1)
                 {
@@ -191,7 +201,7 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
-            if (team.robotControllers.Count < sequence.spawns[sequence.currentSpawn].squadCount)
+            if (team.robotControllers.Count+team.spawnings.Count < sequence.spawns[sequence.currentSpawn].squadCount)
             {
                 Sequence.OneSpawn spawn = sequence.spawns[sequence.currentSpawn];
 
@@ -267,14 +277,70 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
-            if (player == null)
-            {
-
-                SpawnPlayer(new Vector3(0, 0, -40), Quaternion.Euler(0.0f, 0.0f, 0.0f), teams[0]);
-            }
-
             ProcessSpawn(sequence_friend, teams[0]);
             ProcessSpawn(sequence_enemy, teams[1]);
+
+            if (player == null)
+            {
+                if(teams[0].spawnings.Count <= 0)
+                {
+                    Vector3 pos = new Vector3(Random.value * 200.0f - 100.0f, 0, Random.value * 200.0f - 100.0f);
+                    RaycastHit raycastHit;
+
+                    Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
+                    float min_dist = float.MaxValue;
+                    RobotController nearest_robot = null;
+
+                    foreach (var team in teams)
+                    {
+                        if (team == teams[0]) continue;
+
+                        foreach (var robot in team.robotControllers)
+                        {
+                            float dist = (robot.transform.position - raycastHit.point).magnitude;
+
+                            if (dist < min_dist)
+                            {
+                                min_dist = dist;
+                                nearest_robot = robot;
+                            }
+                        }
+                    }
+
+                    Quaternion quaternion = Quaternion.identity;
+
+                    if (nearest_robot != null)
+                    {
+                        Vector3 rel = nearest_robot.transform.position - raycastHit.point;
+                        rel.y = 0.0f;
+
+                        quaternion = Quaternion.LookRotation(rel, Vector3.up);
+
+                        CinemachineCameraTarget.transform.rotation = RobotController.GetTargetQuaternionForView_FromTransform(nearest_robot, new RobotController.Transform2 { position = raycastHit.point, rotation = quaternion });
+                    }
+
+                    CinemachineCameraTarget.transform.position = raycastHit.point + CinemachineCameraTarget.transform.rotation * RobotController.offset;
+
+                    teams[0].spawnings.Add(new Team.Spawning { player = true, pos = raycastHit.point, rot = quaternion});
+                   
+                    player_spawn_wait = 60;
+                }
+                else
+                {
+                    if (player_spawn_wait == 0)
+                    {
+                        SpawnPlayer(teams[0].spawnings[0].pos, teams[0].spawnings[0].rot, teams[0]);
+                        teams[0].spawnings.RemoveAt(0);
+                    }
+                    else
+                    {
+                        player_spawn_wait--;
+                    }
+                }
+              
+            }
+
+         
         }
 
 
@@ -318,7 +384,7 @@ public class WorldManager : MonoBehaviour
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
         robot.is_player = true;
 
-        robot.CinemachineCameraTarget = GameObject.Find("Main Camera");
+        robot.CinemachineCameraTarget = CinemachineCameraTarget;
 
         robot.worldManager = this;
         robot.team = team;
