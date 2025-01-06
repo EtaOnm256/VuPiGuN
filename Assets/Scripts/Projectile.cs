@@ -22,7 +22,7 @@ public class Projectile : Pausable
 
     protected virtual void OnStart() { }
 
-    private void OnDestroy_Derived()
+    private void OnDestroy()
     {
         WorldManager.current_instance.RemoveProjectile(this);
     }

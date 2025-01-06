@@ -127,13 +127,13 @@ public class RobotController : Pausable
 
     public bool is_player;
 
-    static public Vector3 offset = new Vector3(0.0f,8.0f,-15.0f);
+    static public Vector3 offset = new Vector3(0.0f, 8.0f, -15.0f);
 
     public Vector3 slash_camera_offset;
     public bool slash_camera_offset_set = false;
 
     // cinemachine
-    public  float _cinemachineTargetYaw;
+    public float _cinemachineTargetYaw;
     public float _cinemachineTargetPitch;
 
     // player
@@ -142,7 +142,7 @@ public class RobotController : Pausable
     private float _targetRotation = 0.0f;
     private float _rotationVelocity;
     private float _verticalVelocity;
-    
+
 
     // timeout deltatime
     private float _jumpTimeoutDelta;
@@ -211,9 +211,9 @@ public class RobotController : Pausable
        const int LowerSlash_Num = 1;
        private int[] _animIDLowerSlash = new int[LowerSlash_Num];*/
 
-    
 
-   
+
+
 
     Vector3 dashslash_offset;
 
@@ -267,11 +267,12 @@ public class RobotController : Pausable
 
     public bool dualwielding
     {
-        get {
+        get
+        {
             bool rightWeapon_heavy = rightWeapon == null ? false : rightWeapon.heavy;
             bool Sword_dualwielded = Sword == null ? false : Sword.dualwielded;
 
-                return rightWeapon_heavy || dualwield_lightweapon || Sword_dualwielded; 
+            return rightWeapon_heavy || dualwield_lightweapon || Sword_dualwielded;
         }
     }
 
@@ -310,11 +311,17 @@ public class RobotController : Pausable
 
     private float _barmlayerwait = 0.0f;
 
+    private int death_timer = 0;
+    private int death_timer_max = 30;
+
+    RobotController finish_dealer;
+    Vector3 finish_dir;
+
     float firing_multiplier
     {
         get
         {
-            if(rightWeapon != null)
+            if (rightWeapon != null)
                 return rightWeapon.firing_multiplier;
             else
                 return 1.0f;
@@ -440,7 +447,7 @@ public class RobotController : Pausable
 
     public int Boost_Max = 200;
 
-    [SerializeField]int _boost;
+    [SerializeField] int _boost;
 
     public bool dead = false;
 
@@ -486,7 +493,8 @@ public class RobotController : Pausable
         Finish
     }
 
-    [Flags] public enum ItemFlag
+    [Flags]
+    public enum ItemFlag
     {
         NextDrive = 1 << 0,
         ExtremeSlide = 1 << 1,
@@ -498,15 +506,44 @@ public class RobotController : Pausable
 
     public ItemFlag itemFlag = 0;
     //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
-    
-    public void TakeDamage(Vector3 pos,Vector3 dir, int damage, KnockBackType knockBackType,RobotController dealer)
+
+    public void TakeDamage(Vector3 pos, Vector3 dir, int damage, KnockBackType knockBackType, RobotController dealer)
     {
         if (!spawn_completed)
             return;
 
+        if (dead)
+            return;
+
+        HP = Math.Max(0, HP - damage);
+
+        if (is_player || dealer.is_player)
+        {
+            GameObject damageText_obj = GameObject.Instantiate(is_player ? damageText_player_prefab : damageText_prefab, HUDCanvas.transform);
+            RectTransform rectTransform = damageText_obj.GetComponent<RectTransform>();
+            DamageText damageText = damageText_obj.GetComponent<DamageText>();
+
+            damageText.Position = pos;
+            damageText.rectTransform = rectTransform;
+            damageText.canvasTransform = HUDCanvas.GetComponent<RectTransform>();
+            damageText.uiCamera = uIController_Overlay.uiCamera;
+            damageText.canvas = HUDCanvas;
+            damageText.from_player = dealer.is_player;
+            damageText.damage = damage;
+            //damageText.worldManager = worldManager;
+        }
+
+        if (HP <= 0)
+        {
+            dead = true;
+            death_timer = death_timer_max;
+            finish_dealer = dealer;
+            finish_dir = dir;
+        }
+
         _animator.speed = 1.0f;
 
-        if (knockBackType != KnockBackType.None)
+        if (knockBackType != KnockBackType.None || dead)
         {
 
             if (lowerBodyState != LowerBodyState.DOWN)
@@ -576,7 +613,7 @@ public class RobotController : Pausable
                         else
                             _animator.Play(_animIDKnockback_Front, 0, 0);
 
-                        _speed = KnockbackSpeed*2;
+                        _speed = KnockbackSpeed * 2;
 
                         animator.speed = 1.0f;
                     }
@@ -588,7 +625,7 @@ public class RobotController : Pausable
                     speed_overrideby_knockback = true;
                 }
 
-                if(Sword != null)
+                if (Sword != null)
                     Sword.emitting = false;
 
                 // 射撃中だった場合に備えて
@@ -598,35 +635,14 @@ public class RobotController : Pausable
                 }
             }
 
-            if(rightWeapon!=null)
+            if (rightWeapon != null)
                 rightWeapon.OnKnockback();
-            if(shoulderWeapon!=null)
+            if (shoulderWeapon != null)
                 shoulderWeapon.OnKnockback();
 
         }
 
-        HP = Math.Max(0, HP - damage);
-
-        if (is_player || dealer.is_player)
-        {
-            GameObject damageText_obj = GameObject.Instantiate(is_player ? damageText_player_prefab : damageText_prefab, HUDCanvas.transform);
-            RectTransform rectTransform = damageText_obj.GetComponent<RectTransform>();
-            DamageText damageText = damageText_obj.GetComponent<DamageText>();
-
-            damageText.Position = pos;
-            damageText.rectTransform = rectTransform;
-            damageText.canvasTransform = HUDCanvas.GetComponent<RectTransform>();
-            damageText.uiCamera = uIController_Overlay.uiCamera;
-            damageText.canvas = HUDCanvas;
-            damageText.from_player = dealer.is_player;
-            damageText.damage = damage;
-            //damageText.worldManager = worldManager;
-        }
-
-        if (HP <= 0)
-        {
-            dead = true;
-        }
+    
     }
 
     private void TargetEnemy(RobotController robotController)
@@ -669,10 +685,7 @@ public class RobotController : Pausable
 
     private void Awake()
     {
-
-
-     
-     
+        WorldManager.current_instance.pausables.Add(this);
     }
 
     private void Start()
@@ -767,17 +780,17 @@ public class RobotController : Pausable
         if (Sword != null)
         {
             Sword.owner = this;
-           // Sword.worldManager = worldManager;
+            // Sword.worldManager = worldManager;
         }
         if (shoulderWeapon != null)
         {
             shoulderWeapon.owner = this;
-           // shoulderWeapon.worldManager = worldManager;
+            // shoulderWeapon.worldManager = worldManager;
         }
 
         spawn_completed = true;
 
-       // _input.worldManager = worldManager;
+        // _input.worldManager = worldManager;
 
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;
@@ -842,7 +855,7 @@ public class RobotController : Pausable
     {
         if (!dead)
         {
-            if(WorldManager.current_instance.finished)
+            if (WorldManager.current_instance.finished)
             {
                 _input.jump = _input.fire = _input.slash = _input.sprint = false;
                 _input.move = Vector2.zero;
@@ -979,7 +992,7 @@ public class RobotController : Pausable
 
             if (rightWeapon != null)
                 rightWeapon.Target_Robot = Target_Robot;
-            if(shoulderWeapon != null)
+            if (shoulderWeapon != null)
                 shoulderWeapon.Target_Robot = Target_Robot;
             LowerBodyMove(); // 順番入れ替えるとHEAVYFIREの反動が処理できないので注意
             UpperBodyMove();
@@ -987,41 +1000,189 @@ public class RobotController : Pausable
         }
         else
         {
-            UntargetEnemy();
-
-            for (int i = 0; i < lockingEnemy.Count; i++)
+            if (death_timer == death_timer_max)
             {
-                lockingEnemy[i].PurgeTarget(this);
+
+                UntargetEnemy();
+
+                for (int i = 0; i < lockingEnemy.Count; i++)
+                {
+                    lockingEnemy[i].PurgeTarget(this);
+                }
+
+                if (is_player)
+                    uIController_Overlay.origin = null;
+
+                if (rightWeapon != null)
+                {
+                    uIController_Overlay.RemoveWeapon(rightWeapon);
+                    rightWeapon.Destroy_Called_By_Unit();
+
+                }
+                if (shoulderWeapon != null)
+                {
+                    uIController_Overlay.RemoveWeapon(shoulderWeapon);
+                    shoulderWeapon.Destroy_Called_By_Unit();
+                }
+
+                WorldManager.current_instance.HandleRemoveUnit(this,finish_dealer,finish_dir);
+            }
+            else if (death_timer <= 0)
+            {
+                GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
+                GameObject.Destroy(gameObject);
+            }
+            else
+            {
+                DeadBodyMove();
             }
 
-            if (is_player)
-                uIController_Overlay.origin = null;
-
-            if (rightWeapon != null)
-            {
-                uIController_Overlay.RemoveWeapon(rightWeapon);
-                rightWeapon.Destroy_Called_By_Unit();
-
-            }
-            if (shoulderWeapon != null)
-            {
-                uIController_Overlay.RemoveWeapon(shoulderWeapon);
-                shoulderWeapon.Destroy_Called_By_Unit();
-            }
-
-            WorldManager.current_instance.HandleRemoveUnit(this);
-
-           
-
-            GameObject.Instantiate(explode_prefab, transform.position, Quaternion.identity);
-
-            GameObject.Destroy(gameObject);
+            death_timer--;
         }
 
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;
     }
 
+    private void DeadBodyMove()
+    {
+        float rhandaimwait_thisframe = 0.0f;
+
+        bool chest_pitch_aim = false;
+
+        switch (upperBodyState)
+        {
+            case UpperBodyState.KNOCKBACK:
+            case UpperBodyState.DOWN:
+            case UpperBodyState.GETUP:
+                _chestaimwait = 0.0f;
+                _headaimwait = 0.0f;
+                _rarmaimwait = 0.0f;
+                _barmlayerwait = 0.0f;
+                lockonState = LockonState.FREE;
+                break;
+        }
+
+
+        headmultiAimConstraint.weight = _headaimwait;
+
+        //headmultiAimConstraint.weight = 1.0f;
+
+        Quaternion target_rot_head;
+        Quaternion target_rot_chest;
+        Quaternion target_rot_rhand;
+
+        Quaternion q_aim_global = Quaternion.LookRotation(-aiming_hint.transform.forward, new Vector3(0.0f, 1.0f, 0.0f));
+
+        overrideTransform.data.position = shoulder_hint.transform.position;
+        overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+
+        target_rot_head = Head.transform.rotation;
+        target_rot_chest = Chest.transform.rotation;
+        target_rot_rhand = Chest.transform.rotation;
+
+
+        AimTargetRotation_Head = target_rot_head;
+        AimHelper_Head.transform.position = Head.transform.position + AimTargetRotation_Head * Vector3.forward * 3;
+        AimTargetRotation_Chest = target_rot_chest;
+     
+        Vector3 chestAim_Dir = AimTargetRotation_Chest * Vector3.forward * 3;
+
+        if (!chest_pitch_aim)
+            chestAim_Dir.y = 0.0f;
+
+        AimHelper_Chest.transform.position = Chest.transform.position + chestAim_Dir;
+
+        chestmultiAimConstraint.weight = _chestaimwait;
+
+        AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
+        rhandmultiAimConstraint.weight = rhandaimwait_thisframe;
+
+        overrideTransform.weight = _rarmaimwait;
+
+        animator.SetLayerWeight(2, _barmlayerwait);
+
+        if (!dualwielding)
+            animator.SetLayerWeight(1, _rarmaimwait);
+
+        float targetSpeed = 0.0f;
+
+        switch (lowerBodyState)
+        {
+            case LowerBodyState.DOWN:
+                {
+                    _animationBlend = 0.0f;
+
+                    switch (lowerBodyState)
+                    {
+                        case LowerBodyState.DOWN:
+                            {
+                                JumpAndGravity();
+                                GroundedCheck();
+                            }
+                            break;
+                    }
+
+                    break;
+                }
+            case LowerBodyState.KNOCKBACK:
+                {
+                    // a reference to the players current horizontal velocity
+                    float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+                    float speedOffset = 0.1f;
+
+                    targetSpeed = 0.0f;
+
+                    if (speed_overrideby_knockback) // リセットはLowerBodyMoveの末尾で無条件。（こことかでやる作りだと漏れたときのバグが怖い）
+                    {
+
+                    }
+                    // accelerate or decelerate to target speed
+                    else if (
+                        //currentHorizontalSpeed < targetSpeed - speedOffset ||
+                        currentHorizontalSpeed > targetSpeed + speedOffset
+                        )
+                    {
+                        // creates curved result rather than a linear one giving a more organic speed change
+                        // note T in Lerp is clamped, so we don't need to clamp our speed
+                        _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed,
+                            Time.deltaTime * SpeedChangeRate);
+
+                        // round speed to 3 decimal places
+                        _speed = Mathf.Round(_speed * 1000f) / 1000f;
+                    }
+
+                    if (event_knockbacked)
+                    {
+                        TransitLowerBodyState(LowerBodyState.STAND);
+
+                    }
+
+                    JumpAndGravity();
+                    GroundedCheck();
+                }
+                break;
+        }
+
+
+        if (lowerBodyState == LowerBodyState.KNOCKBACK || lowerBodyState == LowerBodyState.DOWN)
+        {
+            Vector3 targetDirection;
+
+
+            targetDirection = knockbackdir;
+
+
+            //transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, 1.0f), 0.0f);
+
+            // move the player
+            MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
+                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+        }
+
+
+        speed_overrideby_knockback = false;
+    }
 
 
     private void AssignAnimationIDs()
@@ -1107,12 +1268,12 @@ public class RobotController : Pausable
                 }
                 break;
             case LowerBodyState.JumpSlash:
-                if(Sword.slashing)
+                if (Sword.slashing)
                 {
                     Vector3 point0 = transform.position + _controller.center;
                     Vector3 point1 = transform.position + _controller.center;
 
-                    point0.y -= _controller.height / 2+ _controller.radius;
+                    point0.y -= _controller.height / 2 + _controller.radius;
 
                     int numhit = Physics.OverlapCapsuleNonAlloc(point0, point1, _controller.radius, stompHit, 1 << 6);
 
@@ -1125,7 +1286,7 @@ public class RobotController : Pausable
 
                         Sword.hitHistory[Sword.hitHistoryCount++] = stompHit[idx_hit].gameObject;
 
-                    
+
 
                         RobotController robotController = stompHit[idx_hit].gameObject.GetComponentInParent<RobotController>();
 
@@ -1138,7 +1299,7 @@ public class RobotController : Pausable
                             if (Sword.hitHistoryRC.Contains(robotController))
                                 continue;
 
-                            
+
 
                             Sword.hitHistoryRC[Sword.hitHistoryRCCount++] = robotController;
 
@@ -1146,7 +1307,7 @@ public class RobotController : Pausable
 
                             diff.y = 0.0f;
 
-                            robotController.TakeDamage(point0 + Vector3.down * _controller.radius,diff.normalized, Sword.damage, KnockBackType.Finish, this);
+                            robotController.TakeDamage(point0 + Vector3.down * _controller.radius, diff.normalized, Sword.damage, KnockBackType.Finish, this);
 
                             GameObject.Instantiate(stompHitEffect_prefab, point0 + Vector3.down * _controller.radius, Quaternion.identity);
                         }
@@ -1174,10 +1335,13 @@ public class RobotController : Pausable
     {
         CameraAndLockon();
 
-        if (CinemachineCameraTarget != null)
+        if (!WorldManager.current_instance.finished)
         {
-            CinemachineCameraTarget.transform.position = cameraPosition;
-            CinemachineCameraTarget.transform.rotation = cameraRotation;
+            if (CinemachineCameraTarget != null)
+            {
+                CinemachineCameraTarget.transform.position = cameraPosition;
+                CinemachineCameraTarget.transform.rotation = cameraRotation;
+            }
         }
     }
 
@@ -1210,7 +1374,7 @@ public class RobotController : Pausable
         }
     }
 
-    static public Quaternion GetTargetQuaternionForView_FromTransform(RobotController target,Transform2 _transform)
+    static public Quaternion GetTargetQuaternionForView_FromTransform(RobotController target, Transform2 _transform)
     {
         Quaternion qtarget = Quaternion.LookRotation(target.GetCenter() - GetCenterFromTransform(_transform), Vector3.up);
 
@@ -1252,8 +1416,8 @@ public class RobotController : Pausable
                         || lowerBodyState == LowerBodyState.QuickSlash
                         || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
                         || lowerBodyState == LowerBodyState.LowerSlash
-                        //|| lowerBodyState == LowerBodyState.JUMPSLASH_JUMP
-                        //|| lowerBodyState == LowerBodyState.JumpSlash
+                   //|| lowerBodyState == LowerBodyState.JUMPSLASH_JUMP
+                   //|| lowerBodyState == LowerBodyState.JumpSlash
                    ) && lockonState != LockonState.FREE
                    )
         {
@@ -1309,13 +1473,13 @@ public class RobotController : Pausable
 
                     float angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
 
-                    if (angle < 1.0f* lockon_multiplier)
+                    if (angle < 1.0f * lockon_multiplier)
                     {
                         lockonState = LockonState.LOCKON;
                     }
                     else
                     {
-                        Quaternion q = Quaternion.RotateTowards(cameraRotation, GetTargetQuaternionForView(Target_Robot), 1.0f* lockon_multiplier);
+                        Quaternion q = Quaternion.RotateTowards(cameraRotation, GetTargetQuaternionForView(Target_Robot), 1.0f * lockon_multiplier);
 
                         _cinemachineTargetYaw = q.eulerAngles.y;
                         _cinemachineTargetPitch = q.eulerAngles.x;
@@ -1374,14 +1538,14 @@ public class RobotController : Pausable
         {
             case UpperBodyState.FIRE:
                 {
-                    _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f* firing_multiplier);
+                    _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f * firing_multiplier);
 
 
                     _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f * firing_multiplier);
 
                     _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f * firing_multiplier);
 
-                   
+
 
                     if (dualwielding)
                     {
@@ -1493,7 +1657,7 @@ public class RobotController : Pausable
                         else
                         {
                         }
- 
+
                         if (fire_followthrough <= 0)
                         {
 
@@ -1504,7 +1668,7 @@ public class RobotController : Pausable
                             }
                             else if (lowerBodyState == LowerBodyState.SUBFIRE)
                                 TransitLowerBodyState(LowerBodyState.STAND);
-                            
+
                         }
                     }
 
@@ -1520,7 +1684,7 @@ public class RobotController : Pausable
 
                         chest_no_aiming = true;
 
-                        
+
 
                         if (target_chest)
                         {
@@ -1813,7 +1977,7 @@ public class RobotController : Pausable
                                     }
                                     else
                                     {
-                                         lowerBodyState = LowerBodyState.AIRSLASH_DASH;
+                                        lowerBodyState = LowerBodyState.AIRSLASH_DASH;
                                         upperBodyState = UpperBodyState.AIRSLASH_DASH;
                                         event_stepbegin = event_stepped = false;
                                         _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
@@ -1870,7 +2034,7 @@ public class RobotController : Pausable
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
 
-                    if(dualwielding)
+                    if (dualwielding)
                         _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                     else
                         _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
@@ -1940,7 +2104,7 @@ public class RobotController : Pausable
         if (target_chest != null)
         {
 
-       
+
 
             target_rot_head = Quaternion.LookRotation(target_head.transform.position - Head.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
@@ -1976,7 +2140,7 @@ public class RobotController : Pausable
                 float rad = Mathf.Atan((-b - Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a));
 
                 relative.y = relative.magnitude * Mathf.Tan(rad);
-                
+
 
                 target_rot_chest = target_rot_rhand = Quaternion.LookRotation(relative, new Vector3(0.0f, 1.0f, 0.0f));
 
@@ -2043,7 +2207,7 @@ public class RobotController : Pausable
 
         overrideTransform.weight = _rarmaimwait;
 
-        
+
         animator.SetLayerWeight(2, _barmlayerwait);
 
         if (!dualwielding)
@@ -2052,7 +2216,7 @@ public class RobotController : Pausable
         if (rightWeapon != null)
             rightWeapon.trigger = rightWeapon_trigger_thisframe;
 
-        if(shoulderWeapon!=null)
+        if (shoulderWeapon != null)
             shoulderWeapon.trigger = shoulderWeapon_trigger_thisframe;
 
         if (Sword != null)
@@ -2201,7 +2365,7 @@ public class RobotController : Pausable
                         else
                         {
                             AcceptStep(false);
-                          
+
                         }
 
                         RegenBoost();
@@ -2213,7 +2377,7 @@ public class RobotController : Pausable
                         {
                             if (ConsumeBoost(4))
                             {
-                                _verticalVelocity = Mathf.Min(_verticalVelocity+AscendingAccelerate, AscendingVelocity);
+                                _verticalVelocity = Mathf.Min(_verticalVelocity + AscendingAccelerate, AscendingVelocity);
                                 boosting = true;
                             }
                         }
@@ -2263,7 +2427,7 @@ public class RobotController : Pausable
                     float speedOffset = 0.1f;
                     float inputMagnitude = 1f;
 
-                    
+
                     targetSpeed = 0.0f;
 
                     _animationBlend = Mathf.Max(_animationBlend - 0.015f, 0.0f);
@@ -2271,7 +2435,7 @@ public class RobotController : Pausable
                     if (_animationBlend < 0.01f) _animationBlend = 0f;
 
                     // 滑り撃ちのときは、LowerBodyMove()末尾の別個処理でやってる
-                    if (event_heavyfired && ! (itemFlag.HasFlag(ItemFlag.Hovercraft) && lowerBodyState == LowerBodyState.HEAVYFIRE))
+                    if (event_heavyfired && !(itemFlag.HasFlag(ItemFlag.Hovercraft) && lowerBodyState == LowerBodyState.HEAVYFIRE))
                     {
                         if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
                         {
@@ -2290,11 +2454,11 @@ public class RobotController : Pausable
 
                     float brakefactor = 1.0f;
 
-                    if(lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
+                    if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
                     {
                         brakefactor = 0.25f;
                     }
-                    else if(lowerBodyState == LowerBodyState.HEAVYFIRE)
+                    else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
                     {
                         brakefactor = 0.5f;
                     }
@@ -2306,7 +2470,7 @@ public class RobotController : Pausable
                         // creates curved result rather than a linear one giving a more organic speed change
                         // note T in Lerp is clamped, so we don't need to clamp our speed
                         _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                            Time.deltaTime * SpeedChangeRate*brakefactor);
+                            Time.deltaTime * SpeedChangeRate * brakefactor);
 
                         // round speed to 3 decimal places
                         _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -2316,7 +2480,7 @@ public class RobotController : Pausable
                         _speed = targetSpeed;
                     }
 
-                 
+
 
                     if (target_chest != null)
                     {
@@ -2348,10 +2512,10 @@ public class RobotController : Pausable
                     {
                         RegenBoost();
                     }
-                    
-                    if(lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE)
+
+                    if (lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE)
                     {
-                        if(itemFlag.HasFlag(ItemFlag.NextDrive))
+                        if (itemFlag.HasFlag(ItemFlag.NextDrive))
                             AcceptDash();
                     }
                     else
@@ -2465,7 +2629,7 @@ public class RobotController : Pausable
                                     upperBodyState = UpperBodyState.GETUP;
                                     _animator.Play(_animIDGetup, 0, 0);
 
-                                    if(strongdown)
+                                    if (strongdown)
                                         _animator.speed = 0.5f;
                                     else
                                         _animator.speed = 1.0f;
@@ -2542,7 +2706,7 @@ public class RobotController : Pausable
                         _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
                         event_dashed = false;
 
-                        if(itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                        if (itemFlag.HasFlag(ItemFlag.QuickIgniter))
                         {
                             _speed = SprintSpeed * 2;
                         }
@@ -2585,15 +2749,15 @@ public class RobotController : Pausable
 
                     if (event_stepped)
                     {
-                      
 
-                         bool stop = false;
+
+                        bool stop = false;
 
                         if (!_input.sprint)
                             stop = true;
                         else
                         {
-                            if(stepremain <= 0)
+                            if (stepremain <= 0)
                             {
                                 if (itemFlag.HasFlag(ItemFlag.GroundBoost) && ConsumeBoost(4))
                                 {
@@ -2604,7 +2768,7 @@ public class RobotController : Pausable
                             }
                         }
 
-                        if(stop)
+                        if (stop)
                             TransitLowerBodyState(LowerBodyState.STEPGROUND);
                         else
                         {
@@ -2739,7 +2903,7 @@ public class RobotController : Pausable
                             {
                                 slash = true;
                             }
-                          
+
                         }
                         else
                         {
@@ -2877,7 +3041,7 @@ public class RobotController : Pausable
 
                     targetSpeed = 0.0f;
 
-                    if(speed_overrideby_knockback) // リセットはLowerBodyMoveの末尾で無条件。（こことかでやる作りだと漏れたときのバグが怖い）
+                    if (speed_overrideby_knockback) // リセットはLowerBodyMoveの末尾で無条件。（こことかでやる作りだと漏れたときのバグが怖い）
                     {
 
                     }
@@ -2912,7 +3076,7 @@ public class RobotController : Pausable
             case LowerBodyState.QuickSlash:
             case LowerBodyState.DashSlash:
                 {
-                  
+
 
                     _animationBlend = 0.0f;
 
@@ -2945,7 +3109,7 @@ public class RobotController : Pausable
                     {
                         if (Sword.dashslash_cutthrough && lowerBodyState == LowerBodyState.DashSlash)
                         {
-                            
+
                             Vector3 targetOffset = dashslash_offset;
 
                             Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].SlashDistance * transform.lossyScale.x * 0.9f);
@@ -3015,11 +3179,11 @@ public class RobotController : Pausable
                     if (lowerBodyState == LowerBodyState.DashSlash && Sword.dashslash_cutthrough)
                         boosting = true;
 
-                    if (_input.slash && ! prev_slash && Sword.hitHistoryRCCount == 0)
+                    if (_input.slash && !prev_slash && Sword.hitHistoryRCCount == 0)
                     {
                         slash_reserved = true;
 
-                        if(slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1)
+                        if (slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1)
                         {
                             Sword.knockBackType = KnockBackType.Weak;
                         }
@@ -3179,8 +3343,8 @@ public class RobotController : Pausable
 
                     break;
 
-            
-               }
+
+                }
             case LowerBodyState.JumpSlash:
                 {
                     //_speed = targetSpeed = 0.0f;
@@ -3208,36 +3372,36 @@ public class RobotController : Pausable
                     }
 
 
-                    
+
 
                     if (dist_xz > Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].SlashDistance * transform.lossyScale.x)
                     {
-                        
+
                     }
                     else
                     {
                         jumpslash_end_forward = true;
                         _speed = targetSpeed = 0.0f;
                     }
-                    
-                    if(!jumpslash_end_forward)
+
+                    if (!jumpslash_end_forward)
                         _speed = targetSpeed = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
                     else
-                        _speed = targetSpeed = Mathf.Max(_speed-SpeedChangeRate,0.0f);
+                        _speed = targetSpeed = Mathf.Max(_speed - SpeedChangeRate, 0.0f);
 
 
 
-                 /*   if (dist_xz > -dist_y + Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].SlashDistance * transform.lossyScale.x)
-                    {
-                       
-                    }
-                    else
-                    {
-                        //if (stepremain < 10)
-                        //    stepremain = 0;
+                    /*   if (dist_xz > -dist_y + Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].SlashDistance * transform.lossyScale.x)
+                       {
 
-                        
-                    }*/
+                       }
+                       else
+                       {
+                           //if (stepremain < 10)
+                           //    stepremain = 0;
+
+
+                       }*/
 
                     _verticalVelocity = Mathf.Max(_verticalVelocity + Gravity * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed/*float.MinValue*/);
 
@@ -3265,7 +3429,7 @@ public class RobotController : Pausable
 
                         // _verticalVelocity = Mathf.Max(_verticalVelocity- SpeedChangeRate, -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed);
 
-                     
+
 
                         if (event_slash/* && _verticalVelocity == -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed*/)
                         {
@@ -3278,9 +3442,9 @@ public class RobotController : Pausable
                         }
                     }
 
-                    
+
                     //_animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
-                    
+
                 }
                 break;
         }
@@ -3399,11 +3563,11 @@ public class RobotController : Pausable
             MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
-        else if(itemFlag.HasFlag(ItemFlag.Hovercraft) &&
+        else if (itemFlag.HasFlag(ItemFlag.Hovercraft) &&
             (lowerBodyState == LowerBodyState.STEPGROUND || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.FIRE
             || lowerBodyState == LowerBodyState.HEAVYFIRE))
         {
-           
+
             float speedOffset = 0.1f;
 
             targetSpeed = 0.0f;
@@ -3422,7 +3586,7 @@ public class RobotController : Pausable
             {
                 // creates curved result rather than a linear one giving a more organic speed change
                 // note T in Lerp is clamped, so we don't need to clamp our speed
-                currentHorizontalSpeed_X = Mathf.Lerp(currentHorizontalSpeed_X, 0.0f,Time.deltaTime * SpeedChangeRate * brakefactor);
+                currentHorizontalSpeed_X = Mathf.Lerp(currentHorizontalSpeed_X, 0.0f, Time.deltaTime * SpeedChangeRate * brakefactor);
 
                 // round speed to 3 decimal places
                 currentHorizontalSpeed_X = Mathf.Round(currentHorizontalSpeed_X * 1000f) / 1000f;
@@ -3468,7 +3632,7 @@ public class RobotController : Pausable
             }
 
             // move the player
-            MoveAccordingTerrain(new Vector3(currentHorizontalSpeed_X ,0.0f, currentHorizontalSpeed_Z)* Time.deltaTime +
+            MoveAccordingTerrain(new Vector3(currentHorizontalSpeed_X, 0.0f, currentHorizontalSpeed_Z) * Time.deltaTime +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
         else
@@ -3523,7 +3687,7 @@ public class RobotController : Pausable
             Sword.emitting = false;
         }
 
-        if(lowerBodyState == LowerBodyState.KNOCKBACK)
+        if (lowerBodyState == LowerBodyState.KNOCKBACK)
         {
             animator.speed = 1.0f;
         }
@@ -3558,7 +3722,7 @@ public class RobotController : Pausable
                 break;
             case LowerBodyState.GROUND:
             case LowerBodyState.STEPGROUND:
-            
+
 
                 if (lowerBodyState == LowerBodyState.STEP)
                 {
@@ -3571,7 +3735,7 @@ public class RobotController : Pausable
                     event_grounded = false;
                 }
 
-                if(lowerBodyState == LowerBodyState.AIRSUBFIRE 
+                if (lowerBodyState == LowerBodyState.AIRSUBFIRE
                     || lowerBodyState == LowerBodyState.AIRHEAVYFIRE
                     || lowerBodyState == LowerBodyState.SUBFIRE
                     || lowerBodyState == LowerBodyState.HEAVYFIRE) // 地形が動いたり、押し出された落ちたりしたらこっちもありえるかも
@@ -3616,7 +3780,7 @@ public class RobotController : Pausable
                         }
 
                         break;
-                  }
+                }
                 break;
         }
 
@@ -3816,7 +3980,7 @@ public class RobotController : Pausable
 
             scaled.Scale(localScale);
 
-            return rotation* scaled + position;
+            return rotation * scaled + position;
         }
 
         public Transform2(Transform transform)
@@ -3893,13 +4057,13 @@ public class RobotController : Pausable
 
     void AcceptDash()
     {
-        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint) ))
+        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint)))
         {
             if (ConsumeBoost(4))
             {
                 if (itemFlag.HasFlag(ItemFlag.NextDrive))
-                    upperBodyState = UpperBodyState.STAND; 
-                
+                    upperBodyState = UpperBodyState.STAND;
+
                 // normalise input direction
                 Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
@@ -3945,7 +4109,7 @@ public class RobotController : Pausable
 
     void AcceptStep(bool canceling)
     {
-        if(upperBodyState != UpperBodyState.STAND)
+        if (upperBodyState != UpperBodyState.STAND)
         {
             if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
             {
@@ -3962,7 +4126,7 @@ public class RobotController : Pausable
 
             StartStep();
 
-            if(itemFlag.HasFlag(ItemFlag.QuickIgniter))
+            if (itemFlag.HasFlag(ItemFlag.QuickIgniter))
             {
                 _speed = SprintSpeed * 2;
             }
@@ -3972,14 +4136,19 @@ public class RobotController : Pausable
     }
 
     float org_animator_speed = 1.0f;
-    public void Pause()
+    public override void OnPause()
     {
         org_animator_speed = animator.speed;
         animator.speed = 0.0f;
     }
 
-    public void Unpause()
+    public override void OnUnpause()
     {
         animator.speed = org_animator_speed;
+    }
+
+    private void OnDestroy()
+    {
+        WorldManager.current_instance.pausables.Remove(this);
     }
 }

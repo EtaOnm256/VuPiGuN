@@ -40,7 +40,7 @@ public class Thruster : Pausable
 
     private void Awake()
     {
-        WorldManager.current_instance.effects.Add(this);
+        WorldManager.current_instance.pausables.Add(this);
 
     }
 
@@ -62,6 +62,6 @@ public class Thruster : Pausable
 
     private void OnDestroy()
     {
-        WorldManager.current_instance.effects.Remove(this);
+        WorldManager.current_instance.pausables.Remove(this);
     }
 }

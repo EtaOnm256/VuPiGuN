@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class ResultCanvas : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI resultText;
+    [SerializeField] TextMeshProUGUI bigResultText;
     [SerializeField]TextMeshProUGUI summaryLabel;
     [SerializeField] TextMeshProUGUI summaryValue;
     [SerializeField] Image background;
@@ -29,12 +30,13 @@ public class ResultCanvas : MonoBehaviour
 
         if (victory)
         {
-            resultText.text = "ìí¬Œ÷";
+
+            bigResultText.text = resultText.text = "ìí¬Œ÷";
             background.color = new Color(1.0f, 1.0f, 1.0f, 0.125f);
         }
         else
         {
-            resultText.text = "ìí¸”s";
+            bigResultText.text = resultText.text = "ìí¸”s";
             background.color = new Color(0.0f, 0.0f, 0.0f, 0.5f);
         }
 

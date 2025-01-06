@@ -8,7 +8,7 @@ public class EffectSelfDelete : Pausable
     public float speed = 1.0f;
     private void Awake()
     {
-        WorldManager.current_instance.effects.Add(this);
+        WorldManager.current_instance.pausables.Add(this);
 
     }
     // Start is called before the first frame update
@@ -38,6 +38,6 @@ public class EffectSelfDelete : Pausable
 
     private void OnDestroy()
     {
-        WorldManager.current_instance.effects.Remove(this);
+        WorldManager.current_instance.pausables.Remove(this);
     }
 }

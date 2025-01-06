@@ -40,7 +40,7 @@ public class WorldManager : MonoBehaviour
         }
     }
 
-    public List<Pausable> effects = new List<Pausable>();
+    public List<Pausable> pausables = new List<Pausable>();
 
     public List<Team> teams = new List<Team>();
 
@@ -95,20 +95,29 @@ public class WorldManager : MonoBehaviour
     public bool finished = false;
     public bool victory = false;
 
+    public int finish_timer = 0;
+
+    public RobotController finish_dealer;
+    public Vector3 finish_dir;
+    public RobotController finish_victim;
+
     [SerializeField] GameState gameState;
+
+    private void Awake()
+    {
+        current_instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        current_instance = this;
-
         CinemachineCameraTarget = GameObject.Find("Main Camera");
 
         Slider friendPowerSlider = HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team {power = 1000,powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = 1000, powerslider = enemyPowerSlider };
+        Team friend_team = new Team {power = 100,powerslider = friendPowerSlider };
+        Team enemy_team = new Team { power = 100, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
@@ -339,16 +348,80 @@ public class WorldManager : MonoBehaviour
     {
         if (finished)
         {
-            if(!ResultCanvas.gameObject.activeSelf)
+            if (finish_timer >= 240)
             {
-                ResultCanvas resultCanvas = ResultCanvas.GetComponent<ResultCanvas>();
+                Vector3 rel = (finish_dealer.GetCenter() - CinemachineCameraTarget.transform.position);
 
-                resultCanvas.power = teams[0].power;
-                resultCanvas.victory = victory;
-                ResultCanvas.gameObject.SetActive(true);
+                if ( rel.magnitude > 15.0f)
+                {
+                    CinemachineCameraTarget.transform.position += rel.normalized * (rel.magnitude-15.0f) / 15.0f;
+                }
 
-                HUDCanvas.gameObject.SetActive(false);
+                CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(finish_dealer.GetCenter() - CinemachineCameraTarget.transform.position);
             }
+            if (finish_timer >= 180)
+            {
+                Time.timeScale = 1.0f;
+
+                if (finish_dealer)
+                {
+                    Quaternion qFrom = CinemachineCameraTarget.transform.rotation;
+                    Quaternion qTo = Quaternion.LookRotation(finish_dealer.GetCenter() - CinemachineCameraTarget.transform.position);
+
+                    float angle = Quaternion.Angle(qFrom, qTo);
+
+                    float v = Mathf.Max(angle / 15.0f, 0.2f);
+
+                    CinemachineCameraTarget.transform.rotation = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, qTo, v);
+                }
+                
+            }
+            else if(finish_timer >= 120)
+            {
+                if (ResultCanvas.gameObject.activeSelf)
+                {
+                    ResultCanvas.gameObject.SetActive(false);
+                }
+
+                Vector3 dir = finish_dir;
+
+                dir.y = 0.0f;
+
+                Quaternion view = Quaternion.FromToRotation(Vector3.left, dir);
+
+                if(finish_timer == 120)
+                    CinemachineCameraTarget.transform.position = finish_victim.GetCenter() + view*(new Vector3(0.0f, 5,-12));
+
+                if (finish_victim)
+                    CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(finish_victim.GetCenter() - CinemachineCameraTarget.transform.position);
+
+                Unpause();
+                Time.timeScale = 0.5f;
+            }
+            else
+            {
+                if(!pausing)
+                {
+                    Pause();
+
+                    if (!ResultCanvas.gameObject.activeSelf)
+                    {
+                        ResultCanvas resultCanvas = ResultCanvas.GetComponent<ResultCanvas>();
+
+                        resultCanvas.power = teams[0].power;
+                        resultCanvas.victory = victory;
+                        ResultCanvas.gameObject.SetActive(true);
+
+                        HUDCanvas.gameObject.SetActive(false);
+                    }
+                }
+                else
+                {
+                    
+                }
+            }
+
+            finish_timer++;
         }
         else
         {
@@ -393,7 +466,7 @@ public class WorldManager : MonoBehaviour
 
     //RobotController player;
 
-    public void HandleRemoveUnit(RobotController robotController)
+    public void HandleRemoveUnit(RobotController robotController, RobotController dealer,Vector3 dir)
     {
         HandleRobotRemove(robotController);
 
@@ -402,6 +475,10 @@ public class WorldManager : MonoBehaviour
         if(robotController.team.power <= 0)
         {
             finished = true;
+
+            finish_victim = robotController;
+            finish_dealer = dealer;
+            finish_dir = dir;
 
             victory = robotController.team != teams[0];
             
@@ -484,17 +561,10 @@ public class WorldManager : MonoBehaviour
         if (pausing)
             return;
 
-        foreach(var team in teams)
+      
+        foreach(var pausable in pausables)
         {
-            foreach(var robot in team.robotControllers)
-            {
-                robot.Pause();
-            }
-        }
-
-        foreach(var effect in effects)
-        {
-            effect.OnPause();
+            pausable.OnPause();
         }
 
         Physics.autoSimulation = false;
@@ -507,17 +577,9 @@ public class WorldManager : MonoBehaviour
         if (!pausing)
             return;
 
-        foreach (var team in teams)
+        foreach (var pausable in pausables)
         {
-            foreach (var robot in team.robotControllers)
-            {
-                robot.Unpause();
-            }
-        }
-
-        foreach (var effect in effects)
-        {
-            effect.OnUnpause();
+            pausable.OnUnpause();
         }
 
         Physics.autoSimulation = true;
