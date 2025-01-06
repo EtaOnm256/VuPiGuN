@@ -38,7 +38,7 @@ public class CannonBall : Projectile
 
     public MeshRenderer meshRenderer;
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         float Gravity_thisFrame = Gravity;
         {

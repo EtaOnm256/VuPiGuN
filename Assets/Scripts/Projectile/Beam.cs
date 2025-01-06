@@ -44,7 +44,7 @@ public class Beam : Projectile
 	int time = 120;
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
 
 
@@ -102,7 +102,7 @@ public class Beam : Projectile
                     dead = true;
                 }
 
-                GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
+                GameObject hitEffect_obj = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
             }
 
             position = lineRenderer.GetPosition(1) + direction * speed;

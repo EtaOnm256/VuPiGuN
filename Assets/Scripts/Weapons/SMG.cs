@@ -95,7 +95,7 @@ public class SMG : Weapon
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
@@ -119,7 +119,7 @@ public class SMG : Weapon
             bullet.direction = gameObject.transform.forward;
             bullet.target = Target_Robot;
             bullet.team = owner.team;
-            bullet.worldManager = owner.worldManager;
+            //bullet.worldManager = owner.worldManager;
             bullet.owner = owner;
             GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 

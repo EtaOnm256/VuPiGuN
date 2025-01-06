@@ -37,7 +37,7 @@ public class Missile : Projectile
     public MeshRenderer meshRenderer;
     public Effekseer.EffekseerEmitter boostEmitter;
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         if (!dead)
         {
@@ -116,5 +116,26 @@ public class Missile : Projectile
             if (boostEmitter.instanceCount <= 0)
                 GameObject.Destroy(gameObject);
         }
+    }
+
+    private void Awake()
+    {
+        WorldManager.current_instance.effects.Add(this);
+
+    }
+
+    public override void OnPause()
+    {
+        boostEmitter.paused = true;
+    }
+
+    public override void OnUnpause()
+    {
+        boostEmitter.paused = false;
+    }
+
+    private void OnDestroy()
+    {
+        WorldManager.current_instance.effects.Remove(this);
     }
 }

@@ -30,13 +30,13 @@ public class RobotAI_Easy : InputBase
     bool overheating = false;
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         float mindist = float.MaxValue;
         
         RobotController nearest_robot = null;
 
-        foreach (var team in robotController.worldManager.teams)
+        foreach (var team in WorldManager.current_instance.teams)
         {
             if (team == robotController.team)
                 continue;
@@ -169,7 +169,7 @@ public class RobotAI_Easy : InputBase
 
                         bool dodge = false;
 
-                        foreach (var team in robotController.worldManager.teams)
+                        foreach (var team in WorldManager.current_instance.teams)
                         {
                             if (team == robotController.team)
                                 continue;

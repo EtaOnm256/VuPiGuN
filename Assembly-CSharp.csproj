@@ -70,7 +70,6 @@
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualJoystick.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualTouchZone.cs" />
     <Compile Include="Assets\Scripts\InfightWeapons\HeatAxe.cs" />
-    <Compile Include="Assets\Scripts\BeamHitEffect.cs" />
     <Compile Include="Assets\Scripts\WorldManager.cs" />
     <Compile Include="Assets\RainMaker\Demo\DemoScriptStartRainOnSpaceBar.cs" />
     <Compile Include="Assets\Scripts\Projectile\Beam.cs" />
@@ -97,6 +96,7 @@
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\CanvasInputs\UICanvasControllerInput.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\Utilities\MobileDisableAutoSwitchControls.cs" />
     <Compile Include="Assets\Scripts\InfightWeapons\Halberd.cs" />
+    <Compile Include="Assets\Scripts\Pausable.cs" />
     <Compile Include="Assets\Scripts\Projectile\DroneBeam.cs" />
     <Compile Include="Assets\Scripts\EffectSelfDelete.cs" />
     <Compile Include="Assets\RainMaker\Prefab\RainScript.cs" />

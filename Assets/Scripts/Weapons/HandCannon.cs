@@ -78,7 +78,7 @@ public class HandCannon : Weapon
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
@@ -92,7 +92,7 @@ public class HandCannon : Weapon
             beam.direction = gameObject.transform.forward;
             beam.target = Target_Robot;
             beam.team = owner.team;
-            beam.worldManager = owner.worldManager;
+            //beam.worldManager = owner.worldManager;
             //GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
             beam.owner = owner;
             energy -= Reload_Time;

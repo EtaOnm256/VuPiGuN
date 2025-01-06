@@ -44,7 +44,7 @@ public class DroneBeam : Projectile
 	int time = 120;
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
 
 

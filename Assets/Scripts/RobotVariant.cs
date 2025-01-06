@@ -24,7 +24,7 @@ public class RobotVariant : MonoBehaviour
         
     }
 
-    void ArmWeapon(RobotController robotController)
+    void ArmWeapon(RobotController robotController, WorldManager worldManager)
     {
         robotController.carrying_weapon = carrying_weapon;
         robotController.dualwield_lightweapon = dualwield_lightweapon;
@@ -65,7 +65,7 @@ public class RobotVariant : MonoBehaviour
                 playersubweapon_r.transform.localScale = Vector3.one;
 
                 playersubweapon_r.GetComponent<Weapon>().this_is_slave = true;
-
+                
                 GameObject playersubweapon_l = GameObject.Instantiate(subweapon_prefab);
 
                 playersubweapon_l.transform.parent = robotController.chestWeapon_anchor[0].transform;
@@ -94,7 +94,7 @@ public class RobotVariant : MonoBehaviour
         }
     }
 
-    public RobotController Spawn(Vector3 pos, Quaternion rot)
+    public RobotController Spawn(Vector3 pos, Quaternion rot,WorldManager worldManager)
     {
       
 
@@ -102,7 +102,7 @@ public class RobotVariant : MonoBehaviour
 
         RobotController robotController = robot.GetComponent<RobotController>();
 
-        ArmWeapon(robotController);
+        ArmWeapon(robotController, worldManager);
 
         return robotController;
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Effekseer;
 
-public class Thruster : MonoBehaviour
+public class Thruster : Pausable
 {
     public EffekseerEmitter effekseerEmitter;
 
@@ -21,11 +21,14 @@ public class Thruster : MonoBehaviour
             {
                 if(emitting)
                 {
+                    //effekseerEmitter.Play();
                     effekseerEmitter.Play();
+                    effekseerEmitter.SendTrigger(0);
                 }
                 else
                 {
-                    effekseerEmitter.Stop();
+                    //effekseerEmitter.Stop();
+                    effekseerEmitter.SendTrigger(1);
                 }
             }
         }
@@ -35,15 +38,30 @@ public class Thruster : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        WorldManager.current_instance.effects.Add(this);
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         effekseerEmitter.speed = 2.0f;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnPause()
     {
-        
+        effekseerEmitter.paused = true;
+    }
+
+    public override void OnUnpause()
+    {
+        effekseerEmitter.paused = false;
+    }
+
+    private void OnDestroy()
+    {
+        WorldManager.current_instance.effects.Remove(this);
     }
 }

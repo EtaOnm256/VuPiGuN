@@ -80,7 +80,7 @@ public class MissilePod : Weapon
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
@@ -98,7 +98,6 @@ public class MissilePod : Weapon
                 //beam.transform.localScale = Vector3.one;
                 // GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
                 beam.team = owner.team;
-                beam.worldManager = owner.worldManager;
                 beam.owner = owner;
                 energy -= Reload_Time;
 

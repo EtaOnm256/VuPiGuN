@@ -99,7 +99,7 @@ public class BeamSaber : InfightWeapon
     Vector3[] points = new Vector3[num_points];
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         Vector3 start = transform.TransformPoint(new Vector3(0.0f, 0.02f, 0.0f));
         Vector3 end = transform.TransformPoint(lineRenderer.GetPosition(1));

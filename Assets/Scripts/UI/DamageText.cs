@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageText : MonoBehaviour
+public class DamageText : Pausable
 {
     int timer = 30;
     float spd = 6.0f;
@@ -58,8 +58,34 @@ public class DamageText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, Position);
+        float z = Camera.main.transform.InverseTransformPoint(Position).z;
+
+        if (z <= 0.0f)
+        {
+            text.enabled = false;
+        }
+        else
+        {
+            text.enabled = true;
+        }
+
+        Vector2 uiPoint;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasTransform,
+            screenPoint,
+            uiCamera,
+            out uiPoint
+        );
+
+
+
+
+        rectTransform.localPosition = uiPoint + Vector2.up * delta_y;
     }
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         if (timer <= 0)
         {
@@ -69,37 +95,10 @@ public class DamageText : MonoBehaviour
         {
            
 
-            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, Position);
-            float z = Camera.main.transform.InverseTransformPoint(Position).z;
-
-            if (z <= 0.0f)
-            {
-                text.enabled = false;
-            }
-            else
-            {
-                text.enabled = true;
-            }
-
-            Vector2 uiPoint;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvasTransform,
-                screenPoint,
-                uiCamera,
-                out uiPoint
-            );
-
-
-
-
-            rectTransform.localPosition = uiPoint+Vector2.up*delta_y;
             delta_y += spd;
             spd -= 0.2f;
 
             timer--;
         }
-
-        
     }
 }

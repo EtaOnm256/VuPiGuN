@@ -15,7 +15,7 @@ using StarterAssets;
 using System.Linq;
 
 [RequireComponent(typeof(CharacterController))]
-public class RobotController : MonoBehaviour
+public class RobotController : Pausable
 {
     [Header("Player")]
     [Tooltip("Move speed of the character in m/s")]
@@ -338,7 +338,7 @@ public class RobotController : MonoBehaviour
 
     public GameObject stompHitEffect_prefab;
 
-    public WorldManager worldManager;
+
 
     public WorldManager.Team team;
 
@@ -498,7 +498,7 @@ public class RobotController : MonoBehaviour
 
     public ItemFlag itemFlag = 0;
     //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
-
+    
     public void TakeDamage(Vector3 pos,Vector3 dir, int damage, KnockBackType knockBackType,RobotController dealer)
     {
         if (!spawn_completed)
@@ -620,6 +620,7 @@ public class RobotController : MonoBehaviour
             damageText.canvas = HUDCanvas;
             damageText.from_player = dealer.is_player;
             damageText.damage = damage;
+            //damageText.worldManager = worldManager;
         }
 
         if (HP <= 0)
@@ -743,7 +744,7 @@ public class RobotController : MonoBehaviour
 
         if (team == null)
         {
-            worldManager.AssignToTeam(this);
+            WorldManager.current_instance.AssignToTeam(this);
         }
 
         if (Sword != null)
@@ -758,15 +759,25 @@ public class RobotController : MonoBehaviour
             animator.Play(ChooseDualwieldStandMotion(), 2);
 
         if (rightWeapon != null)
+        {
             rightWeapon.owner = this;
+            //rightWeapon.worldManager = worldManager;
+        }
 
         if (Sword != null)
+        {
             Sword.owner = this;
-
+           // Sword.worldManager = worldManager;
+        }
         if (shoulderWeapon != null)
+        {
             shoulderWeapon.owner = this;
+           // shoulderWeapon.worldManager = worldManager;
+        }
 
         spawn_completed = true;
+
+       // _input.worldManager = worldManager;
 
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;
@@ -808,11 +819,30 @@ public class RobotController : MonoBehaviour
             uIController_Overlay.RemoveRobot(robotController);
     }
 
-    private void FixedUpdate()
+    //bool pausing = false;
+    bool prev_down = false;
+
+    protected override void OnFixedUpdateForce()
+    {
+        if (is_player)
+        {
+            if (_input.down && !prev_down)
+            {
+                if (!WorldManager.current_instance.pausing)
+                    WorldManager.current_instance.Pause();
+                else
+                    WorldManager.current_instance.Unpause();
+            }
+
+            prev_down = _input.down;
+        }
+    }
+
+    protected override void OnFixedUpdate()
     {
         if (!dead)
         {
-            if(worldManager.finished)
+            if(WorldManager.current_instance.finished)
             {
                 _input.jump = _input.fire = _input.slash = _input.sprint = false;
                 _input.move = Vector2.zero;
@@ -824,7 +854,7 @@ public class RobotController : MonoBehaviour
             float minangle = float.MaxValue;
             RobotController nearest_robot = null;
 
-            foreach (var team in worldManager.teams)
+            foreach (var team in WorldManager.current_instance.teams)
             {
                 if (team == this.team)
                     continue;
@@ -979,7 +1009,7 @@ public class RobotController : MonoBehaviour
                 shoulderWeapon.Destroy_Called_By_Unit();
             }
 
-            worldManager.HandleRemoveUnit(this);
+            WorldManager.current_instance.HandleRemoveUnit(this);
 
            
 
@@ -1165,7 +1195,7 @@ public class RobotController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!(Target_Robot != null && lockonState != LockonState.FREE) && !worldManager.finished)
+        if (!(Target_Robot != null && lockonState != LockonState.FREE) && !WorldManager.current_instance.finished)
         {
 
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
@@ -3939,5 +3969,17 @@ public class RobotController : MonoBehaviour
             else
                 _speed = SprintSpeed;
         }
+    }
+
+    float org_animator_speed = 1.0f;
+    public void Pause()
+    {
+        org_animator_speed = animator.speed;
+        animator.speed = 0.0f;
+    }
+
+    public void Unpause()
+    {
+        animator.speed = org_animator_speed;
     }
 }

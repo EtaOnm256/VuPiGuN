@@ -155,7 +155,7 @@ public class Halberd : InfightWeapon
     public GameObject hitEffect_prefab;
 
 
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
 
         for (int i = 0; i < hitpoints.Length; i++)

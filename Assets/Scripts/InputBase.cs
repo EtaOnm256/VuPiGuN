@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputBase : MonoBehaviour
+public class InputBase : Pausable
 {
     [Header("Character Input Values")]
     public Vector2 move;

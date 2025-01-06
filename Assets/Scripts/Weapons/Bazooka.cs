@@ -69,7 +69,7 @@ public class Bazooka : Weapon
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
@@ -81,7 +81,6 @@ public class Bazooka : Weapon
             beam.direction = gameObject.transform.forward;
             beam.target = Target_Robot;
             beam.team = owner.team;
-            beam.worldManager = owner.worldManager;
             beam.owner = owner;
             //GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 

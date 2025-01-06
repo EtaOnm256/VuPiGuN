@@ -100,6 +100,7 @@ public class DronePlatform : Weapon
 
             Drone drone = drone_obj.GetComponent<Drone>();
             drone.anchor = drone_anchor;
+            //drone.worldManager = worldManager;
             //drone.owner = owner; //‚±‚±‚¾‚Æ‡˜‚ÌŠÖŒW‚Åİ’è‚³‚ê‚È‚¢‚±‚Æ‚ª‚ ‚é
             drones.Add(drone);
 
@@ -111,7 +112,7 @@ public class DronePlatform : Weapon
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 

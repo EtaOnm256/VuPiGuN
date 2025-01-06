@@ -53,14 +53,14 @@ public class RobotAI_Medium : InputBase
     //public float lock_range = 150.0f;
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         //return;
         float mindist = float.MaxValue;
         
         RobotController nearest_robot = null;
 
-        foreach (var team in robotController.worldManager.teams)
+        foreach (var team in WorldManager.current_instance.teams)
         {
             if (team == robotController.team)
                 continue;
@@ -178,7 +178,7 @@ public class RobotAI_Medium : InputBase
                             {
                                 bool dodge = false;
 
-                                foreach (var team in robotController.worldManager.teams)
+                                foreach (var team in WorldManager.current_instance.teams)
                                 {
                                     if (team == robotController.team)
                                         continue;

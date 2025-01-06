@@ -135,7 +135,7 @@ public class HeatAxe : InfightWeapon
     public GameObject hitEffect_prefab;
 
 
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
 
         for (int i = 0; i < num_points; i++)

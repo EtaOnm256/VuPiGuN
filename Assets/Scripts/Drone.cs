@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public class Drone : MonoBehaviour
+public class Drone : Pausable
 {
     public RobotController target = null;
     // Start is called before the first frame update
@@ -49,7 +49,7 @@ public class Drone : MonoBehaviour
         q = Quaternion.RotateTowards(transform.rotation, qGoal, maxangle);
     }
 
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         switch (state)
         {
@@ -129,7 +129,6 @@ public class Drone : MonoBehaviour
                         beam.direction = gameObject.transform.forward;
                         beam.target = target;
                         beam.team = owner.team;
-                        beam.worldManager = owner.worldManager;
                         beam.owner = owner;
                         state = State.Homing;
                     }

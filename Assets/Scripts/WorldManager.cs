@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class WorldManager : MonoBehaviour
 {
+    static public WorldManager current_instance = null;
     public class Team
     {
         public List<RobotController> robotControllers = new List<RobotController>();
@@ -38,6 +39,8 @@ public class WorldManager : MonoBehaviour
             public GameObject variant;
         }
     }
+
+    public List<Pausable> effects = new List<Pausable>();
 
     public List<Team> teams = new List<Team>();
 
@@ -92,13 +95,13 @@ public class WorldManager : MonoBehaviour
     public bool finished = false;
     public bool victory = false;
 
-    public bool initial_spawn = true;
-
     [SerializeField] GameState gameState;
 
     // Start is called before the first frame update
     void Start()
     {
+        current_instance = this;
+
         CinemachineCameraTarget = GameObject.Find("Main Camera");
 
         Slider friendPowerSlider = HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
@@ -349,6 +352,9 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
+            if (pausing)
+                return;
+
             if (player == null)
             {
                 Team.Spawning player_spawning = null;
@@ -383,10 +389,6 @@ public class WorldManager : MonoBehaviour
             ProcessSpawn(sequence_friend, teams[0], false);
             ProcessSpawn(sequence_enemy, teams[1], false);
         }
-
-      
-
-        initial_spawn = false;
     }
 
     //RobotController player;
@@ -419,7 +421,7 @@ public class WorldManager : MonoBehaviour
 
         Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
 
-        RobotController robot = variant.Spawn(raycastHit.point, rot);
+        RobotController robot = variant.Spawn(raycastHit.point, rot,this);
 
         robot.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
@@ -427,7 +429,7 @@ public class WorldManager : MonoBehaviour
 
         robot.CinemachineCameraTarget = CinemachineCameraTarget;
 
-        robot.worldManager = this;
+        //robot.worldManager = this;
         robot.team = team;
 
         GameObject.Instantiate(spawn_prefab, robot.transform.position,Quaternion.identity);
@@ -446,7 +448,7 @@ public class WorldManager : MonoBehaviour
 
         Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
 
-        RobotController robot = variant.Spawn(raycastHit.point, rot);
+        RobotController robot = variant.Spawn(raycastHit.point, rot,this);
 
         robot.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
@@ -455,7 +457,7 @@ public class WorldManager : MonoBehaviour
         DestroyImmediate(robot.GetComponent<UnityEngine.InputSystem.PlayerInput>());
         robot._input = robot.gameObject.AddComponent<RobotAI_Medium>();
 
-        robot.worldManager = this;
+        //robot.worldManager = this;
         robot.team = team;
 
         GameObject.Instantiate(spawn_prefab, robot.transform.position, Quaternion.identity);
@@ -473,5 +475,53 @@ public class WorldManager : MonoBehaviour
     public void RemoveProjectile(Projectile projectile)
     {
         projectile.team.projectiles.Remove(projectile);
+    }
+
+    public bool pausing = false;
+
+    public void Pause()
+    {
+        if (pausing)
+            return;
+
+        foreach(var team in teams)
+        {
+            foreach(var robot in team.robotControllers)
+            {
+                robot.Pause();
+            }
+        }
+
+        foreach(var effect in effects)
+        {
+            effect.OnPause();
+        }
+
+        Physics.autoSimulation = false;
+
+        pausing = true;
+    }
+
+    public void Unpause()
+    {
+        if (!pausing)
+            return;
+
+        foreach (var team in teams)
+        {
+            foreach (var robot in team.robotControllers)
+            {
+                robot.Unpause();
+            }
+        }
+
+        foreach (var effect in effects)
+        {
+            effect.OnUnpause();
+        }
+
+        Physics.autoSimulation = true;
+
+        pausing = false;
     }
 }

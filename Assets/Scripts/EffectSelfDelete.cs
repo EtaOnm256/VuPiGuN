@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectSelfDelete : MonoBehaviour
+public class EffectSelfDelete : Pausable
 {
     public Effekseer.EffekseerEmitter effekseerEmitter;
     public float speed = 1.0f;
+    private void Awake()
+    {
+        WorldManager.current_instance.effects.Add(this);
 
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -20,5 +24,20 @@ public class EffectSelfDelete : MonoBehaviour
         {
             GameObject.Destroy(gameObject);
         }
+    }
+
+    public override void OnPause()
+    {
+        effekseerEmitter.paused = true;
+    }
+
+    public override void OnUnpause()
+    {
+        effekseerEmitter.paused = false;
+    }
+
+    private void OnDestroy()
+    {
+        WorldManager.current_instance.effects.Remove(this);
     }
 }

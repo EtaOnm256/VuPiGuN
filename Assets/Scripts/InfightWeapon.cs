@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InfightWeapon : MonoBehaviour
+public class InfightWeapon : Pausable
 {
     public struct SlashMotionInfo
     {

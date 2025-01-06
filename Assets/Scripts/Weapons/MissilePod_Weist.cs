@@ -85,11 +85,10 @@ public class MissilePod_Weist : Weapon
         energy = MaxEnergy;
 
         anothermissilepod = (MissilePod_Weist)another;
-        
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void OnFixedUpdate()
     {
         if (!this_is_slave)
         {
@@ -129,7 +128,7 @@ public class MissilePod_Weist : Weapon
                     //beam.transform.localScale = Vector3.one;
                     // GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
                     beam.team = owner.team;
-                    beam.worldManager = owner.worldManager;
+                    //beam.worldManager = owner.worldManager;
                     beam.owner = owner;
                     energy -= Reload_Time;
 
