@@ -102,10 +102,11 @@ public class WorldManager : MonoBehaviour
     public RobotController finish_victim;
 
     [SerializeField] GameState gameState;
-
+    ResultCanvas resultCanvas;
     private void Awake()
     {
         current_instance = this;
+        resultCanvas = ResultCanvas.GetComponent<ResultCanvas>();
     }
 
     // Start is called before the first frame update
@@ -116,8 +117,8 @@ public class WorldManager : MonoBehaviour
         Slider friendPowerSlider = HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team {power = 100,powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = 100, powerslider = enemyPowerSlider };
+        Team friend_team = new Team {power = 1000,powerslider = friendPowerSlider };
+        Team enemy_team = new Team { power = 1000, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
@@ -348,18 +349,30 @@ public class WorldManager : MonoBehaviour
     {
         if (finished)
         {
-            if (finish_timer >= 240)
+            if(finish_timer >= 300)
             {
-                Vector3 rel = (finish_dealer.GetCenter() - CinemachineCameraTarget.transform.position);
-
-                if ( rel.magnitude > 15.0f)
+                if (!ResultCanvas.gameObject.activeSelf)
                 {
-                    CinemachineCameraTarget.transform.position += rel.normalized * (rel.magnitude-15.0f) / 15.0f;
+                    resultCanvas.GoSummaryScreen();
+                    ResultCanvas.gameObject.SetActive(true);
                 }
-
-                CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(finish_dealer.GetCenter() - CinemachineCameraTarget.transform.position);
             }
-            if (finish_timer >= 180)
+
+            if (finish_timer >= 240) // とどめ刺したキャラへズーム
+            {
+                if (finish_dealer)
+                {
+                    Vector3 rel = (finish_dealer.GetCenter() - CinemachineCameraTarget.transform.position);
+
+                    if (rel.magnitude > 15.0f)
+                    {
+                        CinemachineCameraTarget.transform.position += rel.normalized * (rel.magnitude - 15.0f) / 15.0f;
+                    }
+
+                    CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(finish_dealer.GetCenter() - CinemachineCameraTarget.transform.position);
+                }
+            }
+            if (finish_timer >= 180) // とどめ刺したキャラへ旋回
             {
                 Time.timeScale = 1.0f;
 
@@ -406,8 +419,6 @@ public class WorldManager : MonoBehaviour
 
                     if (!ResultCanvas.gameObject.activeSelf)
                     {
-                        ResultCanvas resultCanvas = ResultCanvas.GetComponent<ResultCanvas>();
-
                         resultCanvas.power = teams[0].power;
                         resultCanvas.victory = victory;
                         ResultCanvas.gameObject.SetActive(true);

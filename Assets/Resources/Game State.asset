@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e285c4227a62344bb4272e39a553024, type: 3}
   m_Name: Game State
   m_EditorClassIdentifier: 
-  stage: 4
+  stage: 1

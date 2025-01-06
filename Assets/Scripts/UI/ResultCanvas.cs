@@ -43,6 +43,12 @@ public class ResultCanvas : MonoBehaviour
 
     }
 
+    public void GoSummaryScreen()
+    {
+        bigResultText.gameObject.SetActive(false);
+        background.gameObject.SetActive(true);
+    }
+
     public void OnClickProceed()
     {
         if (victory)
