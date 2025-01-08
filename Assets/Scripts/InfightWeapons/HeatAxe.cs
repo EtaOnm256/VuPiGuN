@@ -187,6 +187,8 @@ public class HeatAxe : InfightWeapon
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
                 robotController.TakeDamage(rayCastHit[idx_hit].point,dir, damage, knockBackType, owner) ;
+                robotController.DoHitSlow();
+                owner.DoHitSlow();
 
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[idx_hit].point, Quaternion.identity);
             }
