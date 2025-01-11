@@ -56,18 +56,12 @@ public class ResultCanvas : MonoBehaviour
 
             gameState.stage++;
 
-            if (gameState.stage >= 1 && gameState.stage <= 6)
-            {
-                SceneManager.LoadScene($"Stage{gameState.stage}");
-            }
-            else
-            {
-                SceneManager.LoadScene($"Title");
-            }
+            SceneManager.LoadScene($"Loading");
         }
         else
         {
-            SceneManager.LoadScene($"Title");
+            gameState.stage = -1;
+            SceneManager.LoadScene($"Loading");
         }
     }
 }

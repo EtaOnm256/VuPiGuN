@@ -90,8 +90,8 @@ public class WorldManager : MonoBehaviour
     public Sequence sequence_enemy;
     public Sequence sequence_friend;
 
-    public Canvas HUDCanvas;
-    public Canvas ResultCanvas;
+    [SerializeField] CanvasControl canvasControl;
+
     public bool finished = false;
     public bool victory = false;
 
@@ -102,11 +102,11 @@ public class WorldManager : MonoBehaviour
     public RobotController finish_victim;
 
     [SerializeField] GameState gameState;
-    ResultCanvas resultCanvas;
+    
     private void Awake()
     {
         current_instance = this;
-        resultCanvas = ResultCanvas.GetComponent<ResultCanvas>();
+        
     }
 
     // Start is called before the first frame update
@@ -114,11 +114,11 @@ public class WorldManager : MonoBehaviour
     {
         CinemachineCameraTarget = GameObject.Find("Main Camera");
 
-        Slider friendPowerSlider = HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
-        Slider enemyPowerSlider = HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
+        Slider friendPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
+        Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
         Team friend_team = new Team {power = 1000,powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = 1000, powerslider = enemyPowerSlider };
+        Team enemy_team = new Team { power = 100, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
@@ -351,10 +351,10 @@ public class WorldManager : MonoBehaviour
         {
             if(finish_timer >= 300)
             {
-                if (!ResultCanvas.gameObject.activeSelf)
+                if (!canvasControl.ResultCanvas.gameObject.activeSelf)
                 {
-                    resultCanvas.GoSummaryScreen();
-                    ResultCanvas.gameObject.SetActive(true);
+                    canvasControl.resultCanvas.GoSummaryScreen();
+                    canvasControl.ResultCanvas.gameObject.SetActive(true);
                 }
             }
 
@@ -391,9 +391,9 @@ public class WorldManager : MonoBehaviour
             }
             else if(finish_timer >= 120)
             {
-                if (ResultCanvas.gameObject.activeSelf)
+                if (canvasControl.ResultCanvas.gameObject.activeSelf)
                 {
-                    ResultCanvas.gameObject.SetActive(false);
+                    canvasControl.ResultCanvas.gameObject.SetActive(false);
                 }
 
                 Vector3 dir = finish_dir;
@@ -417,13 +417,13 @@ public class WorldManager : MonoBehaviour
                 {
                     Pause();
 
-                    if (!ResultCanvas.gameObject.activeSelf)
+                    if (!canvasControl.ResultCanvas.gameObject.activeSelf)
                     {
-                        resultCanvas.power = teams[0].power;
-                        resultCanvas.victory = victory;
-                        ResultCanvas.gameObject.SetActive(true);
+                        canvasControl.resultCanvas.power = teams[0].power;
+                        canvasControl.resultCanvas.victory = victory;
+                        canvasControl.ResultCanvas.gameObject.SetActive(true);
 
-                        HUDCanvas.gameObject.SetActive(false);
+                        canvasControl.HUDCanvas.gameObject.SetActive(false);
                     }
                 }
                 else
@@ -511,7 +511,7 @@ public class WorldManager : MonoBehaviour
 
         RobotController robot = variant.Spawn(raycastHit.point, rot,this);
 
-        robot.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+        robot.HUDCanvas = canvasControl.HUDCanvas;
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
         robot.is_player = true;
 
@@ -538,7 +538,7 @@ public class WorldManager : MonoBehaviour
 
         RobotController robot = variant.Spawn(raycastHit.point, rot,this);
 
-        robot.HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+        robot.HUDCanvas = canvasControl.HUDCanvas;
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
         robot.is_player = false;
         DestroyImmediate(robot.GetComponent<HumanInput>());

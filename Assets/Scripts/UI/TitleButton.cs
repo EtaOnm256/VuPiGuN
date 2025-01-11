@@ -23,6 +23,6 @@ public class TitleButton : MonoBehaviour
     {
         gameState.stage = 1;
 
-        SceneManager.LoadScene("Stage1");
+        SceneManager.LoadScene("Loading");
     }
 }

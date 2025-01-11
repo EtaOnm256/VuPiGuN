@@ -436,7 +436,7 @@ public class RobotController : Pausable
 
     float steptargetrotation;
 
-    public Canvas HUDCanvas;
+    public GameObject HUDCanvas;
     Slider boostSlider;
     Slider HPSlider;
     TMPro.TextMeshProUGUI HPText;
@@ -531,7 +531,6 @@ public class RobotController : Pausable
             damageText.rectTransform = rectTransform;
             damageText.canvasTransform = HUDCanvas.GetComponent<RectTransform>();
             damageText.uiCamera = uIController_Overlay.uiCamera;
-            damageText.canvas = HUDCanvas;
             damageText.from_player = dealer.is_player;
             damageText.damage = damage;
             //damageText.worldManager = worldManager;

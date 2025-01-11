@@ -10,7 +10,6 @@ public class DamageText : Pausable
     public RectTransform rectTransform;
     public RectTransform canvasTransform;
     public Camera uiCamera;
-       public Canvas canvas;
 
     public Vector3 Position;
 

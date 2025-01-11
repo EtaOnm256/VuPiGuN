@@ -188,9 +188,9 @@ namespace DigitalRuby.RainMaker
             }
         }
 
-        protected override void Update()
+        protected override void OnFixedUpdate()
         {
-            base.Update();
+            base.OnFixedUpdate();
 
             cameraMultiplier = (Camera.orthographicSize * 0.25f);
             visibleBounds.min = Camera.main.ViewportToWorldPoint(Vector3.zero);

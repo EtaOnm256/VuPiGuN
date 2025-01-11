@@ -62,9 +62,9 @@ namespace DigitalRuby.RainMaker
             base.Start();
         }
 
-        protected override void Update()
+        protected override void OnFixedUpdate()
         {
-            base.Update();
+            base.OnFixedUpdate();
 
             UpdateRain();
         }

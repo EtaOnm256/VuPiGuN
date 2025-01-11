@@ -13,7 +13,7 @@ using UnityEngine.Audio;
 
 namespace DigitalRuby.RainMaker
 {
-    public class BaseRainScript : MonoBehaviour
+    public class BaseRainScript : Pausable
     {
         [Tooltip("Camera the rain should hover over, defaults to main camera")]
         public Camera Camera;
@@ -272,7 +272,7 @@ namespace DigitalRuby.RainMaker
             }
         }
 
-        protected virtual void Update()
+        protected override void OnFixedUpdate()
         {
 
 #if DEBUG
@@ -308,6 +308,26 @@ namespace DigitalRuby.RainMaker
             {
                 return true;
             }
+        }
+
+        private void Awake()
+        {
+            WorldManager.current_instance.pausables.Add(this);
+
+        }
+        private void OnDestroy()
+        {
+            WorldManager.current_instance.pausables.Remove(this);
+        }
+
+        public override void OnPause()
+        {
+            RainFallParticleSystem.Pause(true);
+        }
+
+        public override void OnUnpause()
+        {
+            RainFallParticleSystem.Play(true);
         }
     }
 

@@ -11,7 +11,7 @@ public class UIController_Overlay : MonoBehaviour
 
     //public List<Weapon> weapons = new List<Weapon>();
 
-    public Camera uiCamera;
+    [System.NonSerialized] public Camera uiCamera;
 
     public Canvas canvas;
 
@@ -107,9 +107,10 @@ public class UIController_Overlay : MonoBehaviour
 
     private void Awake()
     {
-       // reticle_prefab = Resources.Load<GameObject>("UI/Reticle");
-       // guideline_prefab = Resources.Load<GameObject>("UI/GuideLine");
+        // reticle_prefab = Resources.Load<GameObject>("UI/Reticle");
+        // guideline_prefab = Resources.Load<GameObject>("UI/GuideLine");
 
+        uiCamera = canvas.worldCamera;
     }
 
     void Start()
