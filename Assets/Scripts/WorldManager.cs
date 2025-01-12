@@ -75,7 +75,8 @@ public class WorldManager : MonoBehaviour
             //public Vector3 pos;
             //public Quaternion rot;
             public int squadCount;
-            public bool loop;
+            public bool loop = false;
+            public bool burst = false; // 0体になるまでスポーンさせない
         }
 
   
@@ -211,7 +212,7 @@ public class WorldManager : MonoBehaviour
             }
         }
 
-        if (sequence.spawned)
+        if (sequence.spawned) // 今のインデックスはスポーン済み。次に進むかの判定
         {
             if (team.robotControllers.Count+team.spawnings.Count < sequence.spawns[sequence.currentSpawn].squadCount)
             {
@@ -235,9 +236,18 @@ public class WorldManager : MonoBehaviour
 
             }
         }
-        else
+        else　// 今のインデックスはスポーンまだ。スポーンするかの判定
         {
-            if (team.robotControllers.Count+team.spawnings.Count < sequence.spawns[sequence.currentSpawn].squadCount)
+            bool do_spawn;
+
+            if (sequence.spawns[sequence.currentSpawn].burst)
+            {
+                do_spawn = team.robotControllers.Count + team.spawnings.Count == 0;
+            }
+            else
+                do_spawn = team.robotControllers.Count + team.spawnings.Count < sequence.spawns[sequence.currentSpawn].squadCount;
+
+            if (do_spawn)
             {
                 Sequence.OneSpawn spawn = sequence.spawns[sequence.currentSpawn];
 
