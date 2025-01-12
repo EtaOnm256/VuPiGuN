@@ -32,6 +32,8 @@ public class RobotAI_Easy : InputBase
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
+        //return;
+
         float mindist = float.MaxValue;
         
         RobotController nearest_robot = null;

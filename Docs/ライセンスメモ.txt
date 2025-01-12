@@ -99,3 +99,12 @@ https://www.textures.com/download/doors-rollup-0163/110278
 
 宇宙基地ハッチ？
 https://www.textures.com/download/doors-metal-single-0294/50765
+
+効果音
+https://assetstore.unity.com/packages/audio/sound-fx/free-sound-effects-pack-155776
+
+足音
+https://assetstore.unity.com/packages/audio/sound-fx/foley/footsteps-essentials-189879
+
+足音
+https://soundeffect-lab.info/sound/machine/mp3/robot-footstep1.mp3

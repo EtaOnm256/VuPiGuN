@@ -509,6 +509,11 @@ public class RobotController : Pausable
     public ItemFlag itemFlag = 0;
     //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
+    public AudioSource audioSource;
+
+    [SerializeField] AudioClip audioClip_Walk;
+    [SerializeField] AudioClip audioClip_Ground;
+
     public void TakeDamage(Vector3 pos, Vector3 dir, int damage, KnockBackType knockBackType, RobotController dealer)
     {
         if (!spawn_completed)
@@ -3838,11 +3843,13 @@ public class RobotController : Pausable
                 {
                     event_grounded = false;
                     _animator.CrossFadeInFixedTime(_animIDGround, 0.25f, 0, 0.15f);
+                    audioSource.PlayOneShot(audioClip_Ground);
                 }
                 else
                 {
                     _animator.Play(_animIDGround, 0, 0);
                     event_grounded = false;
+                    audioSource.PlayOneShot(audioClip_Ground);
                 }
 
                 if (lowerBodyState == LowerBodyState.AIRSUBFIRE
@@ -4058,16 +4065,9 @@ public class RobotController : Pausable
                 GroundedRadius);
     }
 
-    private void OnFootstep(AnimationEvent animationEvent)
+    private void OnFootStep(AnimationEvent animationEvent)
     {
-        if (animationEvent.animatorClipInfo.weight > 0.5f)
-        {
-            if (FootstepAudioClips.Length > 0)
-            {
-                var index = UnityEngine.Random.Range(0, FootstepAudioClips.Length);
-                AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
-            }
-        }
+        audioSource.PlayOneShot(audioClip_Walk);
     }
 
     private void OnLand(AnimationEvent animationEvent)
