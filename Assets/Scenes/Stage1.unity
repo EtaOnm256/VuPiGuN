@@ -3231,7 +3231,7 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: player_variant
       value: 
-      objectReference: {fileID: 5889029644028591830, guid: 2b115fd8a4a848a4bbe616e8d749fe55, type: 3}
+      objectReference: {fileID: 5889029644028591830, guid: cef791d4aea47b7409f0d0d5e7d99082, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.size
       value: 5
