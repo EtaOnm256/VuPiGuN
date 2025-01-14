@@ -47,7 +47,7 @@ MonoBehaviour:
   robot_prefab: {fileID: 5651005010113993674, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
   rweapon_prefab: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
   lweapon_prefab: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
-  subweapon_prefab: {fileID: 2794399005176561229, guid: 55deee3d9a546e941ba4d5e86755400e, type: 3}
+  subweapon_prefab: {fileID: 8659736691718161653, guid: 52fff7c7d08b2454fbd85d615b986e7f, type: 3}
   weapon_chest_paired: 0
   carrying_weapon: 0
   dualwield_lightweapon: 0

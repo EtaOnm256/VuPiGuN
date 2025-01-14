@@ -81,7 +81,7 @@ public class DronePlatform : Weapon
 
     protected override void OnAwake()
     {
-        drone_prefab = Resources.Load<GameObject>("Drone Variant");
+        drone_prefab = Resources.Load<GameObject>("Projectile/Drone Variant");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
@@ -116,11 +116,11 @@ public class DronePlatform : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-     
 
-        if(trigger && Duration_Time <= 0)
+
+        if (trigger && Duration_Time <= 0)
         {
-            if (energy >= Reload_Time)
+              if (energy >= Reload_Time)
             {
                 int search_duration = 0;
                 bool found = false;
