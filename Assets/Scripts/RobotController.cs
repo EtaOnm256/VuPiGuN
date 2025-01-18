@@ -35,9 +35,6 @@ public class RobotController : Pausable
     [Tooltip("Acceleration and deceleration")]
     public float SpeedChangeRate = 10.0f;
 
-    public AudioClip LandingAudioClip;
-    public AudioClip[] FootstepAudioClips;
-    [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
 
     [Space(10)]
     [Tooltip("The height the player can jump")]
@@ -513,6 +510,7 @@ public class RobotController : Pausable
 
     [SerializeField] AudioClip audioClip_Walk;
     [SerializeField] AudioClip audioClip_Ground;
+    [SerializeField] AudioClip audioClip_Step;
 
     public void TakeDamage(Vector3 pos, Vector3 dir, int damage, KnockBackType knockBackType, RobotController dealer)
     {
@@ -2280,6 +2278,7 @@ public class RobotController : Pausable
 
     //return angle in range -180 to 180
     float origin = 0.0f;
+    bool prev_boosting = false;
     private void LowerBodyMove()
     {
         float targetSpeed = 0.0f;
@@ -3775,6 +3774,23 @@ public class RobotController : Pausable
             thruster.emitting = boosting;
         }
 
+        if(boosting)
+        {
+            if (!prev_boosting)
+            {
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            if (prev_boosting)
+            {
+                audioSource.Stop();
+            }
+        }
+
+        prev_boosting = boosting;
+
         if (!hitslow_now)
             speed_overrideby_knockback = false;
     }
@@ -4008,6 +4024,7 @@ public class RobotController : Pausable
     private void OnStepBegin()
     {
         event_stepbegin = true;
+        audioSource.PlayOneShot(audioClip_Step);
     }
     private void OnDashed()
     {
@@ -4070,13 +4087,8 @@ public class RobotController : Pausable
         audioSource.PlayOneShot(audioClip_Walk);
     }
 
-    private void OnLand(AnimationEvent animationEvent)
-    {
-        if (animationEvent.animatorClipInfo.weight > 0.5f)
-        {
-            AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-        }
-    }
+
+
 
     public class Transform2
     {

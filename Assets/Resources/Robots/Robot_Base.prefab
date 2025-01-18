@@ -2833,9 +2833,6 @@ MonoBehaviour:
   AirDashRotateSpeed: 10
   AirMoveSpeed: 8
   SpeedChangeRate: 10
-  LandingAudioClip: {fileID: 0}
-  FootstepAudioClips: []
-  FootstepAudioVolume: 0.5
   JumpHeight: 7
   Gravity: -60
   JumpTimeout: 0.5
@@ -2916,6 +2913,7 @@ MonoBehaviour:
   audioSource: {fileID: 4418133540429302341}
   audioClip_Walk: {fileID: 8300000, guid: 464d04fd784bb8d4eb87c643e61b313c, type: 3}
   audioClip_Ground: {fileID: 8300000, guid: f0ea08abbd708c14cbeb44d7b36880d9, type: 3}
+  audioClip_Step: {fileID: 8300000, guid: 069e328c403251c4cac0fdf29ed1b4ee, type: 3}
 --- !u!114 &7418367242443623617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3341,11 +3339,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: d7888386f8636c443b408fe654255512, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
