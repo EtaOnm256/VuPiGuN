@@ -507,10 +507,12 @@ public class RobotController : Pausable
     //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
     public AudioSource audioSource;
+    public AudioSource audioSource_Boost;
 
     [SerializeField] AudioClip audioClip_Walk;
     [SerializeField] AudioClip audioClip_Ground;
     [SerializeField] AudioClip audioClip_Step;
+    [SerializeField] AudioClip audioClip_Swing;
 
     public void TakeDamage(Vector3 pos, Vector3 dir, int damage, KnockBackType knockBackType, RobotController dealer)
     {
@@ -3014,6 +3016,7 @@ public class RobotController : Pausable
                                 Sword.damage = 100;
                                 Sword.knockBackType = KnockBackType.Finish;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
+                                audioSource.PlayOneShot(audioClip_Swing);
                             }
                             else
                             {
@@ -3029,6 +3032,7 @@ public class RobotController : Pausable
                                 Sword.knockBackType = KnockBackType.Finish;
 
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.GroundSlash]._animID[slash_count], 0.0f, 0);
+                                audioSource.PlayOneShot(audioClip_Swing);
                             }
                         }
                         else if (lowerBodyState == LowerBodyState.QUICKSLASH_DASH)
@@ -3046,6 +3050,7 @@ public class RobotController : Pausable
                                 Sword.damage = 100;
                                 Sword.knockBackType = KnockBackType.Finish;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
+                                audioSource.PlayOneShot(audioClip_Swing);
                             }
                             else
                             {
@@ -3061,6 +3066,7 @@ public class RobotController : Pausable
                                 Sword.knockBackType = KnockBackType.Finish;
                                 _verticalVelocity = 0.0f;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.QuickSlash]._animID[slash_count], 0.0f, 0);
+                                audioSource.PlayOneShot(audioClip_Swing);
                             }
                         }
                         else if (lowerBodyState == LowerBodyState.DASHSLASH_DASH)
@@ -3077,6 +3083,7 @@ public class RobotController : Pausable
                             Sword.knockBackType = KnockBackType.Down;
                             _verticalVelocity = 0.0f;
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
+                            audioSource.PlayOneShot(audioClip_Swing);
                         }
                         else
                         {
@@ -3092,6 +3099,7 @@ public class RobotController : Pausable
                             Sword.knockBackType = KnockBackType.Finish;
                             _verticalVelocity = 0.0f;
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[slash_count], 0.0f, 0);
+                            audioSource.PlayOneShot(audioClip_Swing);
                         }
                     }
 
@@ -3312,6 +3320,7 @@ public class RobotController : Pausable
                             Sword.knockBackType = KnockBackType.Finish;
 
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[slash_count], 0.0f, 0);
+                            audioSource.PlayOneShot(audioClip_Swing);
                         }
                     }
                     else if (lowerBodyState == LowerBodyState.GroundSlash && event_slash)
@@ -3349,6 +3358,7 @@ public class RobotController : Pausable
 
 
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.GroundSlash]._animID[slash_count], 0.0f, 0);
+                            audioSource.PlayOneShot(audioClip_Swing);
                         }
                     }
                     else if (lowerBodyState == LowerBodyState.LowerSlash && event_slash)
@@ -3383,6 +3393,7 @@ public class RobotController : Pausable
 
 
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
+                            audioSource.PlayOneShot(audioClip_Swing);
                         }
                     }
                     else if (lowerBodyState == LowerBodyState.QuickSlash && event_slash)
@@ -3405,6 +3416,7 @@ public class RobotController : Pausable
                             Sword.knockBackType = KnockBackType.Finish;
 
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.QuickSlash]._animID[slash_count], 0.0f, 0);
+                            audioSource.PlayOneShot(audioClip_Swing);
                         }
                     }
                     if (lowerBodyState == LowerBodyState.DashSlash && event_slash)
@@ -3427,6 +3439,7 @@ public class RobotController : Pausable
                             Sword.knockBackType = KnockBackType.Finish;
 
                             _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
+                            audioSource.PlayOneShot(audioClip_Swing);
 
                         }
                     }
@@ -3778,14 +3791,14 @@ public class RobotController : Pausable
         {
             if (!prev_boosting)
             {
-                audioSource.Play();
+                audioSource_Boost.Play();
             }
         }
         else
         {
             if (prev_boosting)
             {
-                audioSource.Stop();
+                audioSource_Boost.Stop();
             }
         }
 

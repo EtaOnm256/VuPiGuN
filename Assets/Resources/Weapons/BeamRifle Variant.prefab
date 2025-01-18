@@ -105,6 +105,10 @@ MonoBehaviour:
   weaponPanelItem: {fileID: 0}
   another: {fileID: 0}
   this_is_slave: 0
+  trajectory: 0
+  projectile_gravity: 0
+  projectile_speed: 0
+  audioSource: {fileID: 0}
   firePoint: {fileID: 2128976343315254439}
 --- !u!1 &2128976343315254439
 GameObject:

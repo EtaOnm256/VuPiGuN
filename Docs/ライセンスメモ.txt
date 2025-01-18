@@ -117,3 +117,9 @@ https://on-jin.com/sound/listshow.php?pagename=meka&title=%E3%83%9C%E3%82%A4%E3%
 
 ステップ
 https://www.springin.org/wp-content/uploads/2022/11/%E5%A4%A7%E5%9E%8B%E3%83%AD%E3%83%9C%E3%83%83%E3%83%88%E3%81%AE%E8%B6%B3%E9%9F%B3.mp3
+
+武器系効果音
+https://on-jin.com/sound/sen.php
+
+ビームヒット
+https://soundeffect-lab.info/sound/battle/mp3/machine-hard-hit2.mp3
