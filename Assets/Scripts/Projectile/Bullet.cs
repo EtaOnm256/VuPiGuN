@@ -113,9 +113,12 @@ public class Bullet : Projectile
                     dead = true;
                 }
 
-                GameObject hitEffect = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.LookRotation(view_dir,Vector3.up));
+                if (rayCastHit[i].collider.gameObject.layer != 3)
+                {
+                    GameObject hitEffect = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.LookRotation(view_dir, Vector3.up));
 
-                hitEffect.transform.localScale = Vector3.one * 0.5f;
+                    hitEffect.transform.localScale = Vector3.one * 0.5f;
+                }
             }
 
 
