@@ -129,3 +129,26 @@ https://soundeffect-lab.info/sound/battle/mp3/rocket-launcher1.mp3
 
 ドローン発射
 https://soundeffect-lab.info/sound/battle/mp3/shot1.mp3
+
+ステージ1
+https://peritune.com/blog/2020/08/25/battlefield5/
+
+ステージ2
+https://peritune.com/blog/2018/08/01/havoc/
+
+ステージ3
+https://peritune.com/blog/2016/02/07/lost-place2/
+
+ステージ4
+https://peritune.com/blog/2016/05/09/rapid2/
+
+ステージ5
+https://peritune.com/blog/2020/05/28/climbing/
+
+ステージ6
+https://peritune.com/blog/2020/02/28/irregular/
+
+手作りブッピガン
+https://on-jin.com/sound/listshow.php?pagename=sen&title=%E6%89%8B%E8%B6%B3%E3%83%BB%E7%A9%BA%E6%8C%AF%E3%82%8A01&janl=%E6%88%A6%E9%97%98%E7%B3%BB%E9%9F%B3&bunr=%E7%A9%BA%E6%8C%AF%E3%82%8A&kate=%E4%BD%93
+https://soundeffect-lab.info/sound/battle/mp3/whip-gesture1.mp3
+https://on-jin.com/sound/listshow.php?pagename=sen&title=%E8%A1%9D%E7%AA%81%E3%83%BB%E8%A1%9D%E6%92%83%EF%BC%88%E9%89%84%EF%BC%8906&janl=%E6%88%A6%E9%97%98%E7%B3%BB%E9%9F%B3&bunr=%E8%A1%9D%E7%AA%81&kate=%E7%88%86%E7%99%BA%E3%83%BB%E8%A1%9D%E6%92%83

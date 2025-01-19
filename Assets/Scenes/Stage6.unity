@@ -2021,6 +2021,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1215598897}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: player_variant
+      value: 
+      objectReference: {fileID: 5889029644028591830, guid: 2b115fd8a4a848a4bbe616e8d749fe55, type: 3}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -2104,6 +2108,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3810131930710510884, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: ad33586fbaa791b49890619515227569, type: 3}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}

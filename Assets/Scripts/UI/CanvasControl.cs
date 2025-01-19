@@ -20,10 +20,10 @@ public class CanvasControl : MonoBehaviour
 
         var wait = new WaitForSeconds(Time.deltaTime);
 
-        int count = 60;
+        int count = 90;
         while (count-- >= 0)
         {
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 60.0f);
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 90.0f);
             yield return wait;
         }
     }
