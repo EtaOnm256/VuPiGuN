@@ -126,3 +126,6 @@ https://soundeffect-lab.info/sound/battle/mp3/machine-hard-hit2.mp3
 
 バズ
 https://soundeffect-lab.info/sound/battle/mp3/rocket-launcher1.mp3
+
+ドローン発射
+https://soundeffect-lab.info/sound/battle/mp3/shot1.mp3

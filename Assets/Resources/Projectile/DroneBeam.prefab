@@ -148,13 +148,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c4cfe719cea96248ad514bba6640060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 0}
   direction: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
   speed: 0
   dead: 0
+  owner: {fileID: 0}
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 10
-  hitEffect_prefab: {fileID: 3835462889935592433, guid: 9c34b8721a511ec4db92d131e72fe27a, type: 3}
+  hitEffect_prefab: {fileID: 3835462889935592433, guid: be10f4fbea4a3654bb6b1828f2ef7640, type: 3}

@@ -13,6 +13,8 @@ public class DronePlatform : Weapon
 
     private const int Max_Ammo = 6;
 
+    GameObject beamemit_prefab;
+
     public override int MaxEnergy
     {
         get
@@ -82,6 +84,7 @@ public class DronePlatform : Weapon
     protected override void OnAwake()
     {
         drone_prefab = Resources.Load<GameObject>("Projectile/Drone Variant");
+        beamemit_prefab = Resources.Load<GameObject>("Effects/DroneEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
@@ -151,6 +154,8 @@ public class DronePlatform : Weapon
                     drones[current_cycle].owner = owner; //Start‚¾‚Æ‡˜‚ÌŠÖŒW‚Åİ’è‚³‚ê‚Ä‚¢‚È‚¢‚±‚Æ‚ª‚ ‚é‚Ì‚Å
                     drones[current_cycle].target = Target_Robot;
                     energy -= Reload_Time;
+
+                    GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, drones[current_cycle].transform.position, drones[current_cycle].transform.rotation);
 
                     Duration_Time = 10;
                 }

@@ -12,6 +12,7 @@ public class Drone : Pausable
     Quaternion orient = Quaternion.Euler(90.0f, 0.0f, 0.0f);
 
     GameObject beam_prefab;
+    GameObject beamemit_prefab;
 
     public GameObject anchor;
     const float speed = 1.2f;
@@ -37,6 +38,7 @@ public class Drone : Pausable
     void Awake()
     {
         beam_prefab = Resources.Load<GameObject>("Projectile/DroneBeam");
+        beamemit_prefab = Resources.Load<GameObject>("Effects/WeakBeamEmit");
     }
 
     void Heading(Vector3 goal_dir,float maxangle,out float angle,out Quaternion q)
@@ -130,7 +132,12 @@ public class Drone : Pausable
                         beam.target = target;
                         beam.team = owner.team;
                         beam.owner = owner;
+
+                        GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+
                         state = State.Homing;
+
+                        
                     }
                 }
                 break;
