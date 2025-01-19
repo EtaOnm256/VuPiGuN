@@ -87,10 +87,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 0
-  MinDistance: 10
+  MinDistance: 15
   MaxDistance: 160
   Pan2D: 0
-  rolloffMode: 2
+  rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -98,8 +98,8 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.0625
-      value: 1
+      time: 0.097709656
+      value: 0.99741364
       inSlope: -16.0064
       outSlope: -16.0064
       tangentMode: 0
