@@ -5,7 +5,7 @@ using UnityEngine;
 public class HandCannon : Weapon
 {
     GameObject cannonball_prefab;
-    //GameObject beamemit_prefab;
+    GameObject beamemit_prefab;
 
 
     private const int Max_Ammo = 6;
@@ -61,7 +61,7 @@ public class HandCannon : Weapon
     protected override void OnAwake()
     {
         cannonball_prefab = Resources.Load<GameObject>("Projectile/CannonBall Variant");
-        //beamemit_prefab = Resources.Load<GameObject>("Effects/BeamEmit");
+        beamemit_prefab = Resources.Load<GameObject>("Effects/CannonEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
@@ -93,7 +93,7 @@ public class HandCannon : Weapon
             beam.target = Target_Robot;
             beam.team = owner.team;
             //beam.worldManager = owner.worldManager;
-            //GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
             beam.owner = owner;
             energy -= Reload_Time;
         }

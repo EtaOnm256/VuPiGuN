@@ -129,7 +129,7 @@ public class CannonBall : Projectile
                 }
 
                 GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, transform.rotation);
-
+                explode.transform.localScale = Vector3.one * 0.5f;
                 GameObject.Destroy(gameObject);
                 return;
             }

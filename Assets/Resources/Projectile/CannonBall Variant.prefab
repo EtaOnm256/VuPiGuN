@@ -84,8 +84,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec4c7abb1fbb2f43a4ca79487ee0113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  initial_direction: {x: 0, y: 0, z: 0, w: 0}
   direction: {x: 0, y: 0, z: 0}
-  hitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
+  position: {x: 0, y: 0, z: 0}
+  target: {fileID: 0}
+  speed: 0
+  dead: 0
+  owner: {fileID: 0}
+  initial_direction: {x: 0, y: 0, z: 0, w: 0}
+  hitEffect_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   meshRenderer: {fileID: 0}
