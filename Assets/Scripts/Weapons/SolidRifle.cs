@@ -61,7 +61,7 @@ public class SolidRifle : Weapon
     protected override void OnAwake()
     {
         bullet_prefab = Resources.Load<GameObject>("Projectile/Bullet");
-        solidemit_prefab = Resources.Load<GameObject>("SolidEmit");
+        solidemit_prefab = Resources.Load<GameObject>("Effects/SolidEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }

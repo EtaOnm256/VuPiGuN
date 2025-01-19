@@ -82,7 +82,7 @@ public class SMG : Weapon
     protected override void OnAwake()
     {
         bullet_prefab = Resources.Load<GameObject>("Projectile/SMGBullet");
-        solidemit_prefab = Resources.Load<GameObject>("SMGEmit");
+        solidemit_prefab = Resources.Load<GameObject>("Effects/SMGEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }

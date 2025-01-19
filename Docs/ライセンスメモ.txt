@@ -123,3 +123,6 @@ https://on-jin.com/sound/sen.php
 
 ビームヒット
 https://soundeffect-lab.info/sound/battle/mp3/machine-hard-hit2.mp3
+
+バズ
+https://soundeffect-lab.info/sound/battle/mp3/rocket-launcher1.mp3

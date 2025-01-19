@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bazooka : Weapon
 {
     GameObject missile_prefab;
-    //GameObject beamemit_prefab;
+    GameObject beamemit_prefab;
 
 
     private const int Max_Ammo = 6;
@@ -56,7 +56,7 @@ public class Bazooka : Weapon
     protected override void OnAwake()
     {
         missile_prefab = Resources.Load<GameObject>("Projectile/BazookaShell Variant");
-        //beamemit_prefab = Resources.Load<GameObject>("BeamEmit");
+        beamemit_prefab = Resources.Load<GameObject>("Effects/BazookaEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
@@ -82,7 +82,7 @@ public class Bazooka : Weapon
             beam.target = Target_Robot;
             beam.team = owner.team;
             beam.owner = owner;
-            //GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             energy -= Reload_Time;
         }

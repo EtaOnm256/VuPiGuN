@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EffectSelfDelete : Pausable
 {
-    public Effekseer.EffekseerEmitter effekseerEmitter;
+    public Effekseer.EffekseerEmitter effekseerEmitter = null;
     public float speed = 1.0f;
     public AudioSource audioSource = null;
     private void Awake()
@@ -15,13 +15,14 @@ public class EffectSelfDelete : Pausable
     // Start is called before the first frame update
     void Start()
     {
-        effekseerEmitter.speed = speed;
+        if(effekseerEmitter)
+            effekseerEmitter.speed = speed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!effekseerEmitter.exists && (!audioSource || !audioSource.isPlaying))
+        if((!effekseerEmitter || !effekseerEmitter.exists) && (!audioSource || !audioSource.isPlaying))
         {
             GameObject.Destroy(gameObject);
         }
@@ -29,12 +30,14 @@ public class EffectSelfDelete : Pausable
 
     public override void OnPause()
     {
-        effekseerEmitter.paused = true;
+        if (effekseerEmitter)
+            effekseerEmitter.paused = true;
     }
 
     public override void OnUnpause()
     {
-        effekseerEmitter.paused = false;
+        if (effekseerEmitter)
+            effekseerEmitter.paused = false;
     }
 
     private void OnDestroy()

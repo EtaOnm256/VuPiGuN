@@ -61,7 +61,7 @@ public class HandCannon : Weapon
     protected override void OnAwake()
     {
         cannonball_prefab = Resources.Load<GameObject>("Projectile/CannonBall Variant");
-        //beamemit_prefab = Resources.Load<GameObject>("BeamEmit");
+        //beamemit_prefab = Resources.Load<GameObject>("Effects/BeamEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
