@@ -2669,6 +2669,7 @@ public class RobotController : Pausable
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.JumpSlash]._animID[slash_count], 0.0f, 0);
                                     //_animator.SetLayerWeight(2, 1.0f);
                                     _animator.SetFloat("SlashSpeed", 0.0f);
+                                    audioSource.PlayOneShot(audioClip_Swing);
 
                                     _verticalVelocity = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
 
