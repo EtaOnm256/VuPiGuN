@@ -3533,6 +3533,18 @@ public class RobotController : Pausable
                     else
                         boosting = true;
 
+                    if (hitslow_timer > 0)
+                    {
+                        hitslow_timer--;
+
+                        if (hitslow_timer <= 0)
+                        {
+                            animator.speed = org_animator_speed_hitslow;
+                        }
+
+                        hitslow_now = true;
+                    }
+
                     /* if (stepremain > 0)
                      {
                          stepremain--;

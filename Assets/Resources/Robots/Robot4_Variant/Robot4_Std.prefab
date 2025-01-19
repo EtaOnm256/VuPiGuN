@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   robot_prefab: {fileID: 6282497543591662696, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
-  rweapon_prefab: {fileID: 5630119180694491290, guid: 49d8dc65ba1194d4eb8caa4e15c02216, type: 3}
-  lweapon_prefab: {fileID: 0}
+  rweapon_prefab: {fileID: 0}
+  lweapon_prefab: {fileID: 5630119180694491290, guid: 49d8dc65ba1194d4eb8caa4e15c02216, type: 3}
   subweapon_prefab: {fileID: 0}
   weapon_chest_paired: 0
   carrying_weapon: 0
