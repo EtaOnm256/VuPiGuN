@@ -5,7 +5,7 @@ using UnityEngine;
 public class MissilePod_Weist : Weapon
 {
     GameObject missile_prefab;
-    //GameObject beamemit_prefab;
+    GameObject beamemit_prefab;
 
 
     private const int Max_Ammo = 2;
@@ -73,7 +73,7 @@ public class MissilePod_Weist : Weapon
     protected override void OnAwake()
     {
         missile_prefab = Resources.Load<GameObject>("Projectile/Missile Variant");
-        //beamemit_prefab = Resources.Load<GameObject>("Effects/BeamEmit");
+        beamemit_prefab = Resources.Load<GameObject>("Effects/MissileEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
@@ -126,7 +126,7 @@ public class MissilePod_Weist : Weapon
                     beam.direction = gameObject.transform.forward;
                     beam.target = Target_Robot;
                     //beam.transform.localScale = Vector3.one;
-                    // GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
+                    GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
                     beam.team = owner.team;
                     //beam.worldManager = owner.worldManager;
                     beam.owner = owner;
