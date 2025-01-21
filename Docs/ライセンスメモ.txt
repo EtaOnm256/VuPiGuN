@@ -131,10 +131,10 @@ https://soundeffect-lab.info/sound/battle/mp3/rocket-launcher1.mp3
 https://soundeffect-lab.info/sound/battle/mp3/shot1.mp3
 
 ステージ1
-https://peritune.com/blog/2020/08/25/battlefield5/
+https://peritune.com/blog/2015/05/21/dramatic1/
 
 ステージ2
-https://peritune.com/blog/2018/08/01/havoc/
+https://peritune.com/blog/2019/09/11/flap2/
 
 ステージ3
 https://peritune.com/blog/2016/02/07/lost-place2/
