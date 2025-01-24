@@ -65,7 +65,6 @@
     <Compile Include="Assets\Scripts\Weapons\MissilePod.cs" />
     <Compile Include="Assets\Scripts\GameState.cs" />
     <Compile Include="Assets\Scripts\Projectile\Missile.cs" />
-    <Compile Include="Assets\Scripts\RobotVariant.cs" />
     <Compile Include="Assets\Scripts\Weapons\BeamRifle.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualJoystick.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualTouchZone.cs" />

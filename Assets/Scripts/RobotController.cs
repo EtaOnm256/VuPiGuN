@@ -181,7 +181,7 @@ public class RobotController : Pausable
     {
         if (Sword != null && Sword.dualwielded)
             return _animIDStand4;
-        if (carrying_weapon)
+        if (robotParameter.carrying_weapon)
             return _animIDStand3;
         else
             return _animIDStand2;
@@ -271,14 +271,10 @@ public class RobotController : Pausable
             bool rightWeapon_heavy = rightWeapon == null ? false : rightWeapon.heavy;
             bool Sword_dualwielded = Sword == null ? false : Sword.dualwielded;
 
-            return rightWeapon_heavy || dualwield_lightweapon || Sword_dualwielded;
+            return rightWeapon_heavy || robotParameter.dualwield_lightweapon || Sword_dualwielded;
         }
     }
-
-    public bool carrying_weapon = false;
-
-    public bool dualwield_lightweapon = false;
-
+    
     public bool step_boost = false;
     public enum LockonState
     {
@@ -708,7 +704,11 @@ public class RobotController : Pausable
 
     private void Awake()
     {
+        ArmWeapon();
+
         WorldManager.current_instance.pausables.Add(this);
+
+        
     }
 
     private void Start()
@@ -1888,7 +1888,7 @@ public class RobotController : Pausable
                                 //_input.fire = false;
 
                                 if (dualwielding)
-                                    animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
+                                    animator.Play(robotParameter.carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
                                 else
                                     animator.Play("Fire", 1, 0.0f);
 
@@ -4308,5 +4308,84 @@ public class RobotController : Pausable
 
         org_animator_speed_hitslow = animator.speed;
         animator.speed = 0.2f;
+    }
+    [System.Serializable]
+    public class RobotParameter
+    {
+        public GameObject rweapon_prefab = null;
+        public GameObject lweapon_prefab = null;
+        public GameObject subweapon_prefab = null;
+        public bool weapon_chest_paired = false;
+        public bool carrying_weapon = false;
+        public bool dualwield_lightweapon = false;
+    }
+
+    public RobotParameter robotParameter;
+
+    void ArmWeapon()
+    {
+        if (robotParameter.rweapon_prefab != null)
+        {
+            GameObject playerrweapon = GameObject.Instantiate(robotParameter.rweapon_prefab);
+
+            playerrweapon.transform.parent = RHand.transform;
+            playerrweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+            playerrweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+            playerrweapon.transform.localScale = new Vector3(1, 1, 1);
+
+            rightWeapon = playerrweapon.GetComponent<Weapon>();
+        }
+
+        if (robotParameter.lweapon_prefab != null)
+        {
+            GameObject playerlweapon = GameObject.Instantiate(robotParameter.lweapon_prefab);
+
+            playerlweapon.transform.parent = LHand.transform;
+            playerlweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+            playerlweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+            playerlweapon.transform.localScale = new Vector3(1, 1, 1);
+
+            Sword = playerlweapon.GetComponent<InfightWeapon>();
+        }
+
+        if (robotParameter.subweapon_prefab != null)
+        {
+            if (robotParameter.weapon_chest_paired)
+            {
+                GameObject playersubweapon_r = GameObject.Instantiate(robotParameter.subweapon_prefab);
+
+                playersubweapon_r.transform.parent = chestWeapon_anchor[1].transform;
+                playersubweapon_r.transform.localPosition = Vector3.zero;
+                playersubweapon_r.transform.localEulerAngles = Vector3.zero;
+                playersubweapon_r.transform.localScale = Vector3.one;
+
+                playersubweapon_r.GetComponent<Weapon>().this_is_slave = true;
+
+                GameObject playersubweapon_l = GameObject.Instantiate(robotParameter.subweapon_prefab);
+
+                playersubweapon_l.transform.parent = chestWeapon_anchor[0].transform;
+                playersubweapon_l.transform.localPosition = Vector3.zero;
+                playersubweapon_l.transform.localEulerAngles = Vector3.zero;
+                playersubweapon_l.transform.localScale = Vector3.one;
+                playersubweapon_l.GetComponent<Weapon>().this_is_slave = false;
+                playersubweapon_l.GetComponent<Weapon>().another = playersubweapon_r.GetComponent<Weapon>();
+
+                shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
+
+
+            }
+            else
+            {
+                GameObject playersubweapon_l = GameObject.Instantiate(robotParameter.subweapon_prefab);
+
+                playersubweapon_l.transform.parent = chestWeapon_anchor[0].transform;
+                playersubweapon_l.transform.localPosition = Vector3.zero;
+                playersubweapon_l.transform.localEulerAngles = Vector3.zero;
+                playersubweapon_l.transform.localScale = Vector3.one;
+
+                shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
+            }
+
+        }
     }
 }

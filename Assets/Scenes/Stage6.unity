@@ -2023,7 +2023,7 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: player_variant
       value: 
-      objectReference: {fileID: 5889029644028591830, guid: 2b115fd8a4a848a4bbe616e8d749fe55, type: 3}
+      objectReference: {fileID: 6538551618372168848, guid: e5b847e64d4db7744b75ecf8922a0b16, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.size
       value: 2
@@ -2043,15 +2043,15 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].variant
       value: 
-      objectReference: {fileID: 5889029644028591830, guid: f48a0f1084187514cb2d215081b08b4d, type: 3}
+      objectReference: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[1].variant
       value: 
-      objectReference: {fileID: 5889029644028591830, guid: 0c9870b69768d8149bb450791c7080ed, type: 3}
+      objectReference: {fileID: 3234803710502351383, guid: a99d7ce550f40384997a4abe7e9cc359, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.data[0].variant
       value: 
-      objectReference: {fileID: 5889029644028591830, guid: 5e5bc39972cd6b6469dcecc68d08cf64, type: 3}
+      objectReference: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].squadCount
       value: 2

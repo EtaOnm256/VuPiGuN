@@ -513,13 +513,16 @@ public class WorldManager : MonoBehaviour
 
     private void SpawnPlayer(Vector3 pos, Quaternion rot, Team team)
     {
-        RobotVariant variant = player_variant.GetComponent<RobotVariant>();
+        
 
         RaycastHit raycastHit;
 
         Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
 
-        RobotController robot = variant.Spawn(raycastHit.point, rot,this);
+        GameObject robotObj = GameObject.Instantiate(player_variant, raycastHit.point, rot);
+        //RobotController robot = variant.Spawn(raycastHit.point, rot,this);
+
+        RobotController robot = robotObj.GetComponent<RobotController>();
 
         robot.HUDCanvas = canvasControl.HUDCanvas;
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
@@ -540,13 +543,16 @@ public class WorldManager : MonoBehaviour
 
     private void SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team)
     {
-        RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
+        //RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
+       
 
         RaycastHit raycastHit;
 
         Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
 
-        RobotController robot = variant.Spawn(raycastHit.point, rot,this);
+        GameObject robotObj = GameObject.Instantiate(variant_obj, raycastHit.point, rot);
+        //RobotController robot = variant.Spawn(raycastHit.point, rot,this);
+        RobotController robot = robotObj.GetComponent<RobotController>();
 
         robot.HUDCanvas = canvasControl.HUDCanvas;
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
