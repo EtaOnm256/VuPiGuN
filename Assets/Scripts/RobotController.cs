@@ -227,7 +227,7 @@ public class RobotController : Pausable
 
     private bool _hasAnimator;
 
-    public InputBase _input;
+    private InputBase _input;
     bool prev_slash = false;
     bool prev_sprint = false;
 
@@ -814,6 +814,8 @@ public class RobotController : Pausable
         spawn_completed = true;
 
         // _input.worldManager = worldManager;
+
+        _input = GetComponent<InputBase>();
 
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;

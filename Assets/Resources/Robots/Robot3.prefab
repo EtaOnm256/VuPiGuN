@@ -87,3 +87,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+--- !u!1 &4123517489741055787 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6586953858126985361, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+  m_PrefabInstance: {fileID: 7084200618388914106}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3307503245084373907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4123517489741055787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855c9cae2e0b4f64b9cecfce98258b18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  move: {x: 0, y: 0}
+  look: {x: 0, y: 0}
+  jump: 0
+  sprint: 0
+  fire: 0
+  down: 0
+  slash: 0
+  subfire: 0
+  analogMovement: 0
+  cursorLocked: 1
+  cursorInputForLook: 1
+  ascend_margin: 0
+  fire_wait: 0
+  fire_prepare: 15

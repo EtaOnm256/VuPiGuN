@@ -448,6 +448,44 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6519890467718445517}
   m_SourcePrefab: {fileID: 100100000, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+--- !u!1 &803051568401146564 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6586953858126985361, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+  m_PrefabInstance: {fileID: 5786154132969806421}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-3404003323001887153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 803051568401146564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 384a315cb694a3b4f8c78c20c87f25da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  move: {x: 0, y: 0}
+  look: {x: 0, y: 0}
+  jump: 0
+  sprint: 0
+  fire: 0
+  down: 0
+  slash: 0
+  subfire: 0
+  analogMovement: 0
+  cursorLocked: 1
+  cursorInputForLook: 1
+  ascend_margin: 0
+  fire_wait: 0
+  fire_prepare: 15
+  infight_reload: 0
+  infight_wait: 0
+  jumpinfight_reload: 0
+  ground_step_remain: 2
+  state: 0
+  movedirection_range: 180
+  lock_range: 150
 --- !u!4 &2300444248192990266 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}

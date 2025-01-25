@@ -112,6 +112,7 @@ MonoBehaviour:
   finish_dir: {x: 0, y: 0, z: 0}
   finish_victim: {fileID: 0}
   gameState: {fileID: 11400000, guid: c86ac7e4de34aea4aa0c382ffee862c3, type: 2}
+  inputActions: {fileID: -944628639613478452, guid: ec61cfc11bcb4ab4bb5bdbbbebaa26e6, type: 3}
   pausing: 0
 --- !u!82 &3810131930710510884
 AudioSource:
