@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RobotAI_Medium : InputBase
+public class RobotAI_Gargoyle : InputBase
 {
     int moveDirChangeTimer = 0;
 
@@ -46,11 +46,10 @@ public class RobotAI_Medium : InputBase
 
     public State state = State.Ground;
 
-    public float movedirection_range = 90.0f;
-    //public float movedirection_range = 180.0f;
+    public float movedirection_range = 135.0f;
 
-    public float lock_range = 75.0f;
-    //public float lock_range = 150.0f;
+    //public float lock_range = 75.0f;
+    public float lock_range = 150.0f;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -262,7 +261,7 @@ public class RobotAI_Medium : InputBase
 
                                             if (moveDirChangeTimer <= 0)
                                             {
-                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                                move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
                                                 moveDirChangeTimer = 60;
                                             }
                                         }
@@ -286,13 +285,62 @@ public class RobotAI_Medium : InputBase
                             break;
                         case State.Ascend:
                             {
-                                jump = true;
+                                bool firing_sub = false;
 
-                              
-
-                                if (floorhit.distance > 15.0f)
+                                if (robotController.shoulderWeapon != null)
                                 {
-                                    state = State.Dash;
+                                    /*if (robotController.fire_followthrough > 0 && robotController.shoulderWeapon.canHold)
+                                    {
+                                        subfire = true;
+                                        firing_sub = true;
+                                    }*/
+
+                                    if (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy)
+                                    {
+                                        firing_sub = true;
+                                        jump = true;
+
+                                        if(floorhit.distance > 25.0f && robotController._verticalVelocity > robotController.AscendingVelocity * 3 / 4)
+                                        {
+                                            subfire = true;
+                                        }
+                                    }
+
+                                }
+
+                                if (!firing_sub)
+                                {
+                                    if (floorhit.distance > 25.0f)
+                                    {
+                                        if (robotController.boost == robotController.Boost_Max
+                                            || robotController._verticalVelocity < -robotController.AscendingVelocity * 3 / 4)
+                                        {
+                                            state = State.Dash;
+                                        }
+
+                                        jump = false;
+
+
+                                    }
+                                    else
+                                        jump = true;
+                                }
+
+                                if (mindist > lock_range)
+                                {
+                                    move.y = 1.0f;
+                                    move.x = 0.0f;
+                                    //moveDirChangeTimer = 60;
+                                }
+                                else
+                                {
+
+
+                                    if (moveDirChangeTimer <= 0)
+                                    {
+                                        move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                        moveDirChangeTimer = 60;
+                                    }
                                 }
 
                                 if (overheating)
@@ -303,6 +351,9 @@ public class RobotAI_Medium : InputBase
 
                                 if (mindist < 20.0f)
                                     allow_infight = true;
+
+                                //if (target_angle <= 60)
+                                //    allow_fire = true;
                             }
                             break;
                         case State.Dash:
@@ -321,13 +372,21 @@ public class RobotAI_Medium : InputBase
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                        move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
                                          moveDirChangeTimer = 60;
                                     }
                                 }
 
-                                if (overheating)
+                                //if (overheating)
+                                if (robotController.boost < robotController.Boost_Max * 1 / 4)
+                                {
                                     state = State.Decend;
+                                }
+                                else if (floorhit.distance < 15.0f)
+                                {
+                                    state = State.Ascend;
+                                }
+                                    
 
                                 if (robotController.Grounded)
                                     state = State.Ground;
@@ -348,18 +407,18 @@ public class RobotAI_Medium : InputBase
                                     ground_step_remain = 2;
                                 }
 
-                                if(floorhit.distance > 10.0f)
+                                if(robotController.boost > robotController.Boost_Max / 2)
+                                {
+                                    state = State.Ascend;
+                                }
+
+                                if(floorhit.distance > 10.0f && target_angle <= 60)
                                     allow_fire = true;
 
                                 if (mindist < 20.0f)
                                     allow_infight = true;
 
-                                if (robotController.shoulderWeapon != null
-                                   && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy
-                                   || robotController.fire_followthrough > 0 && robotController.shoulderWeapon.canHold))
-                                {
-                                    subfire = true;
-                                }
+                               
                             }
                             break;
                     }
@@ -416,14 +475,12 @@ public class RobotAI_Medium : InputBase
                     else
                     {
                         infight_wait = 15;
-
                         if (robotController.fire_followthrough > 0 && robotController.rightWeapon.canHold)
                         {
                             fire = true;
                         }
                         else
                         {
-
                             if (fire_wait <= 0 && allow_fire)
                             {
                                 if (mindist < 100.0f)

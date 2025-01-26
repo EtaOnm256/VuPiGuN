@@ -138,7 +138,7 @@ public class RobotController : Pausable
     private float _animationBlend;
     private float _targetRotation = 0.0f;
     private float _rotationVelocity;
-    private float _verticalVelocity;
+    public float _verticalVelocity;
 
 
     // timeout deltatime
@@ -496,7 +496,8 @@ public class RobotController : Pausable
         GroundBoost = 1 << 2,
         VerticalVernier = 1 << 3,
         QuickIgniter = 1 << 4,
-        Hovercraft = 1 << 5
+        Hovercraft = 1 << 5,
+        FlightUnit = 1 << 6
     }
 
     public ItemFlag itemFlag = 0;
@@ -2442,6 +2443,9 @@ public class RobotController : Pausable
                         }
                         else
                         {
+                            if (itemFlag.HasFlag(ItemFlag.FlightUnit))
+                                RegenBoost();
+
                             AcceptDash();
                         }
                         _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
@@ -2576,6 +2580,9 @@ public class RobotController : Pausable
                     {
                         if (itemFlag.HasFlag(ItemFlag.NextDrive))
                             AcceptDash();
+
+                        if (itemFlag.HasFlag(ItemFlag.FlightUnit))
+                            RegenBoost();
                     }
                     else
                     {

@@ -289,6 +289,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3511325375820423461, guid: 55c6b7768beb24d4982232c06e7d5b4b, type: 3}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: itemFlag
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: aiming_hint
       value: 
       objectReference: {fileID: 3505655535977820652}
@@ -346,7 +350,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6586953858126985361, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
   m_PrefabInstance: {fileID: 7872345507147247797}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5867929650334126327
+--- !u!114 &7492298820299591746
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -355,7 +359,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3902860722008967204}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f89f54d66910ac4cb76ac270f204d50, type: 3}
+  m_Script: {fileID: 11500000, guid: 50589288fa7a142439e8e14548b44832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   move: {x: 0, y: 0}
