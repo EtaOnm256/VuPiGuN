@@ -163,7 +163,7 @@ public class RobotAI_Gargoyle : InputBase
                 {
                     RaycastHit floorhit;
 
-                    bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, 50.0f, 1 << 3);
+                    bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, float.MaxValue, 1 << 3);
                     float target_angle = Vector3.Angle(nearest_robot.Chest.transform.position - transform.position, transform.forward);
 
                     jump = false;
@@ -275,7 +275,7 @@ public class RobotAI_Gargoyle : InputBase
                                     if (nearest_robot.Grounded && mindist < 20.0f)
                                         allow_infight = true;
 
-                                    if (target_angle <= 60)
+                                    if (target_angle <= 90)
                                         allow_fire = true;
                                 }
 
@@ -289,11 +289,14 @@ public class RobotAI_Gargoyle : InputBase
 
                                 if (robotController.shoulderWeapon != null)
                                 {
-                                    /*if (robotController.fire_followthrough > 0 && robotController.shoulderWeapon.canHold)
+                                    if (robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                     {
-                                        subfire = true;
-                                        firing_sub = true;
-                                    }*/
+                                        if (robotController.upperBodyState == RobotController.UpperBodyState.SUBFIRE && robotController.shoulderWeapon.canHold)
+                                        {
+                                            subfire = true;
+                                            firing_sub = true;
+                                        }
+                                    }
 
                                     if (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy)
                                     {
@@ -310,23 +313,23 @@ public class RobotAI_Gargoyle : InputBase
 
                                 if (!firing_sub)
                                 {
-                                    if (floorhit.distance > 25.0f)
-                                    {
-                                        if (robotController.boost == robotController.Boost_Max
+                                    if ( (floorhit.distance > 25.0f
                                             || robotController._verticalVelocity < -robotController.AscendingVelocity * 3 / 4)
-                                        {
-                                            state = State.Dash;
-                                        }
-
+                                            && ( (robotController.upperBodyState != RobotController.UpperBodyState.FIRE && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
+                                                  || robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive)
+                                                  ))
+                                    {
+                                        state = State.Dash;
+                                        moveDirChangeTimer = 0;
                                         jump = false;
-
-
                                     }
                                     else
                                         jump = true;
                                 }
 
-                                if (mindist > lock_range)
+
+
+                                if (mindist > lock_range * 3 / 4)
                                 {
                                     move.y = 1.0f;
                                     move.x = 0.0f;
@@ -352,7 +355,7 @@ public class RobotAI_Gargoyle : InputBase
                                 if (mindist < 20.0f)
                                     allow_infight = true;
 
-                                //if (target_angle <= 60)
+                                //if (target_angle <= 90)
                                 //    allow_fire = true;
                             }
                             break;
@@ -360,7 +363,7 @@ public class RobotAI_Gargoyle : InputBase
                             {
                                 sprint = true;
 
-                                if (mindist > lock_range)
+                                if (mindist > lock_range*3/4)
                                 {
                                     move.y = 1.0f;
                                     move.x = 0.0f;
@@ -368,11 +371,11 @@ public class RobotAI_Gargoyle : InputBase
                                 }
                                 else
                                 {
-
+                                   
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                         move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
                                          moveDirChangeTimer = 60;
                                     }
                                 }
@@ -386,12 +389,25 @@ public class RobotAI_Gargoyle : InputBase
                                 {
                                     state = State.Ascend;
                                 }
-                                    
+                                else
+                                {
+                                    if (robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                                    {
+                                        if (!robotController.rightWeapon.canHold && robotController.fire_followthrough > 0 && prev_sprint)
+                                        {
+                                            {
+                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-60 * 2 * Mathf.PI / 360.0f, 60 * 2 * Mathf.PI / 360.0f));
+                                                moveDirChangeTimer = 60;
+                                            }
+                                            sprint = false;
+                                        }
+                                    }
+                                }
 
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (target_angle <= 60)
+                                if (target_angle <= 90)
                                     allow_fire = true;
 
                                 if (mindist < 20.0f)
@@ -407,12 +423,22 @@ public class RobotAI_Gargoyle : InputBase
                                     ground_step_remain = 2;
                                 }
 
-                                if(robotController.boost > robotController.Boost_Max / 2)
+                                /*if (robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                 {
-                                    state = State.Ascend;
+                                    if (robotController.boost > robotController.Boost_Max*3/4)
+                                    {
+                                        state = State.Ascend;
+                                    }
+                                }
+                                else*/
+                                {
+                                    if (robotController.boost > robotController.Boost_Max / 2)
+                                    {
+                                        state = State.Ascend;
+                                    }
                                 }
 
-                                if(floorhit.distance > 10.0f && target_angle <= 60)
+                                if(floorhit.distance > 25.0f && target_angle <= 90)
                                     allow_fire = true;
 
                                 if (mindist < 20.0f)
@@ -481,9 +507,13 @@ public class RobotAI_Gargoyle : InputBase
                         }
                         else
                         {
-                            if (fire_wait <= 0 && allow_fire)
+                            if (robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                             {
-                                if (mindist < 100.0f)
+                                fire = allow_fire;
+                            }
+                            else if (fire_wait <= 0 && allow_fire)
+                            {
+                                if (mindist < lock_range)
                                 {
                                     if (fire_prepare <= 0)
                                     {
@@ -495,9 +525,6 @@ public class RobotAI_Gargoyle : InputBase
                                     {
                                         fire_prepare--;
                                     }
-
-                                    move = Vector2.zero;
-                                    moveDirChangeTimer = 0;
                                 }
                                 else
                                 {

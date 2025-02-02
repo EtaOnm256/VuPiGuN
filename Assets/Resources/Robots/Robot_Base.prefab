@@ -3003,7 +3003,7 @@ MonoBehaviour:
   LockCameraPosition: 0
   TerminalVelocity: 53
   AscendingVelocity: 20
-  AscendingAccelerate: 2.2
+  AscendingAccelerate: 2.5
   KnockbackSpeed: 30
   InfightCorrectSpeed: 30
   cameraPosition: {x: 0, y: 0, z: 0}
@@ -3017,6 +3017,7 @@ MonoBehaviour:
   slash_camera_offset_set: 0
   _cinemachineTargetYaw: 0
   _cinemachineTargetPitch: 0
+  _verticalVelocity: 0
   slash_count: 0
   headmultiAimConstraint: {fileID: 8240275247160239941}
   chestmultiAimConstraint: {fileID: 4152913449269264376}

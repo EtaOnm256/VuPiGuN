@@ -381,5 +381,5 @@ MonoBehaviour:
   jumpinfight_reload: 0
   ground_step_remain: 2
   state: 0
-  movedirection_range: 90
-  lock_range: 75
+  movedirection_range: 135
+  lock_range: 100

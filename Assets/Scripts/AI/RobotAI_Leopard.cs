@@ -167,7 +167,7 @@ public class RobotAI_Leopard : InputBase
                 {
                     RaycastHit floorhit;
 
-                    bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, 50.0f, 1 << 3);
+                    bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, float.MaxValue, 1 << 3);
                     float target_angle = Vector3.Angle(nearest_robot.Chest.transform.position - transform.position, transform.forward);
 
                     jump = false;
@@ -463,7 +463,7 @@ public class RobotAI_Leopard : InputBase
 
                         if (/*fire_wait <= 0 && */allow_fire)
                         {
-                            //if (mindist < 100.0f)
+                            //if (mindist < lock_range)
                             {
                                 //if (fire_prepare <= 0)
                                 {
