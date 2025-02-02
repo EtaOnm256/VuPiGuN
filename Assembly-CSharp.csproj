@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\Projectile\Beam.cs" />
     <Compile Include="Assets\Scripts\Projectile\SMGBullet.cs" />
     <Compile Include="Assets\Scripts\Weapons\SolidRifle.cs" />
+    <Compile Include="Assets\Scripts\UI\HorizontalStretcher.cs" />
     <Compile Include="Assets\Scripts\Drone.cs" />
     <Compile Include="Assets\Scripts\InfightWeapon.cs" />
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\ThirdPersonController.cs" />
