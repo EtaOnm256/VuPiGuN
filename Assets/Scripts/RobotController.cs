@@ -181,7 +181,7 @@ public class RobotController : Pausable
     {
         if (Sword != null && Sword.dualwielded)
             return _animIDStand4;
-        if (robotParameter.carrying_weapon)
+        if (carrying_weapon)
             return _animIDStand3;
         else
             return _animIDStand2;
@@ -271,10 +271,21 @@ public class RobotController : Pausable
             bool rightWeapon_heavy = rightWeapon == null ? false : rightWeapon.heavy;
             bool Sword_dualwielded = Sword == null ? false : Sword.dualwielded;
 
-            return rightWeapon_heavy || robotParameter.dualwield_lightweapon || Sword_dualwielded;
+            return rightWeapon_heavy || robotParameter.dualwield_lightweapon || Sword_dualwielded || carrying_weapon;
         }
     }
-    
+
+    public bool carrying_weapon
+    {
+        get
+        {
+            if (rightWeapon != null)
+                return rightWeapon.carrying;
+            else
+                return false;
+        }
+    }
+
     public bool step_boost = false;
     public enum LockonState
     {
@@ -1891,7 +1902,7 @@ public class RobotController : Pausable
                                 //_input.fire = false;
 
                                 if (dualwielding)
-                                    animator.Play(robotParameter.carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
+                                    animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
                                 else
                                     animator.Play("Fire", 1, 0.0f);
 
@@ -4331,7 +4342,6 @@ public class RobotController : Pausable
         public GameObject lweapon_prefab = null;
         public GameObject subweapon_prefab = null;
         public bool weapon_chest_paired = false;
-        public bool carrying_weapon = false;
         public bool dualwield_lightweapon = false;
     }
 

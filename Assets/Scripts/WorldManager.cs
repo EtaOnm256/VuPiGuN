@@ -50,7 +50,7 @@ public class WorldManager : MonoBehaviour
     public GameObject player_subweapon_prefab = null;
     public bool player_weapon_chest_paired = false;*/
 
-    public GameObject player_variant;
+    //public GameObject player_variant;
 
     /* public GameObject enemy_prefab = null;
      public GameObject enemy_rweapon_prefab = null;
@@ -520,7 +520,7 @@ public class WorldManager : MonoBehaviour
 
         Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
 
-        GameObject robotObj = GameObject.Instantiate(player_variant, raycastHit.point, rot);
+        GameObject robotObj = GameObject.Instantiate(gameState.player_variant, raycastHit.point, rot);
         //RobotController robot = variant.Spawn(raycastHit.point, rot,this);
 
         RobotController robot = robotObj.GetComponent<RobotController>();

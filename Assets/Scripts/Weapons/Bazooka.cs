@@ -53,6 +53,10 @@ public class Bazooka : Weapon
         }
     }
 
+    override public bool carrying
+    {
+        get { return true; }
+    }
     protected override void OnAwake()
     {
         missile_prefab = Resources.Load<GameObject>("Projectile/BazookaShell Variant");

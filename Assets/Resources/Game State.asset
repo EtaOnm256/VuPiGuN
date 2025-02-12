@@ -13,3 +13,10 @@ MonoBehaviour:
   m_Name: Game State
   m_EditorClassIdentifier: 
   stage: 1
+  gold: 29000
+  inventryWeapons:
+  - prefabname: Bazooka Variant
+  - prefabname: BeamRifle Variant
+  - prefabname: MissilePod Variant
+  rightWeapon_name: Bazooka Variant
+  player_variant: {fileID: 6538551618372168848, guid: e5b847e64d4db7744b75ecf8922a0b16, type: 3}

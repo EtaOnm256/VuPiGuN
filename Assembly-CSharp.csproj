@@ -112,6 +112,7 @@
     <Compile Include="Assets\Scripts\AI\RobotAI_Easy.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\RainMaker\Prefab\RainScript2D.cs" />
+    <Compile Include="Assets\Scripts\UI\IntermissionButton.cs" />
     <Compile Include="Assets\Scripts\Loading.cs" />
     <Compile Include="Assets\Scripts\UI\DamageText.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod_Weist.cs" />

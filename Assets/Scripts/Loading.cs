@@ -29,6 +29,9 @@ public class Loading : MonoBehaviour
 	{
 		if (gameState.stage >= 1 && gameState.stage <= 6)
 		{
+			RobotController.RobotParameter robotParameter = gameState.player_variant.GetComponent<RobotController>().robotParameter;
+
+			robotParameter.rweapon_prefab = (GameObject)Resources.Load($"Weapons/{gameState.rightWeapon_name}");
 			async = SceneManager.LoadSceneAsync($"Stage{gameState.stage}");
 		}
 		else
