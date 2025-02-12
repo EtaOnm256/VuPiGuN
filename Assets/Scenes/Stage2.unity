@@ -2699,7 +2699,7 @@ PrefabInstance:
       objectReference: {fileID: 7622608550062222278, guid: a1824583b2b1e6f41b125baa365ae237, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.size
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.size
@@ -2707,7 +2707,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].loop
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[2].loop
@@ -2728,7 +2728,7 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].variant
       value: 
-      objectReference: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
+      objectReference: {fileID: 1721552399784020631, guid: 5cdf1886ad160aa4da8f61a904bfdbbd, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[1].variant
       value: 

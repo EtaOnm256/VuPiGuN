@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: itemFlag
-      value: 64
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: robotParameter.rweapon_prefab
@@ -24,13 +24,9 @@ PrefabInstance:
       propertyPath: robotParameter.weapon_chest_paired
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1830739307550966316, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 0d7b716001577a24e9f0a48ff93ff4a6, type: 2}
     - target: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: m_Name
-      value: Robot2 Std
+      value: Robot2 BlueLightning
       objectReference: {fileID: 0}
     - target: {fileID: 4423220419937112734, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: m_RootOrder

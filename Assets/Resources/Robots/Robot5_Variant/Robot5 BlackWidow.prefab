@@ -54,12 +54,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 803051568401146564, guid: 7e306587d0663164d853049beebecdf9, type: 3}
       propertyPath: m_Name
-      value: Robot5 Std
+      value: Robot5 BlackWidow
       objectReference: {fileID: 0}
     - target: {fileID: 2622409668980254924, guid: 7e306587d0663164d853049beebecdf9, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: db666e65b4ae052489b3f82040c58f5c, type: 2}
+      objectReference: {fileID: 2100000, guid: da93a8f86ea8842469833bde50261eba, type: 2}
+    - target: {fileID: 2737446823111496146, guid: 7e306587d0663164d853049beebecdf9, type: 3}
+      propertyPath: itemFlag
+      value: 34
+      objectReference: {fileID: 0}
     - target: {fileID: 2737446823111496146, guid: 7e306587d0663164d853049beebecdf9, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
