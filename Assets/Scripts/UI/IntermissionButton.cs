@@ -33,13 +33,19 @@ public class IntermissionButton : MonoBehaviour
         public string description { get; set; }
         public int price { get; set; }
         public string prefabname;
+        public enum Type
+        {
+            Main,
+            Shoulder
+        }
+        public Type type;
     }
 
     ShopItemWeapon[] shopItemWeapons =
     {
-        new ShopItemWeapon{name = "ビームライフル1",description="火力と取り回しを両立したビーム兵器。",price=2500,prefabname="BeamRifle Variant" },
-        new ShopItemWeapon{name = "バズーカ1",description="実体弾を発射する両手持ちの火器。",price=1000,prefabname="Bazooka Variant" },
-        new ShopItemWeapon{name = "ミサイルポッド1",description="固定式のミサイル発射装置。",price=1500,prefabname="MissilePod Variant" },
+        new ShopItemWeapon{name = "ビームライフル1",description="火力と取り回しを両立したビーム兵器。",price=2500,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "バズーカ1",description="実体弾を発射する両手持ちの火器。",price=1000,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
+        new ShopItemWeapon{name = "ミサイルポッド1",description="固定式のミサイル発射装置。",price=1500,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
     };
 
     [System.NonSerialized] List<ShopItemWeapon> shopWeapons = new List<ShopItemWeapon>();
@@ -153,7 +159,15 @@ public class IntermissionButton : MonoBehaviour
         if (item is ShopItemWeapon)
         {
             ShopItemWeapon weapon = item as ShopItemWeapon;
-            if (gameState.rightWeapon_name == weapon.prefabname)
+
+            bool equipped;
+
+            if (weapon.type == ShopItemWeapon.Type.Main)
+                equipped = gameState.rightWeapon_name == weapon.prefabname;
+            else
+                equipped = gameState.shoulderWeapon_name == weapon.prefabname;
+
+            if (equipped)
                 itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "装備中";
             else
                 itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";
@@ -235,14 +249,24 @@ public class IntermissionButton : MonoBehaviour
         if (selectedItem is ShopItemWeapon)
         {
             ShopItemWeapon selectedweapon = selectedItem as ShopItemWeapon;
-            gameState.rightWeapon_name = selectedweapon.prefabname;
-       
 
-            foreach(var itemPanel in inventryPartsPanel)
+            if(selectedweapon.type == ShopItemWeapon.Type.Main)
+                gameState.rightWeapon_name = selectedweapon.prefabname;
+            else
+                gameState.shoulderWeapon_name = selectedweapon.prefabname;
+
+            foreach (var itemPanel in inventryPartsPanel)
             {
                 ShopItemWeapon weapon = itemPanel.Item2 as ShopItemWeapon;
 
-                if (gameState.rightWeapon_name == weapon.prefabname)
+                bool equipped;
+
+                if (weapon.type == ShopItemWeapon.Type.Main)
+                    equipped = gameState.rightWeapon_name == weapon.prefabname;
+                else
+                    equipped = gameState.shoulderWeapon_name == weapon.prefabname;
+
+                if (equipped)
                     itemPanel.Item1.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "装備中";
                 else
                     itemPanel.Item1.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";

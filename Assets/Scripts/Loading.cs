@@ -29,9 +29,26 @@ public class Loading : MonoBehaviour
 	{
 		if (gameState.stage >= 1 && gameState.stage <= 6)
 		{
+			if (gameState.shoulderWeapon_name != null && gameState.shoulderWeapon_name != "")
+            {
+				gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Shoulder");
+			}
+			else
+				gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Std");
+
 			RobotController.RobotParameter robotParameter = gameState.player_variant.GetComponent<RobotController>().robotParameter;
 
-			robotParameter.rweapon_prefab = (GameObject)Resources.Load($"Weapons/{gameState.rightWeapon_name}");
+			if (gameState.rightWeapon_name != null && gameState.rightWeapon_name!="")
+				robotParameter.rweapon_prefab = (GameObject)Resources.Load($"Weapons/{gameState.rightWeapon_name}");
+			else
+				robotParameter.rweapon_prefab = null;
+
+			if (gameState.shoulderWeapon_name != null && gameState.shoulderWeapon_name != "")
+				robotParameter.subweapon_prefab = (GameObject)Resources.Load($"Weapons/{gameState.shoulderWeapon_name}");
+			else
+				robotParameter.subweapon_prefab = null;
+
+
 			async = SceneManager.LoadSceneAsync($"Stage{gameState.stage}");
 		}
 		else
