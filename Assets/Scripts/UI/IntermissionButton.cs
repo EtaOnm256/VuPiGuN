@@ -149,6 +149,23 @@ public class IntermissionButton : MonoBehaviour
         shopItemPanel.Add((itemPanel, item)); 
     }
 
+    bool IsEquipped(ShopItem item)
+    {
+        if (item is ShopItemWeapon)
+        {
+            ShopItemWeapon weapon = item as ShopItemWeapon;
+
+           
+
+            if (weapon.type == ShopItemWeapon.Type.Main)
+                return gameState.rightWeapon_name == weapon.prefabname;
+            else
+                return gameState.shoulderWeapon_name == weapon.prefabname;
+        }
+        else
+            return false;
+    }
+
     public void AddItemToGaragePanel<T>(GameObject containerPanel, T item) where T : ShopItem
     {
         GameObject itemPanel = Instantiate(item_prefab, containerPanel.transform);
@@ -156,24 +173,11 @@ public class IntermissionButton : MonoBehaviour
 
         itemPanel.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = item.name;
 
-        if (item is ShopItemWeapon)
-        {
-            ShopItemWeapon weapon = item as ShopItemWeapon;
-
-            bool equipped;
-
-            if (weapon.type == ShopItemWeapon.Type.Main)
-                equipped = gameState.rightWeapon_name == weapon.prefabname;
-            else
-                equipped = gameState.shoulderWeapon_name == weapon.prefabname;
-
-            if (equipped)
-                itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "‘•”õ’†";
-            else
-                itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";
-        }
+        if (IsEquipped(item))
+            itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "‘•”õ’†";
         else
             itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";
+      
 
         inventryPartsPanel.Add((itemPanel,item));
     }
@@ -216,6 +220,12 @@ public class IntermissionButton : MonoBehaviour
                 image.color = new Color(0.627451f, 0.627451f, 0.0f, 0.75f);
                 descriptionText.text = selectedItem.description;
                 buyOrEquippedButtonObj.SetActive(true);
+
+                if (IsEquipped(itemPair.Item2))
+                    buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "ŠO‚·";
+                else
+                    buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "‘•”õ";
+
                 buyOrEquippedButtonObj.GetComponent<Button>().onClick.RemoveAllListeners();
                 buyOrEquippedButtonObj.GetComponent<Button>().onClick.AddListener(() => { EquipItem(selectedItem, selectedItemPanel); });
             }
@@ -250,23 +260,28 @@ public class IntermissionButton : MonoBehaviour
         {
             ShopItemWeapon selectedweapon = selectedItem as ShopItemWeapon;
 
-            if(selectedweapon.type == ShopItemWeapon.Type.Main)
-                gameState.rightWeapon_name = selectedweapon.prefabname;
+            string value;
+
+            if (IsEquipped(selectedweapon))
+            {
+                value = null;
+                buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "‘•”õ";
+            }
             else
-                gameState.shoulderWeapon_name = selectedweapon.prefabname;
+            {
+                value = selectedweapon.prefabname;
+                buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "ŠO‚·";
+            }
+
+            if (selectedweapon.type == ShopItemWeapon.Type.Main)
+                gameState.rightWeapon_name = value;
+            else
+                gameState.shoulderWeapon_name = value;
+         
 
             foreach (var itemPanel in inventryPartsPanel)
             {
-                ShopItemWeapon weapon = itemPanel.Item2 as ShopItemWeapon;
-
-                bool equipped;
-
-                if (weapon.type == ShopItemWeapon.Type.Main)
-                    equipped = gameState.rightWeapon_name == weapon.prefabname;
-                else
-                    equipped = gameState.shoulderWeapon_name == weapon.prefabname;
-
-                if (equipped)
+                if (IsEquipped(itemPanel.Item2))
                     itemPanel.Item1.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "‘•”õ’†";
                 else
                     itemPanel.Item1.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";
