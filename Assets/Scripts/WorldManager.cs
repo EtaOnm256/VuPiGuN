@@ -96,6 +96,8 @@ public class WorldManager : MonoBehaviour
     public bool finished = false;
     public bool victory = false;
 
+    public int player_dealeddamage = 0;
+
     public int finish_timer = 0;
 
     public RobotController finish_dealer;
@@ -120,7 +122,7 @@ public class WorldManager : MonoBehaviour
         Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
         Team friend_team = new Team {power = 1000,powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = 1000, powerslider = enemyPowerSlider };
+        Team enemy_team = new Team { power = 1, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
@@ -431,6 +433,12 @@ public class WorldManager : MonoBehaviour
                     if (!canvasControl.ResultCanvas.gameObject.activeSelf)
                     {
                         canvasControl.resultCanvas.power = teams[0].power;
+                        canvasControl.resultCanvas.dealeddamage = player_dealeddamage;
+                        canvasControl.resultCanvas.power_gold = teams[0].power;
+                        canvasControl.resultCanvas.dealeddamage_gold = player_dealeddamage;
+
+                        gameState.gold += canvasControl.resultCanvas.power_gold + canvasControl.resultCanvas.dealeddamage_gold;
+
                         canvasControl.resultCanvas.victory = victory;
                         canvasControl.ResultCanvas.gameObject.SetActive(true);
 
@@ -500,6 +508,8 @@ public class WorldManager : MonoBehaviour
 
             finish_victim = robotController;
             finish_dealer = dealer;
+            // Œˆ’…‚ª‚Â‚¢‚½Œã‚Ì“®‚«‚ÅWŒv‚É‰e‹¿‚ªo‚È‚¢‚æ‚¤‚É
+            canvasControl.resultCanvas.dealeddamage = player_dealeddamage;
             finish_dir = dir;
 
             victory = robotController.team != teams[0];

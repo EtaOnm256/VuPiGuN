@@ -1003,7 +1003,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u88C5\u5099\u8CFC\u5165"
+  m_text: "\u30B7\u30E7\u30C3\u30D7"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 66e20c8c97e56b646b9e5b3f77cbc265, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 08bff8551d77fed4aa5b64152dfa57d3, type: 2}
@@ -2909,7 +2909,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u88C5\u5099\u9078\u629E"
+  m_text: "\u30CF\u30F3\u30AC\u30FC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 66e20c8c97e56b646b9e5b3f77cbc265, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 08bff8551d77fed4aa5b64152dfa57d3, type: 2}
@@ -4042,6 +4042,7 @@ MonoBehaviour:
   ShopPanel: {fileID: 972623077}
   GaragePanel: {fileID: 1061341077}
   item_prefab: {fileID: 7804461834896283984, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
+  goldText: {fileID: 147181993}
 --- !u!224 &2122528706 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}

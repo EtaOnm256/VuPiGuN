@@ -72,8 +72,9 @@ public class IntermissionButton : MonoBehaviour
 
     List<(GameObject,ShopItem)> shopItemPanel = new List<(GameObject, ShopItem)>();
 
-    List<(GameObject, ShopItem)> inventryPartsPanel = new List<(GameObject, ShopItem)>();
+    List<(GameObject, ShopItem)> inventryItemPanel = new List<(GameObject, ShopItem)>();
 
+    [SerializeField] TextMeshProUGUI goldText;
     public bool LotteryItem<T>(T[] pool,List<T> chosen, int rarity, int count,List<T> inventry) where T :  ShopItem
     {
         List<T> remainItem = new List<T>();
@@ -163,7 +164,12 @@ public class IntermissionButton : MonoBehaviour
                 return gameState.shoulderWeapon_name == weapon.prefabname;
         }
         else
-            return false;
+        {
+            ShopItemParts parts = item as ShopItemParts;
+
+            return gameState.itemFlag.HasFlag(parts.itemFlag);
+        }
+        
     }
 
     public void AddItemToGaragePanel<T>(GameObject containerPanel, T item) where T : ShopItem
@@ -179,7 +185,7 @@ public class IntermissionButton : MonoBehaviour
             itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";
       
 
-        inventryPartsPanel.Add((itemPanel,item));
+        inventryItemPanel.Add((itemPanel,item));
     }
 
     public void SetSelect_Shop<T>(T selectedItem,GameObject selectedItemPanel) where T:ShopItem
@@ -211,7 +217,7 @@ public class IntermissionButton : MonoBehaviour
 
     public void SetSelect_Garage<T>(T selectedItem, GameObject selectedItemPanel) where T : ShopItem
     {
-        foreach (var itemPair in inventryPartsPanel)
+        foreach (var itemPair in inventryItemPanel)
         {
             Image image = itemPair.Item1.GetComponent<Image>();
 
@@ -247,10 +253,14 @@ public class IntermissionButton : MonoBehaviour
         {
             shopItemPanel.Remove((selectedItemPanel, selectedItem));
             GameObject.Destroy(selectedItemPanel);
-            gameState.gold -= selectedItem.price;
 
-            if(selectedItem is ShopItemWeapon)
+            gameState.gold -= selectedItem.price;
+            goldText.text = $"${gameState.gold.ToString()}";
+
+            if (selectedItem is ShopItemWeapon)
                 gameState.inventryWeapons.Add(selectedItem as ShopItemWeapon);
+            else
+                gameState.inventryParts.Add(selectedItem as ShopItemParts);
         }
     }
 
@@ -277,16 +287,34 @@ public class IntermissionButton : MonoBehaviour
                 gameState.rightWeapon_name = value;
             else
                 gameState.shoulderWeapon_name = value;
-         
+        }
+        else
+        {
+            ShopItemParts selectedparts = selectedItem as ShopItemParts;
 
-            foreach (var itemPanel in inventryPartsPanel)
+    
+            if (IsEquipped(selectedparts))
             {
-                if (IsEquipped(itemPanel.Item2))
-                    itemPanel.Item1.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "‘•”õ’†";
-                else
-                    itemPanel.Item1.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";
+                gameState.itemFlag &= ~selectedparts.itemFlag;
+                buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "‘•”õ";
+            }
+            else
+            {
+                gameState.itemFlag |= selectedparts.itemFlag;
+                buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "ŠO‚·";
             }
         }
+
+       
+
+        foreach (var itemPanel in inventryItemPanel)
+        {
+            if (IsEquipped(itemPanel.Item2))
+                itemPanel.Item1.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "‘•”õ’†";
+            else
+                itemPanel.Item1.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";
+        }
+
 
         //SwitchToGarage();
     }
@@ -309,7 +337,7 @@ public class IntermissionButton : MonoBehaviour
                 AddItemToShopPanel(weaponListPanel, shopWeapons[i]);
         }
 
-        LotteryItem<ShopItemParts>(shopItemParts, shopParts, 0, 3,null);
+        LotteryItem<ShopItemParts>(shopItemParts, shopParts, 0, 3, gameState.inventryParts);
 
         GameObject partsListPanel = ShopPanel.transform.Find("UpgradePartsListPanel").Find("Viewport").Find("Content").gameObject;
 
@@ -318,6 +346,8 @@ public class IntermissionButton : MonoBehaviour
             if (i < shopParts.Count)
                 AddItemToShopPanel(partsListPanel, shopParts[i]);
         }
+
+        goldText.text = $"${gameState.gold.ToString()}";
     }
     void SwitchToShop()
     {
@@ -333,25 +363,31 @@ public class IntermissionButton : MonoBehaviour
 
     void SwitchToGarage()
     {
+
+        inventryItemPanel.Clear();
+
         GameObject weaponListPanel = GaragePanel.transform.Find("WeaponListPanel").Find("Viewport").Find("Content").gameObject;
 
         for (int i = 0; i < weaponListPanel.transform.childCount; i++)
             GameObject.Destroy(weaponListPanel.transform.GetChild(i).gameObject);
 
-        inventryPartsPanel.Clear();
 
         for (int i = 0; i < gameState.inventryWeapons.Count; i++)
         {
             AddItemToGaragePanel(weaponListPanel, gameState.inventryWeapons[i]);
         }
 
+
+
         GameObject partsListPanel = GaragePanel.transform.Find("UpgradePartsListPanel").Find("Viewport").Find("Content").gameObject;
 
-        /*for (int i = 0; i < 3; i++)
+        for (int i = 0; i < partsListPanel.transform.childCount; i++)
+            GameObject.Destroy(partsListPanel.transform.GetChild(i).gameObject);
+
+        for (int i = 0; i < gameState.inventryParts.Count; i++)
         {
-            if (i < chosenParts.Count)
-                AddItemToGaragePanel(partsListPanel, chosenParts[i]);
-        }*/
+            AddItemToGaragePanel(partsListPanel, gameState.inventryParts[i]);
+        }
 
         descriptionText = GaragePanel.transform.Find("SelectedItemPanel").Find("Description").GetComponent<TextMeshProUGUI>();
         buyOrEquippedButtonObj = GaragePanel.transform.Find("SelectedItemPanel").Find("BuyOrEquipButton").gameObject;

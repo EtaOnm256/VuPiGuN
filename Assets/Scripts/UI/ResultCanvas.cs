@@ -11,6 +11,7 @@ public class ResultCanvas : MonoBehaviour
     [SerializeField] TextMeshProUGUI bigResultText;
     [SerializeField]TextMeshProUGUI summaryLabel;
     [SerializeField] TextMeshProUGUI summaryValue;
+    [SerializeField] TextMeshProUGUI summaryGold;
     [SerializeField] Image background;
     [SerializeField] GameState gameState;
     [SerializeField] Image blackout;
@@ -18,6 +19,10 @@ public class ResultCanvas : MonoBehaviour
     public bool victory;
 
     public int power;
+    public int dealeddamage;
+
+    public int power_gold;
+    public int dealeddamage_gold;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +32,8 @@ public class ResultCanvas : MonoBehaviour
 
     private void OnEnable()
     {
-        summaryValue.text = power.ToString();
+        summaryValue.text = power.ToString()+"\n"+ dealeddamage.ToString()+"\n ";
+        summaryGold.text = power_gold.ToString() + "\n" + dealeddamage_gold.ToString() + "\n" + (power_gold+ dealeddamage_gold).ToString();
 
         if (victory)
         {

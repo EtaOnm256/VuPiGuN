@@ -48,6 +48,7 @@ public class Loading : MonoBehaviour
 			else
 				robotParameter.subweapon_prefab = null;
 
+			robotParameter.itemFlag = gameState.itemFlag;
 
 			async = SceneManager.LoadSceneAsync($"Stage{gameState.stage}");
 		}

@@ -320,6 +320,7 @@ public class RobotController : Pausable
     private int death_timer = 0;
     private int death_timer_max = 30;
 
+
     RobotController finish_dealer;
     Vector3 finish_dir;
 
@@ -511,8 +512,7 @@ public class RobotController : Pausable
         FlightUnit = 1 << 6
     }
 
-    public ItemFlag itemFlag = 0;
-    //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
+ 
 
     public AudioSource audioSource;
     public AudioSource audioSource_Boost;
@@ -534,7 +534,7 @@ public class RobotController : Pausable
 
         HP = Math.Max(0, HP - damage);
 
-        if (is_player || dealer.is_player)
+        if (is_player || (dealer && dealer.is_player))
         {
             GameObject damageText_obj = GameObject.Instantiate(is_player ? damageText_player_prefab : damageText_prefab, HUDCanvas.transform);
             RectTransform rectTransform = damageText_obj.GetComponent<RectTransform>();
@@ -544,7 +544,7 @@ public class RobotController : Pausable
             damageText.rectTransform = rectTransform;
             damageText.canvasTransform = HUDCanvas.GetComponent<RectTransform>();
             damageText.uiCamera = uIController_Overlay.uiCamera;
-            damageText.from_player = dealer.is_player;
+            damageText.from_player = (dealer && dealer.is_player);
             damageText.damage = damage;
             //damageText.worldManager = worldManager;
         }
@@ -558,6 +558,10 @@ public class RobotController : Pausable
         }
 
         _animator.speed = 1.0f;
+
+        //将来的にはDoDamageを作ってそっちで処理
+        if(dealer && dealer.is_player)
+            WorldManager.current_instance.player_dealeddamage += damage;
 
         if (knockBackType != KnockBackType.None || dead)
         {
@@ -673,7 +677,7 @@ public class RobotController : Pausable
 
         }
 
-    
+        
     }
 
     private void TargetEnemy(RobotController robotController)
@@ -831,7 +835,6 @@ public class RobotController : Pausable
 
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;
-
     }
 
     private bool ConsumeBoost(int amount)
@@ -2454,7 +2457,7 @@ public class RobotController : Pausable
                         }
                         else
                         {
-                            if (itemFlag.HasFlag(ItemFlag.FlightUnit))
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
                                 RegenBoost();
 
                             AcceptDash();
@@ -2509,7 +2512,7 @@ public class RobotController : Pausable
                     if (_animationBlend < 0.01f) _animationBlend = 0f;
 
                     // 滑り撃ちのときは、LowerBodyMove()末尾の別個処理でやってる
-                    if (event_heavyfired && !(itemFlag.HasFlag(ItemFlag.Hovercraft) && lowerBodyState == LowerBodyState.HEAVYFIRE))
+                    if (event_heavyfired && !(robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) && lowerBodyState == LowerBodyState.HEAVYFIRE))
                     {
                         if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
                         {
@@ -2589,15 +2592,15 @@ public class RobotController : Pausable
 
                     if (lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE)
                     {
-                        if (itemFlag.HasFlag(ItemFlag.NextDrive))
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                             AcceptDash();
 
-                        if (itemFlag.HasFlag(ItemFlag.FlightUnit))
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
                             RegenBoost();
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                             AcceptStep(true);
                     }
 
@@ -2640,7 +2643,7 @@ public class RobotController : Pausable
                             {
                                 _speed = 0.0f;
 
-                                if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND && itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND && robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                                     AcceptStep(true);
 
                                 if (event_grounded)
@@ -2783,7 +2786,7 @@ public class RobotController : Pausable
                     {
                         _targetRotation = transform.eulerAngles.y;
                     }*/
-                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, itemFlag.HasFlag(ItemFlag.VerticalVernier) ? 360.0f : AirDashRotateSpeed);
+                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.itemFlag.HasFlag(ItemFlag.VerticalVernier) ? 360.0f : AirDashRotateSpeed);
 
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -2797,7 +2800,7 @@ public class RobotController : Pausable
                         _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
                         event_dashed = false;
 
-                        if (itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
                         {
                             _speed = SprintSpeed * 2;
                         }
@@ -2850,7 +2853,7 @@ public class RobotController : Pausable
                         {
                             if (stepremain <= 0)
                             {
-                                if (itemFlag.HasFlag(ItemFlag.GroundBoost) && ConsumeBoost(4))
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.GroundBoost) && ConsumeBoost(4))
                                 {
 
                                 }
@@ -2863,10 +2866,10 @@ public class RobotController : Pausable
                             TransitLowerBodyState(LowerBodyState.STEPGROUND);
                         else
                         {
-                            if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                                 AcceptStep(true);
 
-                            if (itemFlag.HasFlag(ItemFlag.VerticalVernier))
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.VerticalVernier))
                             {
                                 // normalise input direction
                                 Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
@@ -3126,12 +3129,12 @@ public class RobotController : Pausable
 
                     if (lowerBodyState == LowerBodyState.AIRSLASH_DASH || lowerBodyState == LowerBodyState.DASHSLASH_DASH)
                     {
-                        if (itemFlag.HasFlag(ItemFlag.NextDrive))
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                             AcceptDash();
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                             AcceptStep(true);
                     }
                 }
@@ -3471,12 +3474,12 @@ public class RobotController : Pausable
 
                     if (lowerBodyState == LowerBodyState.AirSlash || lowerBodyState == LowerBodyState.DashSlash)
                     {
-                        if (itemFlag.HasFlag(ItemFlag.NextDrive))
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                             AcceptDash();
                     }
                     else
                     {
-                        if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                             AcceptStep(true);
                     }
 
@@ -3718,7 +3721,7 @@ public class RobotController : Pausable
             MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
         }
-        else if (itemFlag.HasFlag(ItemFlag.Hovercraft) &&
+        else if (robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) &&
             (lowerBodyState == LowerBodyState.STEPGROUND || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.FIRE
             || lowerBodyState == LowerBodyState.HEAVYFIRE))
         {
@@ -4225,11 +4228,11 @@ public class RobotController : Pausable
 
     void AcceptDash()
     {
-        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint)))
+        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint)))
         {
             if (ConsumeBoost(4))
             {
-                if (itemFlag.HasFlag(ItemFlag.NextDrive))
+                if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                 {
                     upperBodyState = UpperBodyState.STAND;
                     fire_followthrough = 0;
@@ -4254,7 +4257,7 @@ public class RobotController : Pausable
                     _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
                     event_dashed = false;
 
-                    if (itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
                     {
                         _speed = SprintSpeed * 2;
                     }
@@ -4282,7 +4285,7 @@ public class RobotController : Pausable
     {
         if (upperBodyState != UpperBodyState.STAND)
         {
-            if (itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
             {
                 canceling = true;
             }
@@ -4292,7 +4295,7 @@ public class RobotController : Pausable
 
         if (_input.sprint && (!canceling || ConsumeBoost(40)))
         {
-            if (itemFlag.HasFlag(ItemFlag.ExtremeSlide))
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide))
             {
                 upperBodyState = UpperBodyState.STAND;
                 fire_followthrough = 0;
@@ -4300,7 +4303,7 @@ public class RobotController : Pausable
 
            StartStep();
 
-            if (itemFlag.HasFlag(ItemFlag.QuickIgniter))
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
             {
                 _speed = SprintSpeed * 2;
             }
@@ -4343,6 +4346,8 @@ public class RobotController : Pausable
         public GameObject subweapon_prefab = null;
         public bool weapon_chest_paired = false;
         public bool dualwield_lightweapon = false;
+        public ItemFlag itemFlag = 0;
+        //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
     }
 
     public RobotParameter robotParameter;

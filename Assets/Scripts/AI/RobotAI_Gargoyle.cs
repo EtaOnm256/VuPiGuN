@@ -289,7 +289,7 @@ public class RobotAI_Gargoyle : InputBase
 
                                 if (robotController.shoulderWeapon != null)
                                 {
-                                    if (robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                                    if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                     {
                                         if (robotController.upperBodyState == RobotController.UpperBodyState.SUBFIRE && robotController.shoulderWeapon.canHold)
                                         {
@@ -316,7 +316,7 @@ public class RobotAI_Gargoyle : InputBase
                                     if ( (floorhit.distance > 25.0f
                                             || robotController._verticalVelocity < -robotController.AscendingVelocity * 3 / 4)
                                             && ( (robotController.upperBodyState != RobotController.UpperBodyState.FIRE && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
-                                                  || robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive)
+                                                  || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive)
                                                   ))
                                     {
                                         state = State.Dash;
@@ -391,7 +391,7 @@ public class RobotAI_Gargoyle : InputBase
                                 }
                                 else
                                 {
-                                    if (robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                                    if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                     {
                                         if (!robotController.rightWeapon.canHold && robotController.fire_followthrough > 0 && prev_sprint)
                                         {
@@ -423,7 +423,7 @@ public class RobotAI_Gargoyle : InputBase
                                     ground_step_remain = 2;
                                 }
 
-                                /*if (robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                                /*if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                 {
                                     if (robotController.boost > robotController.Boost_Max*3/4)
                                     {
@@ -466,7 +466,7 @@ public class RobotAI_Gargoyle : InputBase
                     else if(jumpinfight_reload > 0)
                         jumpinfight_reload--;
 
-                    /*if(robotController.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide) && robotController.lowerBodyState == RobotController.LowerBodyState.JUMPSLASH_GROUND)
+                    /*if(robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide) && robotController.lowerBodyState == RobotController.LowerBodyState.JUMPSLASH_GROUND)
                     {
                         robotController.
                     }*/
@@ -507,7 +507,7 @@ public class RobotAI_Gargoyle : InputBase
                         }
                         else
                         {
-                            if (robotController.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                            if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                             {
                                 fire = allow_fire;
                             }
