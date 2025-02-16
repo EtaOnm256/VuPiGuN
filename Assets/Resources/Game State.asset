@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: Game State
   m_EditorClassIdentifier: 
   stage: 1
-  gold: 0
-  inventryWeapons: []
+  intermission: 0
+  gold: 2400
+  inventryWeapons:
+  - prefabname: Bazooka Variant
+    type: 0
   inventryParts: []
   rightWeapon_name: 
   shoulderWeapon_name: 

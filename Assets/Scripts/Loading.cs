@@ -29,28 +29,37 @@ public class Loading : MonoBehaviour
 	{
 		if (gameState.stage >= 1 && gameState.stage <= 6)
 		{
-			if (gameState.shoulderWeapon_name != null && gameState.shoulderWeapon_name != "")
+			if(gameState.intermission)
             {
-				gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Shoulder");
+				async = SceneManager.LoadSceneAsync($"Intermission");
 			}
 			else
-				gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Std");
+            {
+				if (gameState.shoulderWeapon_name != null && gameState.shoulderWeapon_name != "")
+				{
+					gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Shoulder");
+				}
+				else
+					gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Std");
 
-			RobotController.RobotParameter robotParameter = gameState.player_variant.GetComponent<RobotController>().robotParameter;
+				RobotController.RobotParameter robotParameter = gameState.player_variant.GetComponent<RobotController>().robotParameter;
 
-			if (gameState.rightWeapon_name != null && gameState.rightWeapon_name!="")
-				robotParameter.rweapon_prefab = (GameObject)Resources.Load($"Weapons/{gameState.rightWeapon_name}");
-			else
-				robotParameter.rweapon_prefab = null;
+				if (gameState.rightWeapon_name != null && gameState.rightWeapon_name != "")
+					robotParameter.rweapon_prefab = (GameObject)Resources.Load($"Weapons/{gameState.rightWeapon_name}");
+				else
+					robotParameter.rweapon_prefab = null;
 
-			if (gameState.shoulderWeapon_name != null && gameState.shoulderWeapon_name != "")
-				robotParameter.subweapon_prefab = (GameObject)Resources.Load($"Weapons/{gameState.shoulderWeapon_name}");
-			else
-				robotParameter.subweapon_prefab = null;
+				if (gameState.shoulderWeapon_name != null && gameState.shoulderWeapon_name != "")
+					robotParameter.subweapon_prefab = (GameObject)Resources.Load($"Weapons/{gameState.shoulderWeapon_name}");
+				else
+					robotParameter.subweapon_prefab = null;
 
-			robotParameter.itemFlag = gameState.itemFlag;
+				robotParameter.itemFlag = gameState.itemFlag;
 
-			async = SceneManager.LoadSceneAsync($"Stage{gameState.stage}");
+				async = SceneManager.LoadSceneAsync($"Stage{gameState.stage}");
+			}
+
+		
 		}
 		else
 		{

@@ -45,6 +45,7 @@ public class TitleButton : MonoBehaviour
             yield return wait;
         }
 
+        gameState.Reset();
         SceneManager.LoadScene("Loading");
     }
 }

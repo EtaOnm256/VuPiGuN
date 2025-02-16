@@ -260,7 +260,12 @@ public class IntermissionButton : MonoBehaviour
             if (selectedItem is ShopItemWeapon)
                 gameState.inventryWeapons.Add(selectedItem as ShopItemWeapon);
             else
-                gameState.inventryParts.Add(selectedItem as ShopItemParts);
+            {
+                ShopItemParts selectedParts = selectedItem as ShopItemParts;
+
+                gameState.itemFlag |= selectedParts.itemFlag;
+                gameState.inventryParts.Add(selectedParts);
+            }
         }
     }
 
@@ -322,6 +327,7 @@ public class IntermissionButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine("Blackin");
         SetupShop();
         SwitchToShop();
     }
@@ -438,6 +444,21 @@ public class IntermissionButton : MonoBehaviour
             yield return wait;
         }
 
+        gameState.intermission = false;
+
         SceneManager.LoadScene("Loading");
+    }
+
+    IEnumerator Blackin()
+    {
+
+        var wait = new WaitForSeconds(Time.deltaTime);
+
+        int count = 60;
+        while (count-- >= 0)
+        {
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 60.0f);
+            yield return wait;
+        }
     }
 }

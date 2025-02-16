@@ -24,6 +24,8 @@ public class ResultCanvas : MonoBehaviour
     public int power_gold;
     public int dealeddamage_gold;
 
+    public int currentgold;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,8 +34,8 @@ public class ResultCanvas : MonoBehaviour
 
     private void OnEnable()
     {
-        summaryValue.text = power.ToString()+"\n"+ dealeddamage.ToString()+"\n ";
-        summaryGold.text = power_gold.ToString() + "\n" + dealeddamage_gold.ToString() + "\n" + (power_gold+ dealeddamage_gold).ToString();
+        summaryValue.text = power.ToString()+"\n"+ dealeddamage.ToString()+ "\n \n \n ";
+        summaryGold.text = "$"+power_gold.ToString() + "\n" + "$" + dealeddamage_gold.ToString() + "\n" + "$" + (power_gold+ dealeddamage_gold).ToString()+  "\n" + "\n " + "$" +currentgold;
 
         if (victory)
         {
@@ -82,6 +84,8 @@ public class ResultCanvas : MonoBehaviour
             blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 60.0f);
             yield return wait;
         }
+
+        gameState.intermission = true;
 
         SceneManager.LoadScene("Loading");
     }
