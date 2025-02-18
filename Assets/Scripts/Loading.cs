@@ -37,7 +37,10 @@ public class Loading : MonoBehaviour
             {
 				if (gameState.shoulderWeapon_name != null && gameState.shoulderWeapon_name != "")
 				{
-					gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Shoulder");
+					if(gameState.subWeaponType == IntermissionButton.ShopItemWeapon.Type.Shoulder)
+						gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Shoulder");
+					else
+						gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Back");
 				}
 				else
 					gameState.player_variant = (GameObject)Resources.Load($"Robots/Robot6_Variant/Robot6 Std");

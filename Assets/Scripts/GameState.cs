@@ -10,6 +10,7 @@ public class GameState : ScriptableObject
     public List<IntermissionButton.ShopItemParts> inventryParts = new List<IntermissionButton.ShopItemParts>();
     public string rightWeapon_name;
     public string shoulderWeapon_name;
+    public IntermissionButton.ShopItemWeapon.Type subWeaponType;
 
     public RobotController.ItemFlag itemFlag;
 

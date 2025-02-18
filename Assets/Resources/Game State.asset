@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stage: 1
   intermission: 0
-  gold: 2400
+  gold: 0
   inventryWeapons:
-  - prefabname: Bazooka Variant
-    type: 0
+  - prefabname: MissilePod Variant
+    type: 1
   inventryParts: []
   rightWeapon_name: 
-  shoulderWeapon_name: 
+  shoulderWeapon_name: MissilePod Variant
+  subWeaponType: 1
   itemFlag: 0
-  player_variant: {fileID: 6538551618372168848, guid: e5b847e64d4db7744b75ecf8922a0b16, type: 3}
+  player_variant: {fileID: 7622608550062222278, guid: a1824583b2b1e6f41b125baa365ae237, type: 3}

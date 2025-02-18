@@ -36,16 +36,21 @@ public class IntermissionButton : MonoBehaviour
         public enum Type
         {
             Main,
-            Shoulder
+            Shoulder,
+            Back
         }
         public Type type;
     }
 
     ShopItemWeapon[] shopItemWeapons =
     {
-        new ShopItemWeapon{name = "ビームライフル1",description="火力と取り回しを両立したビーム兵器。",price=2500,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "バズーカ1",description="実体弾を発射する両手持ちの火器。",price=1000,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
-        new ShopItemWeapon{name = "ミサイルポッド1",description="固定式のミサイル発射装置。",price=1500,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{name = "ビームライフル1",description="火力と取り回しを両立したビーム兵器。",price=3500,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "バズーカ1",description="実体弾を発射する両手持ちの火器。",price=1500,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
+        new ShopItemWeapon{name = "ミサイルポッド1",description="固定式のミサイル発射装置。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{name = "サブマシンガン1",description="小型の機関銃。連射は速いが、相手がよろけない。",price=1500,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ソリッドライフル1",description="コストの安い実弾兵器。",price=1000,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ハンドキャノン1",description="両手持ちの榴弾砲。反動が大きい。",price=2000,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ドローン1",description="子機を射出し、敵を攻撃させる。",price=3000,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
     };
 
     [System.NonSerialized] List<ShopItemWeapon> shopWeapons = new List<ShopItemWeapon>();
@@ -291,7 +296,11 @@ public class IntermissionButton : MonoBehaviour
             if (selectedweapon.type == ShopItemWeapon.Type.Main)
                 gameState.rightWeapon_name = value;
             else
+            {
                 gameState.shoulderWeapon_name = value;
+                if (value != null)
+                    gameState.subWeaponType = selectedweapon.type;
+            }
         }
         else
         {
