@@ -57,13 +57,17 @@ PrefabInstance:
       value: Robot6 Shoulder
       objectReference: {fileID: 0}
     - target: {fileID: 6968257580246755548, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
+      propertyPath: robotParameter.itemFlag
+      value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 6968257580246755548, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
       propertyPath: robotParameter.lweapon_prefab
       value: 
       objectReference: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
     - target: {fileID: 6968257580246755548, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
-      objectReference: {fileID: 8644445284198780509, guid: 8bef375028f1e5a4db0058f4eda103f0, type: 3}
+      objectReference: {fileID: 8399022032530343097, guid: b0ba637833460744fa2a6ed6bcb7106e, type: 3}
     - target: {fileID: 6968257580246755548, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
       propertyPath: robotParameter.subweapon_prefab
       value: 
