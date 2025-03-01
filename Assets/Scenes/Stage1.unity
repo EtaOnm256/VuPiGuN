@@ -3366,7 +3366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.data[0].squadCount
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311151, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: m_RootOrder
@@ -3545,6 +3545,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5147641053534289355, guid: 4f2345fd9d0d62b459aa9797313e3dff, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5260309208511644163, guid: 4f2345fd9d0d62b459aa9797313e3dff, type: 3}
+      propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7530121286576894477, guid: 4f2345fd9d0d62b459aa9797313e3dff, type: 3}

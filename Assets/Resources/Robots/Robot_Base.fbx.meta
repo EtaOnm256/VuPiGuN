@@ -203,9 +203,7 @@ ModelImporter:
       clip's valid range (0.000000..8.375000). It will never be firedEvent OnStepped
       has a time (0.792789) outside the clip's valid range (0.000000..0.791667).
       It will never be firedEvent OnStepped has a time (0.792789) outside the clip's
-      valid range (0.000000..0.791667). It will never be firedEvent OnSlashEnd has
-      a time (6.250000) outside the clip's valid range (0.000000..4.208333). It will
-      never be fired
+      valid range (0.000000..0.791667). It will never be fired
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -1257,7 +1255,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.018970672
+      - time: 0.33669642
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
