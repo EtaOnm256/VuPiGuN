@@ -57,13 +57,17 @@ PrefabInstance:
       value: Robot6 Std
       objectReference: {fileID: 0}
     - target: {fileID: 2737446823111496146, guid: 28f1e335b9e121c4db4372d220082a56, type: 3}
+      propertyPath: robotParameter.itemFlag
+      value: 384
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 28f1e335b9e121c4db4372d220082a56, type: 3}
       propertyPath: robotParameter.lweapon_prefab
       value: 
       objectReference: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
     - target: {fileID: 2737446823111496146, guid: 28f1e335b9e121c4db4372d220082a56, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
-      objectReference: {fileID: 8644445284198780509, guid: 8bef375028f1e5a4db0058f4eda103f0, type: 3}
+      objectReference: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 28f1e335b9e121c4db4372d220082a56, type: 3}

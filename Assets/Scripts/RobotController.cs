@@ -485,21 +485,35 @@ public class RobotController : Pausable
 
     GameObject ringMenu;
     GameObject ringMenu_Center_Outline;
-    GameObject ringMenu_Center_LMB;
-    GameObject ringMenu_Center_RMB;
     GameObject ringMenu_Up_Outline;
-    GameObject ringMenu_Up_LMB;
-    GameObject ringMenu_Up_RMB;
     GameObject ringMenu_Down_Outline;
-    GameObject ringMenu_Down_LMB;
-    GameObject ringMenu_Down_RMB;
     GameObject ringMenu_Left_Outline;
-    GameObject ringMenu_Left_LMB;
-    GameObject ringMenu_Left_RMB;
     GameObject ringMenu_Right_Outline;
-    GameObject ringMenu_Right_LMB;
-    GameObject ringMenu_Right_RMB;
+
+    Image ringMenu_Center_LMB;
+    Image ringMenu_Center_RMB;
+    Image ringMenu_Up_LMB;
+    Image ringMenu_Up_RMB;
+    Image ringMenu_Down_LMB;
+    Image ringMenu_Down_RMB;
+    Image ringMenu_Left_LMB;
+    Image ringMenu_Left_RMB;
+    Image ringMenu_Right_LMB;
+    Image ringMenu_Right_RMB;
+
     RectTransform ringMenu_Cursor_rectTfm;
+
+    bool ringMenu_Center_LMB_available;
+    bool ringMenu_Center_RMB_available;
+    bool ringMenu_Up_LMB_available;
+    bool ringMenu_Up_RMB_available;
+    bool ringMenu_Down_LMB_available;
+    bool ringMenu_Down_RMB_available;
+    bool ringMenu_Left_LMB_available;
+    bool ringMenu_Left_RMB_available;
+    bool ringMenu_Right_LMB_available;
+    bool ringMenu_Right_RMB_available;
+
 
     public GameObject damageText_prefab;
     public GameObject damageText_player_prefab;
@@ -837,31 +851,32 @@ public class RobotController : Pausable
 
             ringMenu = HUDCanvas.gameObject.transform.Find("RingMenu").gameObject;
             ringMenu_Center_Outline = ringMenu.transform.Find("Center_Outline").gameObject;
-            ringMenu_Center_LMB = ringMenu.transform.Find("Center_LMB").gameObject;
-            ringMenu_Center_RMB = ringMenu.transform.Find("Center_RMB").gameObject;
+            ringMenu_Center_LMB = ringMenu.transform.Find("Center_LMB").gameObject.GetComponent<Image>();
+            ringMenu_Center_RMB = ringMenu.transform.Find("Center_RMB").gameObject.GetComponent<Image>();
             ringMenu_Up_Outline = ringMenu.transform.Find("Up_Outline").gameObject;
-            ringMenu_Up_LMB = ringMenu.transform.Find("Up_LMB").gameObject;
-            ringMenu_Up_RMB = ringMenu.transform.Find("Up_RMB").gameObject;
+            ringMenu_Up_LMB = ringMenu.transform.Find("Up_LMB").gameObject.GetComponent<Image>();
+            ringMenu_Up_RMB = ringMenu.transform.Find("Up_RMB").gameObject.GetComponent<Image>();
             ringMenu_Down_Outline = ringMenu.transform.Find("Down_Outline").gameObject;
-            ringMenu_Down_LMB = ringMenu.transform.Find("Down_LMB").gameObject;
-            ringMenu_Down_RMB = ringMenu.transform.Find("Down_RMB").gameObject;
+            ringMenu_Down_LMB = ringMenu.transform.Find("Down_LMB").gameObject.GetComponent<Image>();
+            ringMenu_Down_RMB = ringMenu.transform.Find("Down_RMB").gameObject.GetComponent<Image>();
             ringMenu_Left_Outline = ringMenu.transform.Find("Left_Outline").gameObject;
-            ringMenu_Left_LMB = ringMenu.transform.Find("Left_LMB").gameObject;
-            ringMenu_Left_RMB = ringMenu.transform.Find("Left_RMB").gameObject;
+            ringMenu_Left_LMB = ringMenu.transform.Find("Left_LMB").gameObject.GetComponent<Image>();
+            ringMenu_Left_RMB = ringMenu.transform.Find("Left_RMB").gameObject.GetComponent<Image>();
             ringMenu_Right_Outline = ringMenu.transform.Find("Right_Outline").gameObject;
-            ringMenu_Right_LMB = ringMenu.transform.Find("Right_LMB").gameObject;
-            ringMenu_Right_RMB = ringMenu.transform.Find("Right_RMB").gameObject;
+            ringMenu_Right_LMB = ringMenu.transform.Find("Right_LMB").gameObject.GetComponent<Image>();
+            ringMenu_Right_RMB = ringMenu.transform.Find("Right_RMB").gameObject.GetComponent<Image>();
+
             ringMenu_Cursor_rectTfm = ringMenu.transform.Find("Cursor").GetComponent<RectTransform>();
 
             if(robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot))
             {
-                ringMenu_Left_LMB.SetActive(true);
-                ringMenu_Right_LMB.SetActive(true);
+                ringMenu_Left_LMB.gameObject.SetActive(true);
+                ringMenu_Right_LMB.gameObject.SetActive(true);
             }
 
             if(robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash))
             {
-                ringMenu_Up_RMB.SetActive(true);
+                ringMenu_Up_RMB.gameObject.SetActive(true);
             }
         }
 
@@ -990,6 +1005,30 @@ public class RobotController : Pausable
         }
     }
 
+    static Color ringMenu_enableColor_LMB = new Color(0.0f, 0.5f, 1.0f,1.0f);
+    static Color ringMenu_disableColor_LMB = new Color(0.0f, 0.5f, 1.0f,0.25f);
+
+    static Color ringMenu_enableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 1.0f);
+    static Color ringMenu_disableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 0.25f);
+
+    static Color getRingMenuColor(bool enable,bool LMB)
+    {
+        if(LMB)
+        {
+            if (enable)
+                return ringMenu_enableColor_LMB;
+            else
+                return ringMenu_disableColor_LMB;
+        }
+        else
+        {
+            if (enable)
+                return ringMenu_enableColor_RMB;
+            else
+                return ringMenu_disableColor_RMB;
+        }
+    }
+
     protected override void OnFixedUpdate()
     {
         if (!dead)
@@ -999,6 +1038,17 @@ public class RobotController : Pausable
                 _input.jump = _input.fire = _input.slash = _input.sprint = false;
                 _input.move = Vector2.zero;
             }
+
+            ringMenu_Center_LMB_available = false;
+            ringMenu_Center_RMB_available = false;
+            ringMenu_Up_LMB_available = false;
+            ringMenu_Up_RMB_available = false;
+            ringMenu_Down_LMB_available = false;
+            ringMenu_Down_RMB_available = false;
+            ringMenu_Left_LMB_available = false;
+            ringMenu_Left_RMB_available = false;
+            ringMenu_Right_LMB_available = false;
+            ringMenu_Right_RMB_available = false;
 
             _hasAnimator = TryGetComponent(out _animator);
 
@@ -1151,6 +1201,17 @@ public class RobotController : Pausable
                         ringMenu_Cursor_rectTfm.parent = ringMenu_Up_Outline.transform;
                     else
                         ringMenu_Cursor_rectTfm.parent = ringMenu_Center_Outline.transform;
+
+                    ringMenu_Center_LMB.color = getRingMenuColor(ringMenu_Center_LMB_available, true);
+                    ringMenu_Center_RMB.color = getRingMenuColor(ringMenu_Center_RMB_available, false);
+                    ringMenu_Up_LMB.color = getRingMenuColor(ringMenu_Up_LMB_available, true);
+                    ringMenu_Up_RMB.color = getRingMenuColor(ringMenu_Up_RMB_available, false);
+                    ringMenu_Down_LMB.color = getRingMenuColor(ringMenu_Down_LMB_available, true);
+                    ringMenu_Down_RMB.color = getRingMenuColor(ringMenu_Down_RMB_available, false);
+                    ringMenu_Left_LMB.color = getRingMenuColor(ringMenu_Left_LMB_available, true);
+                    ringMenu_Left_RMB.color = getRingMenuColor(ringMenu_Left_RMB_available, false);
+                    ringMenu_Right_LMB.color = getRingMenuColor(ringMenu_Right_LMB_available, true);
+                    ringMenu_Right_RMB.color = getRingMenuColor(ringMenu_Right_RMB_available, false);
 
                     ringMenu_Cursor_rectTfm.anchoredPosition = Vector2.zero;
                 }
@@ -4529,39 +4590,44 @@ public class RobotController : Pausable
 
     bool AcceptDashSlash()
     {
-        if (Sword != null && robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash) && Sword.can_dash_slash && _input.slash && burst && _input.move.y > 0.0f && _input.move.x == 0.0f)
+        if (Sword != null && robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash) && Sword.can_dash_slash)
         {
-            lowerBodyState = LowerBodyState.DASHSLASH_DASH;
-            upperBodyState = UpperBodyState.DASHSLASH_DASH;
-            event_stepbegin = event_stepped = false;
-            _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[0], 0.0f, 0);
-            _animator.speed = 1.0f;
-            stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-            slash_reserved = false;
-            hitslow_timer = 0;
-            Sword.slashing = false;
-            Sword.emitting = true;
-            
-            lockonState = LockonState.SEEKING;
-            if (target_chest != null)
+            ringMenu_Up_RMB_available = true;
+
+            if (_input.slash && burst && _input.move.y > 0.0f && _input.move.x == 0.0f)
             {
-                Vector3 target_dir = target_chest.transform.position - transform.position;
+                lowerBodyState = LowerBodyState.DASHSLASH_DASH;
+                upperBodyState = UpperBodyState.DASHSLASH_DASH;
+                event_stepbegin = event_stepped = false;
+                _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[0], 0.0f, 0);
+                _animator.speed = 1.0f;
+                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                slash_reserved = false;
+                hitslow_timer = 0;
+                Sword.slashing = false;
+                Sword.emitting = true;
 
-                _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+                lockonState = LockonState.SEEKING;
+                if (target_chest != null)
+                {
+                    Vector3 target_dir = target_chest.transform.position - transform.position;
 
-                float rotation = _targetRotation;
+                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                // rotate to face input direction relative to camera position
-                transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
- 
-                dashslash_offset = (Chest.transform.position - target_chest.transform.position);
+                    float rotation = _targetRotation;
 
-                dashslash_offset.y = 0.0f;
+                    // rotate to face input direction relative to camera position
+                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
-                dashslash_offset = Quaternion.AngleAxis(45, new Vector3(0.0f, 1.0f, 0.0f)) * dashslash_offset;
+                    dashslash_offset = (Chest.transform.position - target_chest.transform.position);
+
+                    dashslash_offset.y = 0.0f;
+
+                    dashslash_offset = Quaternion.AngleAxis(45, new Vector3(0.0f, 1.0f, 0.0f)) * dashslash_offset;
+                }
+
+                return true;
             }
-
-            return true;
         }
 
         return false;
@@ -4573,9 +4639,12 @@ public class RobotController : Pausable
 
         if (rightWeapon != null)
         {
-            if (_input.fire && !prev_fire)
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot) && burst)
             {
-                if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot) && burst && _input.move != Vector2.zero)
+                ringMenu_Left_LMB_available = true;
+                ringMenu_Right_LMB_available = true;
+
+                if (_input.fire && !prev_fire && _input.move.x != 0.0f)
                 {
                     if (rightWeapon.heavy)
                     {
