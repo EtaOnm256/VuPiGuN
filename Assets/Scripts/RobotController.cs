@@ -484,11 +484,11 @@ public class RobotController : Pausable
     TMPro.TextMeshProUGUI HPText;
 
     GameObject ringMenu;
-    GameObject ringMenu_Center_Outline;
-    GameObject ringMenu_Up_Outline;
-    GameObject ringMenu_Down_Outline;
-    GameObject ringMenu_Left_Outline;
-    GameObject ringMenu_Right_Outline;
+    RectTransform ringMenu_Center_Outline_rectTfm;
+    RectTransform ringMenu_Up_Outline_rectTfm;
+    RectTransform ringMenu_Down_Outline_rectTfm;
+    RectTransform ringMenu_Left_Outline_rectTfm;
+    RectTransform ringMenu_Right_Outline_rectTfm;
 
     Image ringMenu_Center_LMB;
     Image ringMenu_Center_RMB;
@@ -581,7 +581,9 @@ public class RobotController : Pausable
         Hovercraft = 1 << 5,
         FlightUnit = 1 << 6,
         RollingShoot = 1 << 7,
-        DashSlash = 1 << 8
+        DashSlash = 1 << 8,
+        ChainFire = 1 << 9,
+        IaiSlash = 1 << 10
     }
 
  
@@ -850,19 +852,19 @@ public class RobotController : Pausable
                 uIController_Overlay.AddWeapon(shoulderWeapon);
 
             ringMenu = HUDCanvas.gameObject.transform.Find("RingMenu").gameObject;
-            ringMenu_Center_Outline = ringMenu.transform.Find("Center_Outline").gameObject;
+            ringMenu_Center_Outline_rectTfm = ringMenu.transform.Find("Center_Outline").gameObject.GetComponent<RectTransform>();
             ringMenu_Center_LMB = ringMenu.transform.Find("Center_LMB").gameObject.GetComponent<Image>();
             ringMenu_Center_RMB = ringMenu.transform.Find("Center_RMB").gameObject.GetComponent<Image>();
-            ringMenu_Up_Outline = ringMenu.transform.Find("Up_Outline").gameObject;
+            ringMenu_Up_Outline_rectTfm = ringMenu.transform.Find("Up_Outline").gameObject.GetComponent<RectTransform>();
             ringMenu_Up_LMB = ringMenu.transform.Find("Up_LMB").gameObject.GetComponent<Image>();
             ringMenu_Up_RMB = ringMenu.transform.Find("Up_RMB").gameObject.GetComponent<Image>();
-            ringMenu_Down_Outline = ringMenu.transform.Find("Down_Outline").gameObject;
+            ringMenu_Down_Outline_rectTfm = ringMenu.transform.Find("Down_Outline").gameObject.GetComponent<RectTransform>();
             ringMenu_Down_LMB = ringMenu.transform.Find("Down_LMB").gameObject.GetComponent<Image>();
             ringMenu_Down_RMB = ringMenu.transform.Find("Down_RMB").gameObject.GetComponent<Image>();
-            ringMenu_Left_Outline = ringMenu.transform.Find("Left_Outline").gameObject;
+            ringMenu_Left_Outline_rectTfm = ringMenu.transform.Find("Left_Outline").gameObject.GetComponent<RectTransform>();
             ringMenu_Left_LMB = ringMenu.transform.Find("Left_LMB").gameObject.GetComponent<Image>();
             ringMenu_Left_RMB = ringMenu.transform.Find("Left_RMB").gameObject.GetComponent<Image>();
-            ringMenu_Right_Outline = ringMenu.transform.Find("Right_Outline").gameObject;
+            ringMenu_Right_Outline_rectTfm = ringMenu.transform.Find("Right_Outline").gameObject.GetComponent<RectTransform>();
             ringMenu_Right_LMB = ringMenu.transform.Find("Right_LMB").gameObject.GetComponent<Image>();
             ringMenu_Right_RMB = ringMenu.transform.Find("Right_RMB").gameObject.GetComponent<Image>();
 
@@ -1192,15 +1194,25 @@ public class RobotController : Pausable
                 if(burst)
                 {
                     if (_input.move.x > 0.0f)
-                        ringMenu_Cursor_rectTfm.parent = ringMenu_Right_Outline.transform;
+                    {
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Right_Outline_rectTfm.anchoredPosition;
+                    }
                     else if (_input.move.x < 0.0f)
-                        ringMenu_Cursor_rectTfm.parent = ringMenu_Left_Outline.transform;
-                    else if(_input.move.y < 0.0f)
-                        ringMenu_Cursor_rectTfm.parent = ringMenu_Down_Outline.transform;
+                    {
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Left_Outline_rectTfm.anchoredPosition;
+                    }
+                    else if (_input.move.y < 0.0f)
+                    {
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Down_Outline_rectTfm.anchoredPosition;
+                    }
                     else if (_input.move.y > 0.0f)
-                        ringMenu_Cursor_rectTfm.parent = ringMenu_Up_Outline.transform;
+                    {
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Up_Outline_rectTfm.anchoredPosition;
+                    }
                     else
-                        ringMenu_Cursor_rectTfm.parent = ringMenu_Center_Outline.transform;
+                    {
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Center_Outline_rectTfm.anchoredPosition;
+                    }
 
                     ringMenu_Center_LMB.color = getRingMenuColor(ringMenu_Center_LMB_available, true);
                     ringMenu_Center_RMB.color = getRingMenuColor(ringMenu_Center_RMB_available, false);
@@ -1212,8 +1224,6 @@ public class RobotController : Pausable
                     ringMenu_Left_RMB.color = getRingMenuColor(ringMenu_Left_RMB_available, false);
                     ringMenu_Right_LMB.color = getRingMenuColor(ringMenu_Right_LMB_available, true);
                     ringMenu_Right_RMB.color = getRingMenuColor(ringMenu_Right_RMB_available, false);
-
-                    ringMenu_Cursor_rectTfm.anchoredPosition = Vector2.zero;
                 }
             }
 
@@ -1906,6 +1916,16 @@ public class RobotController : Pausable
 
                     if (upperBodyState == UpperBodyState.FIRE && !rollingfire_followthrough)
                         AcceptRollingShoot();
+                    
+                    if(robotParameter.itemFlag.HasFlag(ItemFlag.ChainFire) && upperBodyState == UpperBodyState.FIRE)
+                    {
+                        AcceptSubFire();
+                    }
+
+                    if(robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && upperBodyState == UpperBodyState.FIRE)
+                    {
+                        AcceptSlash();
+                    }
 
                     AcceptDashSlash();
                     
@@ -2198,132 +2218,13 @@ public class RobotController : Pausable
                         {
 
                         }
-                        else if (_input.slash)
+                        else
                         {
-                            if (Sword.can_jump_slash && _input.move.y < 0.0f)
-                            {
-                                if (target_chest != null)
-                                {
-                                    Vector3 target_dir = target_chest.transform.position - transform.position;
-
-                                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
-
-                                    float rotation = _targetRotation;
-
-                                    // rotate to face input direction relative to camera position
-                                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-                                }
-
-                                event_jumped = false;
-                                lowerBodyState = LowerBodyState.JUMPSLASH_JUMP;
-                                upperBodyState = UpperBodyState.JUMPSLASH_JUMP;
-                                _animator.CrossFadeInFixedTime(_animIDJumpSlashJump, 0.0f, 0);
-                                slash_reserved = false;
-                                hitslow_timer = 0;
-                                jumpslash_end_forward = false;
-                                Sword.emitting = true;
-                                lockonState = LockonState.SEEKING;
-
-                                _animator.speed = 1.0f;
-                            }
-                            else
-                            {
-                                if (Grounded)
-                                {
-
-                                    if (target_chest != null)
-                                    {
-                                        Vector3 target_dir = target_chest.transform.position - transform.position;
-
-                                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
-
-                                        float rotation = _targetRotation;
-
-                                        // rotate to face input direction relative to camera position
-                                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-                                    }
-
-                                    if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
-                                    {
-                                        lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
-                                        upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
-                                        event_stepbegin = event_stepped = false;
-                                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                        stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                                        slash_reserved = false;
-                                        hitslow_timer = 0;
-                                        Sword.emitting = true;
-                                        lockonState = LockonState.SEEKING;
-                                    }
-                                    else
-                                    {
-                                        lowerBodyState = LowerBodyState.QUICKSLASH_DASH;
-                                        upperBodyState = UpperBodyState.QUICKSLASH_DASH;
-                                        event_stepbegin = event_stepped = false;
-                                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                                        stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                                        slash_reserved = false;
-                                        hitslow_timer = 0;
-                                        Sword.emitting = true;
-                                        lockonState = LockonState.SEEKING;
-                                    }
-                                    _animator.speed = 1.0f;
-                                }
-                                else
-                                {
-                                    lowerBodyState = LowerBodyState.AIRSLASH_DASH;
-                                    upperBodyState = UpperBodyState.AIRSLASH_DASH;
-                                    event_stepbegin = event_stepped = false;
-                                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
-                                    _animator.speed = 0.0f;
-                                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                                    slash_reserved = false;
-                                    hitslow_timer = 0;
-                                    Sword.emitting = true;
-                                    lockonState = LockonState.SEEKING;
-                                    if (target_chest != null)
-                                    {
-                                        Vector3 target_dir = target_chest.transform.position - transform.position;
-
-                                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
-
-                                        float rotation = _targetRotation;
-
-                                        // rotate to face input direction relative to camera position
-                                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-                                    }
-                                }
-                            }
+                            AcceptSlash();
                         }
                     }
 
-                    if (shoulderWeapon != null)
-                    {
-                        if (_input.subfire)
-                        {
-                            //_input.subfire = false;
-
-                            if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
-                            {
-                                lowerBodyState = LowerBodyState.AIRSUBFIRE;
-                            }
-                            else
-                            {
-                                lowerBodyState = LowerBodyState.SUBFIRE;
-                            }
-
-                            upperBodyState = UpperBodyState.SUBFIRE;
-                            event_subfired = false;
-                            fire_done = false;
-                            shoulderWeapon.ResetCycle();
-                            _animator.CrossFadeInFixedTime(_animIDSubFire, 0.25f, 0);
-                            _animator.speed = 1.0f;
-
-                            animator.Play("SubFire", 2, 0.0f);
-
-                            lockonState = LockonState.SEEKING;
-                        }
-                    }
+                    AcceptSubFire();
 
                     _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
                     _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
@@ -4502,6 +4403,36 @@ public class RobotController : Pausable
         backblast_processed = false;
     }
 
+    void AcceptSubFire()
+    {
+        if (shoulderWeapon != null)
+        {
+            if (_input.subfire)
+            {
+                //_input.subfire = false;
+
+                if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
+                {
+                    lowerBodyState = LowerBodyState.AIRSUBFIRE;
+                }
+                else
+                {
+                    lowerBodyState = LowerBodyState.SUBFIRE;
+                }
+
+                upperBodyState = UpperBodyState.SUBFIRE;
+                event_subfired = false;
+                fire_done = false;
+                shoulderWeapon.ResetCycle();
+                _animator.CrossFadeInFixedTime(_animIDSubFire, 0.25f, 0);
+                _animator.speed = 1.0f;
+
+                animator.Play("SubFire", 2, 0.0f);
+
+                lockonState = LockonState.SEEKING;
+            }
+        }
+    }
     void AcceptDash()
     {
         if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint)))
@@ -4736,6 +4667,107 @@ public class RobotController : Pausable
         }
 
         return start;
+    }
+
+    void AcceptSlash()
+    {
+        if (_input.slash)
+        {
+            if (Sword.can_jump_slash && _input.move.y < 0.0f)
+            {
+                if (target_chest != null)
+                {
+                    Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                    float rotation = _targetRotation;
+
+                    // rotate to face input direction relative to camera position
+                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                }
+
+                event_jumped = false;
+                lowerBodyState = LowerBodyState.JUMPSLASH_JUMP;
+                upperBodyState = UpperBodyState.JUMPSLASH_JUMP;
+                _animator.CrossFadeInFixedTime(_animIDJumpSlashJump, 0.0f, 0);
+                slash_reserved = false;
+                hitslow_timer = 0;
+                jumpslash_end_forward = false;
+                Sword.emitting = true;
+                lockonState = LockonState.SEEKING;
+
+                _animator.speed = 1.0f;
+            }
+            else
+            {
+                if (Grounded)
+                {
+
+                    if (target_chest != null)
+                    {
+                        Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                        float rotation = _targetRotation;
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                    }
+
+                    if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
+                    {
+                        lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
+                        upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
+                        event_stepbegin = event_stepped = false;
+                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                        stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                        slash_reserved = false;
+                        hitslow_timer = 0;
+                        Sword.emitting = true;
+                        lockonState = LockonState.SEEKING;
+                    }
+                    else
+                    {
+                        lowerBodyState = LowerBodyState.QUICKSLASH_DASH;
+                        upperBodyState = UpperBodyState.QUICKSLASH_DASH;
+                        event_stepbegin = event_stepped = false;
+                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                        stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                        slash_reserved = false;
+                        hitslow_timer = 0;
+                        Sword.emitting = true;
+                        lockonState = LockonState.SEEKING;
+                    }
+                    _animator.speed = 1.0f;
+                }
+                else
+                {
+                    lowerBodyState = LowerBodyState.AIRSLASH_DASH;
+                    upperBodyState = UpperBodyState.AIRSLASH_DASH;
+                    event_stepbegin = event_stepped = false;
+                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
+                    _animator.speed = 0.0f;
+                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                    slash_reserved = false;
+                    hitslow_timer = 0;
+                    Sword.emitting = true;
+                    lockonState = LockonState.SEEKING;
+                    if (target_chest != null)
+                    {
+                        Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                        float rotation = _targetRotation;
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                    }
+                }
+            }
+        }
     }
 
     float org_animator_speed_pause = 1.0f;
