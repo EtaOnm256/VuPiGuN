@@ -351,6 +351,7 @@ public class RobotController : Pausable
     public bool fire_done = false;
     public int fire_followthrough = 0;
     public bool rollingfire_followthrough = false;
+    public bool quickdraw_followthrough = false;
 
     private float _barmlayerwait = 0.0f;
 
@@ -1923,7 +1924,7 @@ public class RobotController : Pausable
                         AcceptSubFire();
                     }
 
-                    if(robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && upperBodyState == UpperBodyState.FIRE)
+                    if(robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && upperBodyState == UpperBodyState.FIRE && !quickdraw_followthrough && !rollingfire_followthrough)
                     {
                         AcceptSlash();
                     }
@@ -2106,7 +2107,8 @@ public class RobotController : Pausable
                         _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
                         _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
                         _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
-                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                        //_barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                        _barmlayerwait = 0.0f;
                     }
                     else
                     {
@@ -4388,7 +4390,7 @@ public class RobotController : Pausable
     {
         if (rightWeapon.heavy)
         {
-            animator.Play("HeavyFire", 2, 0.0f);
+            //animator.Play("HeavyFire", 2, 0.0f);
 
             //_input.subfire = false;
 
@@ -4405,6 +4407,7 @@ public class RobotController : Pausable
             event_heavyfired = false;
             _animator.CrossFadeInFixedTime(_animIDHeavyFire, 0.25f, 0);
             _animator.speed = 1.0f;
+            backblast_processed = true;
             lockonState = LockonState.SEEKING;
         }
         else
@@ -4453,6 +4456,7 @@ public class RobotController : Pausable
 
         fire_done = false;
         rollingfire_followthrough = false;
+        quickdraw_followthrough = quick;
         rightWeapon.ResetCycle();
     }
 
@@ -4667,14 +4671,14 @@ public class RobotController : Pausable
                             animator.Play(_animIDRollingFire3_Right, 0, 0.0f);
                         }
 
-                        animator.Play("HeavyFire", 2, 0.0f);
+                        //animator.Play("HeavyFire", 2, 0.0f);
                         _animator.speed = 1.0f;
 
                         lockonState = LockonState.SEEKING;
                         event_heavyfired = false;
                         rightWeapon.ResetCycle();
                         fire_done = false;
-
+                        backblast_processed = true;
                         start = true;
                     }
                     else
