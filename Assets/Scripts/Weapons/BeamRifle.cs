@@ -23,6 +23,20 @@ public class BeamRifle : Weapon
 
     public GameObject firePoint;
 
+    override public float firing_multiplier
+    {
+        get { return 1.3f; }
+    }
+    override public float lockon_multiplier
+    {
+        get { return 1.3f; }
+    }
+
+    override public int fire_followthrough
+    {
+        get { return 45; }
+    }
+
     public override int energy
     {
         set

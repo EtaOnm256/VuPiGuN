@@ -252,7 +252,7 @@ public class RobotAI_Shenlong : InputBase
                                         robotController.lowerBodyState == RobotController.LowerBodyState.WALK
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.STEP
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND
-                                        || robotController.lowerBodyState == RobotController.LowerBodyState.JUMPSLASH_GROUND
+                                        || robotController.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Ground
                                         )
                                         && robotController.boost >= robotController.Boost_Max
 

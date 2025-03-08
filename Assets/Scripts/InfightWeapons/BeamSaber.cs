@@ -55,7 +55,10 @@ public class BeamSaber : InfightWeapon
         get { return true; }
     }
 
- 
+    override public bool can_jump_slash
+    {
+        get { return true; }
+    }
 
     private void Awake()
     {
@@ -66,6 +69,9 @@ public class BeamSaber : InfightWeapon
             { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
             { RobotController.LowerBodyState.QuickSlash,new SlashMotionInfo(2) },
             { RobotController.LowerBodyState.DashSlash,new SlashMotionInfo(1) },
+            { RobotController.LowerBodyState.JumpSlash,new SlashMotionInfo(1) },
+            { RobotController.LowerBodyState.JumpSlash_Jump,new SlashMotionInfo(1) },
+            { RobotController.LowerBodyState.JumpSlash_Ground,new SlashMotionInfo(1) },
        };
 
         _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
@@ -75,12 +81,26 @@ public class BeamSaber : InfightWeapon
               //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1),RotateSpeed=4.0f },
                  { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2 ,SlashDistance=6.0f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
                  { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45,SlashDistance=6.0f,RotateSpeed=2.0f,SlashDistance_Min = float.MinValue } },
+                  { RobotController.LowerBodyState.JumpSlash_Jump,new MotionProperty{DashSpeed = 60.0f ,DashLength = 20, SlashDistance=6.0f,RotateSpeed=8.0f,SlashDistance_Min = 5.0f} },
             };
 
         foreach (var slashmotion in slashMotionInfo)
         {
             for (int i = 0; i < slashmotion.Value.num; i++)
-                slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
+            {
+                switch(slashmotion.Key)
+                {
+                    case RobotController.LowerBodyState.JumpSlash:
+                    case RobotController.LowerBodyState.JumpSlash_Jump:
+                    case RobotController.LowerBodyState.JumpSlash_Ground:
+                        slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}2_{i}");
+                        break;
+                    default:
+                        slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
+                        break;
+                }
+                
+            }
         }
     }
 

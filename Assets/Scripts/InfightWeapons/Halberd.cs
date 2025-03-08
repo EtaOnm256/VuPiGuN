@@ -97,7 +97,7 @@ public class Halberd : InfightWeapon
               //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
                  { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2, SlashDistance=8.0f,RotateSpeed=4.0f,SlashDistance_Min = 7.5f } },
                  { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45*3/4, SlashDistance=8.0f,RotateSpeed=2.0f,SlashDistance_Min = 7.5f} },
-                  { RobotController.LowerBodyState.JUMPSLASH_JUMP,new MotionProperty{DashSpeed = 60.0f ,DashLength = 20, SlashDistance=6.0f,RotateSpeed=8.0f,SlashDistance_Min = 5.0f} },
+                  { RobotController.LowerBodyState.JumpSlash_Jump,new MotionProperty{DashSpeed = 60.0f ,DashLength = 20, SlashDistance=6.0f,RotateSpeed=8.0f,SlashDistance_Min = 5.0f} },
             };
 
 
@@ -120,6 +120,11 @@ public class Halberd : InfightWeapon
                 }
             }
         }
+
+        //_animIDJumpSlashJump = Animator.StringToHash("JumpSlashJump");
+        //_animIDJumpSlashGround = Animator.StringToHash("JumpSlashGround");
+        //private int _animIDJumpSlashJump;
+        //private int _animIDJumpSlashGround;
 
         prev_points = new Vector3[hitpoints.Length];
         points = new Vector3[hitpoints.Length];

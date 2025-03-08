@@ -198,9 +198,6 @@ public class RobotController : Pausable
 
     private int _animIDHeavyFire;
 
-    private int _animIDJumpSlashJump;
-    private int _animIDJumpSlashGround;
-
     public int slash_count = 0;
     bool combo_reserved = false;
     
@@ -421,8 +418,8 @@ public class RobotController : Pausable
         SUBFIRE,
         HEAVYFIRE,
         JumpSlash,
-        JUMPSLASH_JUMP,
-        JUMPSLASH_GROUND,
+        JumpSlash_Jump,
+        JumpSlash_Ground,
         ROLLINGFIRE,
         ROLLINGHEAVYFIRE
     }
@@ -457,8 +454,8 @@ public class RobotController : Pausable
         HEAVYFIRE,
         AIRHEAVYFIRE,
         JumpSlash,
-        JUMPSLASH_JUMP,
-        JUMPSLASH_GROUND,
+        JumpSlash_Jump,
+        JumpSlash_Ground,
         ROLLINGFIRE,
         AIRROLLINGFIRE,
         ROLLINGHEAVYFIRE,
@@ -585,7 +582,9 @@ public class RobotController : Pausable
         DashSlash = 1 << 8,
         ChainFire = 1 << 9,
         IaiSlash = 1 << 10,
-        QuickDraw = 1 << 11
+        QuickDraw = 1 << 11,
+        JumpSlash = 1 << 12,
+
     }
 
  
@@ -879,6 +878,11 @@ public class RobotController : Pausable
             if(robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash))
             {
                 ringMenu_Up_RMB.gameObject.SetActive(true);
+            }
+
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.JumpSlash))
+            {
+                ringMenu_Down_RMB.gameObject.SetActive(true);
             }
         }
 
@@ -1478,8 +1482,7 @@ public class RobotController : Pausable
 
         _animIDHeavyFire = Animator.StringToHash("HeavyFire");
 
-        _animIDJumpSlashJump = Animator.StringToHash("JumpSlashJump");
-        _animIDJumpSlashGround = Animator.StringToHash("JumpSlashGround");
+
 
         _animIDRollingFire_Left = Animator.StringToHash("RollingFire_Left");
         _animIDRollingFire_Right = Animator.StringToHash("RollingFire_Right");
@@ -1679,7 +1682,7 @@ public class RobotController : Pausable
                         || lowerBodyState == LowerBodyState.QuickSlash
                         || lowerBodyState == LowerBodyState.QUICKSLASH_DASH
                         || lowerBodyState == LowerBodyState.LowerSlash
-                   //|| lowerBodyState == LowerBodyState.JUMPSLASH_JUMP
+                   //|| lowerBodyState == LowerBodyState.JumpSlash_Jump
                    //|| lowerBodyState == LowerBodyState.JumpSlash
                    ) && lockonState != LockonState.FREE
                    )
@@ -1929,7 +1932,8 @@ public class RobotController : Pausable
                         AcceptSlash();
                     }
 
-                    AcceptDashSlash();
+                    if (!AcceptDashSlash())
+                        AcceptJumpSlash();
                     
                 }
                 break;
@@ -2024,7 +2028,8 @@ public class RobotController : Pausable
                         _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                     }
 
-                    AcceptDashSlash();
+                    if (!AcceptDashSlash())
+                        AcceptJumpSlash();
                 }
                 break;
             case UpperBodyState.HEAVYFIRE:
@@ -2107,8 +2112,7 @@ public class RobotController : Pausable
                         _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
                         _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
                         _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
-                        //_barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
-                        _barmlayerwait = 0.0f;
+                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                     }
                     else
                     {
@@ -2123,7 +2127,8 @@ public class RobotController : Pausable
                     if (upperBodyState == UpperBodyState.HEAVYFIRE && !rollingfire_followthrough)
                         AcceptRollingShoot();
 
-                    AcceptDashSlash();
+                    if (!AcceptDashSlash())
+                        AcceptJumpSlash();
                 }
                 break;
             case UpperBodyState.STAND:
@@ -2160,7 +2165,7 @@ public class RobotController : Pausable
                         {
 
                         }
-                        else
+                        else if(!AcceptJumpSlash())
                         {
                             AcceptSlash();
                         }
@@ -2195,7 +2200,7 @@ public class RobotController : Pausable
                 _barmlayerwait = 0.0f;
 
                 AcceptDashSlash();
-
+                AcceptJumpSlash();
                 break;
             case UpperBodyState.GROUNDSLASH_DASH:
             case UpperBodyState.AIRSLASH_DASH:
@@ -2206,22 +2211,26 @@ public class RobotController : Pausable
             case UpperBodyState.QuickSlash:
             case UpperBodyState.DashSlash:
 
-                if(upperBodyState != UpperBodyState.DashSlash && upperBodyState != UpperBodyState.DASHSLASH_DASH)
+                if(upperBodyState != UpperBodyState.DashSlash && upperBodyState != UpperBodyState.DASHSLASH_DASH
+                    && upperBodyState != UpperBodyState.JumpSlash && upperBodyState != UpperBodyState.JumpSlash_Jump && upperBodyState != UpperBodyState.JumpSlash_Ground)
                     AcceptDashSlash();
-               
+
+                if (upperBodyState != UpperBodyState.JumpSlash && upperBodyState != UpperBodyState.JumpSlash_Jump && upperBodyState != UpperBodyState.JumpSlash_Ground)
+                    AcceptJumpSlash();
+
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
                 break;
-            case UpperBodyState.JUMPSLASH_JUMP:
+            case UpperBodyState.JumpSlash_Jump:
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = 0.0f;
                 break;
             case UpperBodyState.JumpSlash:
-            case UpperBodyState.JUMPSLASH_GROUND:
+            case UpperBodyState.JumpSlash_Ground:
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
@@ -2706,8 +2715,8 @@ public class RobotController : Pausable
             case LowerBodyState.DOWN:
             case LowerBodyState.GETUP:
             case LowerBodyState.STEPGROUND:
-            case LowerBodyState.JUMPSLASH_JUMP:
-            case LowerBodyState.JUMPSLASH_GROUND:
+            case LowerBodyState.JumpSlash_Jump:
+            case LowerBodyState.JumpSlash_Ground:
                 {
                     targetSpeed = 0.0f;
 
@@ -2732,16 +2741,16 @@ public class RobotController : Pausable
                             break;
 
                         case LowerBodyState.STEPGROUND:
-                        case LowerBodyState.JUMPSLASH_GROUND:
+                        case LowerBodyState.JumpSlash_Ground:
                             {
                                 _speed = 0.0f;
 
-                                if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND && robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                if (lowerBodyState == LowerBodyState.JumpSlash_Ground && robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                                     AcceptStep(true);
 
                                 if (event_grounded)
                                 {
-                                    if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND)
+                                    if (lowerBodyState == LowerBodyState.JumpSlash_Ground)
                                     {
                                         Sword.emitting = false;
                                     }
@@ -2763,7 +2772,7 @@ public class RobotController : Pausable
                                 }
                             }
                             break;
-                        case LowerBodyState.JUMPSLASH_JUMP:
+                        case LowerBodyState.JumpSlash_Jump:
                             {
                                 _speed = 0.0f;
                                 if (event_jumped)
@@ -2777,7 +2786,7 @@ public class RobotController : Pausable
                                     slash_count = 0;
                                     Sword.damage = 100;
                                     Sword.knockBackType = KnockBackType.Finish;
-                                    //stepremain = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashLength;
+                                    //stepremain = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashLength;
 
                                     //_animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
                                     //_animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.JumpSlash]._animID[slash_count], 0.0f, 2);
@@ -2786,7 +2795,7 @@ public class RobotController : Pausable
                                     _animator.SetFloat("SlashSpeed", 0.0f);
                                     audioSource.PlayOneShot(audioClip_Swing);
 
-                                    _verticalVelocity = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
+                                    _verticalVelocity = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
 
                                     _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
                                 }
@@ -3641,7 +3650,7 @@ public class RobotController : Pausable
 
                         _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].RotateSpeed);
+                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, Sword.motionProperty[LowerBodyState.JumpSlash_Jump].RotateSpeed);
 
                         // rotate to face input direction relative to camera position
                         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -3657,7 +3666,7 @@ public class RobotController : Pausable
 
 
 
-                    if (dist_xz > Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].SlashDistance * transform.lossyScale.x)
+                    if (dist_xz > Sword.motionProperty[LowerBodyState.JumpSlash_Jump].SlashDistance * transform.lossyScale.x)
                     {
 
                     }
@@ -3668,13 +3677,13 @@ public class RobotController : Pausable
                     }
 
                     if (!jumpslash_end_forward)
-                        _speed = targetSpeed = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
+                        _speed = targetSpeed = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
                     else
                         _speed = targetSpeed = Mathf.Max(_speed - SpeedChangeRate, 0.0f);
 
 
 
-                    /*   if (dist_xz > -dist_y + Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].SlashDistance * transform.lossyScale.x)
+                    /*   if (dist_xz > -dist_y + Sword.motionProperty[LowerBodyState.JumpSlash_Jump].SlashDistance * transform.lossyScale.x)
                        {
 
                        }
@@ -3686,7 +3695,7 @@ public class RobotController : Pausable
 
                        }*/
 
-                    _verticalVelocity = Mathf.Max(_verticalVelocity + Gravity * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed/*float.MinValue*/);
+                    _verticalVelocity = Mathf.Max(_verticalVelocity + Gravity * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed/*float.MinValue*/);
 
 
                     if (_verticalVelocity < 0.0f)
@@ -3703,7 +3712,7 @@ public class RobotController : Pausable
                     /* if (stepremain > 0)
                      {
                          stepremain--;
-                         //_verticalVelocity = Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed;
+                         //_verticalVelocity = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
 
                          //_verticalVelocity = AscendingVelocity * 2;
                      }
@@ -3712,17 +3721,17 @@ public class RobotController : Pausable
 
 
 
-                        // _verticalVelocity = Mathf.Max(_verticalVelocity- SpeedChangeRate, -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed);
+                        // _verticalVelocity = Mathf.Max(_verticalVelocity- SpeedChangeRate, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed);
 
 
 
-                        if (event_slash/* && _verticalVelocity == -Sword.motionProperty[LowerBodyState.JUMPSLASH_JUMP].DashSpeed*/)
+                        if (event_slash/* && _verticalVelocity == -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed*/)
                         {
                             GroundedCheck();
                             if (Grounded)
                             {
-                                TransitLowerBodyState(LowerBodyState.JUMPSLASH_GROUND);
-                                upperBodyState = UpperBodyState.JUMPSLASH_GROUND;
+                                TransitLowerBodyState(LowerBodyState.JumpSlash_Ground);
+                                upperBodyState = UpperBodyState.JumpSlash_Ground;
                             }
                         }
                     }
@@ -4079,8 +4088,8 @@ public class RobotController : Pausable
                 }
 
                 break;
-            case LowerBodyState.JUMPSLASH_GROUND:
-                _animator.Play(_animIDJumpSlashGround, 0, 0);
+            case LowerBodyState.JumpSlash_Ground:
+                _animator.Play(Sword.slashMotionInfo[LowerBodyState.JumpSlash_Ground]._animID[0], 0, 0);
                 event_grounded = false;
                 break;
             case LowerBodyState.STAND:
@@ -4105,12 +4114,12 @@ public class RobotController : Pausable
                     case LowerBodyState.GroundSlash:
                     case LowerBodyState.LowerSlash:
                     case LowerBodyState.QuickSlash:
-                    case LowerBodyState.JUMPSLASH_GROUND:
+                    case LowerBodyState.JumpSlash_Ground:
                     case LowerBodyState.DashSlash:
                         upperBodyState = UpperBodyState.STAND;
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
 
-                        if (lowerBodyState == LowerBodyState.JUMPSLASH_GROUND)
+                        if (lowerBodyState == LowerBodyState.JumpSlash_Ground)
                         {
                             _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
                         }
@@ -4390,7 +4399,7 @@ public class RobotController : Pausable
     {
         if (rightWeapon.heavy)
         {
-            //animator.Play("HeavyFire", 2, 0.0f);
+            animator.Play("HeavyFire", 2, 0.0f); //2重にしてるのは、モーション中に着地した場合に備えて（レイヤー0だけだとバグる）
 
             //_input.subfire = false;
 
@@ -4632,6 +4641,42 @@ public class RobotController : Pausable
         return false;
     }
 
+    bool AcceptJumpSlash()
+    {
+        if (Sword != null && robotParameter.itemFlag.HasFlag(ItemFlag.JumpSlash) && Sword.can_jump_slash)
+        {
+            ringMenu_Down_RMB_available = true;
+
+            if (_input.slash && burst && _input.move.y < 0.0f && _input.move.x == 0.0f)
+            {
+                if (target_chest != null)
+                {
+                    Vector3 target_dir = target_chest.transform.position - transform.position;
+
+                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                    float rotation = _targetRotation;
+
+                    // rotate to face input direction relative to camera position
+                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                }
+
+                event_jumped = false;
+                lowerBodyState = LowerBodyState.JumpSlash_Jump;
+                upperBodyState = UpperBodyState.JumpSlash_Jump;
+                _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.JumpSlash_Jump]._animID[0], 0.0f, 0);
+                combo_reserved = false;
+                jumpslash_end_forward = false;
+                Sword.emitting = true;
+                lockonState = LockonState.SEEKING;
+
+                _animator.speed = 1.0f;
+                return true;
+            }
+        }
+
+        return false;
+    }
     bool AcceptRollingShoot()
     {
         bool start = false;
@@ -4741,8 +4786,9 @@ public class RobotController : Pausable
     {
         if (_input.slash)
         {
-            if (Sword.can_jump_slash && _input.move.y < 0.0f)
+            if (Grounded)
             {
+
                 if (target_chest != null)
                 {
                     Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -4755,80 +4801,51 @@ public class RobotController : Pausable
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
                 }
 
-                event_jumped = false;
-                lowerBodyState = LowerBodyState.JUMPSLASH_JUMP;
-                upperBodyState = UpperBodyState.JUMPSLASH_JUMP;
-                _animator.CrossFadeInFixedTime(_animIDJumpSlashJump, 0.0f, 0);
-                combo_reserved = false;
-                jumpslash_end_forward = false;
-                Sword.emitting = true;
-                lockonState = LockonState.SEEKING;
-
-                _animator.speed = 1.0f;
-            }
-            else
-            {
-                if (Grounded)
+                if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
                 {
-
-                    if (target_chest != null)
-                    {
-                        Vector3 target_dir = target_chest.transform.position - transform.position;
-
-                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
-
-                        float rotation = _targetRotation;
-
-                        // rotate to face input direction relative to camera position
-                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-                    }
-
-                    if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
-                    {
-                        lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
-                        upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
-                        event_stepbegin = event_stepped = false;
-                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                        stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                        combo_reserved = false;
-                        Sword.emitting = true;
-                        lockonState = LockonState.SEEKING;
-                    }
-                    else
-                    {
-                        lowerBodyState = LowerBodyState.QUICKSLASH_DASH;
-                        upperBodyState = UpperBodyState.QUICKSLASH_DASH;
-                        event_stepbegin = event_stepped = false;
-                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                        stepremain = Sword.motionProperty[lowerBodyState].DashLength;
-                        combo_reserved = false;
-                        Sword.emitting = true;
-                        lockonState = LockonState.SEEKING;
-                    }
-                    _animator.speed = 1.0f;
-                }
-                else
-                {
-                    lowerBodyState = LowerBodyState.AIRSLASH_DASH;
-                    upperBodyState = UpperBodyState.AIRSLASH_DASH;
+                    lowerBodyState = LowerBodyState.GROUNDSLASH_DASH;
+                    upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
                     event_stepbegin = event_stepped = false;
-                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
-                    _animator.speed = 0.0f;
+                    _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
                     stepremain = Sword.motionProperty[lowerBodyState].DashLength;
                     combo_reserved = false;
                     Sword.emitting = true;
                     lockonState = LockonState.SEEKING;
-                    if (target_chest != null)
-                    {
-                        Vector3 target_dir = target_chest.transform.position - transform.position;
+                }
+                else
+                {
+                    lowerBodyState = LowerBodyState.QUICKSLASH_DASH;
+                    upperBodyState = UpperBodyState.QUICKSLASH_DASH;
+                    event_stepbegin = event_stepped = false;
+                    _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                    combo_reserved = false;
+                    Sword.emitting = true;
+                    lockonState = LockonState.SEEKING;
+                }
+                _animator.speed = 1.0f;
+            }
+            else
+            {
+                lowerBodyState = LowerBodyState.AIRSLASH_DASH;
+                upperBodyState = UpperBodyState.AIRSLASH_DASH;
+                event_stepbegin = event_stepped = false;
+                _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
+                _animator.speed = 0.0f;
+                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                combo_reserved = false;
+                Sword.emitting = true;
+                lockonState = LockonState.SEEKING;
+                if (target_chest != null)
+                {
+                    Vector3 target_dir = target_chest.transform.position - transform.position;
 
-                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                        float rotation = _targetRotation;
+                    float rotation = _targetRotation;
 
-                        // rotate to face input direction relative to camera position
-                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-                    }
+                    // rotate to face input direction relative to camera position
+                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
                 }
             }
         }
