@@ -264,6 +264,8 @@ public class RobotController : Pausable
         }
     }
 
+   
+
     public MultiAimConstraint headmultiAimConstraint;
     public MultiAimConstraint chestmultiAimConstraint;
     public MultiAimConstraint rhandmultiAimConstraint;
@@ -512,7 +514,24 @@ public class RobotController : Pausable
     bool ringMenu_Right_LMB_available;
     bool ringMenu_Right_RMB_available;
 
+    enum RingMenuDir
+    {
+        Center, Left, Up, Right, Down
+    }
 
+    RingMenuDir ringMenuDir = RingMenuDir.Center;
+
+    enum RingMenuState
+    {
+        Close,Shoot,Slash
+    }
+
+    RingMenuState ringMenuState = RingMenuState.Close;
+
+    bool fire_dispatch;
+    bool slash_dispatch;
+
+    Vector2 ringMenuAccum = Vector2.zero;
     public GameObject damageText_prefab;
     public GameObject damageText_player_prefab;
 
@@ -1056,6 +1075,8 @@ public class RobotController : Pausable
             ringMenu_Right_LMB_available = false;
             ringMenu_Right_RMB_available = false;
 
+            fire_dispatch = slash_dispatch = false;
+
             _hasAnimator = TryGetComponent(out _animator);
 
             float mindist = float.MaxValue;
@@ -1188,14 +1209,56 @@ public class RobotController : Pausable
                 rightWeapon.Target_Robot = Target_Robot;
             if (shoulderWeapon != null)
                 shoulderWeapon.Target_Robot = Target_Robot;
-            LowerBodyMove(); // HEAVYFIREの反動処理変えたから順番入れ替えても大丈夫かも
-            UpperBodyMove();
+           
 
             if (is_player)
             {
                 uIController_Overlay.lockonState = lockonState;
 
-                if(burst)
+                switch(ringMenuState)
+                {
+                    case RingMenuState.Close:
+                        {
+                            if(_input.fire)
+                            {
+                                ringMenu.SetActive(true);
+                                ringMenuState = RingMenuState.Shoot;
+                                ringMenuDir = RingMenuDir.Center;
+                                ringMenuAccum = Vector2.zero;
+                            }
+                            else if(_input.slash)
+                            {
+                                ringMenu.SetActive(true);
+                                ringMenuState = RingMenuState.Slash;
+                                ringMenuDir = RingMenuDir.Center;
+                                ringMenuAccum = Vector2.zero;
+                            }
+                                 
+                        }
+                        break;
+                    case RingMenuState.Shoot:
+                        {
+                            if(!_input.fire)
+                            {
+                                fire_dispatch = true;
+                                ringMenu.SetActive(false);
+                                ringMenuState = RingMenuState.Close;
+                            }
+                        }
+                        break;
+                    case RingMenuState.Slash:
+                        {
+                            if (!_input.slash)
+                            {
+                                slash_dispatch = true;
+                                ringMenu.SetActive(false);
+                                ringMenuState = RingMenuState.Close;
+                            }
+                        }
+                        break;
+                }
+              
+                /*if(burst)
                 {
                     if (_input.move.x > 0.0f)
                     {
@@ -1228,9 +1291,74 @@ public class RobotController : Pausable
                     ringMenu_Left_RMB.color = getRingMenuColor(ringMenu_Left_RMB_available, false);
                     ringMenu_Right_LMB.color = getRingMenuColor(ringMenu_Right_LMB_available, true);
                     ringMenu_Right_RMB.color = getRingMenuColor(ringMenu_Right_RMB_available, false);
-                }
+                }*/
+            }
+            else
+            {
+                fire_dispatch = _input.fire;
+                slash_dispatch = _input.slash;
             }
 
+            LowerBodyMove(); // HEAVYFIREの反動処理変えたから順番入れ替えても大丈夫かも
+            UpperBodyMove();
+     
+            if(ringMenuState != RingMenuState.Close)
+            {
+                bool stay = false;
+
+                switch (ringMenuDir)
+                {
+                    case RingMenuDir.Center:
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Center_Outline_rectTfm.anchoredPosition;
+                        break;
+                    case RingMenuDir.Left:
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Left_Outline_rectTfm.anchoredPosition;
+                        break;
+                    case RingMenuDir.Right:
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Right_Outline_rectTfm.anchoredPosition;
+                        break;
+                    case RingMenuDir.Up:
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Up_Outline_rectTfm.anchoredPosition;
+                        break;
+                    case RingMenuDir.Down:
+                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Down_Outline_rectTfm.anchoredPosition;
+                        break;
+                }
+
+                if (ringMenuAccum.x > 1.0f)
+                {
+                    if ((ringMenuState == RingMenuState.Shoot && ringMenu_Right_LMB_available)
+                        || (ringMenuState == RingMenuState.Slash && ringMenu_Right_RMB_available))
+                        ringMenuDir = RingMenuDir.Right;
+                }
+                else if (ringMenuAccum.x < -1.0f)
+                {
+                    if ((ringMenuState == RingMenuState.Shoot && ringMenu_Left_LMB_available)
+                        || (ringMenuState == RingMenuState.Slash && ringMenu_Left_RMB_available))
+                        ringMenuDir = RingMenuDir.Left;
+                }
+                else if (ringMenuAccum.y > 1.0f)
+                {
+                    if ((ringMenuState == RingMenuState.Shoot && ringMenu_Down_LMB_available)
+                        || (ringMenuState == RingMenuState.Slash && ringMenu_Down_RMB_available))
+                        ringMenuDir = RingMenuDir.Down;
+                }
+                else if (ringMenuAccum.y < -1.0f)
+                {
+                    if ((ringMenuState == RingMenuState.Shoot && ringMenu_Up_LMB_available)
+                        || (ringMenuState == RingMenuState.Slash && ringMenu_Up_RMB_available))
+                        ringMenuDir = RingMenuDir.Up;
+                }
+                else
+                    stay = true;
+
+                if (!stay)
+                {
+                    ringMenuAccum = Vector2.zero;
+                }
+                else
+                    ringMenuAccum += _input.look;
+            }
         }
         else
         {
@@ -1276,6 +1404,7 @@ public class RobotController : Pausable
 
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;
+        prev_fire = _input.fire;
     }
 
     private void DeadBodyMove()
@@ -1628,7 +1757,7 @@ public class RobotController : Pausable
         if (!(Target_Robot != null && lockonState != LockonState.FREE) && !WorldManager.current_instance.finished)
         {
 
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition && ringMenuState == RingMenuState.Close)
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 //float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
@@ -3969,7 +4098,7 @@ public class RobotController : Pausable
              }
         }
 
-        if(burst)
+        /*if(burst)
         {
             if (!_input.sprint)
                 burst = false;
@@ -3978,7 +4107,7 @@ public class RobotController : Pausable
         {
             if(_input.sprint && _input.move == Vector2.zero)
                 burst = true;
-        }
+        }*/
 
         foreach (var thruster in thrusters)
         {
@@ -4473,7 +4602,7 @@ public class RobotController : Pausable
     {
         if (rightWeapon != null)
         {
-            if (_input.fire)
+            if (fire_dispatch && ringMenuDir == RingMenuDir.Center)
             {
                 DoMainFire(angle, false);
                 return true;
@@ -4603,7 +4732,7 @@ public class RobotController : Pausable
         {
             ringMenu_Up_RMB_available = true;
 
-            if (_input.slash && burst && _input.move.y > 0.0f && _input.move.x == 0.0f)
+            if (slash_dispatch && ringMenuDir == RingMenuDir.Up)
             {
                 lowerBodyState = LowerBodyState.DASHSLASH_DASH;
                 upperBodyState = UpperBodyState.DASHSLASH_DASH;
@@ -4647,7 +4776,7 @@ public class RobotController : Pausable
         {
             ringMenu_Down_RMB_available = true;
 
-            if (_input.slash && burst && _input.move.y < 0.0f && _input.move.x == 0.0f)
+            if (slash_dispatch && ringMenuDir == RingMenuDir.Down)
             {
                 if (target_chest != null)
                 {
@@ -4683,12 +4812,12 @@ public class RobotController : Pausable
 
         if (rightWeapon != null)
         {
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot) && burst)
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot))
             {
                 ringMenu_Left_LMB_available = true;
                 ringMenu_Right_LMB_available = true;
 
-                if (_input.fire && !prev_fire && _input.move.x != 0.0f)
+                if (fire_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right))
                 {
                     if (rightWeapon.heavy)
                     {
@@ -4703,7 +4832,7 @@ public class RobotController : Pausable
 
                         upperBodyState = UpperBodyState.ROLLINGHEAVYFIRE;
 
-                        if (_input.move.x < 0.0f)
+                        if (ringMenuDir == RingMenuDir.Left)
                         {
                             stepDirection = StepDirection.LEFT;
 
@@ -4740,7 +4869,7 @@ public class RobotController : Pausable
 
                         upperBodyState = UpperBodyState.ROLLINGFIRE;
 
-                        if (_input.move.x < 0.0f)
+                        if (ringMenuDir == RingMenuDir.Left)
                         {
                             stepDirection = StepDirection.LEFT;
 
@@ -4784,7 +4913,7 @@ public class RobotController : Pausable
 
     void AcceptSlash()
     {
-        if (_input.slash)
+        if (slash_dispatch)
         {
             if (Grounded)
             {
