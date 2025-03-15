@@ -112,6 +112,20 @@ public class Weapon : Pausable
         }
     }
 
+    public bool _chargeshot;
+
+    virtual public bool chargeshot
+    {
+        set
+        {
+            _chargeshot = value;
+        }
+        get
+        {
+            return _chargeshot;
+        }
+    }
+
     // Start is called before the first frame update
 
     private void Awake()

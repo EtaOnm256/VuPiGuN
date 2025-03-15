@@ -95,6 +95,7 @@ public class HandCannon : Weapon
             //beam.worldManager = owner.worldManager;
             GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
             beam.owner = owner;
+            beam.chargeshot = chargeshot;
             energy -= Reload_Time;
         }
        }

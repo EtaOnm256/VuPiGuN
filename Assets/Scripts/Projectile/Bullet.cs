@@ -15,6 +15,10 @@ public class Bullet : Projectile
 
     const int positionCount = 4;
 
+    public bool chargeshot = false;
+
+    int damage = 75;
+
     // Start is called before the first frame update
     protected override void OnStart()
     {
@@ -30,6 +34,12 @@ public class Bullet : Projectile
         initial_direction = Quaternion.LookRotation(direction);
 
         speed = 1.2f;
+
+        if (chargeshot)
+        {
+            speed *= 1.3f;
+            damage = (int)(damage * 1.5f);
+        }
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -104,7 +114,7 @@ public class Bullet : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, 75, RobotController.KnockBackType.Weak, owner);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.Weak, owner);
 
                     dead = true;
                 }

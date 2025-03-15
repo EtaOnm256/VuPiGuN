@@ -16,6 +16,8 @@ public class Beam : Projectile
 
     Vector3 start_pos;
 
+    int damage = 100;
+
     // Start is called before the first frame update
     protected override void OnStart()
     {
@@ -29,6 +31,12 @@ public class Beam : Projectile
         initial_direction = Quaternion.LookRotation(direction);
 
         speed = 1.6f;
+
+        if (chargeshot)
+        {
+            speed *= 1.3f;
+            damage = (int)(damage*1.5f);
+        }
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -42,6 +50,8 @@ public class Beam : Projectile
     int hitHistoryRCCount = 0;
 
 	int time = 120;
+
+    public bool chargeshot = false;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -93,7 +103,7 @@ public class Beam : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, 100, RobotController.KnockBackType.Weak, owner);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.Weak, owner);
 
                     
                 }

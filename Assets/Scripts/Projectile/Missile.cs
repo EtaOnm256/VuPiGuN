@@ -8,6 +8,8 @@ public class Missile : Projectile
 
     Vector3 start_pos;
 
+    
+
     // Start is called before the first frame update
     protected override void OnStart()
     {
@@ -16,6 +18,12 @@ public class Missile : Projectile
         position = start_pos = transform.position;
 
         initial_direction = Quaternion.LookRotation(direction);
+
+        if (chargeshot)
+        {
+            speed *= 1.3f;
+            damage = (int)(damage * 1.5f);
+        }
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -36,6 +44,10 @@ public class Missile : Projectile
 
     public MeshRenderer meshRenderer;
     public Effekseer.EffekseerEmitter boostEmitter;
+
+    public bool chargeshot = false;
+    int damage = 100;
+
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
@@ -84,7 +96,7 @@ public class Missile : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, 100, RobotController.KnockBackType.Weak, owner);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.Weak, owner);
 
 
                 }

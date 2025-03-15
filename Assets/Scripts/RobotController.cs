@@ -184,6 +184,10 @@ public class RobotController : Pausable
     private int _animIDRollingFire3_Left;
     private int _animIDRollingFire3_Right;
 
+    private int _animIDSnipeFire;
+    private int _animIDSnipeFire2;
+    private int _animIDSnipeFire3;
+
     int ChooseDualwieldStandMotion()
     {
         if (Sword != null && Sword.dualwielded)
@@ -423,7 +427,9 @@ public class RobotController : Pausable
         JumpSlash_Jump,
         JumpSlash_Ground,
         ROLLINGFIRE,
-        ROLLINGHEAVYFIRE
+        ROLLINGHEAVYFIRE,
+        SNIPEFIRE,
+        SNIPEHEAVYFIRE
     }
 
     public enum LowerBodyState
@@ -461,7 +467,11 @@ public class RobotController : Pausable
         ROLLINGFIRE,
         AIRROLLINGFIRE,
         ROLLINGHEAVYFIRE,
-        AIRROLLINGHEAVYFIRE
+        AIRROLLINGHEAVYFIRE,
+        SNIPEFIRE,
+        AIRSNIPEFIRE,
+        SNIPEHEAVYFIRE,
+        AIRSNIPEHEAVYFIRE
     }
 
     bool strongdown = false;
@@ -529,6 +539,8 @@ public class RobotController : Pausable
     RingMenuState ringMenuState = RingMenuState.Close;
 
     bool fire_dispatch;
+    int fire_dispatch_triggerhold_max = 10;
+    int fire_dispatch_triggerhold = 0;
     bool slash_dispatch;
 
     Vector2 ringMenuAccum = Vector2.zero;
@@ -603,7 +615,7 @@ public class RobotController : Pausable
         IaiSlash = 1 << 10,
         QuickDraw = 1 << 11,
         JumpSlash = 1 << 12,
-
+        SnipeShoot = 1 << 13
     }
 
  
@@ -902,6 +914,11 @@ public class RobotController : Pausable
             if (robotParameter.itemFlag.HasFlag(ItemFlag.JumpSlash))
             {
                 ringMenu_Down_RMB.gameObject.SetActive(true);
+            }
+
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.SnipeShoot))
+            {
+                ringMenu_Down_LMB.gameObject.SetActive(true);
             }
         }
 
@@ -1358,6 +1375,17 @@ public class RobotController : Pausable
                 }
                 else
                     ringMenuAccum += _input.look;
+
+                ringMenu_Center_LMB.color = getRingMenuColor(ringMenu_Center_LMB_available, true);
+                ringMenu_Center_RMB.color = getRingMenuColor(ringMenu_Center_RMB_available, false);
+                ringMenu_Up_LMB.color = getRingMenuColor(ringMenu_Up_LMB_available, true);
+                ringMenu_Up_RMB.color = getRingMenuColor(ringMenu_Up_RMB_available, false);
+                ringMenu_Down_LMB.color = getRingMenuColor(ringMenu_Down_LMB_available, true);
+                ringMenu_Down_RMB.color = getRingMenuColor(ringMenu_Down_RMB_available, false);
+                ringMenu_Left_LMB.color = getRingMenuColor(ringMenu_Left_LMB_available, true);
+                ringMenu_Left_RMB.color = getRingMenuColor(ringMenu_Left_RMB_available, false);
+                ringMenu_Right_LMB.color = getRingMenuColor(ringMenu_Right_LMB_available, true);
+                ringMenu_Right_RMB.color = getRingMenuColor(ringMenu_Right_RMB_available, false);
             }
         }
         else
@@ -1619,6 +1647,10 @@ public class RobotController : Pausable
         _animIDRollingFire2_Right = Animator.StringToHash("RollingFire2_Right");
         _animIDRollingFire3_Left = Animator.StringToHash("RollingFire3_Left");
         _animIDRollingFire3_Right = Animator.StringToHash("RollingFire3_Right");
+
+        _animIDSnipeFire = Animator.StringToHash("SnipeFire");
+        _animIDSnipeFire2 = Animator.StringToHash("SnipeFire2");
+        _animIDSnipeFire3 = Animator.StringToHash("SnipeFire3");
     }
 
     Collider[] stompHit = new Collider[16];
@@ -1936,6 +1968,7 @@ public class RobotController : Pausable
         {
             case UpperBodyState.FIRE:
             case UpperBodyState.ROLLINGFIRE:
+            case UpperBodyState.SNIPEFIRE:
                 {
                     if (upperBodyState == UpperBodyState.FIRE)
                     {
@@ -1997,9 +2030,17 @@ public class RobotController : Pausable
                                 lockonState = LockonState.FREE;
                             }
 
+                            rightWeapon.chargeshot = upperBodyState == UpperBodyState.SNIPEFIRE;
                             rightWeapon_trigger_thisframe = true;
 
-                            fire_followthrough = rightWeapon.fire_followthrough;
+                            if (upperBodyState != UpperBodyState.SNIPEFIRE)
+                            {
+                                fire_followthrough = rightWeapon.fire_followthrough;
+                            }
+                            else
+                            {
+                                fire_followthrough = 30;
+                            }
 
                             if(upperBodyState == UpperBodyState.ROLLINGFIRE)
                             {
@@ -2017,7 +2058,10 @@ public class RobotController : Pausable
                     {
                         fire_followthrough--;
 
-                        if (rightWeapon.canHold && _input.fire)
+                        if (fire_dispatch && ringMenuDir == RingMenuDir.Center)
+                            fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
+
+                        if (rightWeapon.canHold && fire_dispatch_triggerhold > 0)
                         {
                             rightWeapon_trigger_thisframe = true;
                             fire_followthrough = rightWeapon.fire_followthrough;
@@ -2026,6 +2070,9 @@ public class RobotController : Pausable
                         {
                             //rightWeapon.trigger = false;
                         }
+
+                        if (fire_dispatch_triggerhold > 0)
+                            fire_dispatch_triggerhold--;
 
                         if (fire_followthrough <= 0)
                         {
@@ -2038,6 +2085,13 @@ public class RobotController : Pausable
                             else if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.ROLLINGFIRE)
                             {
                                 TransitLowerBodyState(LowerBodyState.STAND);
+                            }
+                            else // SNIPEFIRE系
+                            {
+                                if(Grounded)
+                                    TransitLowerBodyState(LowerBodyState.STAND);
+                                else
+                                    TransitLowerBodyState(LowerBodyState.AIR);
                             }
 
                             if (dualwielding)
@@ -2056,13 +2110,18 @@ public class RobotController : Pausable
                         AcceptSubFire();
                     }
 
-                    if(robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && upperBodyState == UpperBodyState.FIRE && !quickdraw_followthrough && !rollingfire_followthrough)
+                    if (upperBodyState != UpperBodyState.SNIPEFIRE)
+                    {
+                        AcceptSnipeShoot();
+                        if (!AcceptDashSlash())
+                            AcceptJumpSlash();
+                    }
+
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && upperBodyState == UpperBodyState.FIRE && !quickdraw_followthrough && !rollingfire_followthrough)
                     {
                         AcceptSlash();
                     }
-
-                    if (!AcceptDashSlash())
-                        AcceptJumpSlash();
+               
                     
                 }
                 break;
@@ -2159,10 +2218,13 @@ public class RobotController : Pausable
 
                     if (!AcceptDashSlash())
                         AcceptJumpSlash();
+
+                    AcceptSnipeShoot();
                 }
                 break;
             case UpperBodyState.HEAVYFIRE:
             case UpperBodyState.ROLLINGHEAVYFIRE:
+            case UpperBodyState.SNIPEHEAVYFIRE:
                 {
                     if (!fire_done)
                     {
@@ -2179,16 +2241,23 @@ public class RobotController : Pausable
                             }
                             //rightWeapon.trigger = true;
                             rightWeapon_trigger_thisframe = true;
+                            rightWeapon.chargeshot = upperBodyState == UpperBodyState.SNIPEHEAVYFIRE;
                             fire_done = true;
                             fire_followthrough = rightWeapon.fire_followthrough;
                         }
-                      
-                       
+
+
 
                         if (upperBodyState == UpperBodyState.ROLLINGHEAVYFIRE)
                             rhandaimwait_thisframe = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(0).normalizedTime - 0.25f) * 4.0f, 0.0f, 1.0f);
+                        else if(upperBodyState == UpperBodyState.SNIPEHEAVYFIRE)
+                        {
+                            rhandaimwait_thisframe = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(0).normalizedTime - 0.33f) * 4.0f, 0.0f, 1.0f);
+                        }
                         else
+                        {
                             rhandaimwait_thisframe = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.0f) * 4, 0.0f, 1.0f);
+                        }
                     }
                     else
                     {
@@ -2225,6 +2294,14 @@ public class RobotController : Pausable
                             else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
                                 TransitLowerBodyState(LowerBodyState.STAND);
 
+                            if(lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE)
+                            {
+                                if(Grounded)
+                                    TransitLowerBodyState(LowerBodyState.STAND);
+                                else
+                                    TransitLowerBodyState(LowerBodyState.AIR);
+                            }
+
                             if (dualwielding)
                             {
                                 _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
@@ -2243,6 +2320,13 @@ public class RobotController : Pausable
                         _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
                         _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                     }
+                    else if (upperBodyState == UpperBodyState.SNIPEHEAVYFIRE)
+                    {
+                        _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
+                        _rarmaimwait = 0.0f;
+                        _chestaimwait = 0.0f;
+                        _barmlayerwait = 0.0f;
+                    }
                     else
                     {
                         _headaimwait = 0.0f;
@@ -2255,6 +2339,8 @@ public class RobotController : Pausable
 
                     if (upperBodyState == UpperBodyState.HEAVYFIRE && !rollingfire_followthrough)
                         AcceptRollingShoot();
+
+                    AcceptSnipeShoot();
 
                     if (!AcceptDashSlash())
                         AcceptJumpSlash();
@@ -2285,9 +2371,13 @@ public class RobotController : Pausable
 
                     if (!AcceptRollingShoot())
                     {
-                        AcceptMainFire(angle);                      
+                        if (!AcceptSnipeShoot())
+                        {
+                            AcceptMainFire(angle);
+                        }
+                                         
                     }
-
+   
                     if (Sword != null)
                     {
                         if(AcceptDashSlash())
@@ -2330,6 +2420,7 @@ public class RobotController : Pausable
 
                 AcceptDashSlash();
                 AcceptJumpSlash();
+                AcceptSnipeShoot();
                 break;
             case UpperBodyState.GROUNDSLASH_DASH:
             case UpperBodyState.AIRSLASH_DASH:
@@ -2347,6 +2438,8 @@ public class RobotController : Pausable
                 if (upperBodyState != UpperBodyState.JumpSlash && upperBodyState != UpperBodyState.JumpSlash_Jump && upperBodyState != UpperBodyState.JumpSlash_Ground)
                     AcceptJumpSlash();
 
+                AcceptSnipeShoot();
+
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
@@ -2357,6 +2450,7 @@ public class RobotController : Pausable
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = 0.0f;
+                AcceptSnipeShoot();
                 break;
             case UpperBodyState.JumpSlash:
             case UpperBodyState.JumpSlash_Ground:
@@ -2364,6 +2458,7 @@ public class RobotController : Pausable
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = 0.0f;
+                AcceptSnipeShoot();
                 break;
             default:
                 _chestaimwait = 0.0f;
@@ -2709,6 +2804,10 @@ public class RobotController : Pausable
             case LowerBodyState.AIRROLLINGFIRE:
             case LowerBodyState.ROLLINGHEAVYFIRE:
             case LowerBodyState.AIRROLLINGHEAVYFIRE:
+            case LowerBodyState.SNIPEFIRE:
+            case LowerBodyState.AIRSNIPEFIRE:
+            case LowerBodyState.SNIPEHEAVYFIRE:
+            case LowerBodyState.AIRSNIPEHEAVYFIRE:
                 {
                     // a reference to the players current horizontal velocity
                     float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -2748,7 +2847,10 @@ public class RobotController : Pausable
                  
 
                     if (lowerBodyState == LowerBodyState.ROLLINGFIRE || lowerBodyState == LowerBodyState.AIRROLLINGFIRE
-                        || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE)
+                        || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE
+                        //|| lowerBodyState == LowerBodyState.SNIPEFIRE || lowerBodyState == LowerBodyState.AIRSNIPEFIRE
+                        //|| lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE
+                        )
                     {
                         _verticalVelocity = 0.0f;
                         _speed = SprintSpeed;
@@ -3525,7 +3627,7 @@ public class RobotController : Pausable
 
                     if (Sword.hitHistoryRCCount == 0)
                     {
-                        if (_input.slash && !prev_slash && slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1)
+                        if (slash_dispatch && ringMenuDir == RingMenuDir.Center && slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1)
                         {
                             combo_reserved = true;
                             comboType = ComboType.SLASH;
@@ -3533,7 +3635,7 @@ public class RobotController : Pausable
                             Sword.knockBackType = KnockBackType.Weak;
                         }
 
-                        if (_input.fire && !prev_fire && robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
+                        if (fire_dispatch && ringMenuDir == RingMenuDir.Center && robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
                         {
                             combo_reserved = true;
                             comboType = ComboType.SHOOT;
@@ -4210,6 +4312,8 @@ public class RobotController : Pausable
 
                 if (lowerBodyState == LowerBodyState.AIRSUBFIRE
                     || lowerBodyState == LowerBodyState.AIRHEAVYFIRE
+                    || lowerBodyState == LowerBodyState.AIRSNIPEFIRE
+                    || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE
                     || lowerBodyState == LowerBodyState.SUBFIRE
                     || lowerBodyState == LowerBodyState.HEAVYFIRE) // 地形が動いたり、押し出された落ちたりしたらこっちもありえるかも
                 {
@@ -4551,7 +4655,7 @@ public class RobotController : Pausable
         else
         {
             upperBodyState = UpperBodyState.FIRE;
-            //_input.fire = false;
+ 
 
             if (dualwielding)
                 animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
@@ -4596,6 +4700,7 @@ public class RobotController : Pausable
         rollingfire_followthrough = false;
         quickdraw_followthrough = quick;
         rightWeapon.ResetCycle();
+        fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
     }
 
     bool AcceptMainFire(float angle)
@@ -4851,6 +4956,7 @@ public class RobotController : Pausable
                         lockonState = LockonState.SEEKING;
                         event_heavyfired = false;
                         rightWeapon.ResetCycle();
+                        fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
                         fire_done = false;
                         backblast_processed = true;
                         start = true;
@@ -4901,9 +5007,90 @@ public class RobotController : Pausable
                         event_fired = false;
                         fire_done = false;
                         rightWeapon.ResetCycle();
-                        
+                        fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
+
                         start = true;
                     }
+                }
+            }
+        }
+
+        return start;
+    }
+
+    bool AcceptSnipeShoot()
+    {
+        bool start = false;
+
+        if (rightWeapon != null)
+        {
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.SnipeShoot))
+            {
+                ringMenu_Down_LMB_available = true;
+
+                if (fire_dispatch && (ringMenuDir == RingMenuDir.Down))
+                {
+                    if (rightWeapon.heavy)
+                    {
+                        if (!Grounded)
+                        {
+                            lowerBodyState = LowerBodyState.AIRSNIPEHEAVYFIRE;
+                        }
+                        else
+                        {
+                            lowerBodyState = LowerBodyState.SNIPEHEAVYFIRE;
+                        }
+
+                        upperBodyState = UpperBodyState.SNIPEHEAVYFIRE;
+
+                        animator.Play(_animIDSnipeFire3, 0, 0.0f);
+
+                        //animator.Play("HeavyFire", 2, 0.0f);
+                        _animator.speed = 1.0f;
+
+                        lockonState = LockonState.SEEKING;
+                        event_heavyfired = false;
+                        rightWeapon.ResetCycle();
+                        fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
+                        fire_done = false;
+                        backblast_processed = true;
+                        start = true;
+                    }
+                    else
+                    {
+
+                        if (!Grounded)
+                        {
+                            lowerBodyState = LowerBodyState.AIRSNIPEFIRE;
+                        }
+                        else
+                        {
+                            lowerBodyState = LowerBodyState.SNIPEFIRE;
+                        }
+
+                        upperBodyState = UpperBodyState.SNIPEFIRE;
+                      
+                        if (carrying_weapon)
+                        {
+                            animator.Play(_animIDSnipeFire2, 0, 0.0f);
+                            animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
+                        }
+                        else
+                            animator.Play(_animIDSnipeFire, 0, 0.0f);
+           
+                        //_animator.CrossFadeInFixedTime(_animIDRollingFire_Left, 0.25f, 0);
+                        _animator.speed = 1.0f;
+
+                        lockonState = LockonState.SEEKING;
+                        event_fired = false;
+                        fire_done = false;
+                        rightWeapon.ResetCycle();
+                        fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
+                        start = true;
+                    }
+
+                    if (Sword != null)
+                        Sword.emitting = false;
                 }
             }
         }

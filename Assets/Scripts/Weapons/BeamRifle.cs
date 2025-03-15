@@ -98,6 +98,7 @@ public class BeamRifle : Weapon
             beam.target = Target_Robot;
             beam.team = owner.team;
             beam.owner = owner;
+            beam.chargeshot = chargeshot;
             GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             energy -= Reload_Time;

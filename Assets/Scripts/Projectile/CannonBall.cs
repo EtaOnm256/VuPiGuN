@@ -20,6 +20,12 @@ public class CannonBall : Projectile
         initial_direction = Quaternion.LookRotation(direction);
 
         speed = Speed;
+
+        if (chargeshot)
+        {
+            speed *= 1.3f;
+            damage = (int)(damage * 1.5f);
+        }
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -37,6 +43,9 @@ public class CannonBall : Projectile
     static public float Gravity = -0.5f;
 
     public MeshRenderer meshRenderer;
+
+    int damage = 100;
+    public bool chargeshot = false;
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
@@ -123,7 +132,7 @@ public class CannonBall : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, 100, RobotController.KnockBackType.Weak, owner);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.Weak, owner);
 
 
                 }
