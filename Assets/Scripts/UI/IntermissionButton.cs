@@ -339,6 +339,8 @@ public class IntermissionButton : MonoBehaviour
         StartCoroutine("Blackin");
         SetupShop();
         SwitchToShop();
+
+        Cursor.lockState = CursorLockMode.None;
     }
     void SetupShop()
     {

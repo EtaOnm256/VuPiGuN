@@ -7,12 +7,15 @@ public class CanvasControl : MonoBehaviour
     public ResultCanvas resultCanvas;
     public GameObject HUDCanvas;
     public GameObject ResultCanvas;
+    public GameObject PauseMenu;
     [SerializeField] Image blackout;
 
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine("Blackin");
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     IEnumerator Blackin()

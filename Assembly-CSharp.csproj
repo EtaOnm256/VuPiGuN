@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\InfightWeapons\HeatAxe.cs" />
     <Compile Include="Assets\Scripts\WorldManager.cs" />
     <Compile Include="Assets\RainMaker\Demo\DemoScriptStartRainOnSpaceBar.cs" />
+    <Compile Include="Assets\Scripts\UI\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Projectile\Beam.cs" />
     <Compile Include="Assets\Scripts\Projectile\SMGBullet.cs" />
     <Compile Include="Assets\Scripts\Weapons\SolidRifle.cs" />

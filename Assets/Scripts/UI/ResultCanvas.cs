@@ -49,7 +49,12 @@ public class ResultCanvas : MonoBehaviour
             background.color = new Color(0.0f, 0.0f, 0.0f, 0.5f);
         }
 
+        Cursor.lockState = CursorLockMode.None;
+    }
 
+    private void OnDisable()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void GoSummaryScreen()

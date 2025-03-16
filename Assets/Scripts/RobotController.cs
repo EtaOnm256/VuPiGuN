@@ -243,7 +243,7 @@ public class RobotController : Pausable
 
     private bool _hasAnimator;
 
-    private InputBase _input;
+    public InputBase _input = null; // プレイヤーの場合、WorldManagerから設定される
     bool prev_slash = false;
     bool prev_sprint = false;
     bool prev_fire = false;
@@ -986,7 +986,8 @@ public class RobotController : Pausable
 
         // _input.worldManager = worldManager;
 
-        _input = GetComponent<InputBase>();
+        if(_input == null)
+             _input = GetComponent<InputBase>();
 
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;

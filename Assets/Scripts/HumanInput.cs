@@ -51,6 +51,12 @@ using UnityEngine.InputSystem;
 		{
 			SubFireInput(value.isPressed);
 		}
+
+		public void OnMenu(InputValue value)
+		{
+			MenuInput(value.isPressed);
+		}
+		public bool menu; // CPU‚ªƒƒjƒ…[ŠJ‚­‚±‚Æ‚Í‚È‚¢‚Ì‚Å
 #endif
 
 
@@ -92,6 +98,11 @@ using UnityEngine.InputSystem;
 		public void SubFireInput(bool newSlashState)
 		{
 			subfire = newSlashState;
+		}
+
+		public void MenuInput(bool newSlashState)
+		{
+			menu = newSlashState;
 		}
 
 	private void OnApplicationFocus(bool hasFocus)

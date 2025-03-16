@@ -107,6 +107,11 @@ public class WorldManager : MonoBehaviour
     [SerializeField] GameState gameState;
 
     [SerializeField] UnityEngine.InputSystem.InputActionAsset inputActions;
+
+    [SerializeField] UnityEngine.InputSystem.PlayerInput playerInput;
+
+    [SerializeField] HumanInput humanInput;
+
     private void Awake()
     {
         current_instance = this;
@@ -148,6 +153,7 @@ public class WorldManager : MonoBehaviour
             }
         }
 
+        Physics.autoSimulation = true;
     }
 
     public void HandleRobotAdd(RobotController robotController)
@@ -458,8 +464,23 @@ public class WorldManager : MonoBehaviour
         }
         else
         {
+            if (humanInput.menu)
+            {
+                Pause();
+                canvasControl.HUDCanvas.gameObject.SetActive(false);
+                canvasControl.PauseMenu.SetActive(true);
+            }
+
             if (pausing)
-                return;
+            {
+                if (!canvasControl.PauseMenu.activeInHierarchy)
+                {
+                    Unpause();
+                    canvasControl.HUDCanvas.gameObject.SetActive(true);
+                }
+                else
+                    return;
+            }
 
             if (player == null)
             {
@@ -542,12 +563,7 @@ public class WorldManager : MonoBehaviour
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
         robot.is_player = true;
         DestroyImmediate(robot.GetComponent<InputBase>());
-
-        HumanInput humanInput = robot.gameObject.AddComponent<HumanInput>();
-        UnityEngine.InputSystem.PlayerInput playerInput = robot.gameObject.AddComponent<UnityEngine.InputSystem.PlayerInput>();
-        playerInput.actions = inputActions;
-        playerInput.defaultActionMap = "Player";
-        playerInput.ActivateInput();
+        robot._input = humanInput;
         robot.CinemachineCameraTarget = CinemachineCameraTarget;
 
         //robot.worldManager = this;
@@ -577,11 +593,6 @@ public class WorldManager : MonoBehaviour
         robot.HUDCanvas = canvasControl.HUDCanvas;
         robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
         robot.is_player = false;
-        //DestroyImmediate(robot.GetComponent<HumanInput>());
-        //DestroyImmediate(robot.GetComponent<UnityEngine.InputSystem.PlayerInput>());
-        //robot._input = robot.gameObject.AddComponent<RobotAI_Medium>();
-
-        //robot.worldManager = this;
         robot.team = team;
 
         GameObject.Instantiate(spawn_prefab, robot.transform.position, Quaternion.identity);
