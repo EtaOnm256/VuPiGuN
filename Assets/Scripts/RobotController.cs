@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define ACCURATE_SEEK
+
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -13,6 +15,8 @@ using System.Collections;
 
 using StarterAssets;
 using System.Linq;
+
+
 
 [RequireComponent(typeof(CharacterController))]
 public class RobotController : Pausable
@@ -335,9 +339,14 @@ public class RobotController : Pausable
 
     [SerializeField]
     List<Thruster> thrusters = new List<Thruster>();
-
+    
     LockonState lockonState = LockonState.FREE;
 
+
+#if ACCURATE_SEEK
+    float initial_lockon_angle = 90.0f;
+    int seek_time = 0;
+#endif
     public RobotController Target_Robot;
 
     private GameObject target_chest;
@@ -1898,6 +1907,7 @@ public class RobotController : Pausable
 
                 if (lockonState == LockonState.SEEKING)
                 {
+#if !ACCURATE_SEEK
                     Quaternion cameraRotation_current = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
                             _cinemachineTargetYaw, 0.0f);
 
@@ -1918,6 +1928,31 @@ public class RobotController : Pausable
                         if (_cinemachineTargetPitch > 180.0f)
                             _cinemachineTargetPitch -= 360.0f;
                     }
+#else
+                    if (seek_time <= 0)
+                    {
+                        lockonState = LockonState.LOCKON;
+
+                        Quaternion q = GetTargetQuaternionForView(Target_Robot);
+
+                        _cinemachineTargetYaw = q.eulerAngles.y;
+                        _cinemachineTargetPitch = q.eulerAngles.x;
+                    }
+                    else
+                    {
+                        float angle = Quaternion.Angle(GetTargetQuaternionForView(Target_Robot), cameraRotation);
+
+                        Quaternion q = Quaternion.RotateTowards(cameraRotation, GetTargetQuaternionForView(Target_Robot), angle / seek_time);
+
+                        _cinemachineTargetYaw = q.eulerAngles.y;
+                        _cinemachineTargetPitch = q.eulerAngles.x;
+
+                        seek_time--;
+                    }
+
+                    if (_cinemachineTargetPitch > 180.0f)
+                        _cinemachineTargetPitch -= 360.0f;
+#endif                        
                 }
 
                 if (lockonState == LockonState.LOCKON)
@@ -2021,7 +2056,11 @@ public class RobotController : Pausable
                         if (shoot)
                         {
                             fire_done = true;
+#if !ACCURATE_SEEK
                             if (lockonState == LockonState.LOCKON)
+#else
+                            if (lockonState != LockonState.FREE)
+#endif
                             {
                                 rightWeapon.Target_Robot = Target_Robot;
                             }
@@ -2132,7 +2171,11 @@ public class RobotController : Pausable
                     {
                         if (event_subfired)
                         {
+#if !ACCURATE_SEEK                        	
                             if (lockonState == LockonState.LOCKON)
+#else                            
+                            if (lockonState != LockonState.FREE)
+#endif
                             {
                                 shoulderWeapon.Target_Robot = Target_Robot;
                             }
@@ -2231,7 +2274,11 @@ public class RobotController : Pausable
                     {
                         if (event_heavyfired)
                         {
+#if !ACCURATE_SEEK                        	
                             if (lockonState == LockonState.LOCKON)
+#else
+                            if (lockonState != LockonState.FREE)
+#endif
                             {
                                 rightWeapon.Target_Robot = Target_Robot;
                             }
@@ -4651,7 +4698,7 @@ public class RobotController : Pausable
             _animator.CrossFadeInFixedTime(_animIDHeavyFire, 0.25f, 0);
             _animator.speed = 1.0f;
             backblast_processed = true;
-            lockonState = LockonState.SEEKING;
+            
         }
         else
         {
@@ -4664,8 +4711,6 @@ public class RobotController : Pausable
             {
                 animator.Play("Fire", 1, 0.0f);
             }
-
-            lockonState = LockonState.SEEKING;
 
 
 
@@ -4696,7 +4741,7 @@ public class RobotController : Pausable
             firing_multiplier = 1.0f;
 
         animator.SetFloat("FiringSpeed", firing_multiplier);
-
+        StartSeeking(firing_multiplier);
         fire_done = false;
         rollingfire_followthrough = false;
         quickdraw_followthrough = quick;
@@ -4742,7 +4787,7 @@ public class RobotController : Pausable
 
                 animator.Play("SubFire", 2, 0.0f);
 
-                lockonState = LockonState.SEEKING;
+                StartSeeking();
             }
         }
     }
@@ -4850,7 +4895,7 @@ public class RobotController : Pausable
                 Sword.slashing = false;
                 Sword.emitting = true;
 
-                lockonState = LockonState.SEEKING;
+                StartSeeking();
                 if (target_chest != null)
                 {
                     Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -4903,7 +4948,7 @@ public class RobotController : Pausable
                 combo_reserved = false;
                 jumpslash_end_forward = false;
                 Sword.emitting = true;
-                lockonState = LockonState.SEEKING;
+                StartSeeking();
 
                 _animator.speed = 1.0f;
                 return true;
@@ -4954,7 +4999,7 @@ public class RobotController : Pausable
                         //animator.Play("HeavyFire", 2, 0.0f);
                         _animator.speed = 1.0f;
 
-                        lockonState = LockonState.SEEKING;
+                        StartSeeking();
                         event_heavyfired = false;
                         rightWeapon.ResetCycle();
                         fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
@@ -5004,7 +5049,7 @@ public class RobotController : Pausable
                         //_animator.CrossFadeInFixedTime(_animIDRollingFire_Left, 0.25f, 0);
                         _animator.speed = 1.0f;
 
-                        lockonState = LockonState.SEEKING;
+                        StartSeeking();
                         event_fired = false;
                         fire_done = false;
                         rightWeapon.ResetCycle();
@@ -5049,7 +5094,7 @@ public class RobotController : Pausable
                         //animator.Play("HeavyFire", 2, 0.0f);
                         _animator.speed = 1.0f;
 
-                        lockonState = LockonState.SEEKING;
+                        StartSeeking();
                         event_heavyfired = false;
                         rightWeapon.ResetCycle();
                         fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
@@ -5082,7 +5127,7 @@ public class RobotController : Pausable
                         //_animator.CrossFadeInFixedTime(_animIDRollingFire_Left, 0.25f, 0);
                         _animator.speed = 1.0f;
 
-                        lockonState = LockonState.SEEKING;
+                        StartSeeking();
                         event_fired = false;
                         fire_done = false;
                         rightWeapon.ResetCycle();
@@ -5127,7 +5172,7 @@ public class RobotController : Pausable
                     stepremain = Sword.motionProperty[lowerBodyState].DashLength;
                     combo_reserved = false;
                     Sword.emitting = true;
-                    lockonState = LockonState.SEEKING;
+                    StartSeeking();
                 }
                 else
                 {
@@ -5138,7 +5183,7 @@ public class RobotController : Pausable
                     stepremain = Sword.motionProperty[lowerBodyState].DashLength;
                     combo_reserved = false;
                     Sword.emitting = true;
-                    lockonState = LockonState.SEEKING;
+                    StartSeeking();
                 }
                 _animator.speed = 1.0f;
             }
@@ -5152,7 +5197,7 @@ public class RobotController : Pausable
                 stepremain = Sword.motionProperty[lowerBodyState].DashLength;
                 combo_reserved = false;
                 Sword.emitting = true;
-                lockonState = LockonState.SEEKING;
+                StartSeeking();
                 if (target_chest != null)
                 {
                     Vector3 target_dir = target_chest.transform.position - transform.position;
@@ -5273,5 +5318,14 @@ public class RobotController : Pausable
             }
 
         }
+    }
+
+    void StartSeeking(float multiplier = 1.0f)
+    {
+        lockonState = LockonState.SEEKING;
+#if ACCURATE_SEEK        
+        initial_lockon_angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
+        seek_time = (int)(30/ multiplier);
+#endif        
     }
 }

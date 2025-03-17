@@ -1,3 +1,4 @@
+//#define ACCURATE_SEEK
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -223,8 +224,10 @@ public class UIController_Overlay : MonoBehaviour
                             reticle.Value.reticle.image.color = Color.yellow;
                             break;
                         case RobotController.LockonState.SEEKING:
+#if !ACCURATE_SEEK
                             reticle.Value.reticle.image.color = new Color(1.0f, 0.5f, 0.0f);
                             break;
+#endif
                         case RobotController.LockonState.LOCKON:
                             reticle.Value.reticle.image.color = Color.red;
                             break;
