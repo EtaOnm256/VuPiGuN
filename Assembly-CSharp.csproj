@@ -104,7 +104,6 @@
     <Compile Include="Assets\RainMaker\Prefab\RainScript.cs" />
     <Compile Include="Assets\Scripts\AI\RobotAI_Shenlong.cs" />
     <Compile Include="Assets\Scripts\InputBase.cs" />
-    <Compile Include="Assets\Scripts\RobotController_anotheraim.cs" />
     <Compile Include="Assets\Scripts\Thruster.cs" />
     <Compile Include="Assets\Scripts\WeaponPanelItem.cs" />
     <Compile Include="Assets\Scripts\UI\ResultCanvas.cs" />

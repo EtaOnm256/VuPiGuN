@@ -1,4 +1,4 @@
-﻿//#define ACCURATE_SEEK
+﻿#define ACCURATE_SEEK
 
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
@@ -346,6 +346,7 @@ public class RobotController : Pausable
 #if ACCURATE_SEEK
     float initial_lockon_angle = 90.0f;
     int seek_time = 0;
+    int seek_time_max = 20;
 #endif
     public RobotController Target_Robot;
 
@@ -5325,7 +5326,7 @@ public class RobotController : Pausable
         lockonState = LockonState.SEEKING;
 #if ACCURATE_SEEK        
         initial_lockon_angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
-        seek_time = (int)(30/ multiplier);
+        seek_time = (int)(seek_time_max / multiplier);
 #endif        
     }
 }
