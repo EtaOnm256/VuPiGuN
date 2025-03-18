@@ -78,6 +78,8 @@ public class RobotAI_Medium : InputBase
 
         }
 
+        ringMenuDir = RobotController.RingMenuDir.Center;
+
         if (nearest_robot == null)
         {
            
@@ -399,14 +401,11 @@ public class RobotAI_Medium : InputBase
 
                             if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0)
                             {
-                                move.x = 0.0f;
-                                move.y = -1.0f;
+                                ringMenuDir = RobotController.RingMenuDir.Down;
                                 slash = true;
                             }
                             else if (!prev_slash && infight_reload <= 0)
                             {
-                                move.x = 0.0f;
-                                move.y = 0.0f;
                                 slash = true;
                             }
                         }

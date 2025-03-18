@@ -534,7 +534,7 @@ public class RobotController : Pausable
     bool ringMenu_Right_LMB_available;
     bool ringMenu_Right_RMB_available;
 
-    enum RingMenuDir
+    public enum RingMenuDir
     {
         Center, Left, Up, Right, Down
     }
@@ -1325,6 +1325,7 @@ public class RobotController : Pausable
             {
                 fire_dispatch = _input.fire;
                 slash_dispatch = _input.slash;
+                ringMenuDir = _input.ringMenuDir;
             }
 
             LowerBodyMove(); // HEAVYFIREの反動処理変えたから順番入れ替えても大丈夫かも

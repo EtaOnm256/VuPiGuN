@@ -13,6 +13,7 @@ public class InputBase : Pausable
     public bool down;
     public bool slash;
     public bool subfire;
+    public RobotController.RingMenuDir ringMenuDir = RobotController.RingMenuDir.Center;
 
     [Header("Movement Settings")]
     public bool analogMovement;

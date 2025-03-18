@@ -88,6 +88,8 @@ public class Halberd : InfightWeapon
             { RobotController.LowerBodyState.QuickSlash,new SlashMotionInfo(2) },
             { RobotController.LowerBodyState.DashSlash,new SlashMotionInfo(1) },
             { RobotController.LowerBodyState.JumpSlash,new SlashMotionInfo(1) },
+            { RobotController.LowerBodyState.JumpSlash_Jump,new SlashMotionInfo(1) },
+            { RobotController.LowerBodyState.JumpSlash_Ground,new SlashMotionInfo(1) },
         };
 
             _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
@@ -115,6 +117,8 @@ public class Halberd : InfightWeapon
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}3_{i}");
                         break;
                     case RobotController.LowerBodyState.JumpSlash:
+                    case RobotController.LowerBodyState.JumpSlash_Jump:
+                    case RobotController.LowerBodyState.JumpSlash_Ground:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
                         break;
                 }

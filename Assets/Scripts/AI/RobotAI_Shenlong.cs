@@ -81,6 +81,8 @@ public class RobotAI_Shenlong : InputBase
 
         }
 
+        ringMenuDir = RobotController.RingMenuDir.Center;
+
         if (nearest_robot == null)
         {
            
@@ -314,8 +316,7 @@ public class RobotAI_Shenlong : InputBase
 
                                     if (jumpinfight_reload <= 0 && robotController.boost >= robotController.Boost_Max)
                                     {
-                                        move.x = 0.0f;
-                                        move.y = -1.0f;
+                                        ringMenuDir = RobotController.RingMenuDir.Down;
                                         allow_infight = true;
                                         infight_wait = 0;
                                     }
@@ -444,8 +445,7 @@ public class RobotAI_Shenlong : InputBase
 
                             if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0)
                             {
-                                move.x = 0.0f;
-                                move.y = -1.0f;
+                                ringMenuDir = RobotController.RingMenuDir.Down;
                                 slash = true;
                             }
                             else if (!prev_slash && infight_reload <= 0)
