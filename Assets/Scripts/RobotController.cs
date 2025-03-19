@@ -952,6 +952,8 @@ public class RobotController : Pausable
         AimTargetRotation_Head = Head.transform.rotation;
         AimTargetRotation_Chest = Chest.transform.rotation;
 
+     
+
         if (Target_Robot != null)
         {
             TargetEnemy(Target_Robot);
@@ -999,9 +1001,21 @@ public class RobotController : Pausable
         if(_input == null)
              _input = GetComponent<InputBase>();
 
+        _rarmaimwait = 0.0f;
+        _chestaimwait = 0.0f;
+
+        if (dualwielding)
+            _barmlayerwait = 1.0f;
+        else
+            _barmlayerwait = 0.0f;
+
+        UpperBodyMove();
+
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;
         prev_fire = _input.fire;
+
+        
     }
 
     private bool ConsumeBoost(int amount)
@@ -1774,7 +1788,7 @@ public class RobotController : Pausable
     {
         CameraAndLockon();
 
-        if (!WorldManager.current_instance.finished)
+        if (!WorldManager.current_instance.finished && !WorldManager.current_instance.attention)
         {
             if (CinemachineCameraTarget != null)
             {

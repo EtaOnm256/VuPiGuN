@@ -37,6 +37,7 @@ public class WorldManager : MonoBehaviour
             public bool player;
             public int wait;
             public GameObject variant;
+            public bool boss;
         }
     }
 
@@ -77,6 +78,7 @@ public class WorldManager : MonoBehaviour
             public int squadCount;
             public bool loop = false;
             public bool burst = false; // 0ëÃÇ…Ç»ÇÈÇ‹Ç≈ÉXÉ|Å[ÉìÇ≥ÇπÇ»Ç¢
+            public bool boss = false;
         }
 
   
@@ -103,6 +105,10 @@ public class WorldManager : MonoBehaviour
     public RobotController finish_dealer;
     public Vector3 finish_dir;
     public RobotController finish_victim;
+
+    public bool attention;
+    int attention_timer = 0;
+    RobotController attention_target;
 
     [SerializeField] GameState gameState;
 
@@ -211,8 +217,8 @@ public class WorldManager : MonoBehaviour
 
             if(team.spawnings[i].wait <= 0)
             {
-                SpawnNPC(team.spawnings[i].variant, team.spawnings[i].pos, team.spawnings[i].rot, team);
-                team.spawnings.RemoveAt(i);
+                SpawnNPC(team.spawnings[i].variant, team.spawnings[i].pos, team.spawnings[i].rot, team, team.spawnings[i].boss);
+                team.spawnings.RemoveAt(i);               
             }
             else
             {
@@ -309,9 +315,9 @@ public class WorldManager : MonoBehaviour
                 }
 
                 if (instant)
-                    SpawnNPC(spawn.variant, pos, rot, team);
+                    SpawnNPC(spawn.variant, pos, rot, team,spawn.boss);
                 else
-                    team.spawnings.Add(new Team.Spawning { player = false, pos = pos, rot = rot, variant = spawn.variant, wait = 60 });
+                    team.spawnings.Add(new Team.Spawning { player = false, pos = pos, rot = rot, variant = spawn.variant, wait = 60 ,boss = spawn.boss });
                 
                 sequence.spawned = true;
                 hav_progress = true;
@@ -368,7 +374,7 @@ public class WorldManager : MonoBehaviour
     {
         if (finished)
         {
-            if(finish_timer >= 300)
+            if (finish_timer >= 300)
             {
                 if (!canvasControl.ResultCanvas.gameObject.activeSelf)
                 {
@@ -406,9 +412,9 @@ public class WorldManager : MonoBehaviour
 
                     CinemachineCameraTarget.transform.rotation = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, qTo, v);
                 }
-                
+
             }
-            else if(finish_timer >= 120)
+            else if (finish_timer >= 120)
             {
                 if (canvasControl.ResultCanvas.gameObject.activeSelf)
                 {
@@ -421,8 +427,8 @@ public class WorldManager : MonoBehaviour
 
                 Quaternion view = Quaternion.FromToRotation(Vector3.left, dir);
 
-                if(finish_timer == 120)
-                    CinemachineCameraTarget.transform.position = finish_victim.GetCenter() + view*(new Vector3(0.0f, 5,-12));
+                if (finish_timer == 120)
+                    CinemachineCameraTarget.transform.position = finish_victim.GetCenter() + view * (new Vector3(0.0f, 5, -12));
 
                 if (finish_victim)
                     CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(finish_victim.GetCenter() - CinemachineCameraTarget.transform.position);
@@ -432,7 +438,7 @@ public class WorldManager : MonoBehaviour
             }
             else
             {
-                if(!pausing)
+                if (!pausing)
                 {
                     Pause();
 
@@ -446,7 +452,7 @@ public class WorldManager : MonoBehaviour
                         gameState.gold += canvasControl.resultCanvas.power_gold + canvasControl.resultCanvas.dealeddamage_gold;
 
                         canvasControl.resultCanvas.currentgold = gameState.gold;
-                       
+
 
                         canvasControl.resultCanvas.victory = victory;
                         canvasControl.ResultCanvas.gameObject.SetActive(true);
@@ -456,11 +462,52 @@ public class WorldManager : MonoBehaviour
                 }
                 else
                 {
-                    
+
                 }
             }
 
             finish_timer++;
+        }
+        else if (attention)
+        {
+            if (!pausing)
+            {
+                Pause();
+                canvasControl.HUDCanvas.gameObject.SetActive(false);
+            }
+
+            if (attention_timer < 60)
+            {
+              
+
+                Quaternion qFrom = CinemachineCameraTarget.transform.rotation;
+                Quaternion qTo = Quaternion.LookRotation(attention_target.GetCenter() - CinemachineCameraTarget.transform.position);
+
+                float angle = Quaternion.Angle(qFrom, qTo);
+
+                float v = Mathf.Max(angle / 15.0f, 0.2f);
+
+                CinemachineCameraTarget.transform.rotation = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, qTo, v);
+            }
+            else if(attention_timer < 120)
+            {
+                Vector3 rel = (attention_target.GetCenter() - CinemachineCameraTarget.transform.position);
+
+                if (rel.magnitude > 15.0f)
+                {
+                    CinemachineCameraTarget.transform.position += rel.normalized * (rel.magnitude - 15.0f) / 15.0f;
+                }
+
+                CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(attention_target.GetCenter() - CinemachineCameraTarget.transform.position);
+            }
+            else
+            {
+                attention = false;
+                canvasControl.HUDCanvas.gameObject.SetActive(true);
+                Unpause();
+            }
+
+            attention_timer++;
         }
         else
         {
@@ -485,7 +532,7 @@ public class WorldManager : MonoBehaviour
             if (player == null)
             {
                 Team.Spawning player_spawning = null;
-                foreach(var spawning in teams[0].spawnings)
+                foreach (var spawning in teams[0].spawnings)
                 {
                     if (spawning.player)
                     {
@@ -494,7 +541,7 @@ public class WorldManager : MonoBehaviour
                     }
                 }
 
-                if(player_spawning == null)
+                if (player_spawning == null)
                 {
                     PlacePlayerSpawn(60);
                 }
@@ -510,7 +557,7 @@ public class WorldManager : MonoBehaviour
                         player_spawning.wait--;
                     }
                 }
-              
+
             }
 
             ProcessSpawn(sequence_friend, teams[0], false);
@@ -577,7 +624,7 @@ public class WorldManager : MonoBehaviour
         HandleRobotAdd(robot);
     }
 
-    private void SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team)
+    private void SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team,bool boss)
     {
         //RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
        
@@ -599,6 +646,13 @@ public class WorldManager : MonoBehaviour
 
         team.robotControllers.Add(robot);
         HandleRobotAdd(robot);
+
+        if (boss)
+        {
+            attention = true;
+            attention_timer = 0;
+            attention_target = robot;
+        }
     }
 
     public void AddProjectile(Projectile projectile,Team team)

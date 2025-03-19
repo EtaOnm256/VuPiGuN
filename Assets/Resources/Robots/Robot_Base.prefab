@@ -1135,7 +1135,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2621356082494473596}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 17.195442, y: 0, z: 8.973003}
+  m_LocalPosition: {x: 0, y: 3.805078, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2137,7 +2137,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4754426859814798826}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 17.195442, y: 0, z: 8.973003}
+  m_LocalPosition: {x: 1.45, y: 0.206, z: 0.988}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3019,6 +3019,7 @@ MonoBehaviour:
   _cinemachineTargetPitch: 0
   _verticalVelocity: 0
   slash_count: 0
+  _input: {fileID: 0}
   headmultiAimConstraint: {fileID: 8240275247160239941}
   chestmultiAimConstraint: {fileID: 4152913449269264376}
   rhandmultiAimConstraint: {fileID: 2012195460914147606}
@@ -3041,6 +3042,8 @@ MonoBehaviour:
   lockingEnemy: []
   fire_done: 0
   fire_followthrough: 0
+  rollingfire_followthrough: 0
+  quickdraw_followthrough: 0
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   stompHitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
@@ -3060,7 +3063,6 @@ MonoBehaviour:
   AimHelper_Head: {fileID: 8747842198656981557}
   AimHelper_Chest: {fileID: 2621356082494473596}
   AimHelper_RHand: {fileID: 4754426859814798826}
-  itemFlag: 0
   audioSource: {fileID: 4418133540429302341}
   audioSource_Boost: {fileID: 4984874527964568746}
   audioClip_Walk: {fileID: 8300000, guid: 464d04fd784bb8d4eb87c643e61b313c, type: 3}
@@ -3072,8 +3074,8 @@ MonoBehaviour:
     lweapon_prefab: {fileID: 0}
     subweapon_prefab: {fileID: 0}
     weapon_chest_paired: 0
-    carrying_weapon: 0
     dualwield_lightweapon: 0
+    itemFlag: 0
 --- !u!1 &6642205849251697089
 GameObject:
   m_ObjectHideFlags: 0
@@ -3712,7 +3714,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8747842198656981557}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 17.195442, y: 0, z: 8.973003}
+  m_LocalPosition: {x: 0, y: 3.805078, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

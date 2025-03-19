@@ -7,6 +7,7 @@ public class EffectSelfDelete : Pausable
     public Effekseer.EffekseerEmitter effekseerEmitter = null;
     public float speed = 1.0f;
     public AudioSource audioSource = null;
+    public bool ignorePause = false;
     private void Awake()
     {
         WorldManager.current_instance.pausables.Add(this);
@@ -30,13 +31,13 @@ public class EffectSelfDelete : Pausable
 
     public override void OnPause()
     {
-        if (effekseerEmitter)
+        if (effekseerEmitter && !ignorePause)
             effekseerEmitter.paused = true;
     }
 
     public override void OnUnpause()
     {
-        if (effekseerEmitter)
+        if (effekseerEmitter && !ignorePause)
             effekseerEmitter.paused = false;
     }
 

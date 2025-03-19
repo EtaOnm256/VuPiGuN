@@ -65,3 +65,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effekseerEmitter: {fileID: 8961267772553168206}
   speed: 2
+  audioSource: {fileID: 0}
+  ignorePause: 1
