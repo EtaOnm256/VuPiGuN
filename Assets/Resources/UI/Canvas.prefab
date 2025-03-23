@@ -3684,6 +3684,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   origin: {fileID: 0}
   target: {fileID: 0}
+  lockonmode: 0
+  infight: 0
   canvas: {fileID: 2473136957011414772}
   weaponPanel: {fileID: 5147641052444578625}
   distance: 1000

@@ -7,7 +7,10 @@ public class UIController_Overlay : MonoBehaviour
     public RobotController origin;
     [SerializeField]
     public RobotController target;
-   
+
+    public bool lockonmode = false;
+    public bool infight = false;
+
     public Dictionary<RobotController, ReticleAndGuideline> robotReticle = new Dictionary<RobotController, ReticleAndGuideline>();
 
     //public List<Weapon> weapons = new List<Weapon>();
@@ -44,6 +47,8 @@ public class UIController_Overlay : MonoBehaviour
         public GameObject radaricon_obj;
         public Image radaricon_image;
         public RectTransform radarrectTransform;
+        public GameObject outer;
+        public Image outer_image;
     }
     public class Guideline
     {
@@ -67,6 +72,9 @@ public class UIController_Overlay : MonoBehaviour
         reticle.image = reticle.gameObject.GetComponent<Image>();
         reticle.HPrectTransform = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<RectTransform>();
         reticle.HPslider = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<Slider>();
+
+        reticle.outer = reticle.gameObject.transform.Find("Outer").gameObject;
+        reticle.outer_image = reticle.outer.GetComponent<Image>();
 
         reticle.radaricon_obj = Instantiate(icon_prefab, radarPanel.transform);
         reticle.radaricon_image = reticle.radaricon_obj.GetComponent<Image>();
@@ -213,15 +221,24 @@ public class UIController_Overlay : MonoBehaviour
                 Vector3 screenPoint_guide_line = screenPoint_guide;
                 screenPoint_guide_line.z = 50.0f;
 
-                reticle.Value.guideline.lineRenderer.enabled = true;
-                reticle.Value.guideline.lineRenderer.SetPosition(0, uiCamera.ScreenToWorldPoint(screenPoint_line));
-                reticle.Value.guideline.lineRenderer.SetPosition(1, uiCamera.ScreenToWorldPoint(screenPoint_guide_line));
+                if (!lockonmode && !infight)
+                {
+                    reticle.Value.guideline.lineRenderer.enabled = true;
+                    reticle.Value.guideline.lineRenderer.SetPosition(0, uiCamera.ScreenToWorldPoint(screenPoint_line));
+                    reticle.Value.guideline.lineRenderer.SetPosition(1, uiCamera.ScreenToWorldPoint(screenPoint_guide_line));
+                }
+                else
+                    reticle.Value.guideline.lineRenderer.enabled = false;
+
                 if (target == reticle.Key)
                 {
+                    reticle.Value.reticle.outer.SetActive(lockonmode);
+
                     switch (lockonState)
                     {
                         case RobotController.LockonState.FREE:
-                            reticle.Value.reticle.image.color = Color.yellow;
+                            reticle.Value.reticle.image.color = reticle.Value.reticle.outer_image.color =
+                                 reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.yellow;
                             break;
                         case RobotController.LockonState.SEEKING:
 #if !ACCURATE_SEEK
@@ -229,15 +246,24 @@ public class UIController_Overlay : MonoBehaviour
                             break;
 #endif
                         case RobotController.LockonState.LOCKON:
-                            reticle.Value.reticle.image.color = Color.red;
+                            reticle.Value.reticle.image.color = reticle.Value.reticle.outer_image.color =
+                                reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.red;
                             break;
                     }
+
+
                 }
                 else
-                    reticle.Value.reticle.image.color = Color.green;
+                {
+                    reticle.Value.reticle.image.color =
+                        reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.green;
 
-                //reticle.Value.reticle.HPslider.enabled = true;
-                reticle.Value.reticle.HPslider.value = reticle.Key.HP;
+                    reticle.Value.reticle.outer.SetActive(false);
+
+                }
+
+                    //reticle.Value.reticle.HPslider.enabled = true;
+                    reticle.Value.reticle.HPslider.value = reticle.Key.HP;
                 reticle.Value.reticle.HPslider.maxValue = reticle.Key.MaxHP;
 
                 reticle.Value.reticle.HPrectTransform.anchoredPosition = new Vector3(0.0f, 2500.0f/z, 0.0f);
@@ -266,20 +292,29 @@ public class UIController_Overlay : MonoBehaviour
                 reticle.Value.reticle.radaricon_image.color = Color.green;
         }
 
-      
+        if (!lockonmode && !infight)
+        {
+            Vector3 relative_f = Vector3.forward * distance;
+            relative_f = Quaternion.AngleAxis(-10.0f, Vector3.right) * relative_f;
 
-        Vector3 relative_f = Vector3.forward * distance;
-        relative_f = Quaternion.AngleAxis(-10.0f, Vector3.right) * relative_f;
+            Vector3 relative_f_far = Vector3.forward * 10000.0f;
+            relative_f_far = Quaternion.AngleAxis(-10.0f, Vector3.right) * relative_f_far;
 
-        Vector3 relative_f_far = Vector3.forward * 10000.0f;
-        relative_f_far = Quaternion.AngleAxis(-10.0f, Vector3.right) * relative_f_far;
+            Vector3 relative_l = -Vector3.right * 0.5f;
 
-        Vector3 relative_l = -Vector3.right * 0.5f;
+            SetGuideLinePosition(guideline_lineRenderer_l, relative_l, relative_f, relative_f_far);
 
-        SetGuideLinePosition(guideline_lineRenderer_l, relative_l, relative_f, relative_f_far);
+            Vector3 relative_r = Vector3.right * 0.5f;
 
-        Vector3 relative_r = Vector3.right * 0.5f;
+            SetGuideLinePosition(guideline_lineRenderer_r, relative_r, relative_f, relative_f_far);
 
-        SetGuideLinePosition(guideline_lineRenderer_r, relative_r, relative_f, relative_f_far);
+            guideline_lineRenderer_l.enabled = true;
+            guideline_lineRenderer_r.enabled = true;
+        }
+        else
+        {
+            guideline_lineRenderer_l.enabled = false;
+            guideline_lineRenderer_r.enabled = false;
+        }
     }
 }

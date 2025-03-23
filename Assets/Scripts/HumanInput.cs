@@ -57,6 +57,10 @@ using UnityEngine.InputSystem;
 			MenuInput(value.isPressed);
 		}
 		public bool menu; // CPUÇ™ÉÅÉjÉÖÅ[äJÇ≠Ç±Ç∆ÇÕÇ»Ç¢ÇÃÇ≈
+		public void OnLockSwitch(InputValue value)
+		{
+			LockSwitchInput(value.isPressed);
+		}
 #endif
 
 
@@ -103,6 +107,11 @@ using UnityEngine.InputSystem;
 		public void MenuInput(bool newSlashState)
 		{
 			menu = newSlashState;
+		}
+
+		public void LockSwitchInput(bool newSlashState)
+		{
+			lockswitch = newSlashState;
 		}
 
 	private void OnApplicationFocus(bool hasFocus)

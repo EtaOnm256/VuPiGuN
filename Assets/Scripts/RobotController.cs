@@ -251,6 +251,7 @@ public class RobotController : Pausable
     bool prev_slash = false;
     bool prev_sprint = false;
     bool prev_fire = false;
+    bool prev_lockswitch = false;
 
     bool _burst = false;
 
@@ -349,6 +350,8 @@ public class RobotController : Pausable
     int seek_time_max = 20;
 #endif
     public RobotController Target_Robot;
+
+    public bool lockonmode = false;
 
     private GameObject target_chest;
     private GameObject target_head;
@@ -829,12 +832,14 @@ public class RobotController : Pausable
         if (Target_Robot != null)
         {
             Target_Robot.lockingEnemy.Remove(this);
+            lockonmode = false;
         }
     }
 
     public void PurgeTarget(RobotController robotController)
     {
         Target_Robot = null;
+        lockonmode = false;
 
         target_chest = null;
         target_head = null;
@@ -1014,7 +1019,7 @@ public class RobotController : Pausable
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;
         prev_fire = _input.fire;
-
+        prev_lockswitch = _input.lockswitch;
         
     }
 
@@ -1233,7 +1238,7 @@ public class RobotController : Pausable
                 UntargetEnemy();
 
                 Target_Robot = null;
-
+                lockonmode = false;
                 target_chest = null;
                 target_head = null;
 
@@ -1256,8 +1261,9 @@ public class RobotController : Pausable
             if (is_player)
             {
                 uIController_Overlay.lockonState = lockonState;
+                uIController_Overlay.lockonmode = lockonmode;
 
-                switch(ringMenuState)
+                switch (ringMenuState)
                 {
                     case RingMenuState.Close:
                         {
@@ -1879,6 +1885,9 @@ public class RobotController : Pausable
 
         if (dist_enemy < 20.0f)
         {
+            if (is_player)
+                uIController_Overlay.infight = true;
+
             Vector3 off_hori = GetCenter() - Target_Robot.GetCenter();
             off_hori.y = 0.0f;
 
@@ -1909,16 +1918,24 @@ public class RobotController : Pausable
                 _cinemachineTargetPitch -= 360.0f;
 
             lockonState = LockonState.LOCKON;
+
+            
         }
         else
         {
+            if (is_player)
+                uIController_Overlay.infight = false;
+
             slash_camera_offset_set = false;
 
             if (Target_Robot != null)
             {
                 if (lockonState == LockonState.FREE)
                 {
-
+                    if(lockonmode)
+                    {
+                        StartSeeking();
+                    }
                 }
 
                 if (lockonState == LockonState.SEEKING)
@@ -1986,6 +2003,7 @@ public class RobotController : Pausable
             else
             {
                 lockonState = LockonState.FREE;
+                lockonmode = false;
             }
 
             // clamp our rotations so our values are limited 360 degrees
@@ -2002,6 +2020,16 @@ public class RobotController : Pausable
 
 
         }
+
+        if(Target_Robot!=null)
+        {
+            if (_input.lockswitch && !prev_lockswitch)
+            {
+                lockonmode = !lockonmode;
+            }
+        }
+
+        prev_lockswitch = _input.lockswitch;
     }
 
     private void UpperBodyMove()
@@ -2083,6 +2111,7 @@ public class RobotController : Pausable
                             else
                             {
                                 rightWeapon.Target_Robot = null;
+
                                 lockonState = LockonState.FREE;
                             }
 
@@ -2301,7 +2330,8 @@ public class RobotController : Pausable
                             else
                             {
                                 rightWeapon.Target_Robot = null;
-                                lockonState = LockonState.FREE;
+                                if (!lockonmode)
+                                    lockonState = LockonState.FREE;
                             }
                             //rightWeapon.trigger = true;
                             rightWeapon_trigger_thisframe = true;
@@ -2412,7 +2442,9 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.STAND:
                 {
-                    lockonState = LockonState.FREE;
+                    if(!lockonmode)
+                        lockonState = LockonState.FREE;
+
                     float angle = 180.0f;
 
                     if (target_chest)
@@ -2474,7 +2506,8 @@ public class RobotController : Pausable
                 _headaimwait = 0.0f;
                 _rarmaimwait = 0.0f;
                 _barmlayerwait = 0.0f;
-                lockonState = LockonState.FREE;
+                if (!lockonmode)
+                    lockonState = LockonState.FREE;
                 break;
             case UpperBodyState.LowerSlash:
                 _chestaimwait = 0.0f;
@@ -2529,7 +2562,8 @@ public class RobotController : Pausable
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
-                lockonState = LockonState.FREE;
+                if (!lockonmode)
+                    lockonState = LockonState.FREE;
                 break;
         }
 
@@ -5338,10 +5372,13 @@ public class RobotController : Pausable
 
     void StartSeeking(float multiplier = 1.0f)
     {
-        lockonState = LockonState.SEEKING;
+        if (lockonState != LockonState.LOCKON)
+        {
+            lockonState = LockonState.SEEKING;
 #if ACCURATE_SEEK        
-        initial_lockon_angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
-        seek_time = (int)(seek_time_max / multiplier);
+            initial_lockon_angle = Quaternion.Angle(cameraRotation, GetTargetQuaternionForView(Target_Robot));
+            seek_time = (int)(seek_time_max / multiplier);
 #endif        
+        }
     }
 }

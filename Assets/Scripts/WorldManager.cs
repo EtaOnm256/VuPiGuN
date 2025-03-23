@@ -134,7 +134,7 @@ public class WorldManager : MonoBehaviour
         Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
         Team friend_team = new Team {power = 1000,powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = 100, powerslider = enemyPowerSlider };
+        Team enemy_team = new Team { power = 1000, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
