@@ -118,6 +118,7 @@ public class WorldManager : MonoBehaviour
 
     [SerializeField] HumanInput humanInput;
 
+    [SerializeField] bool testingroom;
     private void Awake()
     {
         current_instance = this;
@@ -133,7 +134,7 @@ public class WorldManager : MonoBehaviour
         Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
         Team friend_team = new Team {power = 1000,powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = 1000, powerslider = enemyPowerSlider };
+        Team enemy_team = new Team { power = 100, powerslider = enemyPowerSlider };
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
@@ -571,20 +572,23 @@ public class WorldManager : MonoBehaviour
     {
         HandleRobotRemove(robotController);
 
-        robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.Cost);
-
-        if(robotController.team.power <= 0)
+        if (!testingroom)
         {
-            finished = true;
+            robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.Cost);
 
-            finish_victim = robotController;
-            finish_dealer = dealer;
-            // 決着がついた後の動きで集計に影響が出ないように
-            canvasControl.resultCanvas.dealeddamage = player_dealeddamage;
-            finish_dir = dir;
+            if (robotController.team.power <= 0)
+            {
+                finished = true;
 
-            victory = robotController.team != teams[0];
-            
+                finish_victim = robotController;
+                finish_dealer = dealer;
+                // 決着がついた後の動きで集計に影響が出ないように
+                canvasControl.resultCanvas.dealeddamage = player_dealeddamage;
+                finish_dir = dir;
+
+                victory = robotController.team != teams[0];
+
+            }
         }
 
         robotController.team.robotControllers.Remove(robotController);

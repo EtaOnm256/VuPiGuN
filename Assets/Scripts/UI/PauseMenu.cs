@@ -9,9 +9,22 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject canvas;
     [SerializeField] Image blackout;
     [SerializeField] GameState gameState;
+    [SerializeField] TMPro.TextMeshProUGUI exitButtonText;
+
+    [SerializeField] bool testingroom = false;
+
     private void OnEnable()
     {
         Cursor.lockState = CursorLockMode.None;
+        
+        if(testingroom)
+        {
+            exitButtonText.text = "テストを終了";
+        }
+        else
+        {
+            exitButtonText.text = "タイトルに戻る";
+        }
     }
 
     private void OnDisable()
@@ -25,7 +38,6 @@ public class PauseMenu : MonoBehaviour
     }
     public void OnClickExit()
     {
-        gameState.stage = -1;
         StartCoroutine("Blackout");
     }
 
@@ -41,7 +53,13 @@ public class PauseMenu : MonoBehaviour
             yield return wait;
         }
 
-        gameState.intermission = true;
+        if (!testingroom)
+        {
+            gameState.stage = -1;
+            gameState.loadingDestination = GameState.LoadingDestination.Intermission;
+        }
+        else
+            gameState.loadingDestination = GameState.LoadingDestination.Intermission_Garage;
 
         SceneManager.LoadScene("Loading");
     }

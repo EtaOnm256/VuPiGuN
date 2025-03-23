@@ -4,7 +4,16 @@ using System.Collections.Generic;
 public class GameState : ScriptableObject
 {
     public int stage = -1;
-    public bool intermission = true;
+    public enum LoadingDestination
+    {
+        Mission,
+        TestingRoom,
+        Intermission,
+        Intermission_Garage
+    }
+
+    public LoadingDestination loadingDestination = LoadingDestination.Intermission;
+
     public int gold = 2000;
     public List<IntermissionButton.ShopItemWeapon> inventryWeapons = new List<IntermissionButton.ShopItemWeapon>();
     public List<IntermissionButton.ShopItemParts> inventryParts = new List<IntermissionButton.ShopItemParts>();
@@ -19,7 +28,7 @@ public class GameState : ScriptableObject
     public void Reset()
     {
         stage = 1;
-        intermission = true;
+        loadingDestination = LoadingDestination.Intermission;
         gold = 2000;
         inventryWeapons.Clear();
         inventryParts.Clear();

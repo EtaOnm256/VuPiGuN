@@ -340,6 +340,11 @@ public class IntermissionButton : MonoBehaviour
         SetupShop();
         SwitchToShop();
 
+        if(gameState.loadingDestination==GameState.LoadingDestination.Intermission_Garage)
+        {
+            OnClickProceedToGarage();
+        }
+
         Cursor.lockState = CursorLockMode.None;
     }
     void SetupShop()
@@ -422,7 +427,12 @@ public class IntermissionButton : MonoBehaviour
     {
         audioSource.PlayOneShot(audioClip_Start);
 
-        StartCoroutine("Blackout");
+        StartCoroutine("Blackout_MissionStart");
+    }
+
+    public void OnClickTestingRoom()
+    {
+        StartCoroutine("Blackout_TestingRoom");
     }
 
     public void OnClickBackToBuild()
@@ -441,7 +451,7 @@ public class IntermissionButton : MonoBehaviour
         SwitchToGarage();
     }
 
-    IEnumerator Blackout()
+    IEnumerator Blackout_MissionStart()
     {
 
         var wait = new WaitForSeconds(Time.deltaTime);
@@ -455,7 +465,26 @@ public class IntermissionButton : MonoBehaviour
             yield return wait;
         }
 
-        gameState.intermission = false;
+        gameState.loadingDestination = GameState.LoadingDestination.Mission;
+
+        SceneManager.LoadScene("Loading");
+    }
+
+    IEnumerator Blackout_TestingRoom()
+    {
+
+        var wait = new WaitForSeconds(Time.deltaTime);
+
+        int count = 0;
+        while (count++ < 60 || audioSource.isPlaying)
+        {
+            int fade = System.Math.Max(0, count);
+
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 60.0f);
+            yield return wait;
+        }
+
+        gameState.loadingDestination = GameState.LoadingDestination.TestingRoom;
 
         SceneManager.LoadScene("Loading");
     }

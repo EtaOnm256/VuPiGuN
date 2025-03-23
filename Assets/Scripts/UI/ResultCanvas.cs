@@ -90,7 +90,7 @@ public class ResultCanvas : MonoBehaviour
             yield return wait;
         }
 
-        gameState.intermission = true;
+        gameState.loadingDestination = GameState.LoadingDestination.Intermission;
 
         SceneManager.LoadScene("Loading");
     }
