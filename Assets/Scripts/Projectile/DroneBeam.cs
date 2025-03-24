@@ -41,7 +41,7 @@ public class DroneBeam : Projectile
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
 
-	int time = 120;
+	int time = 30;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
