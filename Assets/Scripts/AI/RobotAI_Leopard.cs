@@ -81,6 +81,8 @@ public class RobotAI_Leopard : InputBase
 
         }
 
+        ringMenuDir = RobotController.RingMenuDir.Center;
+
         if (nearest_robot == null)
         {
 
@@ -252,8 +254,8 @@ public class RobotAI_Leopard : InputBase
                                         robotController.lowerBodyState == RobotController.LowerBodyState.WALK
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.STEP
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND
-                                        || (robotController.lowerBodyState == RobotController.LowerBodyState.HEAVYFIRE && robotController.fire_done)                                        
-                                        )
+                                        )                                        
+                                        
                                         && robotController.boost >= robotController.Boost_Max/2
 
                                         )
@@ -287,6 +289,11 @@ public class RobotAI_Leopard : InputBase
                                             ground_step_remain = 2;
                                         }
                                     }
+                                    else if(robotController.lowerBodyState == RobotController.LowerBodyState.HEAVYFIRE && robotController.fire_done)
+                                    {
+                                        allow_fire = true;
+                                        ringMenuDir = RobotController.RingMenuDir.Left;
+                                    }
                                     else
                                     {
                                         if (mindist > lock_range)
@@ -314,7 +321,8 @@ public class RobotAI_Leopard : InputBase
                                     if(robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND)
                                     {
                                         if (robotController.shoulderWeapon != null
-                                          && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy))
+                                          && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy)
+                                          && robotController.shoulderWeapon.optimal_range_max > mindist)
                                         {
                                             subfire = true;
                                         }

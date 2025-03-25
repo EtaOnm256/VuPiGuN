@@ -126,6 +126,15 @@ public class Weapon : Pausable
         }
     }
 
+    virtual public float optimal_range_min
+    {
+        get { return float.MinValue; }
+    }
+    virtual public float optimal_range_max
+    {
+        get { return float.MaxValue; }
+    }
+
     // Start is called before the first frame update
 
     private void Awake()

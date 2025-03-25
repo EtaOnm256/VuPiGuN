@@ -28,7 +28,7 @@ public class SprayBeam : Projectile
 
         initial_direction = Quaternion.LookRotation(direction);
 
-        speed = 1.2f;
+        speed = 1.6f;
 
 
         if (chargeshot)
@@ -48,7 +48,7 @@ public class SprayBeam : Projectile
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
 
-	int time = 30;
+	int time = 23;
     public bool chargeshot = false;
     int damage = 10;
     // Update is called once per frame
