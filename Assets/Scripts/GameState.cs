@@ -9,7 +9,8 @@ public class GameState : ScriptableObject
         Mission,
         TestingRoom,
         Intermission,
-        Intermission_Garage
+        Intermission_Garage,
+        Title
     }
 
     public LoadingDestination loadingDestination = LoadingDestination.Intermission;

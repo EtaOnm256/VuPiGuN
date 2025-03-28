@@ -67,12 +67,13 @@ public class ResultCanvas : MonoBehaviour
     {
         if (victory)
         {
-
+            gameState.loadingDestination = GameState.LoadingDestination.Intermission;
             gameState.stage++;
             StartCoroutine("Blackout");
         }
         else
         {
+            gameState.loadingDestination = GameState.LoadingDestination.Title;
             gameState.stage = -1;
             StartCoroutine("Blackout");
         }
@@ -90,7 +91,6 @@ public class ResultCanvas : MonoBehaviour
             yield return wait;
         }
 
-        gameState.loadingDestination = GameState.LoadingDestination.Intermission;
 
         SceneManager.LoadScene("Loading");
     }

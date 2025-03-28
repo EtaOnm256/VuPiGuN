@@ -27,7 +27,7 @@ public class Loading : MonoBehaviour
 
 	IEnumerator LoadData()
 	{
-		if (gameState.stage >= 1 && gameState.stage <= 6)
+		if (gameState.stage <= 6)
 		{
 			switch(gameState.loadingDestination)
             {
@@ -66,11 +66,14 @@ public class Loading : MonoBehaviour
 					else
 						async = SceneManager.LoadSceneAsync($"Stage{gameState.stage}");
 					break;
+				case GameState.LoadingDestination.Title:
+					async = SceneManager.LoadSceneAsync("Title");
+					break;
 			}
 		}
 		else
 		{
-			async = SceneManager.LoadSceneAsync("Title");
+			async = SceneManager.LoadSceneAsync("Ending");
 		}
 
 		//　読み込みが終わるまで進捗状況をスライダーの値に反映させる

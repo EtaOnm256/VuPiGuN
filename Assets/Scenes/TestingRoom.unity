@@ -1912,7 +1912,7 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].variant
       value: 
-      objectReference: {fileID: 2025982511747938697, guid: 28aca36aafd6e3341bb5072edb571f60, type: 3}
+      objectReference: {fileID: 2025982511747938697, guid: bf1bb9af62bf4e94e9d661542979b72c, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[1].variant
       value: 

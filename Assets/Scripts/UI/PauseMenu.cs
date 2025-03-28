@@ -12,6 +12,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] TMPro.TextMeshProUGUI exitButtonText;
 
     [SerializeField] bool testingroom = false;
+    [SerializeField] bool ending = false;
 
     private void OnEnable()
     {
@@ -47,7 +48,15 @@ public class PauseMenu : MonoBehaviour
         var wait = new WaitForSeconds(Time.deltaTime);
 
         int count = 0;
-        while (count++ < 60)
+
+        int waittime;
+
+        if (ending)
+            waittime = 90;
+        else
+            waittime = 60;
+
+        while (count++ < waittime)
         {
             blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 60.0f);
             yield return wait;
@@ -56,7 +65,7 @@ public class PauseMenu : MonoBehaviour
         if (!testingroom)
         {
             gameState.stage = -1;
-            gameState.loadingDestination = GameState.LoadingDestination.Intermission;
+            gameState.loadingDestination = GameState.LoadingDestination.Title;
         }
         else
             gameState.loadingDestination = GameState.LoadingDestination.Intermission_Garage;
