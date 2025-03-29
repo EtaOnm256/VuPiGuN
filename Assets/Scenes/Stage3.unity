@@ -152,8 +152,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6538551618372168848, guid: e5b847e64d4db7744b75ecf8922a0b16, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: armypower_enemy
+      value: 1200
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: armypower_friend
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.size
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.size
@@ -161,7 +169,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[3].boss
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[3].loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[4].boss
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[4].loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[5].boss
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[2].burst
@@ -169,6 +197,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[3].burst
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[4].burst
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[5].burst
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
@@ -178,7 +214,7 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].variant
       value: 
-      objectReference: {fileID: 3234803710502351383, guid: c74dfb211da986c47b220f5549193c42, type: 3}
+      objectReference: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[1].variant
       value: 
@@ -186,18 +222,26 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[2].variant
       value: 
-      objectReference: {fileID: 3234803710502351383, guid: a99d7ce550f40384997a4abe7e9cc359, type: 3}
+      objectReference: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[3].variant
+      value: 
+      objectReference: {fileID: 3234803710502351383, guid: c74dfb211da986c47b220f5549193c42, type: 3}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[4].variant
+      value: 
+      objectReference: {fileID: 3234803710502351383, guid: a99d7ce550f40384997a4abe7e9cc359, type: 3}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[5].variant
       value: 
       objectReference: {fileID: 3234803710502351383, guid: a99d7ce550f40384997a4abe7e9cc359, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.data[0].variant
       value: 
-      objectReference: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
+      objectReference: {fileID: 1721552399784020631, guid: 86fcadc74dd6c3a44bdcc5f1f91770cd, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].squadCount
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[1].squadCount
@@ -212,8 +256,16 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[4].squadCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: sequence_enemy.spawns.Array.data[5].squadCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.data[0].squadCount
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311151, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: m_RootOrder

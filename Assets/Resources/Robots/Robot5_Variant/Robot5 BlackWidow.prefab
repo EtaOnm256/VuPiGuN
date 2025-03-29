@@ -61,6 +61,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: da93a8f86ea8842469833bde50261eba, type: 2}
     - target: {fileID: 2737446823111496146, guid: 7e306587d0663164d853049beebecdf9, type: 3}
+      propertyPath: _HP
+      value: 1200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 7e306587d0663164d853049beebecdf9, type: 3}
+      propertyPath: Cost
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 7e306587d0663164d853049beebecdf9, type: 3}
+      propertyPath: MaxHP
+      value: 1200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 7e306587d0663164d853049beebecdf9, type: 3}
       propertyPath: itemFlag
       value: 34
       objectReference: {fileID: 0}

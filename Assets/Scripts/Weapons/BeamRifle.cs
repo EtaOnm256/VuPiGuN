@@ -17,7 +17,7 @@ public class BeamRifle : Weapon
             return Max_Ammo * Reload_Time;
         }
     }
-    private const int Reload_Time = 150;
+    private const int Reload_Time = 60;
 
     int _energy = 0;
 

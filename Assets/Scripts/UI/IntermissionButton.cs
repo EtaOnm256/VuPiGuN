@@ -44,13 +44,14 @@ public class IntermissionButton : MonoBehaviour
 
     ShopItemWeapon[] shopItemWeapons =
     {
-        new ShopItemWeapon{name = "ビームライフル1",description="火力と取り回しを両立したビーム兵器。",price=3500,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "バズーカ1",description="実体弾を発射する両手持ちの火器。",price=1500,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
-        new ShopItemWeapon{name = "ミサイルポッド1",description="固定式のミサイル発射装置。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
-        new ShopItemWeapon{name = "サブマシンガン1",description="小型の機関銃。連射は速いが、相手がよろけない。",price=1500,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "ソリッドライフル1",description="コストの安い実弾兵器。",price=1000,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "ハンドキャノン1",description="両手持ちの榴弾砲。反動が大きい。",price=2000,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "ドローン1",description="子機を射出し、敵を攻撃させる。",price=3000,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
+        new ShopItemWeapon{name = "ビームライフル",description="火力と取り回しを両立したビーム兵器。",price=3500,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "バズーカ",description="大口径のロケットランチャー。",price=1500,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
+        new ShopItemWeapon{name = "ミサイルポッド",description="固定式のミサイル発射装置。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{name = "サブマシンガン",description="小型の機関銃。追加入力で連射可能。",price=1500,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ソリッドライフル",description="コストの安い実弾兵器。",price=1000,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ハンドキャノン",description="手持ち式の榴弾砲。反動が大きい。",price=2000,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ドローン",description="子機を射出し、敵を攻撃させる。",price=3000,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
+        new ShopItemWeapon{name = "スプレービームキャノン",description="肩に固定する拡散ビーム砲。",price=2000,prefabname="BeamCannon Variant",type=ShopItemWeapon.Type.Shoulder },
     };
 
     [System.NonSerialized] List<ShopItemWeapon> shopWeapons = new List<ShopItemWeapon>();
@@ -66,9 +67,20 @@ public class IntermissionButton : MonoBehaviour
 
     ShopItemParts[] shopItemParts =
     {
-        new ShopItemParts{name = "ネクストドライブ",description="全ての行動を空中ダッシュでキャンセルできるようになる。",price=5000,itemFlag=RobotController.ItemFlag.NextDrive },
-        new ShopItemParts{name = "フライトユニット",description="空中でダッシュも上昇もしていない間は、ブーストが回復するようになる。",price=2500,itemFlag=RobotController.ItemFlag.FlightUnit },
-        new ShopItemParts{name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=1500,itemFlag=RobotController.ItemFlag.Hovercraft },
+        new ShopItemParts{name = "ネクストドライブ",description="全ての行動を空中ダッシュでキャンセルできるようになる。",price=4000,itemFlag=RobotController.ItemFlag.NextDrive },
+        new ShopItemParts{name = "エクストリームスライド",description="全ての行動をステップでキャンセルできるようになる。",price=5000,itemFlag=RobotController.ItemFlag.ExtremeSlide },
+        new ShopItemParts{name = "グランドブースト",description="ステップ中、ブーストボタンを推し続けるとブーストを消費してダッシュし続ける。",price=1500,itemFlag=RobotController.ItemFlag.GroundBoost },
+        new ShopItemParts{name = "バーティカルバーニア",description="ステップ中に方向転換できるようになる。また、空中ダッシュ前の旋回時間がなくなる",price=1000,itemFlag=RobotController.ItemFlag.VerticalVernier },
+        new ShopItemParts{name = "クイックイグナイター",description="ステップと空中ダッシュの初速が速くなる。",price=1000,itemFlag=RobotController.ItemFlag.QuickIgniter },
+        new ShopItemParts{name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2000,itemFlag=RobotController.ItemFlag.Hovercraft },
+        new ShopItemParts{name = "フライトユニット",description="空中でもブーストが回復するようになる。",price=2500,itemFlag=RobotController.ItemFlag.FlightUnit },
+        new ShopItemParts{name = "ローリングショット",description="射撃+横フリックで回転撃ちができるようになる。射撃からキャンセル可能。",price=3000,itemFlag=RobotController.ItemFlag.RollingShoot },
+        new ShopItemParts{name = "ダッシュスラッシュ",description="格闘+上フリックでダッシュ斬りができるようになる。射撃または格闘からキャンセル可能。",price=3000,itemFlag=RobotController.ItemFlag.DashSlash },
+        new ShopItemParts{name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },
+        new ShopItemParts{name = "イアイスラッシュ",description="メイン射撃から格闘にキャンセルできるようになる。",price=1500,itemFlag=RobotController.ItemFlag.IaiSlash },
+        new ShopItemParts{name = "クイックドロー",description="格闘からメイン射撃入力で追撃できるようになる。",price=1500,itemFlag=RobotController.ItemFlag.QuickDraw},
+        new ShopItemParts{name = "リープストライク",description="格闘+下フリックでジャンプ斬りができるようになる。射撃または格闘からキャンセル可能。",price=2500,itemFlag=RobotController.ItemFlag.JumpSlash},
+        new ShopItemParts{name = "スナイプショット",description="射撃+下フリックで強力な射撃ができるようになる。全ての攻撃からキャンセル可能。",price=2000,itemFlag=RobotController.ItemFlag.SnipeShoot},
     };
 
     [System.NonSerialized] List<ShopItemParts> shopParts = new List<ShopItemParts>();

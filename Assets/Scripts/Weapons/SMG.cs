@@ -17,7 +17,7 @@ public class SMG : Weapon
             return Max_Ammo * Reload_Time;
         }
     }
-    private const int Reload_Time = 30;
+    private const int Reload_Time = 12;
 
     int _energy = 0;
 

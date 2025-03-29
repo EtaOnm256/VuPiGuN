@@ -54,36 +54,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 803051568401146564, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: m_Name
-      value: Robot1 YellowVanguard
+      value: Robot1 Friend
       objectReference: {fileID: 0}
     - target: {fileID: 2622409668980254924, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: f2256cc9c851bae4fa53a6786a512173, type: 2}
+      objectReference: {fileID: 2100000, guid: 28f8d96d373434246926d54af11c15e4, type: 2}
     - target: {fileID: 2622409668980254924, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: 51e476b971283e44eafc91a95b9d4ac3, type: 2}
-    - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
-      propertyPath: _HP
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
-      propertyPath: Cost
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
-      propertyPath: MaxHP
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
-      propertyPath: itemFlag
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
-      propertyPath: robotParameter.itemFlag
-      value: 24
-      objectReference: {fileID: 0}
+    - target: {fileID: 2622409668980254924, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: fe191146cf9c7a6409e33cec2d5eff2a, type: 2}
     - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: robotParameter.lweapon_prefab
       value: 

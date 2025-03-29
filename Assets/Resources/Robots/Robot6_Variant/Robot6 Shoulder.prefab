@@ -57,17 +57,21 @@ PrefabInstance:
       value: Robot6 Shoulder
       objectReference: {fileID: 0}
     - target: {fileID: 6968257580246755548, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
+      propertyPath: robotParameter.itemFlag
+      value: 2176
+      objectReference: {fileID: 0}
+    - target: {fileID: 6968257580246755548, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
       propertyPath: robotParameter.lweapon_prefab
       value: 
       objectReference: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
     - target: {fileID: 6968257580246755548, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
-      objectReference: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
+      objectReference: {fileID: 8644445284198780509, guid: 8bef375028f1e5a4db0058f4eda103f0, type: 3}
     - target: {fileID: 6968257580246755548, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
       propertyPath: robotParameter.subweapon_prefab
       value: 
-      objectReference: {fileID: 2794399005176561229, guid: 55deee3d9a546e941ba4d5e86755400e, type: 3}
+      objectReference: {fileID: 2400753878882473277, guid: babb77f838971cd45a65bb92251d9b5e, type: 3}
     - target: {fileID: 8585358142428789365, guid: e0a0ca7dcb0506b40b3eca51f889a977, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.00307

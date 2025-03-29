@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
+      propertyPath: _HP
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
+      propertyPath: Cost
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
+      propertyPath: MaxHP
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: itemFlag
       value: 65
       objectReference: {fileID: 0}

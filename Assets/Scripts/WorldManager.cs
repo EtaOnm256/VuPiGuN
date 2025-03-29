@@ -93,6 +93,9 @@ public class WorldManager : MonoBehaviour
     public Sequence sequence_enemy;
     public Sequence sequence_friend;
 
+    [SerializeField] int armypower_enemy = 600;
+    [SerializeField] int armypower_friend = 600;
+
     [SerializeField] CanvasControl canvasControl;
 
     public bool finished = false;
@@ -119,6 +122,8 @@ public class WorldManager : MonoBehaviour
     [SerializeField] HumanInput humanInput;
 
     [SerializeField] bool testingroom;
+
+
     private void Awake()
     {
         current_instance = this;
@@ -133,11 +138,16 @@ public class WorldManager : MonoBehaviour
         Slider friendPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team {power = 1000,powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = 1000, powerslider = enemyPowerSlider };
+        Team friend_team = new Team {power = armypower_friend, powerslider = friendPowerSlider };
+        Team enemy_team = new Team { power = armypower_enemy, powerslider = enemyPowerSlider };
+
+        friendPowerSlider.maxValue = armypower_friend;
+        enemyPowerSlider.maxValue = armypower_enemy;
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
+
+        ProcessPlayerSpawn();
 
         while (ProcessSpawn(sequence_friend, friend_team, true)) ;
         while (ProcessSpawn(sequence_enemy, enemy_team, true)) ;
@@ -370,6 +380,40 @@ public class WorldManager : MonoBehaviour
         teams[0].spawnings.Add(new Team.Spawning { player = true, pos = raycastHit.point, rot = quaternion, wait = 60 });
     }
 
+    void ProcessPlayerSpawn()
+    {
+        if (player == null)
+        {
+            Team.Spawning player_spawning = null;
+            foreach (var spawning in teams[0].spawnings)
+            {
+                if (spawning.player)
+                {
+                    player_spawning = spawning;
+                    break;
+                }
+            }
+
+            if (player_spawning == null)
+            {
+                PlacePlayerSpawn(60);
+            }
+            else
+            {
+                if (player_spawning.wait == 0)
+                {
+                    SpawnPlayer(player_spawning.pos, player_spawning.rot, teams[0]);
+                    teams[0].spawnings.Remove(player_spawning);
+                }
+                else
+                {
+                    player_spawning.wait--;
+                }
+            }
+
+        }
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -530,36 +574,7 @@ public class WorldManager : MonoBehaviour
                     return;
             }
 
-            if (player == null)
-            {
-                Team.Spawning player_spawning = null;
-                foreach (var spawning in teams[0].spawnings)
-                {
-                    if (spawning.player)
-                    {
-                        player_spawning = spawning;
-                        break;
-                    }
-                }
-
-                if (player_spawning == null)
-                {
-                    PlacePlayerSpawn(60);
-                }
-                else
-                {
-                    if (player_spawning.wait == 0)
-                    {
-                        SpawnPlayer(player_spawning.pos, player_spawning.rot, teams[0]);
-                        teams[0].spawnings.Remove(player_spawning);
-                    }
-                    else
-                    {
-                        player_spawning.wait--;
-                    }
-                }
-
-            }
+            ProcessPlayerSpawn();
 
             ProcessSpawn(sequence_friend, teams[0], false);
             ProcessSpawn(sequence_enemy, teams[1], false);

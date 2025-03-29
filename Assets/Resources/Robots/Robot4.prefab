@@ -89,6 +89,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 988c213f3f27c3949a40b89e871c3d5d, type: 2}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: _HP
+      value: 650
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: Cost
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: MaxHP
+      value: 650
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: itemFlag
       value: 16
       objectReference: {fileID: 0}
@@ -132,6 +144,7 @@ MonoBehaviour:
   down: 0
   slash: 0
   subfire: 0
+  lockswitch: 0
   ringMenuDir: 0
   analogMovement: 0
   cursorLocked: 1

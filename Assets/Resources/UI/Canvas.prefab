@@ -3137,6 +3137,7 @@ MonoBehaviour:
   gameState: {fileID: 11400000, guid: c86ac7e4de34aea4aa0c382ffee862c3, type: 2}
   exitButtonText: {fileID: 6252814131848891789}
   testingroom: 0
+  ending: 0
 --- !u!1 &4767631566675564122
 GameObject:
   m_ObjectHideFlags: 0

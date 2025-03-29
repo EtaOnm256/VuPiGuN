@@ -3343,7 +3343,7 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.data[0].variant
       value: 
-      objectReference: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
+      objectReference: {fileID: 2025982511747938697, guid: 94647c336c6be5c43b5399d181bb9e80, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[0].squadCount
       value: 2
@@ -3366,7 +3366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.data[0].squadCount
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311151, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: m_RootOrder

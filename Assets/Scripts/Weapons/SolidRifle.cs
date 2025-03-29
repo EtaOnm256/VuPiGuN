@@ -18,7 +18,7 @@ public class SolidRifle : Weapon
         }
     }
 
-    private const int Reload_Time = 150;
+    private const int Reload_Time = 60;
 
     int _energy = 0;
 

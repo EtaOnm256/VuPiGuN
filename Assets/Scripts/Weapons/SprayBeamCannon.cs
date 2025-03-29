@@ -101,8 +101,14 @@ public class SprayBeamCannon : Weapon
 
                 Vector3 dir_rel = Quaternion.Euler(Random.value * 30.0f - 15.0f, Random.value * 30.0f - 15.0f, 0.0f) * Vector3.forward;
 
+                Quaternion dir_origin;
 
-                beam.direction = firePoint.transform.rotation * dir_rel;
+                if (Target_Robot != null)
+                    dir_origin = Quaternion.LookRotation(Target_Robot.GetCenter() - firePoint.transform.position, Vector3.up);
+                else
+                    dir_origin = firePoint.transform.rotation;
+
+                beam.direction = dir_origin * dir_rel;
                 //beam.target = Target_Robot;
                 beam.target = null;
                 beam.team = owner.team;
