@@ -114,9 +114,9 @@ using UnityEngine.InputSystem;
 			lockswitch = newSlashState;
 		}
 
-	private void OnApplicationFocus(bool hasFocus)
+		private void OnApplicationFocus(bool hasFocus)
 		{
-			SetCursorState(cursorLocked);
+		//	SetCursorState(cursorLocked);
 		}
 
 		private void SetCursorState(bool newState)

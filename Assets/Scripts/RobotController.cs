@@ -1220,15 +1220,24 @@ public class RobotController : Pausable
                 }
                 else
                 {
-                    foreach (var robot in team.robotControllers)
+                    if (lockonState == LockonState.FREE)
                     {
-                        float dist = (GetCenter() - robot.GetCenter()).sqrMagnitude;
 
-                        if (dist < mindist)
+                        foreach (var robot in team.robotControllers)
                         {
-                            mindist = dist;
-                            nearest_robot = robot;
+                            float dist = (GetCenter() - robot.GetCenter()).sqrMagnitude;
+
+                            if (dist < mindist)
+                            {
+                                mindist = dist;
+                                nearest_robot = robot;
+                            }
                         }
+                    }
+                    else
+                    {
+                        if (Target_Robot)
+                            nearest_robot = Target_Robot;
                     }
                 }
             }
@@ -5372,7 +5381,7 @@ public class RobotController : Pausable
 
     void StartSeeking(float multiplier = 1.0f)
     {
-        if (lockonState != LockonState.LOCKON)
+        if (lockonState != LockonState.LOCKON && Target_Robot != null)
         {
             lockonState = LockonState.SEEKING;
 #if ACCURATE_SEEK        

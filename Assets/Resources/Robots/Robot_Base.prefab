@@ -3039,6 +3039,7 @@ MonoBehaviour:
   - {fileID: 175234124548439368}
   - {fileID: 8418218240117876311}
   Target_Robot: {fileID: 0}
+  lockonmode: 0
   lockingEnemy: []
   fire_done: 0
   fire_followthrough: 0

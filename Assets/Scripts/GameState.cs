@@ -30,7 +30,7 @@ public class GameState : ScriptableObject
     {
         stage = 1;
         loadingDestination = LoadingDestination.Intermission;
-        gold = 2000;
+        gold = 5000;
         inventryWeapons.Clear();
         inventryParts.Clear();
         rightWeapon_name = "";

@@ -17,6 +17,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: fe191146cf9c7a6409e33cec2d5eff2a, type: 2}
     - target: {fileID: 1720923761284985917, guid: b33b50d8743964a438f0006a533e2b95, type: 3}
+      propertyPath: Cost
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1720923761284985917, guid: b33b50d8743964a438f0006a533e2b95, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
       objectReference: {fileID: 1241669158410538615, guid: 0700da4283e98704ea40a5d3a48d01da, type: 3}
