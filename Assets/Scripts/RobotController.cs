@@ -356,7 +356,7 @@ public class RobotController : Pausable
     private GameObject target_chest;
     private GameObject target_head;
 
-    public List<RobotController> lockingEnemy = new List<RobotController>();
+    public List<RobotController> lockingEnemys = new List<RobotController>(); // 自分をロックオンしてる敵
 
     private float _headaimwait = 0.0f;
 
@@ -494,7 +494,13 @@ public class RobotController : Pausable
         FORWARD, LEFT, BACKWARD, RIGHT
     }
 
+    public enum StepMotion
+    {
+        FORWARD, LEFT, BACKWARD, RIGHT
+    }
+
     StepDirection stepDirection;
+    StepMotion stepMotion;
 
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
     public LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
@@ -505,6 +511,10 @@ public class RobotController : Pausable
     Slider boostSlider;
     Slider HPSlider;
     TMPro.TextMeshProUGUI HPText;
+    Image alertImage_forward;
+    Image alertImage_back;
+    Image alertImage_left;
+    Image alertImage_right;
 
     GameObject ringMenu;
     RectTransform ringMenu_Center_Outline_rectTfm;
@@ -821,7 +831,7 @@ public class RobotController : Pausable
 
         //rigBuilder.Build();
 
-        Target_Robot.lockingEnemy.Add(this);
+        Target_Robot.lockingEnemys.Add(this);
 
         if (is_player)
             uIController_Overlay.target = Target_Robot;
@@ -831,7 +841,7 @@ public class RobotController : Pausable
     {
         if (Target_Robot != null)
         {
-            Target_Robot.lockingEnemy.Remove(this);
+            Target_Robot.lockingEnemys.Remove(this);
             lockonmode = false;
         }
     }
@@ -887,6 +897,11 @@ public class RobotController : Pausable
             HPText = RobotInfo.gameObject.transform.Find("HPText").GetComponent<TMPro.TextMeshProUGUI>();
 
             HPText.text = $"{HP}/{MaxHP}";
+
+            alertImage_forward = HUDCanvas.gameObject.transform.Find("Alert_Forward").GetComponent<Image>();
+            alertImage_back = HUDCanvas.gameObject.transform.Find("Alert_Back").GetComponent<Image>();
+            alertImage_left = HUDCanvas.gameObject.transform.Find("Alert_Left").GetComponent<Image>();
+            alertImage_right = HUDCanvas.gameObject.transform.Find("Alert_Right").GetComponent<Image>();
 
             uIController_Overlay.origin = this;
 
@@ -1314,7 +1329,7 @@ public class RobotController : Pausable
                         }
                         break;
                 }
-              
+
                 /*if(burst)
                 {
                     if (_input.move.x > 0.0f)
@@ -1349,6 +1364,50 @@ public class RobotController : Pausable
                     ringMenu_Right_LMB.color = getRingMenuColor(ringMenu_Right_LMB_available, true);
                     ringMenu_Right_RMB.color = getRingMenuColor(ringMenu_Right_RMB_available, false);
                 }*/
+
+                {
+                   
+                    // 視点変更時でも機体基準でのアラートにしたいのでここで再計算
+                    Quaternion cameraRotation_tmp = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+                        _cinemachineTargetYaw, 0.0f);
+
+                    Vector3 cameraPosition_tmp = transform.position + cameraRotation_tmp * offset * transform.lossyScale.x;
+
+                    Transform2 transform_tmp = new Transform2 { position = cameraPosition_tmp, rotation = cameraRotation_tmp, localScale = Vector3.one };
+
+
+                    alertImage_right.enabled = false;
+                    alertImage_left.enabled = false;
+                    alertImage_forward.enabled = false;
+                    alertImage_back.enabled = false;
+
+                    foreach (var lockingEnemy in lockingEnemys)
+                    {
+                        if (lockingEnemy)
+                        {
+                            Vector3 rel = transform_tmp.InverseTransformPoint(lockingEnemy.GetCenter());
+
+                            if (Mathf.Abs(rel.x) > Mathf.Abs(rel.z))
+                            {
+                                if (rel.x > 0.0f)
+                                {
+                                    alertImage_right.enabled = true;
+                                }
+                                else
+                                    alertImage_left.enabled = true;
+                            }
+                            else
+                            {
+                                if (rel.z > 0.0f)
+                                {
+                                    alertImage_forward.enabled = true;
+                                }
+                                else
+                                    alertImage_back.enabled = true;
+                            }
+                        }
+                    }
+                }
             }
             else
             {
@@ -1436,9 +1495,9 @@ public class RobotController : Pausable
 
                 UntargetEnemy();
 
-                for (int i = 0; i < lockingEnemy.Count; i++)
+                for (int i = 0; i < lockingEnemys.Count; i++)
                 {
-                    lockingEnemy[i].PurgeTarget(this);
+                    lockingEnemys[i].PurgeTarget(this);
                 }
 
                 if (is_player)
@@ -2180,7 +2239,7 @@ public class RobotController : Pausable
                             {
                                 TransitLowerBodyState(LowerBodyState.STAND);
                             }
-                            else // SNIPEFIRE系
+                            else if(lowerBodyState == LowerBodyState.SNIPEFIRE || lowerBodyState == LowerBodyState.AIRSNIPEFIRE)
                             {
                                 if(Grounded)
                                     TransitLowerBodyState(LowerBodyState.STAND);
@@ -3310,47 +3369,52 @@ public class RobotController : Pausable
 
                                 if (inputDirection != Vector3.zero)
                                 {
-
-                                    float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                                    _cinemachineTargetYaw;
-
-
-
-
-                                    float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
+                                    float stepdirectiondegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
 
                                     StepDirection stepDirection_old = stepDirection;
 
-                                    if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                                    if (stepdirectiondegree >= 45.0f && stepdirectiondegree < 135.0f)
                                         stepDirection = StepDirection.RIGHT;
-                                    else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                                    else if (stepdirectiondegree >= 135.0f || stepdirectiondegree < -135.0f)
                                         stepDirection = StepDirection.BACKWARD;
-                                    else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                                    else if (stepdirectiondegree >= -135.0f && stepdirectiondegree < -45.0f)
                                         stepDirection = StepDirection.LEFT;
                                     else
                                         stepDirection = StepDirection.FORWARD;
 
                                     if (stepDirection != stepDirection_old && ConsumeBoost(40))
                                     {
+                                        float steptargetdegree = stepdirectiondegree + _cinemachineTargetYaw;
+                                        float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
+
+                                        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                                            stepMotion = StepMotion.RIGHT;
+                                        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                                            stepMotion = StepMotion.BACKWARD;
+                                        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                                            stepMotion = StepMotion.LEFT;
+                                        else
+                                            stepMotion = StepMotion.FORWARD;
+
                                         event_stepbegin = false;
                                         event_stepped = false;
 
-                                        switch (stepDirection)
+                                        switch (stepMotion)
                                         {
-                                            case StepDirection.LEFT:
+                                            case StepMotion.LEFT:
                                                 _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
                                                 steptargetrotation = steptargetdegree + 90.0f;
                                                 break;
-                                            case StepDirection.BACKWARD:
+                                            case StepMotion.BACKWARD:
                                                 _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
                                                 steptargetrotation = steptargetdegree + 180.0f;
                                                 break;
-                                            case StepDirection.RIGHT:
+                                            case StepMotion.RIGHT:
                                                 _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
                                                 steptargetrotation = steptargetdegree - 90.0f;
                                                 break;
                                             default:
-                                                //case StepDirection.FORWARD:
+                                                //case StepMotion.FORWARD:
                                                 _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
                                                 steptargetrotation = steptargetdegree;
                                                 break;
@@ -4100,24 +4164,47 @@ public class RobotController : Pausable
 
             float stepangle = 0.0f;
 
-            switch (stepDirection)
+            float steptargetdegree;
+
+            switch(stepDirection)
             {
                 case StepDirection.LEFT:
-                    stepangle = -90.0f;
+                    steptargetdegree = _cinemachineTargetYaw - 90.0f;
                     break;
                 case StepDirection.RIGHT:
-                    stepangle = 90.0f;
+                    steptargetdegree = _cinemachineTargetYaw + 90.0f;
                     break;
                 case StepDirection.BACKWARD:
-                    stepangle = -180.0f;
+                    steptargetdegree = _cinemachineTargetYaw + 180.0f;
                     break;
-                case StepDirection.FORWARD:
+                //case StepMotion.FORWARD:
+                default:
                     stepangle = 0.0f;
+                    steptargetdegree = _cinemachineTargetYaw;
+                    break;
+            }
+
+            switch (stepMotion)
+            {
+                case StepMotion.LEFT:
+                    stepangle = -90.0f;
+                    steptargetrotation = steptargetdegree + 90.0f;
+                    break;
+                case StepMotion.RIGHT:
+                    stepangle = 90.0f;
+                    steptargetrotation = steptargetdegree - 90.0f;
+                    break;
+                case StepMotion.BACKWARD:
+                    stepangle = -180.0f;
+                    steptargetrotation = steptargetdegree + 180.0f;
+                    break;
+                case StepMotion.FORWARD:
+                    stepangle = 0.0f;
+                    steptargetrotation = steptargetdegree;
                     break;
             }
 
             targetDirection = Quaternion.Euler(0.0f, transform.eulerAngles.y + stepangle, 0.0f) * Vector3.forward;
-
 
             transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, 1.0f), 0.0f);
 
@@ -4481,43 +4568,49 @@ public class RobotController : Pausable
         // normalise input direction
         Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-        float steptargetdegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                        _cinemachineTargetYaw;
+        float stepdirectiondegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
 
+        if (stepdirectiondegree >= 45.0f && stepdirectiondegree < 135.0f)
+            stepDirection = StepDirection.RIGHT;
+        else if (stepdirectiondegree >= 135.0f || stepdirectiondegree < -135.0f)
+            stepDirection = StepDirection.BACKWARD;
+        else if (stepdirectiondegree >= -135.0f && stepdirectiondegree < -45.0f)
+            stepDirection = StepDirection.LEFT;
+        else
+            stepDirection = StepDirection.FORWARD;
 
-
-
+        float steptargetdegree = stepdirectiondegree + _cinemachineTargetYaw;
         float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
 
 
         if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-            stepDirection = StepDirection.RIGHT;
+            stepMotion = StepMotion.RIGHT;
         else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-            stepDirection = StepDirection.BACKWARD;
+            stepMotion = StepMotion.BACKWARD;
         else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-            stepDirection = StepDirection.LEFT;
+            stepMotion = StepMotion.LEFT;
         else
-            stepDirection = StepDirection.FORWARD;
+            stepMotion = StepMotion.FORWARD;
 
 
 
-        switch (stepDirection)
+        switch (stepMotion)
         {
-            case StepDirection.LEFT:
+            case StepMotion.LEFT:
                 _animator.CrossFadeInFixedTime(_animIDStep_Left, 0.25f, 0);
                 steptargetrotation = steptargetdegree + 90.0f;
                 break;
-            case StepDirection.BACKWARD:
+            case StepMotion.BACKWARD:
                 _animator.CrossFadeInFixedTime(_animIDStep_Back, 0.25f, 0);
                 steptargetrotation = steptargetdegree + 180.0f;
                 break;
-            case StepDirection.RIGHT:
+            case StepMotion.RIGHT:
                 _animator.CrossFadeInFixedTime(_animIDStep_Right, 0.25f, 0);
                 steptargetrotation = steptargetdegree - 90.0f;
                 break;
             default:
-                //case StepDirection.FORWARD:
+                //case StepMotion.FORWARD:
                 _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.25f, 0);
                 steptargetrotation = steptargetdegree;
                 break;
@@ -4655,6 +4748,15 @@ public class RobotController : Pausable
             scaled.Scale(localScale);
 
             return rotation * scaled + position;
+        }
+
+        public Vector3 InverseTransformPoint(Vector3 p)
+        {
+            Vector3 sub = p - position;
+
+            Vector3 rot = Quaternion.Inverse(rotation) * sub;
+
+            return new Vector3(rot.x/ localScale.x,rot.y/ localScale.y,rot.z/ localScale.z);
         }
 
         public Transform2(Transform transform)
@@ -4917,7 +5019,7 @@ public class RobotController : Pausable
                 return;
         }
 
-        if (_input.sprint && (!canceling || ConsumeBoost(40)))
+        if (_input.sprint && (!canceling || ConsumeBoost(80)))
         {
             if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide))
             {
@@ -5044,13 +5146,13 @@ public class RobotController : Pausable
 
                         if (ringMenuDir == RingMenuDir.Left)
                         {
-                            stepDirection = StepDirection.LEFT;
+                            stepMotion = StepMotion.LEFT;
 
                             animator.Play(_animIDRollingFire3_Left, 0, 0.0f);
                         }
                         else
                         {
-                            stepDirection = StepDirection.RIGHT;
+                            stepMotion = StepMotion.RIGHT;
 
                             animator.Play(_animIDRollingFire3_Right, 0, 0.0f);
                         }
@@ -5082,7 +5184,7 @@ public class RobotController : Pausable
 
                         if (ringMenuDir == RingMenuDir.Left)
                         {
-                            stepDirection = StepDirection.LEFT;
+                            stepMotion = StepMotion.LEFT;
 
                             if (carrying_weapon)
                             {
@@ -5094,7 +5196,7 @@ public class RobotController : Pausable
                         }
                         else
                         {
-                            stepDirection = StepDirection.RIGHT;
+                            stepMotion = StepMotion.RIGHT;
 
                             if (carrying_weapon)
                             {
