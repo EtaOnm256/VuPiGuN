@@ -491,7 +491,9 @@ public class RobotController : Pausable
 
     public enum StepDirection
     {
-        FORWARD, LEFT, BACKWARD, RIGHT
+        FORWARD, LEFT, BACKWARD, RIGHT,
+        FORWARD_LEFT,FORWARD_RIGHT,
+        BACKWARD_LEFT, BACKWARD_RIGHT,
     }
 
     public enum StepMotion
@@ -3369,32 +3371,24 @@ public class RobotController : Pausable
 
                                 if (inputDirection != Vector3.zero)
                                 {
-                                    float stepdirectiondegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
-
                                     StepDirection stepDirection_old = stepDirection;
 
-                                    if (stepdirectiondegree >= 45.0f && stepdirectiondegree < 135.0f)
-                                        stepDirection = StepDirection.RIGHT;
-                                    else if (stepdirectiondegree >= 135.0f || stepdirectiondegree < -135.0f)
-                                        stepDirection = StepDirection.BACKWARD;
-                                    else if (stepdirectiondegree >= -135.0f && stepdirectiondegree < -45.0f)
-                                        stepDirection = StepDirection.LEFT;
-                                    else
-                                        stepDirection = StepDirection.FORWARD;
+                                    stepDirection = determineStepDirection(inputDirection);
 
                                     if (stepDirection != stepDirection_old && ConsumeBoost(40))
                                     {
-                                        float steptargetdegree = stepdirectiondegree + _cinemachineTargetYaw;
+                                        float steptargetdegree = degreeFromStepDirection(stepDirection) + _cinemachineTargetYaw;
                                         float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
-                                        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-                                            stepMotion = StepMotion.RIGHT;
-                                        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-                                            stepMotion = StepMotion.BACKWARD;
-                                        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-                                            stepMotion = StepMotion.LEFT;
-                                        else
+                                        if (stepmotiondegree <= 45.0f && stepmotiondegree >= -45.0f)
                                             stepMotion = StepMotion.FORWARD;
+                                        else if (stepmotiondegree > -135.0f && stepmotiondegree < -45.0f)
+                                            stepMotion = StepMotion.LEFT;
+                                        else if (stepmotiondegree < 135.0f && stepmotiondegree > 45.0f)
+                                            stepMotion = StepMotion.RIGHT;
+                                        else// if (stepmotiondegree >= 135.0f || stepmotiondegree <= -135.0f)
+                                            stepMotion = StepMotion.BACKWARD;
+                                     
 
                                         event_stepbegin = false;
                                         event_stepped = false;
@@ -4177,10 +4171,21 @@ public class RobotController : Pausable
                 case StepDirection.BACKWARD:
                     steptargetdegree = _cinemachineTargetYaw + 180.0f;
                     break;
-                //case StepMotion.FORWARD:
-                default:
-                    stepangle = 0.0f;
+                case StepDirection.FORWARD:
                     steptargetdegree = _cinemachineTargetYaw;
+                    break;
+                case StepDirection.FORWARD_LEFT:
+                    steptargetdegree = _cinemachineTargetYaw - 45.0f;
+                    break;
+                case StepDirection.FORWARD_RIGHT:
+                    steptargetdegree = _cinemachineTargetYaw + 45.0f;
+                    break;
+                case StepDirection.BACKWARD_LEFT:
+                    steptargetdegree = _cinemachineTargetYaw - 135.0f;
+                    break;
+                //case StepDirection.BACKWARD_RIGHT:
+                default:
+                    steptargetdegree = _cinemachineTargetYaw + 135.0f;
                     break;
             }
 
@@ -4559,6 +4564,61 @@ public class RobotController : Pausable
         lowerBodyState = newState;
     }
 
+    StepDirection determineStepDirection(Vector3 inputDirection)
+    {
+        float stepdirectiondegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
+
+        /* if (stepdirectiondegree >= 135.0f || stepdirectiondegree <= -135.0f)
+             return StepDirection.BACKWARD;
+         else if (stepdirectiondegree <= 45.0f && stepdirectiondegree >= -45.0f)
+             return StepDirection.FORWARD;
+         else if (stepdirectiondegree > 45.0f && stepdirectiondegree < 135.0f)
+             return StepDirection.RIGHT;
+         else// if (stepdirectiondegree > -135.0f && stepdirectiondegree < -45.0f)
+             return StepDirection.LEFT;*/
+
+        if (stepdirectiondegree >= 157.5f || stepdirectiondegree <= -157.5f)
+            return StepDirection.BACKWARD;
+        else if (stepdirectiondegree > -157.5f && stepdirectiondegree < -112.5f)
+            return StepDirection.BACKWARD_LEFT;
+        else if (stepdirectiondegree >= -112.5f && stepdirectiondegree <= -67.5f)
+            return StepDirection.LEFT;
+        else if (stepdirectiondegree > -67.5f && stepdirectiondegree < -22.5f)
+            return StepDirection.FORWARD_LEFT;
+        else if (stepdirectiondegree >= -22.5f && stepdirectiondegree <= 22.5f)
+            return StepDirection.FORWARD;
+        else if (stepdirectiondegree < 67.5f && stepdirectiondegree > 22.5f)
+            return StepDirection.FORWARD_RIGHT;
+        else if (stepdirectiondegree <= 112.5f && stepdirectiondegree >= 67.5f)
+            return StepDirection.RIGHT;
+        else //if (stepdirectiondegree < 157.5f && stepdirectiondegree > 112.5f)
+            return StepDirection.BACKWARD_RIGHT;
+    }
+
+    float degreeFromStepDirection(StepDirection stepDirection)
+    {
+        switch (stepDirection)
+        {
+            case StepDirection.LEFT:
+                return -90.0f;
+            case StepDirection.BACKWARD:
+                return 180.0f;
+            case StepDirection.RIGHT:
+                return 90.0f;
+            case StepDirection.FORWARD:
+                return 0.0f;
+            case StepDirection.FORWARD_LEFT:
+                return -45.0f;
+            case StepDirection.BACKWARD_LEFT:
+                return -135.0f;
+            case StepDirection.FORWARD_RIGHT:
+                return 45.0f;
+            //case StepDirection.BACKWARD_RIGHT:
+            default:
+                return 135.0f;
+        }
+    }
+
     private void StartStep()
     {
         event_stepped = false;
@@ -4568,30 +4628,21 @@ public class RobotController : Pausable
         // normalise input direction
         Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-        float stepdirectiondegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
+        stepDirection = determineStepDirection(inputDirection);
 
-        if (stepdirectiondegree >= 45.0f && stepdirectiondegree < 135.0f)
-            stepDirection = StepDirection.RIGHT;
-        else if (stepdirectiondegree >= 135.0f || stepdirectiondegree < -135.0f)
-            stepDirection = StepDirection.BACKWARD;
-        else if (stepdirectiondegree >= -135.0f && stepdirectiondegree < -45.0f)
-            stepDirection = StepDirection.LEFT;
-        else
-            stepDirection = StepDirection.FORWARD;
-
-        float steptargetdegree = stepdirectiondegree + _cinemachineTargetYaw;
+        float steptargetdegree = degreeFromStepDirection(stepDirection) + _cinemachineTargetYaw;
         float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
 
 
-        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-            stepMotion = StepMotion.RIGHT;
-        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-            stepMotion = StepMotion.BACKWARD;
-        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-            stepMotion = StepMotion.LEFT;
-        else
+        if (stepmotiondegree <= 45.0f && stepmotiondegree >= -45.0f)
             stepMotion = StepMotion.FORWARD;
+        else if (stepmotiondegree > -135.0f && stepmotiondegree < -45.0f)
+            stepMotion = StepMotion.LEFT;
+        else if (stepmotiondegree < 135.0f && stepmotiondegree > 45.0f)
+            stepMotion = StepMotion.RIGHT;
+        else// if (stepmotiondegree >= 135.0f || stepmotiondegree <= -135.0f)
+            stepMotion = StepMotion.BACKWARD;
 
 
 
