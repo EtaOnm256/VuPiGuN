@@ -373,6 +373,7 @@ public class RobotController : Pausable
     bool event_fired = false;
     bool event_subfired = false;
     bool event_heavyfired = false;
+    bool event_swing = false;
 
     bool backblast_processed = false;
 
@@ -654,7 +655,7 @@ public class RobotController : Pausable
         if (knockBackType != KnockBackType.None || dead)
         {
 
-            if (lowerBodyState != LowerBodyState.DOWN)
+            if (lowerBodyState != LowerBodyState.DOWN || !Grounded)
             {
                 if (!Grounded || knockBackType == KnockBackType.Down || knockBackType == KnockBackType.KnockUp)
                 {
@@ -3398,14 +3399,14 @@ public class RobotController : Pausable
                 {
                     float rotatespeed;
 
-                    if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && !Sword.slashing)
+                    if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && !event_swing)
                     {
                         _speed = targetSpeed = 0.0f;//-Sword.motionProperty[lowerBodyState].DashSpeed;
                     }
                     else
                         _speed = targetSpeed = Sword.motionProperty[lowerBodyState].DashSpeed;
 
-                    if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && Sword.slashing)
+                    if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && event_swing)
                     {
                         _animator.speed = 0.0f;
                     }
@@ -3561,7 +3562,7 @@ public class RobotController : Pausable
                                 audioSource.PlayOneShot(audioClip_Swing);
                             }
                         }
-                        else if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && Sword.slashing)
+                        else if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && event_swing)
                         {
                             lowerBodyState = LowerBodyState.DashSlash;
                             upperBodyState = UpperBodyState.DashSlash;
@@ -4722,6 +4723,11 @@ public class RobotController : Pausable
         Sword.slashing = true;
     }
 
+    private void OnSwingBegin()
+    {
+        event_swing = true;
+    }
+
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
         if (lfAngle < -360f) lfAngle += 360f;
@@ -5077,6 +5083,7 @@ public class RobotController : Pausable
                 combo_reserved = false;
                 Sword.slashing = false;
                 Sword.emitting = true;
+                event_swing = false;
 
                 StartSeeking();
                 if (target_chest != null)
@@ -5417,10 +5424,13 @@ public class RobotController : Pausable
 
     public void DoHitSlow()
     {
-        hitslow_timer = 5;
+        if (hitslow_timer == 0)
+        {
+            org_animator_speed_hitslow = animator.speed;
+            animator.speed = 0.2f;
+        }
 
-        org_animator_speed_hitslow = animator.speed;
-        animator.speed = 0.2f;
+        hitslow_timer = 5;
     }
     [System.Serializable]
     public class RobotParameter
