@@ -97,7 +97,7 @@ public class RobotAI_Gargoyle : InputBase
             subfire = false;
             if (overheating)
             {
-                if (robotController.boost >= robotController.Boost_Max)
+                if (robotController.boost >= robotController.robotParameter.Boost_Max)
                     overheating = false;
             }
             else
@@ -266,7 +266,7 @@ public class RobotAI_Gargoyle : InputBase
                                             }
                                         }
 
-                                        if (robotController.boost >= robotController.Boost_Max)
+                                        if (robotController.boost >= robotController.robotParameter.Boost_Max)
                                         {
                                             jump = true;
                                         }
@@ -303,7 +303,7 @@ public class RobotAI_Gargoyle : InputBase
                                         firing_sub = true;
                                         jump = true;
 
-                                        if(floorhit.distance > 25.0f && robotController._verticalVelocity > robotController.AscendingVelocity * 3 / 4)
+                                        if(floorhit.distance > 25.0f && robotController._verticalVelocity > robotController.robotParameter.AscendingVelocity * 3 / 4)
                                         {
                                             subfire = true;
                                         }
@@ -314,7 +314,7 @@ public class RobotAI_Gargoyle : InputBase
                                 if (!firing_sub)
                                 {
                                     if ( (floorhit.distance > 25.0f
-                                            || robotController._verticalVelocity < -robotController.AscendingVelocity * 3 / 4)
+                                            || robotController._verticalVelocity < -robotController.robotParameter.AscendingVelocity * 3 / 4)
                                             && ( (robotController.upperBodyState != RobotController.UpperBodyState.FIRE && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
                                                   || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive)
                                                   ))
@@ -381,7 +381,7 @@ public class RobotAI_Gargoyle : InputBase
                                 }
 
                                 //if (overheating)
-                                if (robotController.boost < robotController.Boost_Max * 1 / 4)
+                                if (robotController.boost < robotController.robotParameter.Boost_Max * 1 / 4)
                                 {
                                     state = State.Decend;
                                 }
@@ -432,7 +432,7 @@ public class RobotAI_Gargoyle : InputBase
                                 }
                                 else*/
                                 {
-                                    if (robotController.boost > robotController.Boost_Max / 2)
+                                    if (robotController.boost > robotController.robotParameter.Boost_Max / 2)
                                     {
                                         state = State.Ascend;
                                     }

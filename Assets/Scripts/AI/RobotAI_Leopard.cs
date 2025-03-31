@@ -103,7 +103,7 @@ public class RobotAI_Leopard : InputBase
             subfire = false;
             if (overheating)
             {
-                if (robotController.boost >= robotController.Boost_Max)
+                if (robotController.boost >= robotController.robotParameter.Boost_Max)
                     overheating = false;
             }
             else
@@ -256,7 +256,7 @@ public class RobotAI_Leopard : InputBase
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND
                                         )                                        
                                         
-                                        && robotController.boost >= robotController.Boost_Max/2
+                                        && robotController.boost >= robotController.robotParameter.Boost_Max /2
 
                                         )
                                     {

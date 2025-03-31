@@ -103,7 +103,7 @@ public class RobotAI_Shenlong : InputBase
             subfire = false;
             if (overheating)
             {
-                if (robotController.boost >= robotController.Boost_Max)
+                if (robotController.boost >= robotController.robotParameter.Boost_Max)
                     overheating = false;
             }
             else
@@ -256,7 +256,7 @@ public class RobotAI_Shenlong : InputBase
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Ground
                                         )
-                                        && robotController.boost >= robotController.Boost_Max
+                                        && robotController.boost >= robotController.robotParameter.Boost_Max
 
                                         )
                                     {
@@ -311,10 +311,10 @@ public class RobotAI_Shenlong : InputBase
                                         //}
                                     }
 
-                                    if (nearest_robot.Grounded && mindist < 20.0f && robotController.boost >= robotController.Boost_Max/2)
+                                    if (nearest_robot.Grounded && mindist < 20.0f && robotController.boost >= robotController.robotParameter.Boost_Max /2)
                                         allow_infight = true;
 
-                                    if (jumpinfight_reload <= 0 && robotController.boost >= robotController.Boost_Max)
+                                    if (jumpinfight_reload <= 0 && robotController.boost >= robotController.robotParameter.Boost_Max)
                                     {
                                         ringMenuDir = RobotController.RingMenuDir.Down;
                                         allow_infight = true;

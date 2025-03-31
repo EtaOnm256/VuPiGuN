@@ -21,38 +21,10 @@ using System.Linq;
 [RequireComponent(typeof(CharacterController))]
 public class RobotController : Pausable
 {
-    [Header("Player")]
-    [Tooltip("Move speed of the character in m/s")]
-    public float MoveSpeed = 2.0f;
+  
+     
 
-    [Tooltip("Sprint speed of the character in m/s")]
-    public float SprintSpeed = 5.335f;
-
-    public float RotateSpeed = 0.2f;
-    public float DashRotateSpeed = 0.05f;
-    public float AirDashRotateSpeed = 0.05f;
-
-    [Header("Player")]
-    [Tooltip("Move speed of the character in m/s")]
-    public float AirMoveSpeed = 1.0f;
-
-    [Tooltip("Acceleration and deceleration")]
-    public float SpeedChangeRate = 10.0f;
-
-
-    [Space(10)]
-    [Tooltip("The height the player can jump")]
-    public float JumpHeight = 1.2f;
-
-    [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-    public float Gravity = -15.0f;
-
-    [Space(10)]
-    [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-    public float JumpTimeout = 0.50f;
-
-    [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-    public float FallTimeout = 0.15f;
+ 
 
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
@@ -84,12 +56,6 @@ public class RobotController : Pausable
     [Tooltip("For locking the camera position on all axis")]
     public bool LockCameraPosition = false;
 
-    public float TerminalVelocity = 53.0f;
-    public float AscendingVelocity = 20.0f;
-    public float AscendingAccelerate = 1.8f;
-
-    public float KnockbackSpeed = 30.0f;
-    public float InfightCorrectSpeed = 30.0f;
 
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
@@ -109,7 +75,7 @@ public class RobotController : Pausable
                 if (is_player)
                 {
                     HPSlider.value = _HP;
-                    HPText.text = $"{_HP}/{MaxHP}";
+                    HPText.text = $"{_HP}/{robotParameter.MaxHP}";
                 }
 
 
@@ -118,11 +84,7 @@ public class RobotController : Pausable
     }
 
 
-    public int MaxHP = 500;
 
-    public int Cost = 100;
-
-    public int StepLimit = 30;
 
     int stepremain = 0;
 
@@ -144,10 +106,6 @@ public class RobotController : Pausable
     private float _rotationVelocity;
     public float _verticalVelocity;
 
-
-    // timeout deltatime
-    private float _jumpTimeoutDelta;
-    private float _fallTimeoutDelta;
 
     // animation IDs
     private int _animIDVerticalSpeed;
@@ -575,7 +533,7 @@ public class RobotController : Pausable
     Vector3 knockbackdir;
     bool speed_overrideby_knockback = false;
 
-    public int Boost_Max = 200;
+    
 
     [SerializeField] int _boost;
 
@@ -618,10 +576,11 @@ public class RobotController : Pausable
     public enum KnockBackType
     {
         None,
-        Weak,
+        Normal,
         Down,
         Finish,
-        KnockUp
+        KnockUp,
+        Weak
     }
 
     [Flags]
@@ -706,7 +665,7 @@ public class RobotController : Pausable
                         knockbackdir = Vector3.zero;
                         knockbackdir.y = 1.0f;
                         _speed = 0.0f;
-                        _verticalVelocity = KnockbackSpeed;
+                        _verticalVelocity = robotParameter.KnockbackSpeed;
                         strongdown = true;
                     }
                     else
@@ -717,13 +676,13 @@ public class RobotController : Pausable
 
                         if (knockBackType == KnockBackType.Finish)
                         {
-                            _speed = KnockbackSpeed;
+                            _speed = robotParameter.KnockbackSpeed;
                             _verticalVelocity = 0;
                             strongdown = true;
                         }
                         else
                         {
-                            _speed = KnockbackSpeed / 2;
+                            _speed = robotParameter.KnockbackSpeed / 2;
                             _verticalVelocity = 0.0f;
                             strongdown = false;
                         }
@@ -758,7 +717,7 @@ public class RobotController : Pausable
                         else
                             _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
 
-                        _speed = KnockbackSpeed * 4;
+                        _speed = robotParameter.KnockbackSpeed * 4;
 
                         animator.speed = 1.0f;
                     }
@@ -773,12 +732,28 @@ public class RobotController : Pausable
                         else
                             _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
 
-                        _speed = KnockbackSpeed * 4;
+                        _speed = robotParameter.KnockbackSpeed * 4;
 
                         animator.speed = 4.0f;
 
                     }
-                    else
+                    else if (knockBackType == KnockBackType.Weak)
+                    {
+                        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                            _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
+                        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                            _animator.Play(_animIDKnockback_Strong_Back, 0, 0);
+                        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                            _animator.Play(_animIDKnockback_Strong_Left, 0, 0);
+                        else
+                            _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
+
+                        _speed = robotParameter.KnockbackSpeed;
+
+                        animator.speed = 4.0f;
+
+                    }
+                    else //if (knockBackType == KnockBackType.Normal)
                     {
 
                         if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
@@ -790,7 +765,7 @@ public class RobotController : Pausable
                         else
                             _animator.Play(_animIDKnockback_Front, 0, 0);
 
-                        _speed = KnockbackSpeed * 2;
+                        _speed = robotParameter.KnockbackSpeed * 2;
 
                         animator.speed = 1.0f;
                     }
@@ -892,13 +867,13 @@ public class RobotController : Pausable
             GameObject RobotInfo = HUDCanvas.gameObject.transform.Find("RobotInfo").gameObject;
 
             HPSlider = RobotInfo.gameObject.transform.Find("HPSlider").GetComponent<Slider>();
-            HPSlider.maxValue = MaxHP;
+            HPSlider.maxValue = robotParameter.MaxHP;
             HPSlider.minValue = 0;
             HPSlider.value = HP;
 
             HPText = RobotInfo.gameObject.transform.Find("HPText").GetComponent<TMPro.TextMeshProUGUI>();
 
-            HPText.text = $"{HP}/{MaxHP}";
+            HPText.text = $"{HP}/{robotParameter.MaxHP}";
 
             alertImage_forward = HUDCanvas.gameObject.transform.Find("Alert_Forward").GetComponent<Image>();
             alertImage_back = HUDCanvas.gameObject.transform.Find("Alert_Back").GetComponent<Image>();
@@ -964,12 +939,8 @@ public class RobotController : Pausable
 
         AssignAnimationIDs();
 
-        // reset our timeouts on start
-        _jumpTimeoutDelta = JumpTimeout;
-        _fallTimeoutDelta = FallTimeout;
-
         if (is_player)
-            boostSlider.value = boostSlider.maxValue = boost = Boost_Max;
+            boostSlider.value = boostSlider.maxValue = boost = robotParameter.Boost_Max;
 
         AimTargetRotation_Head = Head.transform.rotation;
         AimTargetRotation_Chest = Chest.transform.rotation;
@@ -981,7 +952,7 @@ public class RobotController : Pausable
             TargetEnemy(Target_Robot);
         }
 
-        HP = MaxHP;
+        HP = robotParameter.MaxHP;
 
         if (team == null)
         {
@@ -1055,7 +1026,7 @@ public class RobotController : Pausable
 
     private void RegenBoost()
     {
-        boost = Math.Min(boost + 12, Boost_Max);
+        boost = Math.Min(boost + 12, robotParameter.Boost_Max);
     }
 
     public static float DistanceToLine(Ray ray, Vector3 point)
@@ -1653,7 +1624,7 @@ public class RobotController : Pausable
                             // creates curved result rather than a linear one giving a more organic speed change
                             // note T in Lerp is clamped, so we don't need to clamp our speed
                             _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed,
-                                Time.deltaTime * SpeedChangeRate);
+                                Time.deltaTime * robotParameter.SpeedChangeRate);
 
                             // round speed to 3 decimal places
                             _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -2788,11 +2759,11 @@ public class RobotController : Pausable
                     {
                         // set target speed based on move speed, sprint speed and if sprint is pressed
                         if (lowerBodyState == LowerBodyState.AIR)
-                            targetSpeed = AirMoveSpeed;
+                            targetSpeed = robotParameter.AirMoveSpeed;
                         else if (lowerBodyState == LowerBodyState.DASH)
-                            targetSpeed = SprintSpeed;
+                            targetSpeed = robotParameter.AirDashSpeed;
                         else
-                            targetSpeed = MoveSpeed;
+                            targetSpeed = robotParameter.MoveSpeed;
 
                         // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
@@ -2825,7 +2796,7 @@ public class RobotController : Pausable
                             // creates curved result rather than a linear one giving a more organic speed change
                             // note T in Lerp is clamped, so we don't need to clamp our speed
                             _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                                Time.deltaTime * SpeedChangeRate);
+                                Time.deltaTime * robotParameter.SpeedChangeRate);
 
                             // round speed to 3 decimal places
                             _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -2849,7 +2820,7 @@ public class RobotController : Pausable
                             //float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                             //    RotationSmoothTime);
 
-                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, lowerBodyState == LowerBodyState.DASH ? DashRotateSpeed : RotateSpeed);
+                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, lowerBodyState == LowerBodyState.DASH ? robotParameter.DashRotateSpeed : robotParameter.RotateSpeed);
 
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -2861,7 +2832,7 @@ public class RobotController : Pausable
                         float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
                         float speedOffset = 0.1f;
 
-                        targetSpeed = AirMoveSpeed;
+                        targetSpeed = robotParameter.AirMoveSpeed;
 
                         // accelerate or decelerate to target speed
                         if (
@@ -2872,7 +2843,7 @@ public class RobotController : Pausable
                             // creates curved result rather than a linear one giving a more organic speed change
                             // note T in Lerp is clamped, so we don't need to clamp our speed
                             _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed,
-                                Time.deltaTime * SpeedChangeRate);
+                                Time.deltaTime * robotParameter.SpeedChangeRate);
 
                             // round speed to 3 decimal places
                             _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -2924,7 +2895,7 @@ public class RobotController : Pausable
                         {
                             if (ConsumeBoost(4))
                             {
-                                _verticalVelocity = Mathf.Min(_verticalVelocity + AscendingAccelerate, AscendingVelocity);
+                                _verticalVelocity = Mathf.Min(_verticalVelocity + robotParameter.AscendingAccelerate, robotParameter.AscendingVelocity);
                                 boosting = true;
                             }
                         }
@@ -3021,7 +2992,7 @@ public class RobotController : Pausable
                         )
                     {
                         _verticalVelocity = 0.0f;
-                        _speed = SprintSpeed;
+                        _speed = robotParameter.StepSpeed;
                     }
                     else
                     {
@@ -3042,7 +3013,7 @@ public class RobotController : Pausable
                             // creates curved result rather than a linear one giving a more organic speed change
                             // note T in Lerp is clamped, so we don't need to clamp our speed
                             _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                                Time.deltaTime * SpeedChangeRate * brakefactor);
+                                Time.deltaTime * robotParameter.SpeedChangeRate * brakefactor);
 
                             // round speed to 3 decimal places
                             _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -3067,9 +3038,9 @@ public class RobotController : Pausable
                             if (lowerBodyState == LowerBodyState.ROLLINGFIRE || lowerBodyState == LowerBodyState.AIRROLLINGFIRE)
                                 rotation = _targetRotation;
                             else if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.AIRFIRE)
-                                rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed * 2);
+                                rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.RotateSpeed * 2);
                             else
-                                rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed * 4);
+                                rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.RotateSpeed * 4);
                         }
                         else
                             rotation = transform.eulerAngles.y;
@@ -3165,7 +3136,7 @@ public class RobotController : Pausable
                                 if (event_jumped)
                                 {
                                     TransitLowerBodyState(LowerBodyState.AIR);
-                                    _verticalVelocity = AscendingVelocity;
+                                    _verticalVelocity = robotParameter.AscendingVelocity;
 
                                     _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
                                 }
@@ -3281,7 +3252,7 @@ public class RobotController : Pausable
                     {
                         _targetRotation = transform.eulerAngles.y;
                     }*/
-                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.itemFlag.HasFlag(ItemFlag.VerticalVernier) ? 360.0f : AirDashRotateSpeed);
+                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.itemFlag.HasFlag(ItemFlag.VerticalVernier) ? 360.0f : robotParameter.AirDashRotateSpeed);
 
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -3289,7 +3260,7 @@ public class RobotController : Pausable
 
                     float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
 
-                    if (degree < RotateSpeed && degree > -RotateSpeed)
+                    if (degree < robotParameter.RotateSpeed && degree > -robotParameter.RotateSpeed)
                     {
                         lowerBodyState = LowerBodyState.DASH;
                         _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
@@ -3297,7 +3268,7 @@ public class RobotController : Pausable
 
                         if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
                         {
-                            _speed = SprintSpeed * 2;
+                            _speed = robotParameter.AirDashSpeed * 2;
                         }
                     }
                 }
@@ -3310,7 +3281,7 @@ public class RobotController : Pausable
                     float speedOffset = 0.1f;
                     float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
-                    targetSpeed = SprintSpeed;
+                    targetSpeed = robotParameter.StepSpeed;
 
                     // accelerate or decelerate to target speed
                     if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -3319,7 +3290,7 @@ public class RobotController : Pausable
                         // creates curved result rather than a linear one giving a more organic speed change
                         // note T in Lerp is clamped, so we don't need to clamp our speed
                         _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                            Time.deltaTime * SpeedChangeRate);
+                            Time.deltaTime * robotParameter.SpeedChangeRate);
 
                         // round speed to 3 decimal places
                         _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -3662,7 +3633,7 @@ public class RobotController : Pausable
                             // creates curved result rather than a linear one giving a more organic speed change
                             // note T in Lerp is clamped, so we don't need to clamp our speed
                             _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed,
-                                Time.deltaTime * SpeedChangeRate);
+                                Time.deltaTime * robotParameter.SpeedChangeRate);
 
                             // round speed to 3 decimal places
                             _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -3761,16 +3732,16 @@ public class RobotController : Pausable
                                 {
                                     //if (lowerBodyState == LowerBodyState.DashSlash)// !Sword.dashslash_cutthroughのとき
                                     {
-                                        _speed = targetSpeed = InfightCorrectSpeed;
+                                        _speed = targetSpeed = robotParameter.InfightCorrectSpeed;
                                     }
                                     /*else
                                     {
-                                        _speed = targetSpeed = MoveSpeed;
+                                        _speed = targetSpeed = robotParameter.MoveSpeed;
                                     }*/
                                 }
                                 //else if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
                                 //{
-                                //_speed = targetSpeed = /*event_stepbegin ? */-SprintSpeed/* : 0.0f*/;
+                                //_speed = targetSpeed = /*event_stepbegin ? */-robotParameter.SprintSpeed/* : 0.0f*/;
                                 //}
                             }
                         }
@@ -3784,7 +3755,7 @@ public class RobotController : Pausable
                     }
 
                     //targetSpeed = 0.0f;
-                    //_speed = targetSpeed = /*event_stepbegin ? */MoveSpeed/* : 0.0f*/;
+                    //_speed = targetSpeed = /*event_stepbegin ? */robotParameter.MoveSpeed/* : 0.0f*/;
 
 
                     if (lowerBodyState == LowerBodyState.DashSlash && Sword.dashslash_cutthrough)
@@ -3797,7 +3768,7 @@ public class RobotController : Pausable
                             combo_reserved = true;
                             comboType = ComboType.SLASH;
 
-                            Sword.knockBackType = KnockBackType.Weak;
+                            Sword.knockBackType = KnockBackType.Normal;
                         }
 
                         if (fire_dispatch && ringMenuDir == RingMenuDir.Center && robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
@@ -3805,7 +3776,7 @@ public class RobotController : Pausable
                             combo_reserved = true;
                             comboType = ComboType.SHOOT;
 
-                            Sword.knockBackType = KnockBackType.Weak;
+                            Sword.knockBackType = KnockBackType.Normal;
                         }
                     }
 
@@ -4075,7 +4046,7 @@ public class RobotController : Pausable
                     if (!jumpslash_end_forward)
                         _speed = targetSpeed = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
                     else
-                        _speed = targetSpeed = Mathf.Max(_speed - SpeedChangeRate, 0.0f);
+                        _speed = targetSpeed = Mathf.Max(_speed - robotParameter.SpeedChangeRate, 0.0f);
 
 
 
@@ -4091,7 +4062,7 @@ public class RobotController : Pausable
 
                        }*/
 
-                    _verticalVelocity = Mathf.Max(_verticalVelocity + Gravity * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed/*float.MinValue*/);
+                    _verticalVelocity = Mathf.Max(_verticalVelocity + robotParameter.Gravity * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed/*float.MinValue*/);
 
 
                     if (_verticalVelocity < 0.0f)
@@ -4110,14 +4081,14 @@ public class RobotController : Pausable
                          stepremain--;
                          //_verticalVelocity = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
 
-                         //_verticalVelocity = AscendingVelocity * 2;
+                         //_verticalVelocity = robotParameter.AscendingVelocity * 2;
                      }
                      else*/
                     {
 
 
 
-                        // _verticalVelocity = Mathf.Max(_verticalVelocity- SpeedChangeRate, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed);
+                        // _verticalVelocity = Mathf.Max(_verticalVelocity- robotParameter.SpeedChangeRate, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed);
 
 
 
@@ -4326,7 +4297,7 @@ public class RobotController : Pausable
             {
                 // creates curved result rather than a linear one giving a more organic speed change
                 // note T in Lerp is clamped, so we don't need to clamp our speed
-                currentHorizontalSpeed_X = Mathf.Lerp(currentHorizontalSpeed_X, 0.0f, Time.deltaTime * SpeedChangeRate * brakefactor);
+                currentHorizontalSpeed_X = Mathf.Lerp(currentHorizontalSpeed_X, 0.0f, Time.deltaTime * robotParameter.SpeedChangeRate * brakefactor);
 
                 // round speed to 3 decimal places
                 currentHorizontalSpeed_X = Mathf.Round(currentHorizontalSpeed_X * 1000f) / 1000f;
@@ -4346,7 +4317,7 @@ public class RobotController : Pausable
             {
                 // creates curved result rather than a linear one giving a more organic speed change
                 // note T in Lerp is clamped, so we don't need to clamp our speed
-                currentHorizontalSpeed_Z = Mathf.Lerp(currentHorizontalSpeed_Z, 0.0f, Time.deltaTime * SpeedChangeRate * brakefactor);
+                currentHorizontalSpeed_Z = Mathf.Lerp(currentHorizontalSpeed_Z, 0.0f, Time.deltaTime * robotParameter.SpeedChangeRate * brakefactor);
 
                 // round speed to 3 decimal places
                 currentHorizontalSpeed_Z = Mathf.Round(currentHorizontalSpeed_Z * 1000f) / 1000f;
@@ -4364,8 +4335,8 @@ public class RobotController : Pausable
 
                     Vector3 backBlackDir_Horizontal = new Vector3(backBlastDir.x, 0.0f, backBlastDir.z);
 
-                    currentHorizontalSpeed_X += 50.0f * backBlackDir_Horizontal.x;
-                    currentHorizontalSpeed_Z += 50.0f * backBlackDir_Horizontal.z;
+                    currentHorizontalSpeed_X += 30.0f * backBlackDir_Horizontal.x;
+                    currentHorizontalSpeed_Z += 30.0f * backBlackDir_Horizontal.z;
 
                     backblast_processed = true;
                 }
@@ -4667,7 +4638,7 @@ public class RobotController : Pausable
                 break;
         }
 
-        stepremain = StepLimit;
+        stepremain = robotParameter.StepLimit;
 
         _animator.speed = 1.0f;
 
@@ -4699,7 +4670,7 @@ public class RobotController : Pausable
         // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
         //if (_verticalVelocity < _terminalVelocity)
         {
-            _verticalVelocity = Mathf.Max(_verticalVelocity + Gravity * Time.deltaTime, -TerminalVelocity);
+            _verticalVelocity = Mathf.Max(_verticalVelocity + robotParameter.Gravity * Time.deltaTime, -robotParameter.TerminalVelocity);
         }
     }
 
@@ -5028,7 +4999,7 @@ public class RobotController : Pausable
 
                 float degree = Mathf.DeltaAngle(transform.eulerAngles.y, _targetRotation);
 
-                if (degree < RotateSpeed && degree > -RotateSpeed)
+                if (degree < robotParameter.RotateSpeed && degree > -robotParameter.RotateSpeed)
                 {
                     lowerBodyState = LowerBodyState.DASH;
                     _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
@@ -5036,7 +5007,7 @@ public class RobotController : Pausable
 
                     if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
                     {
-                        _speed = SprintSpeed * 2;
+                        _speed = robotParameter.AirDashSpeed * 2;
                     }
                 }
                 else
@@ -5082,10 +5053,10 @@ public class RobotController : Pausable
 
             if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
             {
-                _speed = SprintSpeed * 2;
+                _speed = robotParameter.StepSpeed * 2;
             }
             else
-                _speed = SprintSpeed;
+                _speed = robotParameter.StepSpeed;
         }
     }
 
@@ -5461,6 +5432,27 @@ public class RobotController : Pausable
         public bool dualwield_lightweapon = false;
         public ItemFlag itemFlag = 0;
         //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
+
+        public int Cost = 100;
+        public int MaxHP = 500;
+        public int Boost_Max = 200;
+
+        public float MoveSpeed = 2.0f;
+        public float StepSpeed = 5.335f;
+        public float AirDashSpeed = 5.335f;
+        public int StepLimit = 30;
+
+        public float RotateSpeed = 0.2f;
+        public float DashRotateSpeed = 0.05f;
+        public float AirDashRotateSpeed = 0.05f;
+        public float AirMoveSpeed = 1.0f;
+        public float SpeedChangeRate = 10.0f;
+        public float Gravity = -15.0f;
+        public float TerminalVelocity = 53.0f;
+        public float AscendingVelocity = 20.0f;
+        public float AscendingAccelerate = 1.8f;
+        public float KnockbackSpeed = 30.0f;
+        public float InfightCorrectSpeed = 30.0f;
     }
 
     public RobotParameter robotParameter;

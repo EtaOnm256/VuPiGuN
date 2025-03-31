@@ -81,6 +81,14 @@ PrefabInstance:
       value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
+      propertyPath: robotParameter.Cost
+      value: 440
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
+      propertyPath: robotParameter.MaxHP
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: robotParameter.itemFlag
       value: 24
       objectReference: {fileID: 0}

@@ -2979,17 +2979,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3a333195176ecc41ab3fe4f6d1b4086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 15
-  SprintSpeed: 30
-  RotateSpeed: 4
-  DashRotateSpeed: 1
-  AirDashRotateSpeed: 10
-  AirMoveSpeed: 8
-  SpeedChangeRate: 10
-  JumpHeight: 7
-  Gravity: -60
-  JumpTimeout: 0.5
-  FallTimeout: 0.15
   Grounded: 1
   GroundedOffset: -1.8
   GroundedRadius: 2
@@ -3001,17 +2990,9 @@ MonoBehaviour:
   BottomClamp: 60
   CameraAngleOverride: 0
   LockCameraPosition: 0
-  TerminalVelocity: 53
-  AscendingVelocity: 20
-  AscendingAccelerate: 2.5
-  KnockbackSpeed: 30
-  InfightCorrectSpeed: 30
   cameraPosition: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   _HP: 500
-  MaxHP: 500
-  Cost: 100
-  StepLimit: 30
   is_player: 0
   slash_camera_offset: {x: 0, y: 0, z: 0}
   slash_camera_offset_set: 0
@@ -3040,7 +3021,7 @@ MonoBehaviour:
   - {fileID: 8418218240117876311}
   Target_Robot: {fileID: 0}
   lockonmode: 0
-  lockingEnemy: []
+  lockingEnemys: []
   fire_done: 0
   fire_followthrough: 0
   rollingfire_followthrough: 0
@@ -3053,7 +3034,6 @@ MonoBehaviour:
   HUDCanvas: {fileID: 0}
   damageText_prefab: {fileID: 6989266500122269803, guid: dc6f8e0a26bc39b429934140b2983572, type: 3}
   damageText_player_prefab: {fileID: 6989266500122269803, guid: 7d21b07b96c8db04594519fbbd010e5f, type: 3}
-  Boost_Max: 500
   _boost: 0
   dead: 0
   Rhand: {fileID: 9119824526815872400}
@@ -3077,6 +3057,24 @@ MonoBehaviour:
     weapon_chest_paired: 0
     dualwield_lightweapon: 0
     itemFlag: 0
+    Cost: 310
+    MaxHP: 650
+    Boost_Max: 500
+    MoveSpeed: 15
+    StepSpeed: 30
+    AirDashSpeed: 30
+    StepLimit: 30
+    RotateSpeed: 4
+    DashRotateSpeed: 1
+    AirDashRotateSpeed: 10
+    AirMoveSpeed: 8
+    SpeedChangeRate: 10
+    Gravity: -60
+    TerminalVelocity: 53
+    AscendingVelocity: 20
+    AscendingAccelerate: 2.5
+    KnockbackSpeed: 30
+    InfightCorrectSpeed: 30
 --- !u!1 &6642205849251697089
 GameObject:
   m_ObjectHideFlags: 0

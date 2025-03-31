@@ -100,7 +100,7 @@ public class RobotAI_Medium : InputBase
             subfire = false;
             if (overheating)
             {
-                if (robotController.boost >= robotController.Boost_Max)
+                if (robotController.boost >= robotController.robotParameter.Boost_Max)
                     overheating = false;
             }
             else
@@ -269,7 +269,7 @@ public class RobotAI_Medium : InputBase
                                             }
                                         }
 
-                                        if (robotController.boost >= robotController.Boost_Max)
+                                        if (robotController.boost >= robotController.robotParameter.Boost_Max)
                                         {
                                             jump = true;
                                         }

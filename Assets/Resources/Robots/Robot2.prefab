@@ -309,6 +309,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3505655535977820652}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.Cost
+      value: 275
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.MaxHP
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: thrusters.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -324,6 +332,10 @@ PrefabInstance:
       propertyPath: thrusters.Array.data[1]
       value: 
       objectReference: {fileID: 177410597451924033}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.StepLimit
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: chestWeapon_anchor.Array.size
       value: 2

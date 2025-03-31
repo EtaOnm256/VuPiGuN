@@ -80,7 +80,7 @@ public class RobotAI_Easy : InputBase
 
             if (overheating)
             {
-                if (robotController.boost >= robotController.Boost_Max)
+                if (robotController.boost >= robotController.robotParameter.Boost_Max)
                     overheating = false;
             }
             else

@@ -264,7 +264,7 @@ public class UIController_Overlay : MonoBehaviour
 
                     //reticle.Value.reticle.HPslider.enabled = true;
                     reticle.Value.reticle.HPslider.value = reticle.Key.HP;
-                reticle.Value.reticle.HPslider.maxValue = reticle.Key.MaxHP;
+                reticle.Value.reticle.HPslider.maxValue = reticle.Key.robotParameter.MaxHP;
 
                 reticle.Value.reticle.HPrectTransform.anchoredPosition = new Vector3(0.0f, 2500.0f/z, 0.0f);
 

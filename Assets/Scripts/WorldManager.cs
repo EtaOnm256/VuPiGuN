@@ -589,7 +589,7 @@ public class WorldManager : MonoBehaviour
 
         if (!testingroom)
         {
-            robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.Cost);
+            robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.robotParameter.Cost);
 
             if (robotController.team.power <= 0)
             {
