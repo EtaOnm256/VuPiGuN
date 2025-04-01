@@ -3060,7 +3060,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: armypower_friend
-      value: 800
+      value: 1400
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.size
