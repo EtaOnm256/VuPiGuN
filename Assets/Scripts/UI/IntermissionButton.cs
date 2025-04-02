@@ -24,6 +24,8 @@ public class IntermissionButton : MonoBehaviour
     {
         public string name { get; set; }
         public int price { get; set; }
+
+        public int tier { get; set; }
         public string description { get; set; }
     }
     [System.Serializable]
@@ -32,6 +34,7 @@ public class IntermissionButton : MonoBehaviour
         public string name { get; set; }
         public string description { get; set; }
         public int price { get; set; }
+        public int tier { get; set; }
         public string prefabname;
         public enum Type
         {
@@ -44,14 +47,14 @@ public class IntermissionButton : MonoBehaviour
 
     ShopItemWeapon[] shopItemWeapons =
     {
-        new ShopItemWeapon{name = "ビームライフル",description="火力と取り回しを両立したビーム兵器。",price=3500,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "バズーカ",description="大口径のロケットランチャー。",price=1500,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
-        new ShopItemWeapon{name = "ミサイルポッド",description="固定式のミサイル発射装置。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
-        new ShopItemWeapon{name = "サブマシンガン",description="小型の機関銃。追加入力で連射可能。",price=1500,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "ソリッドライフル",description="コストの安い実弾兵器。",price=1000,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "ハンドキャノン",description="手持ち式の榴弾砲。反動が大きい。",price=2000,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{name = "ドローン",description="子機を射出し、敵を攻撃させる。",price=3000,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
-        new ShopItemWeapon{name = "スプレービームキャノン",description="肩に固定する拡散ビーム砲。",price=2000,prefabname="BeamCannon Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{name = "ビームライフル",description="火力と取り回しを両立したビーム兵器。",price=3500,tier=2,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "バズーカ",description="大口径のロケットランチャー。",price=1500,tier=1,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
+        new ShopItemWeapon{name = "ミサイルポッド",description="固定式のミサイル発射装置。",price=2000,tier=1,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{name = "サブマシンガン",description="小型の機関銃。追加入力で連射可能。",price=1500,tier=1,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ソリッドライフル",description="コストの安い実弾兵器。",price=1000,tier=1,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ハンドキャノン",description="手持ち式の榴弾砲。反動が大きい。",price=2000,tier=1,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{name = "ドローン",description="子機を射出し、敵を攻撃させる。",price=3000,tier=2,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
+        new ShopItemWeapon{name = "スプレービームキャノン",description="肩に固定する拡散ビーム砲。",price=2000,tier=2,prefabname="BeamCannon Variant",type=ShopItemWeapon.Type.Shoulder },
     };
 
     [System.NonSerialized] List<ShopItemWeapon> shopWeapons = new List<ShopItemWeapon>();
@@ -62,25 +65,26 @@ public class IntermissionButton : MonoBehaviour
         public string name { get; set; }
         public string description { get; set; }
         public int price { get; set; }
+        public int tier { get; set; }
         public RobotController.ItemFlag itemFlag;
     }
 
     ShopItemParts[] shopItemParts =
     {
-        new ShopItemParts{name = "ネクストドライブ",description="全ての行動を空中ダッシュでキャンセルできるようになる。",price=4000,itemFlag=RobotController.ItemFlag.NextDrive },
-        new ShopItemParts{name = "エクストリームスライド",description="全ての行動をステップでキャンセルできるようになる。",price=5000,itemFlag=RobotController.ItemFlag.ExtremeSlide },
-        new ShopItemParts{name = "グランドブースト",description="ステップ中、ブーストボタンを推し続けるとブーストを消費してダッシュし続ける。",price=1500,itemFlag=RobotController.ItemFlag.GroundBoost },
-        new ShopItemParts{name = "バーティカルバーニア",description="ステップ中に方向転換できるようになる。また、空中ダッシュ前の旋回時間がなくなる",price=1000,itemFlag=RobotController.ItemFlag.VerticalVernier },
-        new ShopItemParts{name = "クイックイグナイター",description="ステップと空中ダッシュの初速が速くなる。",price=1000,itemFlag=RobotController.ItemFlag.QuickIgniter },
-        new ShopItemParts{name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2000,itemFlag=RobotController.ItemFlag.Hovercraft },
-        new ShopItemParts{name = "フライトユニット",description="空中でもブーストが回復するようになる。",price=2500,itemFlag=RobotController.ItemFlag.FlightUnit },
-        new ShopItemParts{name = "ローリングショット",description="射撃+横フリックで回転撃ちができるようになる。射撃からキャンセル可能。",price=3000,itemFlag=RobotController.ItemFlag.RollingShoot },
-        new ShopItemParts{name = "ダッシュスラッシュ",description="格闘+上フリックでダッシュ斬りができるようになる。射撃または格闘からキャンセル可能。",price=3000,itemFlag=RobotController.ItemFlag.DashSlash },
-        new ShopItemParts{name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },
-        new ShopItemParts{name = "イアイスラッシュ",description="メイン射撃から格闘にキャンセルできるようになる。",price=1500,itemFlag=RobotController.ItemFlag.IaiSlash },
-        new ShopItemParts{name = "クイックドロー",description="格闘からメイン射撃入力で追撃できるようになる。",price=1500,itemFlag=RobotController.ItemFlag.QuickDraw},
-        new ShopItemParts{name = "リープストライク",description="格闘+下フリックでジャンプ斬りができるようになる。射撃または格闘からキャンセル可能。",price=2500,itemFlag=RobotController.ItemFlag.JumpSlash},
-        new ShopItemParts{name = "スナイプショット",description="射撃+下フリックで強力な射撃ができるようになる。全ての攻撃からキャンセル可能。",price=2000,itemFlag=RobotController.ItemFlag.SnipeShoot},
+        new ShopItemParts{name = "ネクストドライブ",description="全ての行動を空中ダッシュでキャンセルできるようになる。",price=4000,tier=3,itemFlag=RobotController.ItemFlag.NextDrive },
+        new ShopItemParts{name = "エクストリームスライド",description="全ての行動をステップでキャンセルできるようになる。",price=5000,tier=3,itemFlag=RobotController.ItemFlag.ExtremeSlide },
+        new ShopItemParts{name = "グランドブースト",description="ステップ中、ブーストボタンを推し続けるとブーストを消費してダッシュし続ける。",price=1500,tier=2,itemFlag=RobotController.ItemFlag.GroundBoost },
+        new ShopItemParts{name = "バーティカルバーニア",description="ステップ中に方向転換できるようになる。また、空中ダッシュ前の旋回時間がなくなる",price=1000,tier=1,itemFlag=RobotController.ItemFlag.VerticalVernier },
+        new ShopItemParts{name = "クイックイグナイター",description="ステップと空中ダッシュの初速が速くなる。",price=1000,tier=1,itemFlag=RobotController.ItemFlag.QuickIgniter },
+        new ShopItemParts{name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2000,tier=1,itemFlag=RobotController.ItemFlag.Hovercraft },
+        new ShopItemParts{name = "フライトユニット",description="空中でもブーストが回復するようになる。",price=2500,tier=2,itemFlag=RobotController.ItemFlag.FlightUnit },
+        new ShopItemParts{name = "ローリングショット",description="射撃+横フリックで回転撃ちができるようになる。射撃からキャンセル可能。",price=3000,tier=2,itemFlag=RobotController.ItemFlag.RollingShoot },
+        new ShopItemParts{name = "ダッシュスラッシュ",description="格闘+上フリックでダッシュ斬りができるようになる。射撃または格闘からキャンセル可能。",price=3000,tier=2,itemFlag=RobotController.ItemFlag.DashSlash },
+        new ShopItemParts{name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。",price=1000,tier=1,itemFlag=RobotController.ItemFlag.ChainFire },
+        new ShopItemParts{name = "イアイスラッシュ",description="メイン射撃から格闘にキャンセルできるようになる。",price=1500,tier=1,itemFlag=RobotController.ItemFlag.IaiSlash },
+        new ShopItemParts{name = "クイックドロー",description="格闘からメイン射撃入力で追撃できるようになる。",price=1500,tier=1,itemFlag=RobotController.ItemFlag.QuickDraw},
+        new ShopItemParts{name = "リープストライク",description="格闘+下フリックでジャンプ斬りができるようになる。射撃または格闘からキャンセル可能。",price=2500,tier=2,itemFlag=RobotController.ItemFlag.JumpSlash},
+        new ShopItemParts{name = "スナイプショット",description="射撃+下フリックで強力な射撃ができるようになる。全ての攻撃からキャンセル可能。",price=2000,tier=2,itemFlag=RobotController.ItemFlag.SnipeShoot},
     };
 
     [System.NonSerialized] List<ShopItemParts> shopParts = new List<ShopItemParts>();
@@ -92,65 +96,71 @@ public class IntermissionButton : MonoBehaviour
     List<(GameObject, ShopItem)> inventryItemPanel = new List<(GameObject, ShopItem)>();
 
     [SerializeField] TextMeshProUGUI goldText;
-    public bool LotteryItem<T>(T[] pool,List<T> chosen, int rarity, int count,List<T> inventry) where T :  ShopItem
+    public bool LotteryItem<T>(T[] pool,List<T> chosen, int maxTier, int count,List<T> inventry) where T :  ShopItem
     {
-        List<T> remainItem = new List<T>();
+        
 
         //var player_alllist = new List<ShopItemWeapon>();
 
-        foreach (T item in pool)
+        for (int tier = maxTier; tier > 0; tier--)
         {
-            //if (MovementBase.itemString[item].rarity > rarity)
-            //    continue;
+            List<T> remainItem = new List<T>();
 
-            //if ((MovementBase.itemString[item].exclude_class & 1 << SquadManager.player_class_index) != 0)
-            //    continue;
-
-            //所持していないアイテムを抽選候補として選択
-            if (inventry == null || inventry.Find(x=>x.name == item.name) == null)
+            foreach (T item in pool)
             {
-                remainItem.Add(item);
+                if (item.tier != tier)
+                    continue;
+
+                //if ((MovementBase.itemString[item].exclude_class & 1 << SquadManager.player_class_index) != 0)
+                //    continue;
+
+                //所持していないアイテムを抽選候補として選択
+                if (inventry == null || inventry.Find(x => x.name == item.name) == null)
+                {
+                    remainItem.Add(item);
+                }
+                //else
+                //    player_alllist.Add(item);
             }
-            //else
-            //    player_alllist.Add(item);
-        }
 
-        //所持アイテムと排他なものは抽選候補から削除
-        //foreach (Infantry.ItemFlags playeritem in player_alllist)
-        //{
-        //    foreach (Infantry.ItemFlags item_target in System.Enum.GetValues(typeof(Infantry.ItemFlags)))
-        //    {
-        //        if (MovementBase.itemString[playeritem].exclude.HasFlag(item_target))
-        //            remainItem.Remove(item_target);
-        //   }
-        //}
-
-
-
-        while (true)
-        {
-            if (remainItem.Count <= 0)
-                break;
-
-            if (chosen.Count >= count)
-                break;
-
-            int chosenIndex = UnityEngine.Random.Range(0, remainItem.Count);
-
-            chosen.Add(remainItem[chosenIndex]);
-
-            var chosenItemFlag = remainItem[chosenIndex];
-
-            remainItem.RemoveAt(chosenIndex);
-
-            // 抽選したアイテムと排他なものは抽選候補から削除
-            //foreach (ShopItemWeapon item in shopItemWeapons)
+            //所持アイテムと排他なものは抽選候補から削除
+            //foreach (Infantry.ItemFlags playeritem in player_alllist)
             //{
-            //    if (MovementBase.itemString[chosenItemFlag].exclude.HasFlag(item))
-            //        remainItem.Remove(item);
+            //    foreach (Infantry.ItemFlags item_target in System.Enum.GetValues(typeof(Infantry.ItemFlags)))
+            //    {
+            //        if (MovementBase.itemString[playeritem].exclude.HasFlag(item_target))
+            //            remainItem.Remove(item_target);
+            //   }
             //}
 
+            int chosen_thisTier = 0;
 
+            while (true)
+            {
+                if (remainItem.Count <= 0)
+                    break;
+
+                if (chosen_thisTier >= count)
+                    break;
+
+                int chosenIndex = UnityEngine.Random.Range(0, remainItem.Count);
+
+                chosen.Add(remainItem[chosenIndex]);
+                chosen_thisTier++;
+
+                var chosenItemFlag = remainItem[chosenIndex];
+
+                remainItem.RemoveAt(chosenIndex);
+
+                // 抽選したアイテムと排他なものは抽選候補から削除
+                //foreach (ShopItemWeapon item in shopItemWeapons)
+                //{
+                //    if (MovementBase.itemString[chosenItemFlag].exclude.HasFlag(item))
+                //        remainItem.Remove(item);
+                //}
+
+
+            }
         }
 
         return chosen.Count > 0;
@@ -361,24 +371,22 @@ public class IntermissionButton : MonoBehaviour
     }
     void SetupShop()
     {
-        LotteryItem<ShopItemWeapon>(shopItemWeapons, shopWeapons, 0, 3,gameState.inventryWeapons);
+        LotteryItem<ShopItemWeapon>(shopItemWeapons, shopWeapons, (gameState.stage+1)/2, 2,gameState.inventryWeapons);
 
         GameObject weaponListPanel = ShopPanel.transform.Find("WeaponListPanel").Find("Viewport").Find("Content").gameObject;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < shopWeapons.Count; i++)
         {
-            if (i < shopWeapons.Count)
-                AddItemToShopPanel(weaponListPanel, shopWeapons[i]);
+            AddItemToShopPanel(weaponListPanel, shopWeapons[i]);
         }
 
-        LotteryItem<ShopItemParts>(shopItemParts, shopParts, 0, 3, gameState.inventryParts);
+        LotteryItem<ShopItemParts>(shopItemParts, shopParts, (gameState.stage+1) / 2, 2, gameState.inventryParts);
 
         GameObject partsListPanel = ShopPanel.transform.Find("UpgradePartsListPanel").Find("Viewport").Find("Content").gameObject;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < shopParts.Count; i++)
         {
-            if (i < shopParts.Count)
-                AddItemToShopPanel(partsListPanel, shopParts[i]);
+            AddItemToShopPanel(partsListPanel, shopParts[i]);
         }
 
         goldText.text = $"${gameState.gold.ToString()}";
