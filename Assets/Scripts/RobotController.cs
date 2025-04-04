@@ -2088,6 +2088,9 @@ public class RobotController : Pausable
 
     private void UpperBodyMove()
     {
+        if (hitstop_timer > 0)
+            return;
+
         bool head_no_aiming = false;
         bool chest_no_aiming = false;
 
