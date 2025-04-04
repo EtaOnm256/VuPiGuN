@@ -54,7 +54,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemWeapon{name = "ソリッドライフル",description="コストの安い実弾兵器。",price=1000,tier=1,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{name = "ハンドキャノン",description="手持ち式の榴弾砲。反動が大きい。",price=2000,tier=1,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{name = "ドローン",description="子機を射出し、敵を攻撃させる。",price=3000,tier=2,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
-        new ShopItemWeapon{name = "スプレービームキャノン",description="肩に固定する拡散ビーム砲。",price=2000,tier=2,prefabname="BeamCannon Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{name = "スプレービームキャノン",description="肩に固定する拡散ビーム砲。",price=2500,tier=2,prefabname="BeamCannon Variant",type=ShopItemWeapon.Type.Shoulder },
     };
 
     [System.NonSerialized] List<ShopItemWeapon> shopWeapons = new List<ShopItemWeapon>();

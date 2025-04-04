@@ -46,7 +46,7 @@ public class Missile : Projectile
     public Effekseer.EffekseerEmitter boostEmitter;
 
     public bool chargeshot = false;
-    int damage = 100;
+    [SerializeField]int damage = 100;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
