@@ -322,7 +322,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.itemFlag
-      value: 64
+      value: 32832
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: thrusters.Array.data[0]
@@ -337,8 +337,16 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.GroundSpeed
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: chestWeapon_anchor.Array.size
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.StepGroundSpeed
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: chestWeapon_anchor.Array.data[0]

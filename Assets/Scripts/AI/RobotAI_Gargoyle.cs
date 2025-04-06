@@ -35,7 +35,6 @@ public class RobotAI_Gargoyle : InputBase
     bool prev_slash = false;
     bool prev_sprint = false;
 
-    public int ground_step_remain = 2;
     public enum State
     {
         Ground,
@@ -218,7 +217,7 @@ public class RobotAI_Gargoyle : InputBase
                                 }
                                 else
                                 {
-                                    if (ground_step_remain > 0)
+                                    if (robotController.boost >= robotController.robotParameter.Boost_Max)
                                     {
                                         if (mindist > lock_range / 2)
                                         {
@@ -238,13 +237,9 @@ public class RobotAI_Gargoyle : InputBase
 
                                         moveDirChangeTimer = 60;
 
-                                        if (ground_step_remain != 1 && robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
+                                        if (robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND)
                                         {
-                                            ground_step_remain = 1;
-                                        }
-                                        if (ground_step_remain == 1 && robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND)
-                                        {
-                                            ground_step_remain = 0;
+                                            jump = true;
                                         }
                                     }
                                     else
@@ -265,18 +260,13 @@ public class RobotAI_Gargoyle : InputBase
                                                 moveDirChangeTimer = 60;
                                             }
                                         }
-
-                                        if (robotController.boost >= robotController.robotParameter.Boost_Max)
-                                        {
-                                            jump = true;
-                                        }
                                     }
 
                                     if (nearest_robot.Grounded && mindist < 20.0f)
                                         allow_infight = true;
 
-                                    if (target_angle <= 90)
-                                        allow_fire = true;
+                                    //if (target_angle <= 90)
+                                    //    allow_fire = true;
                                 }
 
                                 if (!robotController.Grounded)
@@ -420,7 +410,6 @@ public class RobotAI_Gargoyle : InputBase
                                 if (robotController.Grounded)
                                 {
                                     state = State.Ground;
-                                    ground_step_remain = 2;
                                 }
 
                                 /*if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))

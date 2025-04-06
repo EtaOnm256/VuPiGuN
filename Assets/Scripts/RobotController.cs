@@ -605,7 +605,9 @@ public class RobotController : Pausable
         IaiSlash = 1 << 10,
         QuickDraw = 1 << 11,
         JumpSlash = 1 << 12,
-        SnipeShoot = 1 << 13
+        SnipeShoot = 1 << 13,
+        QuickShoot = 1 << 14,
+        RunningTakeOff = 1 << 15
     }
 
  
@@ -935,8 +937,15 @@ public class RobotController : Pausable
             }
         }
 
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
+            robotParameter.Boost_Max = robotParameter.Boost_Max*2;
+
+       
+
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
+
+        _animator.SetFloat("JumpSpeed", robotParameter.JumpSpeed);
 
         org_controller_height = _controller.height;
         min_controller_height = _controller.radius * 2;
@@ -1032,7 +1041,10 @@ public class RobotController : Pausable
 
     private void RegenBoost()
     {
-        boost = Math.Min(boost + 12, robotParameter.Boost_Max);
+        if(robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
+            boost = Math.Min(boost + 24, robotParameter.Boost_Max);
+        else
+            boost = Math.Min(boost + 12, robotParameter.Boost_Max);
     }
 
     public static float DistanceToLine(Ray ray, Vector3 point)
@@ -2935,20 +2947,34 @@ public class RobotController : Pausable
 
                         if (lowerBodyState == LowerBodyState.AIR)
                         {
-                            if (_input.jump)
+                            bool inputing_boost = false;
+
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.RunningTakeOff) && _verticalVelocity > robotParameter.AscendingVelocity)
                             {
-                                if (ConsumeBoost(4))
-                                {
-                                    _verticalVelocity = Mathf.Min(_verticalVelocity + robotParameter.AscendingAccelerate, robotParameter.AscendingVelocity);
-                                    boosting = true;
-                                }
+                                //重力で減速するのでそれを待つようにした
+                                //_verticalVelocity -= robotParameter.AscendingAccelerate; 
+
+                                boosting = true;
                             }
                             else
+                            { 
+                                if (_input.jump)
+                                {
+                                    if (ConsumeBoost(4))
+                                    {
+                                        _verticalVelocity = Mathf.Min(_verticalVelocity + robotParameter.AscendingAccelerate, robotParameter.AscendingVelocity);
+                                        boosting = true;
+                                        inputing_boost = true;
+                                    }
+                                }
+                            }
+                            
+                            if(!inputing_boost)
                             {
                                 if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
                                     RegenBoost();
 
-                                AcceptDash();
+                                AcceptDash(false);
                             }
                             _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                         }
@@ -3106,7 +3132,7 @@ public class RobotController : Pausable
                             || lowerBodyState == LowerBodyState.AIRROLLINGFIRE || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE)
                         {
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
-                                AcceptDash();
+                                AcceptDash(true);
 
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
                                 RegenBoost();
@@ -3190,7 +3216,18 @@ public class RobotController : Pausable
                                 {
                                     _speed = 0.0f;
 
-                                    if (lowerBodyState == LowerBodyState.JumpSlash_Ground && robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                    if (robotParameter.itemFlag.HasFlag(ItemFlag.RunningTakeOff))
+                                    {
+                                        if (_input.jump && ConsumeBoost(80))
+                                        {
+                                            TransitLowerBodyState(LowerBodyState.AIR);
+                                            _verticalVelocity = robotParameter.AscendingVelocity*1.5f;
+
+                                            _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
+                                        }
+                                    }
+
+                                    if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                                         AcceptStep(true);
 
                                     if (event_grounded)
@@ -3665,7 +3702,7 @@ public class RobotController : Pausable
                         if (lowerBodyState == LowerBodyState.AIRSLASH_DASH || lowerBodyState == LowerBodyState.DASHSLASH_DASH)
                         {
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
-                                AcceptDash();
+                                AcceptDash(true);
                         }
                         else
                         {
@@ -4051,7 +4088,7 @@ public class RobotController : Pausable
                         if (lowerBodyState == LowerBodyState.AirSlash || lowerBodyState == LowerBodyState.DashSlash)
                         {
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
-                                AcceptDash();
+                                AcceptDash(true);
                         }
                         else
                         {
@@ -4538,6 +4575,7 @@ public class RobotController : Pausable
                 if (lowerBodyState == LowerBodyState.STEP)
                 {
                     event_grounded = false;
+                    animator.SetFloat("GroundSpeed", robotParameter.StepGroundSpeed);
                     _animator.CrossFadeInFixedTime(_animIDGround, 0.25f, 0, 0.15f);
                     audioSource.PlayOneShot(audioClip_Ground);
                 }
@@ -4551,6 +4589,7 @@ public class RobotController : Pausable
                     }
                     else
                     {
+                        animator.SetFloat("GroundSpeed", robotParameter.GroundSpeed);
                         _animator.Play(_animIDGround, 0, 0);
                         event_grounded = false;
                         audioSource.PlayOneShot(audioClip_Ground);
@@ -5003,10 +5042,18 @@ public class RobotController : Pausable
 
         if (quick)
             firing_multiplier = 3.0f;
-        else if (rightWeapon != null)
-            firing_multiplier = rightWeapon.firing_multiplier;
         else
-            firing_multiplier = 1.0f;
+        {
+            if (rightWeapon != null)
+                firing_multiplier = rightWeapon.firing_multiplier;
+            else
+                firing_multiplier = 1.0f;
+
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickShoot))
+            {
+                firing_multiplier *= 1.5f;
+            }
+        }
 
         animator.SetFloat("FiringSpeed", firing_multiplier);
         StartSeeking(firing_multiplier);
@@ -5059,9 +5106,19 @@ public class RobotController : Pausable
             }
         }
     }
-    void AcceptDash()
+    void AcceptDash(bool canceling)
     {
-        if (_input.sprint && (upperBodyState == UpperBodyState.STAND || (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint)))
+        if (upperBodyState != UpperBodyState.STAND)
+        {
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint)
+            {
+                canceling = true;
+            }
+            else
+                return;
+        }
+
+        if (_input.sprint && (!canceling || ConsumeBoost(80)))
         {
             if (ConsumeBoost(4))
             {
@@ -5531,6 +5588,9 @@ public class RobotController : Pausable
         public float StepSpeed = 5.335f;
         public float AirDashSpeed = 5.335f;
         public int StepLimit = 30;
+        public float GroundSpeed = 1.0f;
+        public float StepGroundSpeed = 1.0f;
+        public float JumpSpeed = 1.0f;
 
         public float RotateSpeed = 0.2f;
         public float DashRotateSpeed = 0.05f;

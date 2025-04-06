@@ -398,8 +398,16 @@ PrefabInstance:
       value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.JumpSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.StepSpeed
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.GroundSpeed
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.AirDashSpeed
@@ -408,6 +416,10 @@ PrefabInstance:
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: chestWeapon_anchor.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.StepGroundSpeed
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: chestWeapon_anchor.Array.data[0]

@@ -535,11 +535,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[2].squadCount
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[3].squadCount
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[4].squadCount
