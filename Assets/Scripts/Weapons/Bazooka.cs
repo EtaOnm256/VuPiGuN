@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bazooka : Weapon
 {
-    GameObject missile_prefab;
+    [SerializeField] GameObject missile_prefab;
     GameObject beamemit_prefab;
 
 
@@ -22,7 +22,10 @@ public class Bazooka : Weapon
     int _energy = 0;
 
     public GameObject firePoint;
-
+    override public float firing_angle
+    {
+        get { return 60.0f; }
+    }
     public override int energy
     {
         set
@@ -59,7 +62,6 @@ public class Bazooka : Weapon
     }
     protected override void OnAwake()
     {
-        missile_prefab = Resources.Load<GameObject>("Projectile/BazookaShell Variant");
         beamemit_prefab = Resources.Load<GameObject>("Effects/BazookaEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");

@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 7851957092236111752}
   - component: {fileID: 422943544453011308}
   m_Layer: 0
-  m_Name: Bazooka Variant
+  m_Name: Cluster Launcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -141,5 +141,5 @@ MonoBehaviour:
   projectile_gravity: 0
   projectile_speed: 0
   _chargeshot: 0
-  missile_prefab: {fileID: 4044299567427164775, guid: a8b4b8e35ca9cf841bbed291c890a8e1, type: 3}
+  missile_prefab: {fileID: 4044299567427164775, guid: 311c12387df59db45979e34124014ec8, type: 3}
   firePoint: {fileID: 8454174016398606540}

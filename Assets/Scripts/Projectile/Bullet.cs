@@ -17,7 +17,7 @@ public class Bullet : Projectile
 
     public bool chargeshot = false;
 
-    int damage = 75;
+    [SerializeField]int damage;
 
     // Start is called before the first frame update
     protected override void OnStart()
@@ -32,8 +32,6 @@ public class Bullet : Projectile
         }
 
         initial_direction = Quaternion.LookRotation(direction);
-
-        speed = 1.2f;
 
         if (chargeshot)
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BeamRifle : Weapon
 {
-    GameObject beam_prefab;
+    [SerializeField]GameObject beam_prefab;
     GameObject beamemit_prefab;
 
 
@@ -19,6 +19,8 @@ public class BeamRifle : Weapon
     }
     private const int Reload_Time = 60;
 
+    
+
     int _energy = 0;
 
     public GameObject firePoint;
@@ -32,9 +34,11 @@ public class BeamRifle : Weapon
         get { return 1.3f; }
     }
 
+    [SerializeField] int _fire_followthrough = 45;
+
     override public int fire_followthrough
     {
-        get { return 45; }
+        get { return _fire_followthrough; }
     }
 
     public override int energy
@@ -69,7 +73,6 @@ public class BeamRifle : Weapon
 
     protected override void OnAwake()
     {
-        beam_prefab = Resources.Load<GameObject>("Projectile/Beam");
         beamemit_prefab = Resources.Load<GameObject>("Effects/BeamEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");

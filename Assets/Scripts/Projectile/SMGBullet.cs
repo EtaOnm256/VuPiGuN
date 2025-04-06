@@ -15,7 +15,7 @@ public class SMGBullet : Projectile
     const int positionCount = 4;
 
     public bool chargeshot = false;
-    int damage = 10;
+    [SerializeField] int damage = 10;
     // Start is called before the first frame update
     protected override void OnStart()
     {
@@ -29,8 +29,6 @@ public class SMGBullet : Projectile
         }
 
         initial_direction = Quaternion.LookRotation(direction);
-
-        speed = 1.2f;
 
         if (chargeshot)
         {
@@ -49,7 +47,12 @@ public class SMGBullet : Projectile
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
 
-	int time = 120;
+    [SerializeField] float homing_strength = 0.3f;
+    [SerializeField] float homing_limit = 3.0f;
+
+    int time = 120;
+
+    [SerializeField] bool knockback = false;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -80,9 +83,9 @@ public class SMGBullet : Projectile
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {
-                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 0.30f);
+                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, homing_strength);
 
-                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 3.0f);
+                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, homing_limit);
 
                     direction = qDirection_result * Vector3.forward;
                 }
@@ -110,8 +113,18 @@ public class SMGBullet : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.None, owner);
-                    robotController.DoHitStop();
+                    RobotController.KnockBackType knockBackType;
+
+                    if (knockback)
+                        knockBackType = RobotController.KnockBackType.Weak;
+                    else
+                    {
+                        robotController.DoHitStop();
+                        knockBackType = RobotController.KnockBackType.None;
+                    }
+
+                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, knockBackType, owner);
+                    
 
                     dead = true;
                 }

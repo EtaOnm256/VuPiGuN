@@ -38,8 +38,8 @@ public class Missile : Projectile
 
 	int time = 180;
 
-    public float homing_strength = 0.75f;
-    public float homing_limit = 45.0f;
+    [SerializeField] float homing_strength = 0.75f;
+    [SerializeField] float homing_limit = 45.0f;
    
 
     public MeshRenderer meshRenderer;
@@ -47,77 +47,109 @@ public class Missile : Projectile
 
     public bool chargeshot = false;
     [SerializeField]int damage = 100;
+    [SerializeField] bool cluster = false;
+    [SerializeField] GameObject cluster_prefab = null;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
         if (!dead)
         {
-
-
-
-
-
             if (target != null)
             {
                 Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
                 Quaternion qTarget = Quaternion.LookRotation(target.GetCenter() - transform.position);
 
-                if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
+                float angle = Quaternion.Angle(qDirection, qTarget);
+
+                if (angle < 90.0f)
                 {
                     Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, homing_strength);
 
                     Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, homing_limit);
 
                     direction = qDirection_result * Vector3.forward;
+
+                    if(cluster)
+                    {
+                        float dot = Vector3.Dot(target.GetCenter() - transform.position, direction.normalized);
+
+                        if(dot < 25.0f)
+                        {
+                            for (int i = 0; i < 32; i++)
+                            {
+                                GameObject beam_obj = GameObject.Instantiate(cluster_prefab, position, transform.rotation);
+
+                                SMGBullet beam = beam_obj.GetComponent<SMGBullet>();
+
+                                Vector3 dir_rel = Quaternion.Euler(Random.value * 30.0f - 15.0f, Random.value * 30.0f - 15.0f, 0.0f) * Vector3.forward;
+
+                                Quaternion dir_origin;
+
+                                dir_origin = transform.rotation;
+
+                                beam.direction = dir_origin * dir_rel;
+                                //beam.target = Target_Robot;
+                                beam.target = null;
+                                beam.team = owner.team;
+                                beam.owner = owner;
+                                beam.chargeshot = chargeshot;
+                            }
+                            dead = true;
+                        }
+                    }
                 }
             }
 
-            Ray ray = new Ray(transform.position, direction);
-
-            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
-
-            for (int i = 0; i < numhit; i++)
+            if (!dead)
             {
-                if (hitHistory.Contains(rayCastHit[i].collider.gameObject))
-                    continue;
 
-                hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;
+                Ray ray = new Ray(transform.position, direction);
 
+                int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
 
-
-                RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
-
-                if (robotController != null)
+                for (int i = 0; i < numhit; i++)
                 {
-                    if (hitHistoryRC.Contains(robotController))
+                    if (hitHistory.Contains(rayCastHit[i].collider.gameObject))
                         continue;
 
-                    hitHistoryRC[hitHistoryRCCount++] = robotController;
-
-                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.Normal, owner);
+                    hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;
 
 
+
+                    RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
+
+                    if (robotController != null)
+                    {
+                        if (hitHistoryRC.Contains(robotController))
+                            continue;
+
+                        hitHistoryRC[hitHistoryRCCount++] = robotController;
+
+                        robotController.TakeDamage(rayCastHit[i].point, direction, damage, RobotController.KnockBackType.Normal, owner);
+
+
+                    }
+
+                    GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
+
+                    explode.transform.localScale = Vector3.one * 0.5f;
+
+                    boostEmitter.SendTrigger(0);
+                    dead = true;
                 }
 
-                GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
-
-                explode.transform.localScale = Vector3.one * 0.5f;
-
-                boostEmitter.SendTrigger(0);
-                dead = true;
-            }
 
 
+                position = transform.position += direction * speed;
+                transform.rotation = Quaternion.LookRotation(direction);
 
-            position = transform.position += direction * speed;
-            transform.rotation = Quaternion.LookRotation(direction);
-
-            if (time-- <= 0)
-            {
-                dead = true;
-                boostEmitter.SendTrigger(0);
+                if (time-- <= 0)
+                {
+                    dead = true;
+                    boostEmitter.SendTrigger(0);
+                }
             }
         }
         else

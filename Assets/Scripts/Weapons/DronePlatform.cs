@@ -22,16 +22,20 @@ public class DronePlatform : Weapon
             return Max_Ammo * Reload_Time;
         }
     }
-    private const int Reload_Time = 60;
+    [SerializeField] int Reload_Time = 60;
+
+    [SerializeField] int bundle = 1;
 
     int _energy = 0;
 
     public List<GameObject> firePoints;
     int Duration_Time = 0;
 
+    [SerializeField] int _fire_followthrough= 30;
+
     override public int fire_followthrough
     {
-        get { return 30; }
+        get { return _fire_followthrough; }
     }
 
     public override int energy
@@ -119,47 +123,60 @@ public class DronePlatform : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-
+        bool emit_thistime = false;
 
         if (trigger && Duration_Time <= 0)
         {
-              if (energy >= Reload_Time)
+            for (int i = 0; i < bundle; i++)
             {
-                int search_duration = 0;
-                bool found = false;
 
-                while (true)
+                if (energy >= Reload_Time)
                 {
-                    if(drones[current_cycle].state == Drone.State.Ready)
+                    int search_duration = 0;
+                    bool found = false;
+
+                    while (true)
                     {
-                        found = true;
-                        break;
+                        if (drones[current_cycle].state == Drone.State.Ready)
+                        {
+                            found = true;
+                            break;
+                        }
+
+                        current_cycle++;
+
+                        if (current_cycle >= drones.Count)
+                            current_cycle = 0;
+
+                        search_duration++;
+
+                        if (search_duration >= drones.Count)
+                        {
+                            break;
+                        }
                     }
 
-                    current_cycle++;
-
-                    if (current_cycle >= drones.Count)
-                        current_cycle = 0;
-
-                    search_duration++;
-
-                    if (search_duration >= drones.Count)
+                    if (found)
                     {
-                        break;
+                        drones[current_cycle].owner = owner; //Start‚¾‚Æ‡˜‚ÌŠÖŒW‚ÅÝ’è‚³‚ê‚Ä‚¢‚È‚¢‚±‚Æ‚ª‚ ‚é‚Ì‚Å
+                        drones[current_cycle].target = Target_Robot;
+
+                        current_cycle++;
+                        if (current_cycle >= drones.Count)
+                            current_cycle = 0;
+
+
+                        energy -= Reload_Time;
+
+                        Duration_Time = 10;
                     }
-                }
-
-                if (found)
-                {
-                    drones[current_cycle].owner = owner; //Start‚¾‚Æ‡˜‚ÌŠÖŒW‚ÅÝ’è‚³‚ê‚Ä‚¢‚È‚¢‚±‚Æ‚ª‚ ‚é‚Ì‚Å
-                    drones[current_cycle].target = Target_Robot;
-                    energy -= Reload_Time;
-
-                    GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, drones[current_cycle].transform.position, drones[current_cycle].transform.rotation);
-
-                    Duration_Time = 10;
                 }
             }
+        }
+
+        if(emit_thistime)
+        {
+            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, transform.position, transform.rotation);
         }
 
         if(Duration_Time > 0)

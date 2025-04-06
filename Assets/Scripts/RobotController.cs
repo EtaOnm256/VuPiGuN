@@ -445,7 +445,10 @@ public class RobotController : Pausable
         SNIPEFIRE,
         AIRSNIPEFIRE,
         SNIPEHEAVYFIRE,
-        AIRSNIPEHEAVYFIRE
+        AIRSNIPEHEAVYFIRE,
+        GROUND_FIRE,
+        GROUND_SUBFIRE,
+        GROUND_HEAVYFIRE
     }
 
     bool strongdown = false;
@@ -1762,14 +1765,30 @@ public class RobotController : Pausable
         switch (lowerBodyState)
         {
             case LowerBodyState.AIR:
-            case LowerBodyState.AIRFIRE:
             case LowerBodyState.DASH:
             case LowerBodyState.AIRROTATE:
-            case LowerBodyState.AIRSUBFIRE:
-            case LowerBodyState.AIRHEAVYFIRE:
                 if (Grounded)
                 {
                     TransitLowerBodyState(LowerBodyState.GROUND);
+                }
+                break;
+            case LowerBodyState.AIRFIRE:
+     
+                if (Grounded)
+                {
+                    TransitLowerBodyState(LowerBodyState.GROUND_FIRE);
+                }
+                break;
+            case LowerBodyState.AIRSUBFIRE:
+                if (Grounded)
+                {
+                    TransitLowerBodyState(LowerBodyState.GROUND_SUBFIRE);
+                }
+                break;
+            case LowerBodyState.AIRHEAVYFIRE:
+                if (Grounded)
+                {
+                    TransitLowerBodyState(LowerBodyState.GROUND_HEAVYFIRE);
                 }
                 break;
             case LowerBodyState.STAND:
@@ -2224,6 +2243,8 @@ public class RobotController : Pausable
                             {
                                 TransitLowerBodyState(LowerBodyState.AIR);
                             }
+                            else if (lowerBodyState == LowerBodyState.GROUND_FIRE)
+                                TransitLowerBodyState(LowerBodyState.GROUND);
                             else if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.ROLLINGFIRE)
                             {
                                 TransitLowerBodyState(LowerBodyState.STAND);
@@ -2313,7 +2334,9 @@ public class RobotController : Pausable
                             {
                                 TransitLowerBodyState(LowerBodyState.AIR);
                             }
-                            else if (lowerBodyState == LowerBodyState.SUBFIRE)
+                            else if (lowerBodyState == LowerBodyState.GROUND_SUBFIRE)
+                                TransitLowerBodyState(LowerBodyState.GROUND);
+                            else
                                 TransitLowerBodyState(LowerBodyState.STAND);
 
                         }
@@ -2324,10 +2347,10 @@ public class RobotController : Pausable
                         _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
                         _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
 
-                        if (dualwielding)
+                        //if (dualwielding)
                             _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
-                        else
-                            _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+                        //else
+                        //    _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
 
                         chest_no_aiming = true;
 
@@ -2442,6 +2465,8 @@ public class RobotController : Pausable
                             {
                                 TransitLowerBodyState(LowerBodyState.AIR);
                             }
+                            else if (lowerBodyState == LowerBodyState.GROUND_HEAVYFIRE)
+                                TransitLowerBodyState(LowerBodyState.GROUND);
                             else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
                                 TransitLowerBodyState(LowerBodyState.STAND);
 
@@ -3100,6 +3125,9 @@ public class RobotController : Pausable
                     }
                     break;
                 case LowerBodyState.GROUND:
+                case LowerBodyState.GROUND_FIRE:
+                case LowerBodyState.GROUND_SUBFIRE:
+                case LowerBodyState.GROUND_HEAVYFIRE:
                 case LowerBodyState.JUMP:
                 case LowerBodyState.DOWN:
                 case LowerBodyState.GETUP:
@@ -3125,6 +3153,34 @@ public class RobotController : Pausable
                                     if (event_grounded)
                                     {
                                         TransitLowerBodyState(LowerBodyState.STAND);
+                                    }
+                                }
+                                break;
+                            case LowerBodyState.GROUND_FIRE:
+                                {
+                                    _speed = 0.0f;
+                                    if (event_grounded)
+                                    {
+                                        TransitLowerBodyState(LowerBodyState.FIRE);
+                                    }
+                                }
+                                break;
+                            case LowerBodyState.GROUND_SUBFIRE:
+                                {
+                                    _speed = 0.0f;
+                                    if (event_grounded)
+                                    {
+                                        TransitLowerBodyState(LowerBodyState.SUBFIRE);
+                                    }
+                                }
+                                break;
+                            case LowerBodyState.GROUND_HEAVYFIRE:
+                                {
+                                    backblast_processed = true; // 着地硬直中に撃って、終わった瞬間に反動が始まるのを防止
+                                    _speed = 0.0f;
+                                    if (event_grounded)
+                                    {
+                                        TransitLowerBodyState(LowerBodyState.HEAVYFIRE);
                                     }
                                 }
                                 break;
@@ -4473,6 +4529,9 @@ public class RobotController : Pausable
                 _controller.height = min_controller_height;
                 break;
             case LowerBodyState.GROUND:
+            case LowerBodyState.GROUND_FIRE:
+            case LowerBodyState.GROUND_SUBFIRE:
+            case LowerBodyState.GROUND_HEAVYFIRE:
             case LowerBodyState.STEPGROUND:
 
 
@@ -4484,9 +4543,18 @@ public class RobotController : Pausable
                 }
                 else
                 {
-                    _animator.Play(_animIDGround, 0, 0);
-                    event_grounded = false;
-                    audioSource.PlayOneShot(audioClip_Ground);
+                    if (newState == LowerBodyState.GROUND &&
+                         (lowerBodyState == LowerBodyState.GROUND_FIRE || lowerBodyState == LowerBodyState.GROUND_SUBFIRE || lowerBodyState == LowerBodyState.GROUND_HEAVYFIRE)
+                        )
+                    {
+
+                    }
+                    else
+                    {
+                        _animator.Play(_animIDGround, 0, 0);
+                        event_grounded = false;
+                        audioSource.PlayOneShot(audioClip_Ground);
+                    }
                 }
 
                 if (lowerBodyState == LowerBodyState.AIRSUBFIRE
@@ -4513,6 +4581,9 @@ public class RobotController : Pausable
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                         break;
                     case LowerBodyState.GROUND:
+                    case LowerBodyState.GROUND_FIRE:
+                    case LowerBodyState.GROUND_SUBFIRE:
+                    case LowerBodyState.GROUND_HEAVYFIRE:
                     case LowerBodyState.STEPGROUND:
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
                         break;
@@ -4911,7 +4982,7 @@ public class RobotController : Pausable
 
 
 
-            if (angle > 100)
+            if (angle > rightWeapon.firing_angle)
             {
                 if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                 {

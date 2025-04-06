@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class HandCannon : Weapon
 {
-    GameObject cannonball_prefab;
-    GameObject beamemit_prefab;
+    [SerializeField]GameObject cannonball_prefab;
+    [SerializeField]GameObject beamemit_prefab;
 
 
     private const int Max_Ammo = 6;
@@ -18,6 +18,12 @@ public class HandCannon : Weapon
         }
     }
     private const int Reload_Time = 60;
+
+    [SerializeField] int _fire_followthrough = 45;
+    override public int fire_followthrough
+    {
+        get { return _fire_followthrough; }
+    }
 
     int _energy = 0;
 
@@ -60,9 +66,6 @@ public class HandCannon : Weapon
 
     protected override void OnAwake()
     {
-        cannonball_prefab = Resources.Load<GameObject>("Projectile/CannonBall Variant");
-        beamemit_prefab = Resources.Load<GameObject>("Effects/CannonEmit");
-
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
 
@@ -72,7 +75,6 @@ public class HandCannon : Weapon
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
 
-        trajectory = Trajectory.Curved;
         projectile_gravity = -CannonBall.Gravity / Time.deltaTime;
         projectile_speed = CannonBall.Speed / Time.deltaTime;
     }
@@ -84,18 +86,37 @@ public class HandCannon : Weapon
 
         if (energy >= Reload_Time && trigger)
         {
-
+            
             GameObject beam_obj = GameObject.Instantiate(cannonball_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
-            CannonBall beam = beam_obj.GetComponent<CannonBall>();
+            if (trajectory == Trajectory.Curved)
+            {
 
-            beam.direction = gameObject.transform.forward;
-            beam.target = Target_Robot;
-            beam.team = owner.team;
-            //beam.worldManager = owner.worldManager;
-            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
-            beam.owner = owner;
-            beam.chargeshot = chargeshot;
+                CannonBall beam = beam_obj.GetComponent<CannonBall>();
+
+                beam.direction = gameObject.transform.forward;
+                beam.target = Target_Robot;
+                beam.team = owner.team;
+                beam.owner = owner;
+                beam.chargeshot = chargeshot;
+
+                if (beamemit_prefab)
+                    GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+
+            }
+            else
+            {
+                Beam beam = beam_obj.GetComponent<Beam>();
+
+                beam.direction = gameObject.transform.forward;
+                beam.target = Target_Robot;
+                beam.team = owner.team;
+                beam.owner = owner;
+                beam.chargeshot = chargeshot;
+
+                if (beamemit_prefab)
+                    GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+            }
             energy -= Reload_Time;
         }
        }

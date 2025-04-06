@@ -85,7 +85,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 805f0bf578f40ea4e94aec836b6e3cfb, type: 3}
       propertyPath: m_Name
-      value: SMG Variant
+      value: BeamMachineGun
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects:
@@ -127,5 +127,11 @@ MonoBehaviour:
   projectile_gravity: 0
   projectile_speed: 0
   _chargeshot: 0
-  bullet_prefab: {fileID: 6571210301752455124, guid: b45ac389190c8704c8c8c3a5cd3a7786, type: 3}
+  bullet_prefab: {fileID: 6571210301752455124, guid: 384efcf7e7429c444914f5216eb936f1, type: 3}
+  beam: 1
+  Reload_Time: 12
   firePoint: {fileID: 8217520916323313477}
+  MaxMagazine: 3
+  fire_interval: 8
+  _fire_followthrough: 30
+  _firing_multiplier: 2

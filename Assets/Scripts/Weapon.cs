@@ -55,6 +55,11 @@ public class Weapon : Pausable
         get { return 1.0f; }
     }
 
+    virtual public float firing_angle
+    {
+        get { return 100.0f; }
+    }
+
     //virtual public bool dualwielded
     //{
     //    get { return false; }

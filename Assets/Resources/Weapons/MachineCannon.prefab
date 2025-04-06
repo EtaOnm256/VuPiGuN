@@ -97,7 +97,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 34ad5e228cc9ca147a2c80d8af9c33c1, type: 3}
       propertyPath: m_Name
-      value: SolidRifle Variant
+      value: MachineCannon
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects:
@@ -110,7 +110,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 34ad5e228cc9ca147a2c80d8af9c33c1, type: 3}
   m_PrefabInstance: {fileID: 2160076718664282918}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3104683468701839796
+--- !u!114 &-8711734775215777119
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1241669158410538615}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8e91a505468b0348aa7a8d78237b5f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f0a34ebf536756409faf8670fb264fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
@@ -134,8 +134,13 @@ MonoBehaviour:
   projectile_gravity: 0
   projectile_speed: 0
   _chargeshot: 0
-  bullet_prefab: {fileID: 6571210301752455124, guid: 061c6a1a9f65dca49ae8a2b99227947d, type: 3}
+  bullet_prefab: {fileID: 6571210301752455124, guid: 4a1f6999046f2af45932805c1ecaa8db, type: 3}
+  Reload_Time: 8
   firePoint: {fileID: 6222065125445818555}
+  MaxMagazine: 15
+  fire_interval: 3
+  _fire_followthrough: 45
+  _firing_multiplier: 1
 --- !u!4 &1905193246014706893 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 34ad5e228cc9ca147a2c80d8af9c33c1, type: 3}

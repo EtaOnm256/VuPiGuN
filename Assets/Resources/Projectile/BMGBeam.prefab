@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -3320835075645777373}
   - component: {fileID: 5361083862146686515}
   m_Layer: 0
-  m_Name: Beam
+  m_Name: BMGBeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,8 +85,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 0.25190735
+        time: 0.0016517639
+        value: 0.20581055
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -156,8 +156,12 @@ MonoBehaviour:
   owner: {fileID: 0}
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
-  MaxLength: 30
-  hitEffect_prefab: {fileID: 3835462889935592433, guid: 9c34b8721a511ec4db92d131e72fe27a, type: 3}
+  MaxLength: 20
+  damage: 50
+  hitEffect_prefab: {fileID: 3835462889935592433, guid: be10f4fbea4a3654bb6b1828f2ef7640, type: 3}
   chargeshot: 0
+  homing_strength: 0.75
+  homing_limit: 7.5
   hitsphere_width: -1
   hiteffect_scale: 1
+  KnockBackType: 1

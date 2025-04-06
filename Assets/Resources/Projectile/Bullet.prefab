@@ -159,9 +159,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75805f5fc6187f442af9703b5a20e579, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0, z: 0}
+  position: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
+  speed: 1.2
+  dead: 0
+  owner: {fileID: 0}
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
-  direction: {x: 0, y: 0, z: 0}
   MaxLength: 5
+  chargeshot: 0
   hitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}

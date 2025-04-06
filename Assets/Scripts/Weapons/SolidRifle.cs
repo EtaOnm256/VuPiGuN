@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SolidRifle : Weapon
 {
-    GameObject bullet_prefab;
+    [SerializeField]GameObject bullet_prefab;
     GameObject solidemit_prefab;
 
 
@@ -60,7 +60,6 @@ public class SolidRifle : Weapon
 
     protected override void OnAwake()
     {
-        bullet_prefab = Resources.Load<GameObject>("Projectile/Bullet");
         solidemit_prefab = Resources.Load<GameObject>("Effects/SolidEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class SMG : Weapon
 {
-    GameObject bullet_prefab;
+    [SerializeField]GameObject bullet_prefab;
+    [SerializeField] bool beam = false;
     GameObject solidemit_prefab;
 
 
@@ -17,21 +18,25 @@ public class SMG : Weapon
             return Max_Ammo * Reload_Time;
         }
     }
-    private const int Reload_Time = 12;
+    [SerializeField] int Reload_Time = 12;
 
     int _energy = 0;
 
     public GameObject firePoint;
 
-    const int MaxMagazine = 5;
+    [SerializeField] int MaxMagazine = 5;
 
-    int magazine = MaxMagazine;
+    int magazine;
 
     int Duration_Time = 0;
 
+    [SerializeField] int fire_interval = 5;
+
+    [SerializeField] int _fire_followthrough = 30;
+
     override public int fire_followthrough
     {
-        get { return 30; }
+        get { return _fire_followthrough; }
     }
 
     //public override bool dualwielded
@@ -71,9 +76,11 @@ public class SMG : Weapon
         }
     }
 
+    [SerializeField] float _firing_multiplier = 2.0f;
+
     override public float firing_multiplier
     {
-        get { return 2.0f; }
+        get { return _firing_multiplier; }
     }
     override public float lockon_multiplier
     {
@@ -81,7 +88,6 @@ public class SMG : Weapon
     }
     protected override void OnAwake()
     {
-        bullet_prefab = Resources.Load<GameObject>("Projectile/SMGBullet");
         solidemit_prefab = Resources.Load<GameObject>("Effects/SMGEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
@@ -92,6 +98,7 @@ public class SMG : Weapon
     {
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
+        magazine = MaxMagazine;
     }
 
     // Update is called once per frame
@@ -109,22 +116,37 @@ public class SMG : Weapon
             canHold = true;
         }
 
-        if (energy >= Reload_Time && trigger && Duration_Time <= 25)
+        if (energy >= Reload_Time && trigger && Duration_Time <= 30- fire_interval)
         {
 
             GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
-            SMGBullet bullet = bullet_obj.GetComponent<SMGBullet>();
+            if (beam)
+            {
+                Beam bullet = bullet_obj.GetComponent<Beam>();
 
-            bullet.direction = gameObject.transform.forward;
-            bullet.target = Target_Robot;
-            bullet.team = owner.team;
-            //bullet.worldManager = owner.worldManager;
-            bullet.owner = owner;
-            bullet.chargeshot = chargeshot;
-            GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+                bullet.direction = gameObject.transform.forward;
+                bullet.target = Target_Robot;
+                bullet.team = owner.team;
+                //bullet.worldManager = owner.worldManager;
+                bullet.owner = owner;
+                bullet.chargeshot = chargeshot;
+            }
+            else
+            {
+                SMGBullet bullet = bullet_obj.GetComponent<SMGBullet>();
 
-            solidemit_obj.transform.localScale = Vector3.one/2.0f;
+                bullet.direction = gameObject.transform.forward;
+                bullet.target = Target_Robot;
+                bullet.team = owner.team;
+                //bullet.worldManager = owner.worldManager;
+                bullet.owner = owner;
+                bullet.chargeshot = chargeshot;
+                GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+
+                solidemit_obj.transform.localScale = Vector3.one / 2.0f;
+            }
+          
 
             energy -= Reload_Time;
 

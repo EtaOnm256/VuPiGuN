@@ -16,7 +16,7 @@ public class Beam : Projectile
 
     Vector3 start_pos;
 
-    int damage = 100;
+    [SerializeField]int damage = 100;
 
     // Start is called before the first frame update
     protected override void OnStart()
@@ -29,8 +29,6 @@ public class Beam : Projectile
         lineRenderer.SetPosition(1, start_pos);
 
         initial_direction = Quaternion.LookRotation(direction);
-
-        speed = 1.6f;
 
         if (chargeshot)
         {
@@ -53,6 +51,14 @@ public class Beam : Projectile
 
     public bool chargeshot = false;
 
+    [SerializeField] float homing_strength = 1.0f;
+    [SerializeField] float homing_limit = 10.0f;
+
+    [SerializeField] float hitsphere_width = -1.0f;
+    [SerializeField] float hiteffect_scale = 1.0f;
+
+    [SerializeField] RobotController.KnockBackType KnockBackType = RobotController.KnockBackType.Normal;
+
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
@@ -73,22 +79,33 @@ public class Beam : Projectile
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {
-                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 1.0f);
+                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, homing_strength);
 
-                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 10.0f);
+                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, homing_limit);
 
                     direction = qDirection_result * Vector3.forward;
                 }
             }
 
-            Ray ray = new Ray(lineRenderer.GetPosition(1), direction);
+            int numhit = 0;
 
-            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
+            if (hitsphere_width <= 0.0f)
+            {
+                Ray ray = new Ray(lineRenderer.GetPosition(1), direction);
+                numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
+            }
+            else
+            {
+                numhit = Physics.SphereCastNonAlloc(lineRenderer.GetPosition(1), hitsphere_width,direction,rayCastHit, speed, 1 << 6 | 1 << 3);
+            }
 
             for (int i = 0; i < numhit; i++)
             {
                 if (hitHistory.Contains(rayCastHit[i].collider.gameObject))
                     continue;
+
+                if (hitHistoryCount >= hitHistory.Length)
+                    break;
 
                 hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;
 
@@ -101,9 +118,12 @@ public class Beam : Projectile
                     if (hitHistoryRC.Contains(robotController))
                         continue;
 
+                    if (hitHistoryRCCount >= hitHistoryRC.Length)
+                        break;
+
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.Normal, owner);
+                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, KnockBackType, owner);
 
                     
                 }
@@ -113,6 +133,7 @@ public class Beam : Projectile
                 }
 
                 GameObject hitEffect_obj = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
+                hitEffect_obj.transform.localScale = new Vector3(hiteffect_scale, hiteffect_scale, hiteffect_scale);
             }
 
             position = lineRenderer.GetPosition(1) + direction * speed;
@@ -146,8 +167,6 @@ public class Beam : Projectile
             {
                 lineRenderer.SetPosition(0, lineRenderer.GetPosition(0) + view_dir * speed);
             }
-
-            
         }
     }
 }

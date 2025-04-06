@@ -85,7 +85,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 22a0d2e40f5bf994c8fe2affeba78504, type: 3}
       propertyPath: m_Name
-      value: HandCannon Variant
+      value: BeamLauncher
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects:
@@ -118,12 +118,13 @@ MonoBehaviour:
   weaponPanelItem: {fileID: 0}
   another: {fileID: 0}
   this_is_slave: 0
-  trajectory: 1
+  trajectory: 0
   projectile_gravity: 0
   projectile_speed: 0
   _chargeshot: 0
-  cannonball_prefab: {fileID: 4123693753031922193, guid: 96b804910c3d8ea4fab5f88d18f1eac8, type: 3}
-  beamemit_prefab: {fileID: 8961267772553168207, guid: 12f4edc718b5d9d4ab137281ddcd9849, type: 3}
+  cannonball_prefab: {fileID: 6571210301752455124, guid: cb01600d32cfeba4090ff2cbb73f2358, type: 3}
+  beamemit_prefab: {fileID: 0}
+  _fire_followthrough: 60
   firePoint: {fileID: 8551960592390016984}
 --- !u!4 &9206627185565556227 stripped
 Transform:

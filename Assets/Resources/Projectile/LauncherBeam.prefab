@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -3320835075645777373}
   - component: {fileID: 5361083862146686515}
   m_Layer: 0
-  m_Name: Beam
+  m_Name: LauncherBeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,7 +86,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.25190735
+        value: 1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -151,13 +151,17 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
-  speed: 1.6
+  speed: 2.5
   dead: 0
   owner: {fileID: 0}
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 30
+  damage: 250
   hitEffect_prefab: {fileID: 3835462889935592433, guid: 9c34b8721a511ec4db92d131e72fe27a, type: 3}
   chargeshot: 0
-  hitsphere_width: -1
-  hiteffect_scale: 1
+  homing_strength: 1.5
+  homing_limit: 15
+  hitsphere_width: 1
+  hiteffect_scale: 2
+  KnockBackType: 2
