@@ -74,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8788691653540996990, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: robotParameter.itemFlag
-      value: 4098
+      value: 4114
       objectReference: {fileID: 0}
     - target: {fileID: 8788691653540996990, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: robotParameter.lweapon_prefab

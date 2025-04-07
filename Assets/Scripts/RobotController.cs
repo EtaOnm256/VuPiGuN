@@ -5474,7 +5474,15 @@ public class RobotController : Pausable
     {
         if (slash_dispatch)
         {
-            if (Grounded)
+            bool aerial_slash = false;
+
+            if (Target_Robot != null)
+            {
+                if (robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && !Target_Robot.Grounded)
+                    aerial_slash = true;
+            }
+
+            if (Grounded && !aerial_slash)
             {
 
                 if (target_chest != null)

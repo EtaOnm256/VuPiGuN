@@ -169,5 +169,5 @@ MonoBehaviour:
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 8
   chargeshot: 0
-  damage: 100
+  damage: 110
   hitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
