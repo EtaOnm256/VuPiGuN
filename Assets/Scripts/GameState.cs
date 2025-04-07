@@ -25,7 +25,8 @@ public class GameState : ScriptableObject
     public RobotController.ItemFlag itemFlag;
 
     public GameObject player_variant;
-
+    public List<IntermissionButton.ShopItemWeapon> shopWeapons = new List<IntermissionButton.ShopItemWeapon>();
+    public List<IntermissionButton.ShopItemParts> shopParts = new List<IntermissionButton.ShopItemParts>();
     public void Reset()
     {
         stage = 1;

@@ -64,7 +64,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemWeapon{tier=3,name = "アドバンスドドローン",description="運用能力を強化したドローン兵器。",price=9000,prefabname="AdvancedDronePlatform",type=ShopItemWeapon.Type.Back },
     };
 
-    [System.NonSerialized] List<ShopItemWeapon> shopWeapons = new List<ShopItemWeapon>();
+
 
     [System.Serializable]
     public class ShopItemParts : ShopItem
@@ -83,7 +83,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemParts{tier=1,name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2000,itemFlag=RobotController.ItemFlag.Hovercraft },
         new ShopItemParts{tier=1,name = "スナイプショット",description="射撃+下フリックで強力な射撃ができるようになる。全ての攻撃からキャンセル可能。",price=2000,itemFlag=RobotController.ItemFlag.SnipeShoot},
         new ShopItemParts{tier=1,name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },
-        new ShopItemParts{tier=1,name = "イアイスラッシュ",description="メイン射撃から格闘にキャンセルできるようになる。",price=1500,itemFlag=RobotController.ItemFlag.IaiSlash },
+        new ShopItemParts{tier=1,name = "イアイスラッシュ",description="メイン射撃から格闘にキャンセルできるようになる。空中にいる相手には必ず空中格闘が発動するようになる。",price=1500,itemFlag=RobotController.ItemFlag.IaiSlash },
         new ShopItemParts{tier=1,name = "クイックドロー",description="格闘からメイン射撃入力で追撃できるようになる。",price=1500,itemFlag=RobotController.ItemFlag.QuickDraw},
         new ShopItemParts{tier=1,name = "クイックショット",description="メイン射撃の発射が早くなる。",price=1500,itemFlag=RobotController.ItemFlag.QuickShoot },
         new ShopItemParts{tier=2,name = "グランドブースト",description="ステップ中、ブーストボタンを推し続けるとブーストを消費してダッシュし続ける。",price=3000,itemFlag=RobotController.ItemFlag.GroundBoost },
@@ -96,7 +96,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemParts{tier=3,name = "エクストリームスライド",description="全ての行動をステップでキャンセルできるようになる。",price=10000,itemFlag=RobotController.ItemFlag.ExtremeSlide },
     };
 
-    [System.NonSerialized] List<ShopItemParts> shopParts = new List<ShopItemParts>();
+
 
 
 
@@ -368,7 +368,20 @@ public class IntermissionButton : MonoBehaviour
     void Start()
     {
         StartCoroutine("Blackin");
-        SetupShop();
+
+        if(gameState.loadingDestination==GameState.LoadingDestination.Intermission_Garage)
+        {
+           
+        }
+        else
+        {
+            gameState.shopWeapons.Clear();
+            LotteryItem<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, (gameState.stage + 1) / 2, 2, gameState.inventryWeapons);
+            gameState.shopParts.Clear();
+            LotteryItem<ShopItemParts>(shopItemParts, gameState.shopParts, (gameState.stage + 1) / 2, 2, gameState.inventryParts);
+        }
+
+        DrawShop();
         SwitchToShop();
 
         if(gameState.loadingDestination==GameState.LoadingDestination.Intermission_Garage)
@@ -378,28 +391,26 @@ public class IntermissionButton : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
     }
-    void SetupShop()
-    {
-        LotteryItem<ShopItemWeapon>(shopItemWeapons, shopWeapons, (gameState.stage+1)/2, 2,gameState.inventryWeapons);
 
+    void DrawShop()
+    {
         GameObject weaponListPanel = ShopPanel.transform.Find("WeaponListPanel").Find("Viewport").Find("Content").gameObject;
 
-        for (int i = 0; i < shopWeapons.Count; i++)
+        for (int i = 0; i < gameState.shopWeapons.Count; i++)
         {
-            AddItemToShopPanel(weaponListPanel, shopWeapons[i]);
+            AddItemToShopPanel(weaponListPanel, gameState.shopWeapons[i]);
         }
-
-        LotteryItem<ShopItemParts>(shopItemParts, shopParts, (gameState.stage+1) / 2, 2, gameState.inventryParts);
 
         GameObject partsListPanel = ShopPanel.transform.Find("UpgradePartsListPanel").Find("Viewport").Find("Content").gameObject;
 
-        for (int i = 0; i < shopParts.Count; i++)
+        for (int i = 0; i < gameState.shopParts.Count; i++)
         {
-            AddItemToShopPanel(partsListPanel, shopParts[i]);
+            AddItemToShopPanel(partsListPanel, gameState.shopParts[i]);
         }
 
         goldText.text = $"${gameState.gold.ToString()}";
     }
+       
     void SwitchToShop()
     {
         GameObject weaponListPanel = ShopPanel.transform.Find("WeaponListPanel").Find("Viewport").Find("Content").gameObject;
