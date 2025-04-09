@@ -6,7 +6,7 @@ public class SMG : Weapon
 {
     [SerializeField]GameObject bullet_prefab;
     [SerializeField] bool beam = false;
-    GameObject solidemit_prefab;
+    [SerializeField] GameObject solidemit_prefab;
 
 
     private const int Max_Ammo = 30;
@@ -88,8 +88,6 @@ public class SMG : Weapon
     }
     protected override void OnAwake()
     {
-        solidemit_prefab = Resources.Load<GameObject>("Effects/SMGEmit");
-
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
 
@@ -131,6 +129,9 @@ public class SMG : Weapon
                 //bullet.worldManager = owner.worldManager;
                 bullet.owner = owner;
                 bullet.chargeshot = chargeshot;
+                GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+
+                solidemit_obj.transform.localScale = Vector3.one / 2.0f;
             }
             else
             {

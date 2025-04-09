@@ -169,5 +169,8 @@ MonoBehaviour:
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 3
   chargeshot: 0
-  hitEffect_prefab: {fileID: 8961267772553168207, guid: 76b2e55ac3645d54b9346566f4299ace, type: 3}
+  damage: 10
+  hitEffect_prefab: {fileID: 8961267772553168207, guid: 80c20339338365c4595d643272ed4cef, type: 3}
+  homing_strength: 0.3
+  homing_limit: 3
   knockback: 1

@@ -123,7 +123,7 @@ MonoBehaviour:
   projectile_speed: 0
   _chargeshot: 0
   cannonball_prefab: {fileID: 6571210301752455124, guid: cb01600d32cfeba4090ff2cbb73f2358, type: 3}
-  beamemit_prefab: {fileID: 0}
+  beamemit_prefab: {fileID: 8961267772553168207, guid: b521a327ac0a02e4ca152e212c684058, type: 3}
   _fire_followthrough: 60
   firePoint: {fileID: 8551960592390016984}
 --- !u!4 &9206627185565556227 stripped

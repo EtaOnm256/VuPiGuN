@@ -165,6 +165,7 @@ public class DronePlatform : Weapon
                         if (current_cycle >= drones.Count)
                             current_cycle = 0;
 
+                        emit_thistime = true;
 
                         energy -= Reload_Time;
 

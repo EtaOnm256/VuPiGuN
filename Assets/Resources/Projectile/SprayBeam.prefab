@@ -157,4 +157,5 @@ MonoBehaviour:
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 10
-  hitEffect_prefab: {fileID: 3835462889935592433, guid: be10f4fbea4a3654bb6b1828f2ef7640, type: 3}
+  hitEffect_prefab: {fileID: 3835462889935592433, guid: 2e0a15292e2c1214a93536ad0486d971, type: 3}
+  chargeshot: 0

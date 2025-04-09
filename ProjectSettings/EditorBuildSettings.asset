@@ -6,6 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Title.unity
+    guid: b89a9278ba5ba954785edcfc0d6dea3e
+  - enabled: 1
+    path: Assets/Scenes/Loading.unity
+    guid: b05c6aaa39cb4764d911e0b2761c0d03
+  - enabled: 1
+    path: Assets/Scenes/Intermission.unity
+    guid: bb5ed2d6e8a5232498c8fe63423bfe36
+  - enabled: 1
+    path: Assets/Scenes/TestingRoom.unity
+    guid: 60a2d8f926ffc7c4ab95955239f5230d
+  - enabled: 1
     path: Assets/Scenes/Stage1.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
@@ -23,18 +35,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Stage6.unity
     guid: b3081868587575f4aae055aeed61e0c8
-  - enabled: 1
-    path: Assets/Scenes/Title.unity
-    guid: b89a9278ba5ba954785edcfc0d6dea3e
-  - enabled: 1
-    path: Assets/Scenes/Loading.unity
-    guid: b05c6aaa39cb4764d911e0b2761c0d03
-  - enabled: 1
-    path: Assets/Scenes/Intermission.unity
-    guid: bb5ed2d6e8a5232498c8fe63423bfe36
-  - enabled: 1
-    path: Assets/Scenes/TestingRoom.unity
-    guid: 60a2d8f926ffc7c4ab95955239f5230d
   - enabled: 1
     path: Assets/Scenes/Ending.unity
     guid: 9c0fe8176f496cf4c930653fbe32d950
