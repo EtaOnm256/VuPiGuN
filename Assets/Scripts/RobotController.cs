@@ -2525,10 +2525,21 @@ public class RobotController : Pausable
 
                     chest_pitch_aim = true;
 
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.ChainFire) && upperBodyState == UpperBodyState.HEAVYFIRE)
+                    {
+                        AcceptSubFire();
+                    }
+
                     if (upperBodyState == UpperBodyState.HEAVYFIRE && !rollingfire_followthrough)
                         AcceptRollingShoot();
 
-                    AcceptSnipeShoot();
+                    if (upperBodyState != UpperBodyState.SNIPEHEAVYFIRE && !rollingfire_followthrough)
+                        AcceptSnipeShoot();
+
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && upperBodyState == UpperBodyState.HEAVYFIRE && !quickdraw_followthrough && !rollingfire_followthrough)
+                    {
+                        AcceptSlash();
+                    }
 
                     if (!AcceptDashSlash())
                         AcceptJumpSlash();
