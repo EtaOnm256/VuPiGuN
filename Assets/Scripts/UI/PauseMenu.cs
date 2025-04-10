@@ -14,6 +14,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] bool testingroom = false;
     [SerializeField] bool ending = false;
 
+    bool finished = false;
     private void OnEnable()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -39,27 +40,33 @@ public class PauseMenu : MonoBehaviour
     }
     public void OnClickExit()
     {
+        if (finished)
+            return;
+
         StartCoroutine("Blackout");
+
+        finished = true;
     }
 
     IEnumerator Blackout()
     {
 
-        var wait = new WaitForSeconds(Time.deltaTime);
+        var wait = new WaitForSeconds(Time.fixedDeltaTime);
 
-        int count = 0;
-
-        int waittime;
+        float waittime;
 
         if (ending)
-            waittime = 90;
+            waittime = 1.0f;
         else
-            waittime = 60;
+            waittime = 0.5f;
 
-        while (count++ < waittime)
+        float start = Time.time;
+        while (Time.time - start < waittime)
         {
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 60.0f);
             yield return wait;
+            float fade = Mathf.Max(0.0f, Time.time - start);
+
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / waittime);
         }
 
         if (!testingroom)

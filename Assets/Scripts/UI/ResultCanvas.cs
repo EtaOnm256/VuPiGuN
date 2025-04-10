@@ -26,6 +26,8 @@ public class ResultCanvas : MonoBehaviour
 
     public int currentgold;
 
+    bool finished = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,6 +67,9 @@ public class ResultCanvas : MonoBehaviour
 
     public void OnClickProceed()
     {
+        if (finished)
+            return;
+
         if (victory)
         {
             gameState.loadingDestination = GameState.LoadingDestination.Intermission;
@@ -77,18 +82,25 @@ public class ResultCanvas : MonoBehaviour
             gameState.stage = -1;
             StartCoroutine("Blackout");
         }
+
+        finished = true;
     }
 
     IEnumerator Blackout()
     {
 
-        var wait = new WaitForSeconds(Time.deltaTime);
+        var wait = new WaitForSeconds(Time.fixedDeltaTime);
 
-        int count = 0;
-        while (count++ < 60)
+        float start = Time.time;
+        while (Time.time - start < 1.0f)
         {
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 60.0f);
             yield return wait;
+
+            float fade = Mathf.Max(0.0f, Time.time - start);
+
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 1.0f);
+
+
         }
 
 

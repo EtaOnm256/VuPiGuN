@@ -105,6 +105,9 @@ public class IntermissionButton : MonoBehaviour
     List<(GameObject, ShopItem)> inventryItemPanel = new List<(GameObject, ShopItem)>();
 
     [SerializeField] TextMeshProUGUI goldText;
+
+    bool finished = false;
+
     public bool LotteryItem<T>(T[] pool,List<T> chosen, int maxTier, int count,List<T> inventry) where T :  ShopItem
     {
         
@@ -398,14 +401,16 @@ public class IntermissionButton : MonoBehaviour
 
         for (int i = 0; i < gameState.shopWeapons.Count; i++)
         {
-            AddItemToShopPanel(weaponListPanel, gameState.shopWeapons[i]);
+            if(gameState.inventryWeapons.Find(x => x == gameState.shopWeapons[i]) == null)
+                AddItemToShopPanel(weaponListPanel, gameState.shopWeapons[i]);
         }
 
         GameObject partsListPanel = ShopPanel.transform.Find("UpgradePartsListPanel").Find("Viewport").Find("Content").gameObject;
 
         for (int i = 0; i < gameState.shopParts.Count; i++)
         {
-            AddItemToShopPanel(partsListPanel, gameState.shopParts[i]);
+            if (gameState.inventryParts.Find(x => x == gameState.shopParts[i]) == null)
+                AddItemToShopPanel(partsListPanel, gameState.shopParts[i]);
         }
 
         goldText.text = $"${gameState.gold.ToString()}";
@@ -465,18 +470,31 @@ public class IntermissionButton : MonoBehaviour
     }
     public void OnClickMissionStart()
     {
+        if (finished)
+            return;
+
         audioSource.PlayOneShot(audioClip_Start);
 
         StartCoroutine("Blackout_MissionStart");
+
+        finished = true;
     }
 
     public void OnClickTestingRoom()
     {
+        if (finished)
+            return;
+
         StartCoroutine("Blackout_TestingRoom");
+
+        finished = true;
     }
 
     public void OnClickBackToBuild()
     {
+        if (finished)
+            return;
+
         ShopPanel.SetActive(true);
         GaragePanel.SetActive(false);
 
@@ -485,6 +503,9 @@ public class IntermissionButton : MonoBehaviour
 
     public void OnClickProceedToGarage()
     {
+        if (finished)
+            return;
+
         ShopPanel.SetActive(false);
         GaragePanel.SetActive(true);
 
@@ -494,15 +515,17 @@ public class IntermissionButton : MonoBehaviour
     IEnumerator Blackout_MissionStart()
     {
 
-        var wait = new WaitForSeconds(Time.deltaTime);
+        var wait = new WaitForSeconds(Time.fixedDeltaTime);
 
-        int count = 0;
-        while (count++ < 90 || audioSource.isPlaying)
+        float start = Time.time;
+        while (Time.time - start < 1.0f || audioSource.isPlaying)
         {
-            int fade = System.Math.Max(0, count);
-
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 90.0f);
             yield return wait;
+            float fade = Mathf.Max(0.0f, Time.time - start);
+
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 1.0f);
+
+
         }
 
         gameState.loadingDestination = GameState.LoadingDestination.Mission;
@@ -513,15 +536,18 @@ public class IntermissionButton : MonoBehaviour
     IEnumerator Blackout_TestingRoom()
     {
 
-        var wait = new WaitForSeconds(Time.deltaTime);
+        var wait = new WaitForSeconds(Time.fixedDeltaTime);
 
-        int count = 0;
-        while (count++ < 60 || audioSource.isPlaying)
+        float start = Time.time;
+        while (Time.time - start < 0.5f || audioSource.isPlaying)
         {
-            int fade = System.Math.Max(0, count);
-
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 60.0f);
             yield return wait;
+
+            float fade = Mathf.Max(0.0f, Time.time - start);
+
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 0.5f);
+
+
         }
 
         gameState.loadingDestination = GameState.LoadingDestination.TestingRoom;
@@ -531,14 +557,19 @@ public class IntermissionButton : MonoBehaviour
 
     IEnumerator Blackin()
     {
+        blackout.color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
 
-        var wait = new WaitForSeconds(Time.deltaTime);
+        var wait = new WaitForSeconds(Time.fixedDeltaTime);
 
-        int count = 60;
-        while (count-- >= 0)
+        float start = Time.time;
+        while (Time.time - start < 0.5f || audioSource.isPlaying)
         {
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 60.0f);
             yield return wait;
+            float fade = Mathf.Max(0.0f, Time.time - start);
+
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, 1.0f-((float)fade / 0.5f));
+
+
         }
     }
 }

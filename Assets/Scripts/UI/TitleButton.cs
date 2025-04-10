@@ -9,6 +9,9 @@ public class TitleButton : MonoBehaviour
     [SerializeField] Image blackout;
     [SerializeField] AudioSource audioSource;
     [SerializeField] AudioClip audioClip_Start;
+
+    bool finished = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,25 +27,31 @@ public class TitleButton : MonoBehaviour
 
     public void OnClickStart()
     {
+        if (finished)
+            return;
+
         gameState.stage = 1;
 
         audioSource.PlayOneShot(audioClip_Start);
 
         StartCoroutine("Blackout");
+
+        finished = true;
     }
 
     IEnumerator Blackout()
     {
 
-        var wait = new WaitForSeconds(Time.deltaTime);
+        var wait = new WaitForSeconds(Time.fixedDeltaTime);
 
-        int count = 0;
-        while (count++ < 90 || audioSource.isPlaying)
+        float start = Time.time;
+        while (Time.time-start < 1.0f || audioSource.isPlaying)
         {
-            int fade = System.Math.Max(0, count);
+            float fade = Mathf.Max(0.0f, Time.time - start);
 
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 90.0f);
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 1.0f);
             yield return wait;
+
         }
 
         gameState.Reset();

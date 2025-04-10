@@ -21,13 +21,19 @@ public class CanvasControl : MonoBehaviour
     IEnumerator Blackin()
     {
 
-        var wait = new WaitForSeconds(Time.deltaTime);
+        blackout.color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
 
-        int count = 60;
-        while (count-- >= 0)
+        var wait = new WaitForSeconds(Time.fixedDeltaTime);
+
+        float start = Time.time;
+        while (Time.time - start < 0.5f)
         {
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)count) / 60.0f);
             yield return wait;
+            float fade = Mathf.Max(0.0f, Time.time - start);
+
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, 1.0f - ((float)fade / 0.5f));
+
+
         }
     }
 }
