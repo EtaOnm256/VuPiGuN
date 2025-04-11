@@ -3626,7 +3626,7 @@ public class RobotController : Pausable
                                     Sword.slashing = false;
                                     slash_count = 0;
                                     Sword.damage = 100;
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
                                 }
@@ -3640,7 +3640,7 @@ public class RobotController : Pausable
                                     Sword.slashing = false;
                                     slash_count = 0;
                                     Sword.damage = 100;
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.GroundSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
@@ -3658,7 +3658,7 @@ public class RobotController : Pausable
                                     Sword.slashing = false;
                                     slash_count = 0;
                                     Sword.damage = 100;
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
                                 }
@@ -3672,7 +3672,7 @@ public class RobotController : Pausable
                                     Sword.slashing = false;
                                     slash_count = 0;
                                     Sword.damage = 100;
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
                                     _verticalVelocity = 0.0f;
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.QuickSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
@@ -3703,7 +3703,7 @@ public class RobotController : Pausable
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
-                                Sword.knockBackType = KnockBackType.Finish;
+                                Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
                                 _verticalVelocity = 0.0f;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[slash_count], 0.0f, 0);
                                 audioSource.PlayOneShot(audioClip_Swing);
@@ -3873,7 +3873,7 @@ public class RobotController : Pausable
                         if (lowerBodyState == LowerBodyState.DashSlash && Sword.dashslash_cutthrough)
                             boosting = true;
 
-                        if (Sword.hitHistoryRCCount == 0)
+                        //if (Sword.hitHistoryRCCount == 0)
                         {
                             if (slash_dispatch && ringMenuDir == RingMenuDir.Center && slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1)
                             {
@@ -3891,7 +3891,7 @@ public class RobotController : Pausable
                                 Sword.knockBackType = KnockBackType.Normal;
                             }
                         }
-
+                     
                         if (lowerBodyState == LowerBodyState.AirSlash && event_slash)
                         {
                             slash_count++;
@@ -3912,7 +3912,7 @@ public class RobotController : Pausable
                                     Sword.slashing = false;
                                     _verticalVelocity = 0.0f;
                                     Sword.damage = 100;
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
@@ -3958,7 +3958,7 @@ public class RobotController : Pausable
 
 
 
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
 
 
@@ -4004,7 +4004,7 @@ public class RobotController : Pausable
 
                                     }
 
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
 
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
@@ -4038,7 +4038,7 @@ public class RobotController : Pausable
                                     combo_reserved = false;
                                     Sword.slashing = false;
 
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.QuickSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
@@ -4076,7 +4076,7 @@ public class RobotController : Pausable
                                     combo_reserved = false;
                                     Sword.slashing = false;
 
-                                    Sword.knockBackType = KnockBackType.Finish;
+                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);

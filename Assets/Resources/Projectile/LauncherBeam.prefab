@@ -160,8 +160,8 @@ MonoBehaviour:
   damage: 250
   hitEffect_prefab: {fileID: 3835462889935592433, guid: 9c34b8721a511ec4db92d131e72fe27a, type: 3}
   chargeshot: 0
-  homing_strength: 1.5
-  homing_limit: 15
+  homing_strength: 1.25
+  homing_limit: 12.5
   hitsphere_width: 1
   hiteffect_scale: 2
   KnockBackType: 2
