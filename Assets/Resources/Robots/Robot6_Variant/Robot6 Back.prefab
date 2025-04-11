@@ -96,6 +96,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
     - target: {fileID: 2737446823111496146, guid: 28f1e335b9e121c4db4372d220082a56, type: 3}
+      propertyPath: robotParameter.rweapon_prefab
+      value: 
+      objectReference: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
+    - target: {fileID: 2737446823111496146, guid: 28f1e335b9e121c4db4372d220082a56, type: 3}
       propertyPath: robotParameter.subweapon_prefab
       value: 
       objectReference: {fileID: 8659736691718161653, guid: 52fff7c7d08b2454fbd85d615b986e7f, type: 3}

@@ -108,8 +108,10 @@ MonoBehaviour:
   trajectory: 0
   projectile_gravity: 0
   projectile_speed: 0
-  audioSource: {fileID: 0}
+  _chargeshot: 0
+  beam_prefab: {fileID: 6571210301752455124, guid: d2d5df60a1166cb48802f1d723a8800f, type: 3}
   firePoint: {fileID: 2128976343315254439}
+  _fire_followthrough: 45
 --- !u!1 &2128976343315254439
 GameObject:
   m_ObjectHideFlags: 0
