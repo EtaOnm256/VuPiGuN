@@ -661,8 +661,7 @@ public class RobotController : Pausable
 
         if (knockBackType != KnockBackType.None || dead)
         {
-
-            if (lowerBodyState != LowerBodyState.DOWN || !Grounded)
+            //if (lowerBodyState != LowerBodyState.DOWN || !Grounded)
             {
                 if (!Grounded || knockBackType == KnockBackType.Down || knockBackType == KnockBackType.KnockUp)
                 {
@@ -3690,10 +3689,7 @@ public class RobotController : Pausable
                                 intend_animator_speed = 1.0f;
                                 event_slash = false;
                                 combo_reserved = false;
-                                //Sword.slashing = false;
                                 slash_count = 0;
-                                Sword.damage = 200;
-                                Sword.knockBackType = KnockBackType.KnockUp;
                                 _verticalVelocity = 0.0f;
                                 //_animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
                                 audioSource.PlayOneShot(audioClip_Swing);
@@ -4574,12 +4570,14 @@ public class RobotController : Pausable
                 Grounded = false;
                 break;
             case LowerBodyState.DOWN:
-                upperBodyState = UpperBodyState.DOWN;
-
-                _animator.Play(_animIDDown, 0, 0);
-                event_downed = false;
+                if (lowerBodyState != LowerBodyState.DOWN)
+                {
+                    upperBodyState = UpperBodyState.DOWN;
+                    _animator.Play(_animIDDown, 0, 0);
+                    event_downed = false;
+                    _controller.height = min_controller_height;
+                }
                 //_input.down = false;
-                _controller.height = min_controller_height;
                 break;
             case LowerBodyState.GROUND:
             case LowerBodyState.GROUND_FIRE:
@@ -5236,6 +5234,10 @@ public class RobotController : Pausable
                 Sword.slashing = false;
                 Sword.emitting = true;
                 event_swing = false;
+
+                // DashSlashに遷移する前にslashingがtrueになることがあるので
+                Sword.damage = 200;
+                Sword.knockBackType = KnockBackType.KnockUp;
 
                 StartSeeking();
                 if (target_chest != null)
