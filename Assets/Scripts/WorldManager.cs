@@ -141,8 +141,8 @@ public class WorldManager : MonoBehaviour
         Team friend_team = new Team {power = armypower_friend, powerslider = friendPowerSlider };
         Team enemy_team = new Team { power = armypower_enemy, powerslider = enemyPowerSlider };
 
-        friendPowerSlider.maxValue = armypower_friend;
-        enemyPowerSlider.maxValue = armypower_enemy;
+        friendPowerSlider.value = friendPowerSlider.maxValue = armypower_friend;
+        enemyPowerSlider.value = enemyPowerSlider.maxValue = armypower_enemy;
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
