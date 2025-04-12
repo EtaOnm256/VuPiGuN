@@ -158,7 +158,8 @@ public class RobotAI_Shenlong : InputBase
                     if (overheating || !ascending)
                     {
                         jump = false;
-                        sprint = true;
+                        if (!overheating)
+                            sprint = true;
                     }
                     else
                     {

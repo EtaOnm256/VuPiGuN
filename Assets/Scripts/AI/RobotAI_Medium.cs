@@ -155,7 +155,9 @@ public class RobotAI_Medium : InputBase
                     if (overheating || !ascending)
                     {
                         jump = false;
-                        sprint = true;
+
+                        if(!overheating)
+                            sprint = true;
                     }
                     else
                     {

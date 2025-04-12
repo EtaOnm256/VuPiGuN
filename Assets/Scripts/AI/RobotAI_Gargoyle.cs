@@ -151,7 +151,8 @@ public class RobotAI_Gargoyle : InputBase
                     if (overheating || !ascending)
                     {
                         jump = false;
-                        sprint = true;
+                        if (!overheating)
+                            sprint = true;
                     }
                     else
                     {
