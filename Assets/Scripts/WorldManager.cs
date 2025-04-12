@@ -60,6 +60,7 @@ public class WorldManager : MonoBehaviour
      public bool enemy_weapon_chest_paired = false;*/
 
     RobotController player;
+    Vector3 player_last_position;
     //int player_spawn_wait = 60;
 
     GameObject CinemachineCameraTarget;
@@ -123,7 +124,6 @@ public class WorldManager : MonoBehaviour
 
     [SerializeField] bool testingroom;
 
-
     private void Awake()
     {
         current_instance = this;
@@ -147,10 +147,12 @@ public class WorldManager : MonoBehaviour
         teams.Add(friend_team);
         teams.Add(enemy_team);
 
-        ProcessPlayerSpawn();
+        Vector3 pos = PlacePlayerSpawn(60);
 
         while (ProcessSpawn(sequence_friend, friend_team, true)) ;
         while (ProcessSpawn(sequence_enemy, enemy_team, true)) ;
+
+        PresetCameraTransform(pos);
 
         for (int i = 0; i < sequence_enemy.spawns.Count; i++)
         {
@@ -292,7 +294,7 @@ public class WorldManager : MonoBehaviour
                 Vector3 pos;
                 
 
-                if(player && !player.dead)
+                if(player)
                 {
                     pos = player.GetCenter()+Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f)*Vector3.forward* distance;
 
@@ -301,10 +303,21 @@ public class WorldManager : MonoBehaviour
                     else
                         rot = Quaternion.LookRotation(player.GetCenter() - pos, Vector3.up);
                 }
+                else if(teams[0].spawnings.Find(x=>x.player)!=null)
+                {
+                    var spawning = teams[0].spawnings.Find(x => x.player);
+
+                    pos = spawning.pos+ Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+
+                    if (team == teams[0])
+                        rot = spawning.rot;
+                    else
+                        rot = Quaternion.LookRotation(spawning.pos - pos, Vector3.up);
+                }
                 else
                 {
-                    pos = Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-                    rot = Quaternion.LookRotation( - pos, Vector3.up);
+                    pos = player_last_position + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                    rot = Quaternion.LookRotation(player_last_position - pos, Vector3.up);
                 }
 
                 if(pos.x >= 150.0f)
@@ -338,7 +351,7 @@ public class WorldManager : MonoBehaviour
         return hav_progress;
     }
 
-    void PlacePlayerSpawn(int wait)
+    Vector3 PlacePlayerSpawn(int wait)
     {
         Vector3 pos = new Vector3(Random.value * 200.0f - 100.0f, 0, Random.value * 200.0f - 100.0f);
         RaycastHit raycastHit;
@@ -372,12 +385,62 @@ public class WorldManager : MonoBehaviour
 
             quaternion = Quaternion.LookRotation(rel, Vector3.up);
 
-            CinemachineCameraTarget.transform.rotation = RobotController.GetTargetQuaternionForView_FromTransform(nearest_robot, new RobotController.Transform2 { position = raycastHit.point, rotation = quaternion });
+            //CinemachineCameraTarget.transform.rotation = RobotController.GetTargetQuaternionForView_FromTransform(nearest_robot, new RobotController.Transform2 { position = raycastHit.point, rotation = quaternion });
         }
 
-        CinemachineCameraTarget.transform.position = raycastHit.point + CinemachineCameraTarget.transform.rotation * RobotController.offset;
+        //CinemachineCameraTarget.transform.position = raycastHit.point + CinemachineCameraTarget.transform.rotation * RobotController.offset;
 
         teams[0].spawnings.Add(new Team.Spawning { player = true, pos = raycastHit.point, rot = quaternion, wait = 60 });
+
+        return raycastHit.point;
+    }
+
+    void PresetCameraTransform(Vector3 pos)
+    {
+        float min_dist = float.MaxValue;
+        Vector3? nearest_robot_pos = null;
+
+        foreach (var team in teams)
+        {
+            if (team == teams[0]) continue;
+
+            foreach (var robot in team.robotControllers)
+            {
+                float dist = (robot.transform.position - pos).magnitude;
+
+                if (dist < min_dist)
+                {
+                    min_dist = dist;
+                    nearest_robot_pos = robot.GetCenter();
+                }
+            }
+
+            foreach (var spawning in team.spawnings)
+            {
+                float dist = (spawning.pos - pos).magnitude;
+
+                if (dist < min_dist)
+                {
+                    min_dist = dist;
+                    nearest_robot_pos = spawning.pos;
+                }
+            }
+        }
+     
+
+        Quaternion quaternion = Quaternion.identity;
+
+        if (nearest_robot_pos != null)
+        {
+            Vector3 rel = nearest_robot_pos.Value - pos;
+            rel.y = 0.0f;
+
+            quaternion = Quaternion.LookRotation(rel, Vector3.up);
+
+            CinemachineCameraTarget.transform.rotation = RobotController.GetTargetQuaternionForView_FromTransform(nearest_robot_pos.Value, new RobotController.Transform2 { position = pos, rotation = quaternion });
+        }
+
+        CinemachineCameraTarget.transform.position = pos + CinemachineCameraTarget.transform.rotation * RobotController.offset;
     }
 
     void ProcessPlayerSpawn()
@@ -396,7 +459,7 @@ public class WorldManager : MonoBehaviour
 
             if (player_spawning == null)
             {
-                PlacePlayerSpawn(60);
+                PresetCameraTransform(PlacePlayerSpawn(60));
             }
             else
             {
@@ -612,7 +675,10 @@ public class WorldManager : MonoBehaviour
         robotController.team.robotControllers.Remove(robotController);
 
         if (player == robotController)
+        {
+            player_last_position = robotController.GetCenter();
             player = null;
+        }
     }
 
     private void SpawnPlayer(Vector3 pos, Quaternion rot, Team team)

@@ -1920,7 +1920,12 @@ public class RobotController : Pausable
 
     static public Quaternion GetTargetQuaternionForView_FromTransform(RobotController target, Transform2 _transform)
     {
-        Quaternion qtarget = Quaternion.LookRotation(target.GetCenter() - GetCenterFromTransform(_transform), Vector3.up);
+        return GetTargetQuaternionForView_FromTransform(target.GetCenter(), _transform);
+    }
+
+    static public Quaternion GetTargetQuaternionForView_FromTransform(Vector3 target_center, Transform2 _transform)
+    {
+        Quaternion qtarget = Quaternion.LookRotation(target_center - GetCenterFromTransform(_transform), Vector3.up);
 
         Vector3 vtarget = qtarget.eulerAngles;
 
