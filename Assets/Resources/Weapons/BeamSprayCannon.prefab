@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4202364910203696360}
   - component: {fileID: 4879999330262441591}
   m_Layer: 0
-  m_Name: BeamCannon Variant
+  m_Name: BeamSprayCannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

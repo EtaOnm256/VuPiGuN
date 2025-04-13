@@ -103,9 +103,9 @@ public class SprayBeamCannon : Weapon
 
                 Quaternion dir_origin;
 
-                if (Target_Robot != null)
-                    dir_origin = Quaternion.LookRotation(Target_Robot.GetCenter() - firePoint.transform.position, Vector3.up);
-                else
+                //if (Target_Robot != null)
+                //    dir_origin = Quaternion.LookRotation(Target_Robot.GetCenter() - firePoint.transform.position, Vector3.up);
+                //else
                     dir_origin = firePoint.transform.rotation;
 
                 beam.direction = dir_origin * dir_rel;

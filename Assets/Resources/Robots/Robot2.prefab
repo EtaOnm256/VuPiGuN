@@ -322,7 +322,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.itemFlag
-      value: 32832
+      value: 16448
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: thrusters.Array.data[0]
@@ -417,7 +417,6 @@ MonoBehaviour:
   infight_reload: 0
   infight_wait: 0
   jumpinfight_reload: 0
-  ground_step_remain: 2
   state: 0
   movedirection_range: 135
   lock_range: 100
