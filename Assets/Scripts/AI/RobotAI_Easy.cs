@@ -2,16 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RobotAI_Easy : InputBase
+public class RobotAI_Easy : RobotAI_Base
 {
     int moveDirChangeTimer = 0;
 
-    RobotController robotController = null;
 
-    void Awake()
-    {
-        robotController = GetComponent<RobotController>();
-    }
+
+  
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +25,7 @@ public class RobotAI_Easy : InputBase
     public int fire_prepare = 15;
 
     bool overheating = false;
+  
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -170,11 +168,37 @@ public class RobotAI_Easy : InputBase
                     {
 
                         bool dodge = false;
-
+                        Vector2 stepMove = Vector2.zero;
                         foreach (var team in WorldManager.current_instance.teams)
                         {
                             if (team == robotController.team)
                                 continue;
+
+                            foreach (var robot in team.robotControllers)
+                            {
+                                if (robot.dead || robot.Target_Robot != robotController)
+                                    continue;
+
+                                if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
+                                    continue;
+
+                                if (robot.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.AirSlash
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.DashSlash
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.GroundSlash
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.QuickSlash
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                                {
+                                    dodge = true;
+                                    stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
+                                    break;
+                                }
+                            }
 
                             foreach (var projectile in team.projectiles)
                             {
@@ -193,15 +217,17 @@ public class RobotAI_Easy : InputBase
                                     )
                                 {
                                     dodge = true;
+                                    stepMove = ThreatPosToStepMove(projectile.transform.position, targetQ);
                                     break;
                                 }
                             }
+
+                           
                         }
 
                         if (dodge)
                         {
-                            move.x = 1.0f;
-                            move.y = 0.0f;
+                            move = stepMove;
                             sprint = true;
                             moveDirChangeTimer = 60;
                         }

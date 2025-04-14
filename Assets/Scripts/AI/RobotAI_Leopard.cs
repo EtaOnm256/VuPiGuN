@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RobotAI_Leopard : InputBase
+public class RobotAI_Leopard : RobotAI_Base
 {
     int moveDirChangeTimer = 0;
     int stepDirChangeTimer = 30;
-    RobotController robotController = null;
 
     void Awake()
     {
@@ -183,7 +182,7 @@ public class RobotAI_Leopard : InputBase
                         case State.Ground:
                             {
                                 bool dodge = false;
-
+                                Vector2 stepMove = Vector2.zero;
                                 /*if (nearest_robot != null && mindist < 10.0f)
                                 {
                                     if ( (nearest_robot.upperBodyState == RobotController.UpperBodyState.FIRE
@@ -202,6 +201,32 @@ public class RobotAI_Leopard : InputBase
                                         if (team == robotController.team)
                                             continue;
 
+                                        foreach (var robot in team.robotControllers)
+                                        {
+                                            if (robot.dead || robot.Target_Robot != robotController)
+                                                continue;
+
+                                            if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
+                                                continue;
+
+                                            if (robot.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.AirSlash
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.DashSlash
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.GroundSlash
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.QuickSlash
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                                            {
+                                                dodge = true;
+                                                stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
+                                                break;
+                                            }
+                                        }
+
                                         foreach (var projectile in team.projectiles)
                                         {
                                             if (projectile.dead)
@@ -219,6 +244,7 @@ public class RobotAI_Leopard : InputBase
                                                 )
                                             {
                                                 dodge = true;
+                                                stepMove = ThreatPosToStepMove(projectile.transform.position, targetQ);
                                                 break;
                                             }
                                         }
@@ -227,12 +253,9 @@ public class RobotAI_Leopard : InputBase
 
                                 if (dodge)
                                 {
-                                    //move.x = 1.0f;
-                                    //move.y = 0.0f;
-
                                     if (stepDirChangeTimer == 0)
                                     {
-                                        stepdir = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) != 0 ? 90.0f * 2 * Mathf.PI / 360.0f : -90.0f * 2 * Mathf.PI / 360.0f);
+                                        stepdir = VectorUtil.rotate(stepMove, Random.Range(0, 2) != 0 ? 0.0f * 2 * Mathf.PI / 360.0f : 180.0f * 2 * Mathf.PI / 360.0f);
                                     }
 
 
