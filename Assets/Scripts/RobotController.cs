@@ -2891,7 +2891,8 @@ public class RobotController : Pausable
     {
         float targetSpeed = 0.0f;
         bool boosting = false;
-        
+        bool ground_boost_now = false;
+
         if (hitslow_timer <= 0 && hitstop_timer <= 0)
         {
 
@@ -3519,7 +3520,7 @@ public class RobotController : Pausable
                                 {
                                     if (robotParameter.itemFlag.HasFlag(ItemFlag.GroundBoost) && ConsumeBoost(4))
                                     {
-
+                                        ground_boost_now = true;
                                     }
                                     else
                                         stop = true;
@@ -4375,7 +4376,7 @@ public class RobotController : Pausable
 
                 targetDirection = Quaternion.Euler(0.0f, transform.eulerAngles.y + stepangle, 0.0f) * Vector3.forward;
 
-                transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, 1.0f), 0.0f);
+                transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation,ground_boost_now ? robotParameter.DashRotateSpeed : robotParameter.RotateSpeed), 0.0f);
 
                 // move the player
                 MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
