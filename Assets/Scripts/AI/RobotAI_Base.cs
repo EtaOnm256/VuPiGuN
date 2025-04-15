@@ -25,9 +25,9 @@ public class RobotAI_Base : InputBase
         else
         {
             if (rel.z > 0.0f)
-                stepMove.x = 1.0f;
-            else
                 stepMove.x = -1.0f;
+            else
+                stepMove.x = 1.0f;
         }
 
         return stepMove;

@@ -410,11 +410,6 @@ public class RobotAI_Medium : RobotAI_Base
                     else if(jumpinfight_reload > 0)
                         jumpinfight_reload--;
 
-                    /*if(robotController.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide) && robotController.lowerBodyState == RobotController.LowerBodyState.JUMPSLASH_GROUND)
-                    {
-                        robotController.
-                    }*/
-
                     if (robotController.Sword == null)
                         allow_infight = false;
                     if (robotController.rightWeapon == null)
@@ -426,7 +421,7 @@ public class RobotAI_Medium : RobotAI_Base
                         if (infight_wait <= 0)
                         {
 
-                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0)
+                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0 && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash))
                             {
                                 ringMenuDir = RobotController.RingMenuDir.Down;
                                 slash = true;

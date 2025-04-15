@@ -470,7 +470,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                         if (infight_wait <= 0)
                         {
 
-                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0)
+                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0 && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash))
                             {
                                 ringMenuDir = RobotController.RingMenuDir.Down;
                                 slash = true;
