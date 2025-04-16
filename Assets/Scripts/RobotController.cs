@@ -2690,6 +2690,16 @@ public class RobotController : Pausable
         {
             if (aiming_factor < 0.1f)
                 virtual_targeting_position = target_chest.transform.position;
+            else
+            {
+                Vector3 a = virtual_targeting_position - GetCenter();
+                Vector3 b = target_chest.transform.position - GetCenter();
+
+                virtual_targeting_position = GetCenter()+Vector3.RotateTowards(a, b, 1.0f * 2 * Mathf.PI / 360.0f,float.MaxValue);
+            }
+            //else
+            // 仮想ターゲットを、位置じゃなくて方向にする？
+            // 自機中心から仮想ターゲットと実際の位置への角度を、RotateTowardする
 
             target_rot_head = Process_Aiming_Head(true);
             target_rot_chest = Process_Aiming_Chest(true);
