@@ -60,6 +60,16 @@ public class Weapon : Pausable
         get { return 100.0f; }
     }
 
+    virtual public float aiming_begin_aiming_factor
+    {
+        get { return 0.1f; }
+    }
+
+    virtual public float aiming_angle_speed
+    {
+        get { return 2.0f; }
+    }
+
     //virtual public bool dualwielded
     //{
     //    get { return false; }

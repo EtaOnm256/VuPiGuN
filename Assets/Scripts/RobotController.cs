@@ -2131,12 +2131,17 @@ public class RobotController : Pausable
         bool head_no_aim_smooth = false;
         bool chest_no_aim_smooth = false;
 
+        float rhandaimwait_thisframe = 0.0f;
         float aiming_factor = 0.0f;
 
         bool chest_pitch_aim = false;
 
         bool rightWeapon_trigger_thisframe = false;
         bool shoulderWeapon_trigger_thisframe = false;
+
+        float aiming_begin_aiming_factor_current = 0.0f;
+        float aiming_angle_speed_current = 0.0f;
+        bool canhold_current = false;
 
         switch (upperBodyState)
         {
@@ -2152,12 +2157,14 @@ public class RobotController : Pausable
 
                         if (dualwielding)
                         {
-                            aiming_factor = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                            aiming_factor = animator.GetCurrentAnimatorStateInfo(2).normalizedTime;
+                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.70f) * 4, 0.0f, 1.0f);
                             _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f * firing_multiplier);
                         }
                         else
                         {
-                            aiming_factor = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(1).normalizedTime - 0.70f) * 4, 0.0f, 1.0f);
+                            aiming_factor = animator.GetCurrentAnimatorStateInfo(1).normalizedTime;
+                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.70f) * 4, 0.0f, 1.0f);
                         }
                     }
                     else
@@ -2166,7 +2173,8 @@ public class RobotController : Pausable
                         _rarmaimwait = 0.0f;
                         _chestaimwait = 0.0f;
                         _barmlayerwait = 0.0f;
-                        aiming_factor = Mathf.Clamp( (animator.GetCurrentAnimatorStateInfo(0).normalizedTime - 0.75f)*4.0f, 0.0f,1.0f);
+                        aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                        rhandaimwait_thisframe = Mathf.Clamp( (aiming_factor - 0.75f)*4.0f, 0.0f,1.0f);
                     }
 
 
@@ -2302,6 +2310,10 @@ public class RobotController : Pausable
                     {
                         AcceptSlash();
                     }
+
+                    aiming_begin_aiming_factor_current = rightWeapon.aiming_begin_aiming_factor;
+                    aiming_angle_speed_current = rightWeapon.aiming_angle_speed;
+                    canhold_current = rightWeapon.canHold;
                 }
                 break;
             case UpperBodyState.SUBFIRE:
@@ -2407,6 +2419,10 @@ public class RobotController : Pausable
                     AcceptSnipeShoot();
 
                     chest_no_aim_smooth = true;
+
+                    aiming_begin_aiming_factor_current = shoulderWeapon.aiming_begin_aiming_factor;
+                    aiming_angle_speed_current = shoulderWeapon.aiming_angle_speed;
+                    canhold_current = shoulderWeapon.canHold;
                 }
                 break;
             case UpperBodyState.HEAVYFIRE:
@@ -2441,14 +2457,19 @@ public class RobotController : Pausable
 
 
                         if (upperBodyState == UpperBodyState.ROLLINGHEAVYFIRE)
-                            aiming_factor = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(0).normalizedTime - 0.25f) * 4.0f, 0.0f, 1.0f);
-                        else if(upperBodyState == UpperBodyState.SNIPEHEAVYFIRE)
                         {
-                            aiming_factor = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(0).normalizedTime - 0.33f) * 4.0f, 0.0f, 1.0f);
+                            aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.25f) * 4.0f, 0.0f, 1.0f);
+                        }
+                        else if (upperBodyState == UpperBodyState.SNIPEHEAVYFIRE)
+                        {
+                            aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.33f) * 4.0f, 0.0f, 1.0f);
                         }
                         else
                         {
-                            aiming_factor = Mathf.Clamp((animator.GetCurrentAnimatorStateInfo(2).normalizedTime - 0.0f) * 4, 0.0f, 1.0f);
+                            aiming_factor = animator.GetCurrentAnimatorStateInfo(2).normalizedTime;
+                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.0f) * 4, 0.0f, 1.0f);
                         }
                     }
                     else
@@ -2503,7 +2524,7 @@ public class RobotController : Pausable
                             }
                         }
 
-                        aiming_factor = 1.0f;
+                        aiming_factor = rhandaimwait_thisframe = 1.0f;
 
                     }
 
@@ -2549,6 +2570,10 @@ public class RobotController : Pausable
 
                     if (!AcceptDashSlash())
                         AcceptJumpSlash();
+
+                    aiming_begin_aiming_factor_current = rightWeapon.aiming_begin_aiming_factor;
+                    aiming_angle_speed_current = rightWeapon.aiming_angle_speed;
+                    canhold_current = rightWeapon.canHold;
                 }
                 break;
             case UpperBodyState.STAND:
@@ -2688,14 +2713,14 @@ public class RobotController : Pausable
 
         if (target_chest != null)
         {
-            if (aiming_factor < 0.1f)
+            if (aiming_factor < aiming_begin_aiming_factor_current)
                 virtual_targeting_position = target_chest.transform.position;
-            else
+            else if(!fire_done || canhold_current)
             {
                 Vector3 a = virtual_targeting_position - GetCenter();
                 Vector3 b = target_chest.transform.position - GetCenter();
 
-                virtual_targeting_position = GetCenter()+Vector3.RotateTowards(a, b, 1.0f * 2 * Mathf.PI / 360.0f,float.MaxValue);
+                virtual_targeting_position = GetCenter()+Vector3.RotateTowards(a, b, aiming_angle_speed_current * 2 * Mathf.PI / 360.0f,float.MaxValue);
             }
             //else
             // 仮想ターゲットを、位置じゃなくて方向にする？
@@ -2751,7 +2776,7 @@ public class RobotController : Pausable
             
         AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
 
-        rhandmultiAimConstraint.weight = aiming_factor;
+        rhandmultiAimConstraint.weight = rhandaimwait_thisframe;
 
         overrideTransform.weight = _rarmaimwait;
 

@@ -64,6 +64,10 @@ public class HandCannon : Weapon
         }
     }
 
+    override public float aiming_angle_speed
+    {
+        get { return 1.0f; }
+    }
     protected override void OnAwake()
     {
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
