@@ -3995,9 +3995,12 @@ public class RobotController : Pausable
                         if (lowerBodyState == LowerBodyState.DashSlash && Sword.dashslash_cutthrough)
                             boosting = true;
 
+                        bool air_to_ground_chain = lowerBodyState == LowerBodyState.AirSlash && Grounded;
+
                         //if (Sword.hitHistoryRCCount == 0)
                         {
-                            if (slash_dispatch && ringMenuDir == RingMenuDir.Center && slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1)
+                            if (slash_dispatch && ringMenuDir == RingMenuDir.Center
+                                && (slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 || air_to_ground_chain))
                             {
                                 combo_reserved = true;
                                 comboType = ComboType.SLASH;
@@ -4032,8 +4035,17 @@ public class RobotController : Pausable
                                 {
                                     if (comboType == ComboType.SLASH)
                                     {
-                                        lowerBodyState = LowerBodyState.AirSlash;
-                                        upperBodyState = UpperBodyState.AirSlash;
+                                        if (air_to_ground_chain)
+                                        {
+                                            lowerBodyState = LowerBodyState.QuickSlash;
+                                            upperBodyState = UpperBodyState.QuickSlash;
+                                            slash_count = 0;
+                                        }
+                                        else
+                                        {
+                                            lowerBodyState = LowerBodyState.AirSlash;
+                                            upperBodyState = UpperBodyState.AirSlash;
+                                        }
                                         event_slash = false;
                                         event_acceptnextslash = false;
                                         combo_reserved = false;
@@ -4042,7 +4054,7 @@ public class RobotController : Pausable
                                         Sword.damage = 100;
                                         Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
-                                        _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[slash_count], 0.0f, 0);
+                                        _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[lowerBodyState]._animID[slash_count], 0.0f, 0);
                                         audioSource.PlayOneShot(audioClip_Swing);
                                     }
                                     else
