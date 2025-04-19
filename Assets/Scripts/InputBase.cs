@@ -34,4 +34,10 @@ public class InputBase : Pausable
     {
         
     }
+
+    // AI—p
+    public virtual void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType knockBackType, RobotController dealer)
+    {
+
+    }
 }

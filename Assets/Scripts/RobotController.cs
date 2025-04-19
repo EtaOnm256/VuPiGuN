@@ -630,6 +630,8 @@ public class RobotController : Pausable
         if (dead)
             return;
 
+        _input.OnTakeDamage(pos, dir, damage, knockBackType, dealer);
+
         HP = Math.Max(0, HP - damage);
 
         if (is_player || (dealer && dealer.is_player))
@@ -1153,111 +1155,84 @@ public class RobotController : Pausable
                 if (team == this.team)
                     continue;
 
-                if (is_player)
+                bool blocked = false;
+
+                if (lockonState == LockonState.FREE)
                 {
-                    bool blocked = false;
-
-                    if (lockonState == LockonState.FREE)
+                    foreach (var robot in team.robotControllers)
                     {
+                        Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
+                        // Vector3 startingPoint = transform.position;
 
+                        Ray ray = new Ray(GetCenter(), direction);
+                        float shift = Vector3.Cross(ray.direction, robot.GetCenter() - ray.origin).magnitude;
 
-                        foreach (var robot in team.robotControllers)
+                        float dist = Vector3.Dot(ray.direction, robot.GetCenter() - ray.origin);
+
+                        float angle = Vector3.Angle(ray.direction, robot.GetCenter() - ray.origin);
+
+                        if (dist > 0.0f)
                         {
-                            Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
-                            // Vector3 startingPoint = transform.position;
-
-                            Ray ray = new Ray(GetCenter(), direction);
-                            float shift = Vector3.Cross(ray.direction, robot.GetCenter() - ray.origin).magnitude;
-
-                            float dist = Vector3.Dot(ray.direction, robot.GetCenter() - ray.origin);
-
-                            float angle = Vector3.Angle(ray.direction, robot.GetCenter() - ray.origin);
-
-                            if (dist > 0.0f)
+                            if (blocked)
                             {
-                                if (blocked)
+                                if (shift < 2.0f)
                                 {
-                                    if (shift < 2.0f)
+                                    if (dist < mindist)
                                     {
-                                        if (dist < mindist)
-                                        {
-                                            mindist = dist;
-                                            nearest_robot = robot;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (shift < 2.0f)
-                                    {
-                                        blocked = true;
                                         mindist = dist;
                                         nearest_robot = robot;
                                     }
-                                    else
+                                }
+                            }
+                            else
+                            {
+                                if (shift < 2.0f)
+                                {
+                                    blocked = true;
+                                    mindist = dist;
+                                    nearest_robot = robot;
+                                }
+                                else
+                                {
+                                    if (angle < minangle)
                                     {
-                                        if (angle < minangle)
-                                        {
-                                            minangle = angle;
-                                            nearest_robot = robot;
-                                        }
+                                        minangle = angle;
+                                        nearest_robot = robot;
                                     }
                                 }
                             }
-
-                        }
-                    }
-                    else
-                    {
-                        if (Target_Robot)
-                        {
-
-                            nearest_robot = Target_Robot;
-
-                            Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
-                            Vector3 startingPoint = transform.position;
-
-                            Ray ray = new Ray(GetCenter(), direction);
-                            float shift = Vector3.Cross(ray.direction, Target_Robot.GetCenter() - ray.origin).magnitude;
-
-                            float dot = Vector3.Dot(ray.direction, Target_Robot.GetCenter() - ray.origin);
-
-                            mindist = dot;
-                            blocked = true;
                         }
 
                     }
-                    if (blocked)
-                    {
-                        uIController_Overlay.distance = mindist;
-
-                    }
-                    else
-                        uIController_Overlay.distance = 1000.0f;
-
                 }
                 else
                 {
-                    if (lockonState == LockonState.FREE)
+                    if (Target_Robot)
                     {
 
-                        foreach (var robot in team.robotControllers)
-                        {
-                            float dist = (GetCenter() - robot.GetCenter()).sqrMagnitude;
+                        nearest_robot = Target_Robot;
 
-                            if (dist < mindist)
-                            {
-                                mindist = dist;
-                                nearest_robot = robot;
-                            }
-                        }
+                        Vector3 direction = GetCurrentAimQuaternion() * Vector3.forward;
+                        Vector3 startingPoint = transform.position;
+
+                        Ray ray = new Ray(GetCenter(), direction);
+                        float shift = Vector3.Cross(ray.direction, Target_Robot.GetCenter() - ray.origin).magnitude;
+
+                        float dot = Vector3.Dot(ray.direction, Target_Robot.GetCenter() - ray.origin);
+
+                        mindist = dot;
+                        blocked = true;
                     }
-                    else
-                    {
-                        if (Target_Robot)
-                            nearest_robot = Target_Robot;
-                    }
+
                 }
+                if (blocked)
+                {
+                    uIController_Overlay.distance = mindist;
+
+                }
+                else
+                    uIController_Overlay.distance = 1000.0f;
+
             }
 
             if (nearest_robot == null)

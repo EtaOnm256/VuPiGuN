@@ -32,4 +32,42 @@ public class RobotAI_Base : InputBase
 
         return stepMove;
     }
+
+    protected RobotController current_target = null;
+
+    protected void DetermineTarget()
+    {
+        if (current_target == null || !current_target)
+        {
+            TargetNearest();
+        }
+    }
+    public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType knockBackType, RobotController dealer)
+    {
+        if (dealer != null && dealer)
+            current_target = dealer;
+    }
+
+    protected void TargetNearest()
+    {
+        float mindist = float.MaxValue;
+
+        foreach (var team in WorldManager.current_instance.teams)
+        {
+            if (team == robotController.team)
+                continue;
+
+            foreach (var robot in team.robotControllers)
+            {
+                float dist = (robotController.GetCenter() - robot.GetCenter()).magnitude;
+
+                if (dist < mindist)
+                {
+                    mindist = dist;
+                    current_target = robot;
+                }
+            }
+
+        }
+    }
 }

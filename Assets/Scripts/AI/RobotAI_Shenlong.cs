@@ -59,42 +59,27 @@ public class RobotAI_Shenlong : RobotAI_Base
         //return;
 
         float mindist = float.MaxValue;
-        
-        RobotController nearest_robot = null;
 
-        foreach (var team in WorldManager.current_instance.teams)
-        {
-            if (team == robotController.team)
-                continue;
+        DetermineTarget();
 
-            foreach (var robot in team.robotControllers)
-            {
-                float dist = (robotController.GetCenter() - robot.GetCenter()).magnitude;
-
-                if (dist < mindist)
-                {
-                    mindist = dist;
-                    nearest_robot = robot;
-                }
-            }
-
-        }
+        if (current_target != null && current_target)
+            mindist = (current_target.GetCenter() - robotController.GetCenter()).magnitude;
 
         ringMenuDir = RobotController.RingMenuDir.Center;
 
-        if (nearest_robot == null)
+        if (current_target == null)
         {
            
         }
         else
         {
 
-            Vector3 cameraAxis = robotController.GetTargetQuaternionForView(nearest_robot).eulerAngles;
+            Vector3 cameraAxis = robotController.GetTargetQuaternionForView(current_target).eulerAngles;
 
             robotController._cinemachineTargetYaw = cameraAxis.y;
             robotController._cinemachineTargetPitch = cameraAxis.x;
 
-            Quaternion targetQ = Quaternion.LookRotation(nearest_robot.GetCenter() - robotController.GetCenter(), Vector3.up);
+            Quaternion targetQ = Quaternion.LookRotation(current_target.GetCenter() - robotController.GetCenter(), Vector3.up);
 
             fire = false;
             sprint = false;
@@ -170,7 +155,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                     RaycastHit floorhit;
 
                     bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, float.MaxValue, 1 << 3);
-                    float target_angle = Vector3.Angle(nearest_robot.Chest.transform.position - transform.position, transform.forward);
+                    float target_angle = Vector3.Angle(current_target.Chest.transform.position - transform.position, transform.forward);
 
                     jump = false;
 
@@ -338,7 +323,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                                         //}
                                     }
 
-                                    if (nearest_robot.Grounded && mindist < 20.0f && robotController.boost >= robotController.robotParameter.Boost_Max /2)
+                                    if (current_target.Grounded && mindist < 20.0f && robotController.boost >= robotController.robotParameter.Boost_Max /2)
                                         allow_infight = true;
 
                                     if (jumpinfight_reload <= 0 && robotController.boost >= robotController.robotParameter.Boost_Max)
