@@ -80,12 +80,12 @@ public class IntermissionButton : MonoBehaviour
     {
         new ShopItemParts{tier=1,name = "バーティカルバーニア",description="ステップ中に方向転換できるようになる。また、空中ダッシュ前の旋回時間がなくなる",price=1000,itemFlag=RobotController.ItemFlag.VerticalVernier },
         new ShopItemParts{tier=1,name = "クイックイグナイター",description="ステップと空中ダッシュの初速が速くなる。",price=1000,itemFlag=RobotController.ItemFlag.QuickIgniter },
-        new ShopItemParts{tier=1,name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2000,itemFlag=RobotController.ItemFlag.Hovercraft },
+        new ShopItemParts{tier=1,name = "グランドブースト",description="ステップ中、ブーストボタンを推し続けるとブーストを消費してダッシュし続ける。",price=2000,itemFlag=RobotController.ItemFlag.GroundBoost },
         new ShopItemParts{tier=1,name = "スナイプショット",description="射撃+下フリックで強力な射撃ができるようになる。全ての攻撃からキャンセル可能。",price=2000,itemFlag=RobotController.ItemFlag.SnipeShoot},
         new ShopItemParts{tier=1,name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },
         new ShopItemParts{tier=1,name = "イアイスラッシュ",description="メイン射撃から格闘にキャンセルできるようになる。空中にいる相手には必ず空中格闘が発動するようになる。",price=1500,itemFlag=RobotController.ItemFlag.IaiSlash },
         new ShopItemParts{tier=1,name = "クイックドロー",description="メイン射撃の発射が早くなる。また、格闘からメイン射撃入力で追撃できるようになる。",price=1500,itemFlag=RobotController.ItemFlag.QuickDraw },
-        new ShopItemParts{tier=2,name = "グランドブースト",description="ステップ中、ブーストボタンを推し続けるとブーストを消費してダッシュし続ける。",price=3000,itemFlag=RobotController.ItemFlag.GroundBoost },
+        new ShopItemParts{tier=2,name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2500,itemFlag=RobotController.ItemFlag.Hovercraft },
         new ShopItemParts{tier=2,name = "ランニングテイクオフ",description="ステップからジャンプすると素早く離陸できる。",price=3000,itemFlag=RobotController.ItemFlag.RunningTakeOff },
         new ShopItemParts{tier=2,name = "フライトユニット",description="空中でもブーストが回復するようになる。",price=4000,itemFlag=RobotController.ItemFlag.FlightUnit },
         new ShopItemParts{tier=2,name = "ローリングショット",description="射撃+横フリックで回転撃ちができるようになる。射撃からキャンセル可能。",price=4500,itemFlag=RobotController.ItemFlag.RollingShoot },
@@ -107,19 +107,20 @@ public class IntermissionButton : MonoBehaviour
 
     bool finished = false;
 
-    public bool LotteryItem<T>(T[] pool,List<T> chosen, int maxTier, int count,List<T> inventry) where T :  ShopItem
+    public void LotteryItem_OneGroup<T>(T[] pool,List<T> chosen, int Tier, int count,List<T> inventry) where T :  ShopItem
     {
-        
+        //if (count <= 0)
+        //    return false;
 
         //var player_alllist = new List<ShopItemWeapon>();
 
-        for (int tier = maxTier; tier > 0; tier--)
+        //for (int tier = Tier; tier > 0; tier--)
         {
             List<T> remainItem = new List<T>();
 
             foreach (T item in pool)
             {
-                if (item.tier != tier)
+                if (item.tier != Tier)
                     continue;
 
                 //if ((MovementBase.itemString[item].exclude_class & 1 << SquadManager.player_class_index) != 0)
@@ -174,7 +175,7 @@ public class IntermissionButton : MonoBehaviour
             }
         }
 
-        return chosen.Count > 0;
+        //return chosen.Count > 0;
     }
 
     public void AddItemToShopPanel<T>(GameObject containerPanel, T item) where T: ShopItem
@@ -378,9 +379,16 @@ public class IntermissionButton : MonoBehaviour
         else
         {
             gameState.shopWeapons.Clear();
-            LotteryItem<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, (gameState.stage + 1) / 2, 2, gameState.inventryWeapons);
             gameState.shopParts.Clear();
-            LotteryItem<ShopItemParts>(shopItemParts, gameState.shopParts, (gameState.stage + 1) / 2, 2, gameState.inventryParts);
+            for (int tier = 3; tier > 0; tier--)
+            {
+                int count_ThisTier = System.Math.Max(0, 3-( (tier-1) * 3)+(gameState.stage-1));
+
+                LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier, gameState.inventryWeapons);
+                LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier, gameState.inventryParts);
+            }
+            
+            
         }
 
         DrawShop();
