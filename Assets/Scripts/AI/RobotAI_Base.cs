@@ -44,7 +44,7 @@ public class RobotAI_Base : InputBase
     }
     public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType knockBackType, RobotController dealer)
     {
-        if (dealer != null && dealer)
+        if (dealer != null && dealer && dealer.team != robotController.team)
             current_target = dealer;
     }
 

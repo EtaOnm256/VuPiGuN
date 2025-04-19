@@ -4012,8 +4012,36 @@ public class RobotController : Pausable
                                     {
                                         if (air_to_ground_chain)
                                         {
-                                            lowerBodyState = LowerBodyState.QuickSlash;
-                                            upperBodyState = UpperBodyState.QuickSlash;
+                                            bool lowerslash = false;
+
+                                            if (target_chest == null)
+                                            {
+                                                
+                                            }
+                                            else
+                                            {
+                                                if (Target_Robot.lowerBodyState == LowerBodyState.DOWN || Target_Robot.lowerBodyState == LowerBodyState.GETUP)
+                                                {
+                                                    lowerslash = true;
+                                                }
+
+                                                if (target_chest.transform.lossyScale.y <= Chest.transform.lossyScale.y * 0.501
+                                                    && target_chest.transform.position.y < Chest.transform.position.y)
+                                                {
+                                                    lowerslash = true;
+                                                }
+                                            }
+
+                                            if(lowerslash)
+                                            {
+                                                lowerBodyState = LowerBodyState.LowerSlash;
+                                                upperBodyState = UpperBodyState.LowerSlash;
+                                            }
+                                            else
+                                            {
+                                                lowerBodyState = LowerBodyState.QuickSlash;
+                                                upperBodyState = UpperBodyState.QuickSlash;
+                                            }
                                             slash_count = 0;
                                         }
                                         else
@@ -4972,6 +5000,11 @@ public class RobotController : Pausable
     private void OnSlashBegin()
     {
         Sword.slashing = true;
+    }
+
+    private void OnDropFromAir()
+    {
+        _verticalVelocity = -robotParameter.TerminalVelocity;
     }
 
     private void OnSwingBegin()

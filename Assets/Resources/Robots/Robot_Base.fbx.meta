@@ -238,7 +238,7 @@ ModelImporter:
       takeName: Armature|AirSlash_0
       internalID: 0
       firstFrame: 0
-      lastFrame: 210
+      lastFrame: 270
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -258,14 +258,21 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.3214393
+      - time: 0.2589393
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.7399339
+      - time: 0.30404794
+        functionName: OnDropFromAir
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.5113625
         functionName: OnAcceptNextSlash
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -1452,6 +1459,13 @@ ModelImporter:
       events:
       - time: 0.2235023
         functionName: OnSlashBegin
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3196203
+        functionName: OnDropFromAir
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

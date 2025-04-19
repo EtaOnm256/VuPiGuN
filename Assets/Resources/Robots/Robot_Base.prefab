@@ -3064,6 +3064,9 @@ MonoBehaviour:
     StepSpeed: 30
     AirDashSpeed: 30
     StepLimit: 30
+    GroundSpeed: 1
+    StepGroundSpeed: 1
+    JumpSpeed: 1
     RotateSpeed: 4
     DashRotateSpeed: 1
     AirDashRotateSpeed: 10
