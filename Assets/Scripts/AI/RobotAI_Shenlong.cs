@@ -274,8 +274,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                                     {
                                         if (mindist > lock_range / 2)
                                         {
-                                            move.y = 1.0f;
-                                            move.x = 0.0f;
+                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) != 0 ? 45.0f * 2 * Mathf.PI / 360.0f : -45.0f * 2 * Mathf.PI / 360.0f);
                                         }
                                         else
                                         {
@@ -299,22 +298,13 @@ public class RobotAI_Shenlong : RobotAI_Base
                                     }
                                     else
                                     {
-                                        if (mindist > lock_range)
+                                        if (moveDirChangeTimer <= 0)
                                         {
-                                            move.y = 1.0f;
-                                            move.x = 0.0f;
-                                            //moveDirChangeTimer = 60;
-                                        }
-                                        else
-                                        {
-                                            if (moveDirChangeTimer <= 0)
-                                            {
-                                                //move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                            //move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
 
-                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0,2) != 0 ? 45.0f * 2 * Mathf.PI / 360.0f : -45.0f * 2 * Mathf.PI / 360.0f);
+                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0,2) != 0 ? 45.0f * 2 * Mathf.PI / 360.0f : -45.0f * 2 * Mathf.PI / 360.0f);
 
-                                                moveDirChangeTimer = 1;
-                                            }
+                                            moveDirChangeTimer = 1;
                                         }
 
                                         //if (robotController.boost >= robotController.Boost_Max)

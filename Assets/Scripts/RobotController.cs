@@ -3161,12 +3161,13 @@ public class RobotController : Pausable
 
                         if (lowerBodyState == LowerBodyState.ROLLINGFIRE || lowerBodyState == LowerBodyState.AIRROLLINGFIRE
                             || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE
-                            //|| lowerBodyState == LowerBodyState.SNIPEFIRE || lowerBodyState == LowerBodyState.AIRSNIPEFIRE
-                            //|| lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE
                             )
                         {
                             _verticalVelocity = 0.0f;
-                            _speed = robotParameter.StepSpeed;
+                            if(robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
+                                _speed = robotParameter.StepSpeed*1.5f;
+                            else
+                                _speed = robotParameter.StepSpeed;
                         }
                         else
                         {
@@ -5499,6 +5500,11 @@ public class RobotController : Pausable
                         //animator.Play("HeavyFire", 2, 0.0f);
                         intend_animator_speed = 1.0f;
 
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
+                            animator.SetFloat("FiringSpeed", 1.5f);
+                        else
+                            animator.SetFloat("FiringSpeed", 1.0f);
+
                         StartSeeking();
                         event_heavyfired = false;
                         rightWeapon.ResetCycle();
@@ -5549,6 +5555,11 @@ public class RobotController : Pausable
                         //_animator.CrossFadeInFixedTime(_animIDRollingFire_Left, 0.25f, 0);
                         intend_animator_speed = 1.0f;
 
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
+                            animator.SetFloat("FiringSpeed", 1.5f);
+                        else
+                            animator.SetFloat("FiringSpeed", 1.0f);
+
                         StartSeeking();
                         event_fired = false;
                         fire_done = false;
@@ -5594,6 +5605,11 @@ public class RobotController : Pausable
                         //animator.Play("HeavyFire", 2, 0.0f);
                         intend_animator_speed = 1.0f;
 
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
+                            animator.SetFloat("FiringSpeed", 1.5f);
+                        else
+                            animator.SetFloat("FiringSpeed", 1.0f);
+
                         StartSeeking();
                         event_heavyfired = false;
                         rightWeapon.ResetCycle();
@@ -5626,6 +5642,11 @@ public class RobotController : Pausable
            
                         //_animator.CrossFadeInFixedTime(_animIDRollingFire_Left, 0.25f, 0);
                         intend_animator_speed = 1.0f;
+
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
+                            animator.SetFloat("FiringSpeed", 1.5f);
+                        else
+                            animator.SetFloat("FiringSpeed", 1.0f);
 
                         StartSeeking();
                         event_fired = false;
