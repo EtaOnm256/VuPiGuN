@@ -87,7 +87,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemParts{tier=2,name = "グランドブースト",description="ステップ中、ブーストボタンを推し続けるとブーストを消費してダッシュし続ける。",price=2000,itemFlag=RobotController.ItemFlag.GroundBoost },
         new ShopItemParts{tier=2,name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2500,itemFlag=RobotController.ItemFlag.Hovercraft },
         new ShopItemParts{tier=2,name = "ランニングテイクオフ",description="ステップからジャンプすると素早く離陸できる。",price=3000,itemFlag=RobotController.ItemFlag.RunningTakeOff },
-        new ShopItemParts{tier=2,name = "フライトユニット",description="空中でもブーストが回復するようになる。",price=4000,itemFlag=RobotController.ItemFlag.FlightUnit },
+        new ShopItemParts{tier=2,name = "フライトユニット",description="空中でもブーストが回復するようになり、滞空性能も向上する。",price=4000,itemFlag=RobotController.ItemFlag.FlightUnit },
         new ShopItemParts{tier=2,name = "ローリングショット",description="射撃+横フリックで回転撃ちができるようになる。射撃からキャンセル可能。",price=4500,itemFlag=RobotController.ItemFlag.RollingShoot },
         new ShopItemParts{tier=2,name = "ダッシュスラッシュ",description="格闘+上フリックでダッシュ斬りができるようになる。射撃または格闘からキャンセル可能。",price=4000,itemFlag=RobotController.ItemFlag.DashSlash },
         new ShopItemParts{tier=2,name = "リープストライク",description="格闘+下フリックでジャンプ斬りができるようになる。射撃または格闘からキャンセル可能。",price=5000,itemFlag=RobotController.ItemFlag.JumpSlash},

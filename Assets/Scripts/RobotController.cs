@@ -943,9 +943,14 @@ public class RobotController : Pausable
         if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
             robotParameter.Boost_Max = robotParameter.Boost_Max*2;
 
-       
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
+        {
+            robotParameter.AirMoveSpeed = robotParameter.AirMoveSpeed * 2;
+            robotParameter.AscendingAccelerate = robotParameter.AscendingAccelerate * 1.5f;
+        }
 
-        _hasAnimator = TryGetComponent(out _animator);
+
+            _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
 
         _animator.SetFloat("JumpSpeed", robotParameter.JumpSpeed);
