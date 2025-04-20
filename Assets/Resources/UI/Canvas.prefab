@@ -1315,7 +1315,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 43.999992}
+  m_AnchoredPosition: {x: 0, y: -3}
   m_SizeDelta: {x: 980, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6764203112473059835
@@ -1763,7 +1763,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6B8B\u6226\u529B\n\u4E0E\u30C0\u30E1\u30FC\u30B8\n\u7372\u5F97\u8CC7\u91D1\n\n\u5408\u8A08\u8CC7\u91D1"
+  m_text: "\u4F5C\u6226\u7D50\u679C\n\u6B8B\u6226\u529B\n\u4E0E\u30C0\u30E1\u30FC\u30B8\n\u7372\u5F97\u8CC7\u91D1\n\n\u5408\u8A08\u8CC7\u91D1"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 66e20c8c97e56b646b9e5b3f77cbc265, type: 2}
   m_sharedMaterial: {fileID: -6216741300309634797, guid: 66e20c8c97e56b646b9e5b3f77cbc265, type: 2}
@@ -2298,6 +2298,7 @@ MonoBehaviour:
   victory: 0
   power: 0
   dealeddamage: 0
+  result_gold: 0
   power_gold: 0
   dealeddamage_gold: 0
   currentgold: 0
@@ -2367,7 +2368,16 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "1000\n1200\n\n \n "
+  m_text: '
+
+    1000
+
+    1200
+
+
+
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 66e20c8c97e56b646b9e5b3f77cbc265, type: 2}
   m_sharedMaterial: {fileID: -6216741300309634797, guid: 66e20c8c97e56b646b9e5b3f77cbc265, type: 2}
@@ -2502,7 +2512,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "$1000\n$1200\n$2200\n  \n$5200"
+  m_text: "$1000\n$1000\n$1200\n$2200\n  \n$5200"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 66e20c8c97e56b646b9e5b3f77cbc265, type: 2}
   m_sharedMaterial: {fileID: -6216741300309634797, guid: 66e20c8c97e56b646b9e5b3f77cbc265, type: 2}
@@ -2682,7 +2692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 44}
+  m_AnchoredPosition: {x: 0, y: -3}
   m_SizeDelta: {x: 985, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5846932082952817142

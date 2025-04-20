@@ -21,6 +21,7 @@ public class ResultCanvas : MonoBehaviour
     public int power;
     public int dealeddamage;
 
+    public int result_gold;
     public int power_gold;
     public int dealeddamage_gold;
 
@@ -36,8 +37,8 @@ public class ResultCanvas : MonoBehaviour
 
     private void OnEnable()
     {
-        summaryValue.text = power.ToString()+"\n"+ dealeddamage.ToString()+ "\n \n \n ";
-        summaryGold.text = "$"+power_gold.ToString() + "\n" + "$" + dealeddamage_gold.ToString() + "\n" + "$" + (power_gold+ dealeddamage_gold).ToString()+  "\n" + "\n " + "$" +currentgold;
+        summaryValue.text = "\n"+power.ToString()+"\n"+ dealeddamage.ToString()+ "\n \n \n ";
+        summaryGold.text = "$" + result_gold.ToString() + "\n"+"$" +power_gold.ToString() + "\n" + "$" + dealeddamage_gold.ToString() + "\n" + "$" + (power_gold+ dealeddamage_gold).ToString()+  "\n" + "\n " + "$" +currentgold;
 
         if (victory)
         {
