@@ -60,7 +60,7 @@ public class RobotAI_Leopard : RobotAI_Base
 
         float mindist = float.MaxValue;
 
-        DetermineTarget();
+        TargetNearest();
 
         if (current_target != null && current_target)
             mindist = (current_target.GetCenter() - robotController.GetCenter()).magnitude;

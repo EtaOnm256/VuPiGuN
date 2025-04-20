@@ -38,7 +38,7 @@ public class ResultCanvas : MonoBehaviour
     private void OnEnable()
     {
         summaryValue.text = "\n"+power.ToString()+"\n"+ dealeddamage.ToString()+ "\n \n \n ";
-        summaryGold.text = "$" + result_gold.ToString() + "\n"+"$" +power_gold.ToString() + "\n" + "$" + dealeddamage_gold.ToString() + "\n" + "$" + (power_gold+ dealeddamage_gold).ToString()+  "\n" + "\n " + "$" +currentgold;
+        summaryGold.text = "$" + result_gold.ToString() + "\n"+"$" +power_gold.ToString() + "\n" + "$" + dealeddamage_gold.ToString() + "\n" + "$" + (result_gold+power_gold+ dealeddamage_gold).ToString()+  "\n" + "\n " + "$" +currentgold;
 
         if (victory)
         {
