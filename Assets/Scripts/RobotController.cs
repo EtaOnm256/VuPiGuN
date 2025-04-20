@@ -2535,7 +2535,7 @@ public class RobotController : Pausable
                     if (upperBodyState == UpperBodyState.HEAVYFIRE && !rollingfire_followthrough)
                         AcceptRollingShoot();
 
-                    if (upperBodyState != UpperBodyState.SNIPEHEAVYFIRE && !rollingfire_followthrough)
+                    if (upperBodyState != UpperBodyState.SNIPEHEAVYFIRE)
                         AcceptSnipeShoot();
 
                     if (robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && upperBodyState == UpperBodyState.HEAVYFIRE && !quickdraw_followthrough && !rollingfire_followthrough)
