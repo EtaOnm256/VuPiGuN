@@ -598,7 +598,7 @@ public class RobotController : Pausable
         NextDrive = 1 << 0,
         ExtremeSlide = 1 << 1,
         GroundBoost = 1 << 2,
-        VerticalVernier = 1 << 3,
+        DropAssault = 1 << 3,
         QuickIgniter = 1 << 4,
         Hovercraft = 1 << 5,
         FlightUnit = 1 << 6,
@@ -3469,7 +3469,7 @@ public class RobotController : Pausable
                         {
                             _targetRotation = transform.eulerAngles.y;
                         }*/
-                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.itemFlag.HasFlag(ItemFlag.VerticalVernier) ? 360.0f : robotParameter.AirDashRotateSpeed);
+                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive) ? 360.0f : robotParameter.AirDashRotateSpeed);
 
                         // rotate to face input direction relative to camera position
                         transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -3552,7 +3552,7 @@ public class RobotController : Pausable
                                 if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                                     AcceptStep(true);
 
-                                if (robotParameter.itemFlag.HasFlag(ItemFlag.VerticalVernier))
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.GroundBoost))
                                 {
                                     // normalise input direction
                                     Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
@@ -4763,14 +4763,18 @@ public class RobotController : Pausable
                     }
                 }
 
-                if (lowerBodyState == LowerBodyState.AIRSUBFIRE
-                    || lowerBodyState == LowerBodyState.AIRHEAVYFIRE
-                    || lowerBodyState == LowerBodyState.AIRSNIPEFIRE
-                    || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE
-                    || lowerBodyState == LowerBodyState.SUBFIRE
-                    || lowerBodyState == LowerBodyState.HEAVYFIRE) // 地形が動いたり、押し出された落ちたりしたらこっちもありえるかも
+                if (
+                    robotParameter.itemFlag.HasFlag(ItemFlag.DropAssault)&&
+                    (upperBodyState == UpperBodyState.FIRE
+                    || upperBodyState == UpperBodyState.SUBFIRE
+                    || upperBodyState == UpperBodyState.HEAVYFIRE)
+                    && (newState == LowerBodyState.GROUND || newState == LowerBodyState.GROUND_FIRE || newState == LowerBodyState.GROUND_SUBFIRE || newState == LowerBodyState.GROUND_HEAVYFIRE)
+                    ) 
                 {
-                    //upperBodyState = UpperBodyState.STAND;
+                    if (fire_done)
+                    {
+                        fire_followthrough = 0;
+                    }
                 }
 
                 break;

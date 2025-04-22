@@ -78,20 +78,20 @@ public class IntermissionButton : MonoBehaviour
 
     ShopItemParts[] shopItemParts =
     {
-        new ShopItemParts{tier=1,name = "バーティカルバーニア",description="ステップ中に方向転換できるようになる。また、空中ダッシュ前の旋回時間がなくなる",price=1000,itemFlag=RobotController.ItemFlag.VerticalVernier },
         new ShopItemParts{tier=1,name = "クイックイグナイター",description="ステップと空中ダッシュの初速が速くなる。",price=1500,itemFlag=RobotController.ItemFlag.QuickIgniter },
         new ShopItemParts{tier=1,name = "スナイプショット",description="射撃+下フリックで強力な射撃ができるようになる。全ての攻撃からキャンセル可能。",price=2000,itemFlag=RobotController.ItemFlag.SnipeShoot},
         new ShopItemParts{tier=1,name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },
         new ShopItemParts{tier=1,name = "イアイスラッシュ",description="メイン射撃から格闘にキャンセルできるようになる。空中にいる相手には必ず空中格闘が発動するようになる。",price=1500,itemFlag=RobotController.ItemFlag.IaiSlash },
         new ShopItemParts{tier=1,name = "クイックドロー",description="メイン射撃の発射が早くなる。また、格闘からメイン射撃入力で追撃できるようになる。",price=1500,itemFlag=RobotController.ItemFlag.QuickDraw },
-        new ShopItemParts{tier=2,name = "グランドブースト",description="ステップ中、ブーストボタンを推し続けるとブーストを消費してダッシュし続ける。",price=2000,itemFlag=RobotController.ItemFlag.GroundBoost },
+        new ShopItemParts{tier=1,name = "ドロップアサルト",description="着地時に、射撃硬直が解除される。",price=1000,itemFlag=RobotController.ItemFlag.DropAssault },
+        new ShopItemParts{tier=1,name = "ランニングテイクオフ",description="ステップからジャンプすると素早く離陸できる。",price=1500,itemFlag=RobotController.ItemFlag.RunningTakeOff },
+        new ShopItemParts{tier=2,name = "グランドブースト",description="ステップ中、ブーストボタンを押し続けるとブーストを消費してダッシュし続ける。途中で前後左右を入力すると方向転換できる。",price=3000,itemFlag=RobotController.ItemFlag.GroundBoost },
         new ShopItemParts{tier=2,name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2500,itemFlag=RobotController.ItemFlag.Hovercraft },
-        new ShopItemParts{tier=2,name = "ランニングテイクオフ",description="ステップからジャンプすると素早く離陸できる。",price=3000,itemFlag=RobotController.ItemFlag.RunningTakeOff },
         new ShopItemParts{tier=2,name = "フライトユニット",description="空中でもブーストが回復するようになり、滞空性能も向上する。",price=4000,itemFlag=RobotController.ItemFlag.FlightUnit },
         new ShopItemParts{tier=2,name = "ローリングショット",description="射撃+横フリックで回転撃ちができるようになる。射撃からキャンセル可能。",price=4500,itemFlag=RobotController.ItemFlag.RollingShoot },
         new ShopItemParts{tier=2,name = "ダッシュスラッシュ",description="格闘+上フリックでダッシュ斬りができるようになる。射撃または格闘からキャンセル可能。",price=4000,itemFlag=RobotController.ItemFlag.DashSlash },
         new ShopItemParts{tier=2,name = "リープストライク",description="格闘+下フリックでジャンプ斬りができるようになる。射撃または格闘からキャンセル可能。",price=5000,itemFlag=RobotController.ItemFlag.JumpSlash},
-        new ShopItemParts{tier=3,name = "ネクストドライブ",description="全ての行動を空中ダッシュでキャンセルできるようになる。またブースト容量が2倍になる。",price=9000,itemFlag=RobotController.ItemFlag.NextDrive },
+        new ShopItemParts{tier=3,name = "ネクストドライブ",description="全ての行動を空中ダッシュでキャンセルできるようになり、空中ダッシュ前の旋回時間がなくなる。また、ブースト容量が2倍になる。",price=9000,itemFlag=RobotController.ItemFlag.NextDrive },
         new ShopItemParts{tier=3,name = "エクストリームスライド",description="全ての行動をステップでキャンセルできるようになる。",price=10000,itemFlag=RobotController.ItemFlag.ExtremeSlide },
     };
 
