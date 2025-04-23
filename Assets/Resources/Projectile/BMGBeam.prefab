@@ -157,7 +157,7 @@ MonoBehaviour:
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 20
-  damage: 50
+  damage: 45
   hitEffect_prefab: {fileID: 3835462889935592433, guid: be10f4fbea4a3654bb6b1828f2ef7640, type: 3}
   chargeshot: 0
   homing_strength: 0.75

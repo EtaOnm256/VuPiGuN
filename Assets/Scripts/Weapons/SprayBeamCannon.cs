@@ -17,7 +17,7 @@ public class SprayBeamCannon : Weapon
             return Max_Ammo * Reload_Time;
         }
     }
-    private const int Reload_Time = 300;
+    private const int Reload_Time = 3000;
 
     int _energy = 0;
 
@@ -89,7 +89,7 @@ public class SprayBeamCannon : Weapon
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
-        energy = Mathf.Min(MaxEnergy, energy + 1);
+        energy = Mathf.Min(MaxEnergy, energy + (int)(10 * reloadfactor));
 
         if (energy >= Reload_Time && trigger)
         {

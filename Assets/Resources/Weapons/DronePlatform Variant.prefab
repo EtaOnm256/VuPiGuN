@@ -307,7 +307,7 @@ MonoBehaviour:
   - {fileID: 6758760145043430246}
   - {fileID: 6197102793364036709}
   - {fileID: 5446761544233703275}
-  Reload_Time: 60
+  Reload_Time: 600
   bundle: 1
   firePoints: []
   _fire_followthrough: 15

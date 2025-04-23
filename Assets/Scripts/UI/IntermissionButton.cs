@@ -48,12 +48,12 @@ public class IntermissionButton : MonoBehaviour
     ShopItemWeapon[] shopItemWeapons =
     {
         new ShopItemWeapon{tier=1,name = "バズーカ",description="大口径のロケットランチャー。",price=1500,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
-        new ShopItemWeapon{tier=1,name = "ミサイルポッド",description="固定式のミサイル発射装置。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{tier=1,name = "ミサイルポッド",description="固定式のミサイル発射装置。ボタン押し続けで連射可能。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
         new ShopItemWeapon{tier=1,name = "サブマシンガン",description="小型の機関銃。追加入力で連射可能。",price=1500,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=1,name = "ソリッドライフル",description="コストの安い実弾兵器。",price=1000,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=1,name = "ハンドキャノン",description="手持ち式の榴弾砲。反動が大きい。",price=2000,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=2,name = "ビームライフル",description="火力と取り回しを両立したビーム兵器。",price=5000,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{tier=2,name = "ドローン",description="子機を射出し、敵を攻撃させる。",price=5500,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
+        new ShopItemWeapon{tier=2,name = "ドローン",description="子機を射出し、敵を攻撃させる。ボタン押し続けで追加射出。",price=5500,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
         new ShopItemWeapon{tier=2,name = "スプレービームポッド",description="肩に固定する拡散ビーム砲。",price=4500,prefabname="BeamSprayCannon",type=ShopItemWeapon.Type.Shoulder },
         new ShopItemWeapon{tier=2,name = "スナイパーライフル",description="弾速が速く、長距離射撃に向いた実弾兵器。",price=4000,prefabname="SniperRifle",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=2,name = "クラスターランチャー",description="敵前で散弾をばらまく弾頭を発射する。",price=4500,prefabname="Cluster Launcher" ,type=ShopItemWeapon.Type.Main},
@@ -61,7 +61,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemWeapon{tier=3,name = "ビームマグナム",description="火力を上げたビームライフル。発射後の制動が長い。",price=8500,prefabname="BeamMagnum",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=3,name = "マシンキャノン",description="手持ちの機関砲。追加入力で連射可能。",price=8000,prefabname="MachineCannon",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=3,name = "ビームサブマシンガン",description="小型化を実現したビーム兵器。追加入力で連射可能。",price=8500,prefabname="BeamMachineGun",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{tier=3,name = "アドバンスドドローン",description="運用能力を強化したドローン兵器。",price=9000,prefabname="AdvancedDronePlatform",type=ShopItemWeapon.Type.Back },
+        new ShopItemWeapon{tier=3,name = "アドバンスドドローン",description="運用能力を強化したドローン兵器。ボタン押し続けで追加射出。",price=9000,prefabname="AdvancedDronePlatform",type=ShopItemWeapon.Type.Back },
     };
 
 
@@ -80,7 +80,7 @@ public class IntermissionButton : MonoBehaviour
     {
         new ShopItemParts{tier=1,name = "クイックイグナイター",description="ステップと空中ダッシュの初速が速くなる。",price=1500,itemFlag=RobotController.ItemFlag.QuickIgniter },
         new ShopItemParts{tier=1,name = "スナイプショット",description="射撃+下フリックで強力な射撃ができるようになる。全ての攻撃からキャンセル可能。",price=2000,itemFlag=RobotController.ItemFlag.SnipeShoot},
-        new ShopItemParts{tier=1,name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },
+        new ShopItemParts{tier=1,name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。また、サブ射撃の弾数が早く回復する。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },
         new ShopItemParts{tier=1,name = "イアイスラッシュ",description="メイン射撃から格闘にキャンセルできるようになる。空中にいる相手には必ず空中格闘が発動するようになる。",price=1500,itemFlag=RobotController.ItemFlag.IaiSlash },
         new ShopItemParts{tier=1,name = "クイックドロー",description="メイン射撃の発射が早くなる。また、格闘からメイン射撃入力で追撃できるようになる。",price=1500,itemFlag=RobotController.ItemFlag.QuickDraw },
         new ShopItemParts{tier=1,name = "ドロップアサルト",description="着地時に、射撃硬直が解除される。",price=1000,itemFlag=RobotController.ItemFlag.DropAssault },

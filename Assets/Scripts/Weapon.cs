@@ -150,6 +150,19 @@ public class Weapon : Pausable
         get { return float.MaxValue; }
     }
 
+    private float _reloadfactor;
+    virtual public float reloadfactor
+    {
+        set
+        {
+            _reloadfactor = value;
+        }
+        get
+        {
+            return _reloadfactor;
+        }
+    }
+
     // Start is called before the first frame update
 
     private void Awake()

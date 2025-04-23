@@ -949,8 +949,15 @@ public class RobotController : Pausable
             robotParameter.AscendingAccelerate = robotParameter.AscendingAccelerate * 1.5f;
         }
 
+        if (shoulderWeapon != null)
+        {
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.ChainFire))
+                shoulderWeapon.reloadfactor = 1.5f;
+            else
+                shoulderWeapon.reloadfactor = 1.0f;
+        }
 
-            _hasAnimator = TryGetComponent(out _animator);
+        _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
 
         _animator.SetFloat("JumpSpeed", robotParameter.JumpSpeed);

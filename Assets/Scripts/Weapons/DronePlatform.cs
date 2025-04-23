@@ -22,7 +22,7 @@ public class DronePlatform : Weapon
             return Max_Ammo * Reload_Time;
         }
     }
-    [SerializeField] int Reload_Time = 60;
+    [SerializeField] int Reload_Time = 600;
 
     [SerializeField] int bundle = 1;
 
@@ -121,7 +121,7 @@ public class DronePlatform : Weapon
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
-        energy = Mathf.Min(MaxEnergy, energy + 1);
+        energy = Mathf.Min(MaxEnergy, energy + (int)(10 * reloadfactor));
 
         bool emit_thistime = false;
 
