@@ -48,20 +48,20 @@ public class IntermissionButton : MonoBehaviour
     ShopItemWeapon[] shopItemWeapons =
     {
         new ShopItemWeapon{tier=1,name = "バズーカ",description="大口径のロケットランチャー。",price=1500,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
-        new ShopItemWeapon{tier=1,name = "ミサイルポッド",description="固定式のミサイル発射装置。ボタン押し続けで連射可能。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{tier=1,name = "ミサイルポッド",description="サブ武器。固定式のミサイル発射装置。ボタン押し続けで連射可能。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
         new ShopItemWeapon{tier=1,name = "サブマシンガン",description="小型の機関銃。追加入力で連射可能。",price=1500,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=1,name = "ソリッドライフル",description="コストの安い実弾兵器。",price=1000,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=1,name = "ハンドキャノン",description="手持ち式の榴弾砲。反動が大きい。",price=2000,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=2,name = "ビームライフル",description="火力と取り回しを両立したビーム兵器。",price=5000,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{tier=2,name = "ドローン",description="子機を射出し、敵を攻撃させる。ボタン押し続けで追加射出。",price=5500,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
-        new ShopItemWeapon{tier=2,name = "スプレービームポッド",description="肩に固定する拡散ビーム砲。",price=4500,prefabname="BeamSprayCannon",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{tier=2,name = "ドローン",description="サブ武器。子機を射出し、敵を攻撃させる。ボタン押し続けで追加射出。",price=5500,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
+        new ShopItemWeapon{tier=2,name = "スプレービームポッド",description="サブ武器。肩に固定する拡散ビーム砲。",price=4500,prefabname="BeamSprayCannon",type=ShopItemWeapon.Type.Shoulder },
         new ShopItemWeapon{tier=2,name = "スナイパーライフル",description="弾速が速く、長距離射撃に向いた実弾兵器。",price=4000,prefabname="SniperRifle",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=2,name = "クラスターランチャー",description="敵前で散弾をばらまく弾頭を発射する。",price=4500,prefabname="Cluster Launcher" ,type=ShopItemWeapon.Type.Main},
         new ShopItemWeapon{tier=3,name = "メガビームランチャー",description="大型のビーム砲。",price=9000,prefabname="BeamLauncher",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=3,name = "ビームマグナム",description="火力を上げたビームライフル。発射後の制動が長い。",price=8500,prefabname="BeamMagnum",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=3,name = "マシンキャノン",description="手持ちの機関砲。追加入力で連射可能。",price=8000,prefabname="MachineCannon",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=3,name = "ビームサブマシンガン",description="小型化を実現したビーム兵器。追加入力で連射可能。",price=8500,prefabname="BeamMachineGun",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{tier=3,name = "アドバンスドドローン",description="運用能力を強化したドローン兵器。ボタン押し続けで追加射出。",price=9000,prefabname="AdvancedDronePlatform",type=ShopItemWeapon.Type.Back },
+        new ShopItemWeapon{tier=3,name = "アドバンスドドローン",description="サブ武器。運用能力を強化したドローン兵器。ボタン押し続けで追加射出。",price=9000,prefabname="AdvancedDronePlatform",type=ShopItemWeapon.Type.Back },
     };
 
 
