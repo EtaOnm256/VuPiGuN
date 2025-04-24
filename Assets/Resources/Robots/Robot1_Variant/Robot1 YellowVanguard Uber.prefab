@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 803051568401146564, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: m_Name
-      value: Robot1 YellowVanguard
+      value: Robot1 YellowVanguard Uber
       objectReference: {fileID: 0}
     - target: {fileID: 2622409668980254924, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -95,7 +95,7 @@ PrefabInstance:
     - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
-      objectReference: {fileID: 1241669158410538615, guid: 0700da4283e98704ea40a5d3a48d01da, type: 3}
+      objectReference: {fileID: 1241669158410538615, guid: 253294a87d2f5b4488d9eb7b43c420c8, type: 3}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 307a06308a705b4449af994e8235fa6d, type: 3}

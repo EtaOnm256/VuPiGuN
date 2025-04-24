@@ -19,7 +19,7 @@ public class MissilePod_Weist : Weapon
     }
 
 
-    private const int Reload_Time = 120;
+    private const int Reload_Time = 1200;
 
     int _energy = 0;
 
@@ -93,7 +93,7 @@ public class MissilePod_Weist : Weapon
         if (!this_is_slave)
         {
 
-            energy = Mathf.Min(MaxEnergy, energy + 1);
+            energy = Mathf.Min(MaxEnergy, energy + (int)(10*reloadfactor));
 
             if (trigger && Duration_Time <= 0)
             {

@@ -35,7 +35,7 @@ PrefabInstance:
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
-      objectReference: {fileID: 5400543135848598120, guid: edddf243ba22119469cc2571c045b697, type: 3}
+      objectReference: {fileID: 1241669158410538615, guid: 81b21d2ea3768cf4d8003f118d4f358a, type: 3}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: robotParameter.subweapon_prefab
       value: 
@@ -46,7 +46,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: m_Name
-      value: Robot2 BlueLightning
+      value: Robot2 BlueLightning Uber
       objectReference: {fileID: 0}
     - target: {fileID: 4423220419937112734, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: m_RootOrder

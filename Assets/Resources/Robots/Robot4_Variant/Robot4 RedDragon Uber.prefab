@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6282497543591662696, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: m_Name
-      value: Robot4 RedDragon
+      value: Robot4 RedDragon Uber
       objectReference: {fileID: 0}
     - target: {fileID: 6657510566400872146, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: m_RootOrder
@@ -74,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8788691653540996990, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: robotParameter.itemFlag
-      value: 2066
+      value: 2098
       objectReference: {fileID: 0}
     - target: {fileID: 8788691653540996990, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: robotParameter.lweapon_prefab

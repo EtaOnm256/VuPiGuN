@@ -89,10 +89,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 988c213f3f27c3949a40b89e871c3d5d, type: 2}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
-      propertyPath: _HP
-      value: 650
-      objectReference: {fileID: 0}
-    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: Cost
       value: 300
       objectReference: {fileID: 0}
@@ -107,6 +103,10 @@ PrefabInstance:
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.Cost
       value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: robotParameter.MaxHP
+      value: 900
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.itemFlag

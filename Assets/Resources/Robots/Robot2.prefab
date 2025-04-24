@@ -289,10 +289,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3511325375820423461, guid: 55c6b7768beb24d4982232c06e7d5b4b, type: 3}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
-      propertyPath: _HP
-      value: 400
-      objectReference: {fileID: 0}
-    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: Cost
       value: 275
       objectReference: {fileID: 0}
@@ -314,7 +310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.MaxHP
-      value: 500
+      value: 700
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: thrusters.Array.size

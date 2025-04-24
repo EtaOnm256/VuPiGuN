@@ -375,8 +375,9 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                         move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
-                                         moveDirChangeTimer = 60;
+                                        //move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0,2) == 0 ? 90*2*Mathf.PI / 360.0f: -90 * 2 * Mathf.PI / 360.0f);
+                                        moveDirChangeTimer = 60;
                                     }
                                 }
 
@@ -396,7 +397,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                         if (!robotController.rightWeapon.canHold && robotController.fire_followthrough > 0 && prev_sprint)
                                         {
                                             {
-                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-60 * 2 * Mathf.PI / 360.0f, 60 * 2 * Mathf.PI / 360.0f));
+                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-75 * 2 * Mathf.PI / 360.0f, 75 * 2 * Mathf.PI / 360.0f));
                                                 moveDirChangeTimer = 60;
                                             }
                                             sprint = false;
@@ -407,7 +408,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (target_angle <= 90)
+                                if (target_angle <= 100)
                                     allow_fire = true;
 
                                 if (mindist < 20.0f)
