@@ -9,7 +9,7 @@ public class SMG : Weapon
     [SerializeField] GameObject solidemit_prefab;
 
 
-    private const int Max_Ammo = 30;
+    [SerializeField] int Max_Ammo = 30;
 
     override public int MaxEnergy
     {
