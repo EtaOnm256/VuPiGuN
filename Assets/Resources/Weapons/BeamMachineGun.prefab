@@ -130,7 +130,8 @@ MonoBehaviour:
   bullet_prefab: {fileID: 6571210301752455124, guid: 384efcf7e7429c444914f5216eb936f1, type: 3}
   beam: 1
   solidemit_prefab: {fileID: 8961267772553168207, guid: 3631c492a0c54de4eb89a59227c45da3, type: 3}
-  Reload_Time: 24
+  Max_Ammo: 12
+  Reload_Time: 30
   firePoint: {fileID: 8217520916323313477}
   MaxMagazine: 3
   fire_interval: 8

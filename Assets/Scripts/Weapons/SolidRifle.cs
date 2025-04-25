@@ -28,6 +28,15 @@ public class SolidRifle : Weapon
     //    get { return true; }
     //}
 
+    override public float firing_multiplier
+    {
+        get { return 1.15f; }
+    }
+    override public float lockon_multiplier
+    {
+        get { return 1.15f; }
+    }
+
     public override int energy
     {
         set
