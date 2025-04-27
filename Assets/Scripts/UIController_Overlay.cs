@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 public class UIController_Overlay : MonoBehaviour
 {
     public RobotController origin;
@@ -58,6 +59,8 @@ public class UIController_Overlay : MonoBehaviour
 
     public LineRenderer guideline_lineRenderer_l;
     public LineRenderer guideline_lineRenderer_r;
+
+    [SerializeField] TextMeshProUGUI orderText;
 
     public void AddRobot(RobotController robotController)
     {
@@ -315,6 +318,26 @@ public class UIController_Overlay : MonoBehaviour
         {
             guideline_lineRenderer_l.enabled = false;
             guideline_lineRenderer_r.enabled = false;
+        }
+    }
+
+    public void OnChangeOrderToAI(WorldManager.OrderToAI orderToAI)
+    {
+        switch(orderToAI)
+        {
+            case WorldManager.OrderToAI.NORMAL:
+                orderText.text = "ÉmÅ[É}Éã";
+                break;
+            case WorldManager.OrderToAI.FOCUS:
+                orderText.text = "èWíÜ";
+                break;
+            case WorldManager.OrderToAI.SPREAD:
+                orderText.text = "ï™éU";
+                break;
+            case WorldManager.OrderToAI.EVADE:
+                orderText.text = "âÒî";
+                break;
+
         }
     }
 }

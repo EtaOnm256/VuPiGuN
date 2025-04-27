@@ -60,7 +60,7 @@ public class RobotAI_Leopard : RobotAI_Base
 
         float mindist = float.MaxValue;
 
-        TargetNearest();
+        TargetNearest(null);
 
         if (current_target != null && current_target)
             mindist = (current_target.GetCenter() - robotController.GetCenter()).magnitude;
@@ -240,7 +240,7 @@ public class RobotAI_Leopard : RobotAI_Base
                                 {
                                     if (stepDirChangeTimer == 0)
                                     {
-                                        stepdir = VectorUtil.rotate(stepMove, Random.Range(0, 2) != 0 ? 0.0f * 2 * Mathf.PI / 360.0f : 180.0f * 2 * Mathf.PI / 360.0f);
+                                        stepdir = VectorUtil.rotate(stepMove, Random.Range(0, 2) != 0 ? 0.0f * Mathf.Deg2Rad : 180.0f * Mathf.Deg2Rad);
                                     }
 
 
@@ -278,7 +278,7 @@ public class RobotAI_Leopard : RobotAI_Base
                                         {
                                             if (moveDirChangeTimer <= 0)
                                             {
-                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
                                                 moveDirChangeTimer = 60;
                                             }
                                         }
@@ -315,7 +315,7 @@ public class RobotAI_Leopard : RobotAI_Base
                                         {
                                             if (moveDirChangeTimer <= 0)
                                             {
-                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
 
                                                 moveDirChangeTimer = 60;
                                             }
@@ -387,7 +387,7 @@ public class RobotAI_Leopard : RobotAI_Base
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
                                         moveDirChangeTimer = 60;
                                     }
                                 }

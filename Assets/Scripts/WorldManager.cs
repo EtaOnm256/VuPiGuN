@@ -39,6 +39,9 @@ public class WorldManager : MonoBehaviour
             public GameObject variant;
             public bool boss;
         }
+
+        public OrderToAI orderToAI = OrderToAI.NORMAL;
+        public RobotController target_by_commander = null;
     }
 
     public List<Pausable> pausables = new List<Pausable>();
@@ -124,6 +127,18 @@ public class WorldManager : MonoBehaviour
 
     [SerializeField] bool testingroom;
 
+    public enum OrderToAI : int
+    {
+        NORMAL = 0,
+        FOCUS,
+        SPREAD,
+        EVADE,
+    }
+
+    UIController_Overlay uIController_Overlay = null;
+
+    bool prev_command = false;
+
     private void Awake()
     {
         current_instance = this;
@@ -134,6 +149,8 @@ public class WorldManager : MonoBehaviour
     void Start()
     {
         CinemachineCameraTarget = GameObject.Find("Main Camera");
+
+        uIController_Overlay = canvasControl.HUDCanvas.GetComponent<UIController_Overlay>();
 
         Slider friendPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
@@ -638,11 +655,27 @@ public class WorldManager : MonoBehaviour
                     return;
             }
 
+            if(humanInput.command && !prev_command)
+            {
+                teams[0].orderToAI++;
+                if (teams[0].orderToAI > OrderToAI.EVADE)
+                    teams[0].orderToAI = OrderToAI.NORMAL;
+             
+                uIController_Overlay.OnChangeOrderToAI(teams[0].orderToAI);
+            }
+
+            if(player != null && player && !player.dead)
+            {
+                teams[0].target_by_commander = player.Target_Robot;
+            }
+
             ProcessPlayerSpawn();
 
             ProcessSpawn(sequence_friend, teams[0], false);
             ProcessSpawn(sequence_enemy, teams[1], false);
         }
+
+        prev_command = humanInput.command;
     }
 
     //RobotController player;
@@ -696,7 +729,7 @@ public class WorldManager : MonoBehaviour
         RobotController robot = robotObj.GetComponent<RobotController>();
 
         robot.HUDCanvas = canvasControl.HUDCanvas;
-        robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
+        robot.uIController_Overlay = uIController_Overlay;
         robot.is_player = true;
         DestroyImmediate(robot.GetComponent<InputBase>());
         robot._input = humanInput;
@@ -727,7 +760,7 @@ public class WorldManager : MonoBehaviour
         RobotController robot = robotObj.GetComponent<RobotController>();
 
         robot.HUDCanvas = canvasControl.HUDCanvas;
-        robot.uIController_Overlay = robot.HUDCanvas.GetComponent<UIController_Overlay>(); ;
+        robot.uIController_Overlay = uIController_Overlay;
         robot.is_player = false;
         robot.team = team;
 

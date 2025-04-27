@@ -266,7 +266,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
                                             if (moveDirChangeTimer <= 0)
                                             {
-                                                move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                                move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
                                                 moveDirChangeTimer = 60;
                                             }
                                         }
@@ -341,7 +341,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
+                                        move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
                                         moveDirChangeTimer = 60;
                                     }
                                 }
@@ -375,8 +375,8 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
                                     if (moveDirChangeTimer <= 0)
                                     {
-                                        //move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
-                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0,2) == 0 ? 90*2*Mathf.PI / 360.0f: -90 * 2 * Mathf.PI / 360.0f);
+                                        //move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
+                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0,2) == 0 ? 90 * Mathf.Deg2Rad : -90 * Mathf.Deg2Rad);
                                         moveDirChangeTimer = 60;
                                     }
                                 }
@@ -397,7 +397,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                         if (!robotController.rightWeapon.canHold && robotController.fire_followthrough > 0 && prev_sprint)
                                         {
                                             {
-                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-75 * 2 * Mathf.PI / 360.0f, 75 * 2 * Mathf.PI / 360.0f));
+                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-75 * Mathf.Deg2Rad, 75 * Mathf.Deg2Rad));
                                                 moveDirChangeTimer = 60;
                                             }
                                             sprint = false;

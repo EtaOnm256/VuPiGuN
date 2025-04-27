@@ -37,18 +37,49 @@ public class RobotAI_Base : InputBase
 
     protected void DetermineTarget()
     {
-        if (current_target == null || !current_target)
+        switch (robotController.team.orderToAI)
         {
-            TargetNearest();
+            case WorldManager.OrderToAI.NORMAL:
+                if (current_target == null || !current_target)
+                {
+                    TargetNearest(null);
+                }
+                break;
+            case WorldManager.OrderToAI.FOCUS:
+
+                current_target = robotController.team.target_by_commander;
+
+                if (current_target == null || !current_target)
+                {
+                    TargetNearest(null);
+                }
+                break;
+            case WorldManager.OrderToAI.SPREAD:
+
+                
+
+                TargetNearest(robotController.team.target_by_commander);
+
+                if (current_target == null || !current_target)
+                {
+                    TargetNearest(null);
+                }
+                break;
+            case WorldManager.OrderToAI.EVADE:
+                TargetNearest(null);
+                break;
         }
     }
     public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType knockBackType, RobotController dealer)
     {
-        if (dealer != null && dealer && dealer.team != robotController.team)
-            current_target = dealer;
+        if (robotController.team.orderToAI == WorldManager.OrderToAI.NORMAL)
+        {
+            if (dealer != null && dealer && dealer.team != robotController.team)
+                current_target = dealer;
+        }
     }
 
-    protected void TargetNearest()
+    protected void TargetNearest(RobotController exclude)
     {
         float mindist = float.MaxValue;
 
@@ -59,6 +90,9 @@ public class RobotAI_Base : InputBase
 
             foreach (var robot in team.robotControllers)
             {
+                if (robot == exclude)
+                    continue;
+
                 float dist = (robotController.GetCenter() - robot.GetCenter()).magnitude;
 
                 if (dist < mindist)

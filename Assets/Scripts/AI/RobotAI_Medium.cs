@@ -48,7 +48,6 @@ public class RobotAI_Medium : RobotAI_Base
     //public float movedirection_range = 180.0f;
 
     public float lock_range = 75.0f;
-    //public float lock_range = 150.0f;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -235,15 +234,23 @@ public class RobotAI_Medium : RobotAI_Base
                                 {
                                     if (ground_step_remain > 0)
                                     {
-                                        if (mindist > lock_range / 2)
+                                        if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
                                         {
-                                            move.y = 1.0f;
+                                            move.y = -1.0f;
                                             move.x = 0.0f;
                                         }
                                         else
                                         {
-                                            move.x = 1.0f;
-                                            move.y = 0.0f;
+                                            if (mindist > lock_range / 2)
+                                            {
+                                                move.y = 1.0f;
+                                                move.x = 0.0f;
+                                            }
+                                            else
+                                            {
+                                                move.x = 1.0f;
+                                                move.y = 0.0f;
+                                            }
                                         }
 
                                         if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
@@ -264,7 +271,14 @@ public class RobotAI_Medium : RobotAI_Base
                                     }
                                     else
                                     {
-                                        if (mindist > lock_range)
+                                        bool far = false;
+
+                                        if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
+                                            far = mindist > 150.0f;
+                                        else
+                                            far = mindist > lock_range;
+
+                                        if (far)
                                         {
                                             move.y = 1.0f;
                                             move.x = 0.0f;
@@ -272,12 +286,21 @@ public class RobotAI_Medium : RobotAI_Base
                                         }
                                         else
                                         {
-
-
-                                            if (moveDirChangeTimer <= 0)
+                                            if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
                                             {
-                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
-                                                moveDirChangeTimer = 60;
+                                                if (moveDirChangeTimer <= 0)
+                                                {
+                                                    move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-45.0f * Mathf.Deg2Rad, 45.0f * Mathf.Deg2Rad));
+                                                    moveDirChangeTimer = 60;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (moveDirChangeTimer <= 0)
+                                                {
+                                                    move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
+                                                    moveDirChangeTimer = 60;
+                                                }
                                             }
                                         }
 
@@ -287,11 +310,15 @@ public class RobotAI_Medium : RobotAI_Base
                                         }
                                     }
 
-                                    if (current_target.Grounded && mindist < 20.0f)
-                                        allow_infight = true;
+                                    if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                                    {
 
-                                    if (target_angle <= 90)
-                                        allow_fire = true;
+                                        if (current_target.Grounded && mindist < 20.0f)
+                                            allow_infight = true;
+
+                                        if (target_angle <= 90)
+                                            allow_fire = true;
+                                    }
                                 }
 
                                 if (!robotController.Grounded)
@@ -315,15 +342,25 @@ public class RobotAI_Medium : RobotAI_Base
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (mindist < 20.0f)
-                                    allow_infight = true;
+                                if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                                {
+                                    if (mindist < 20.0f)
+                                        allow_infight = true;
+                                }
                             }
                             break;
                         case State.Dash:
                             {
                                 sprint = true;
 
-                                if (mindist > lock_range)
+                                bool far = false;
+
+                                if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
+                                    far = mindist > 150.0f;
+                                else
+                                    far = mindist > lock_range;
+
+                                if (far)
                                 {
                                     move.y = 1.0f;
                                     move.x = 0.0f;
@@ -331,12 +368,21 @@ public class RobotAI_Medium : RobotAI_Base
                                 }
                                 else
                                 {
-
-
-                                    if (moveDirChangeTimer <= 0)
+                                    if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * 2 * Mathf.PI / 360.0f, movedirection_range * 2 * Mathf.PI / 360.0f));
-                                         moveDirChangeTimer = 60;
+                                        if (moveDirChangeTimer <= 0)
+                                        {
+                                            move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-45.0f * Mathf.Deg2Rad, 45.0f * Mathf.Deg2Rad));
+                                            moveDirChangeTimer = 60;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (moveDirChangeTimer <= 0)
+                                        {
+                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
+                                            moveDirChangeTimer = 60;
+                                        }
                                     }
                                 }
 
@@ -346,11 +392,14 @@ public class RobotAI_Medium : RobotAI_Base
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (target_angle <= 90)
-                                    allow_fire = true;
+                                if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                                {
+                                    if (target_angle <= 90)
+                                        allow_fire = true;
 
-                                if (mindist < 20.0f)
-                                    allow_infight = true;
+                                    if (mindist < 20.0f)
+                                        allow_infight = true;
+                                }
                               
                             }
                             break;
@@ -362,17 +411,20 @@ public class RobotAI_Medium : RobotAI_Base
                                     ground_step_remain = 2;
                                 }
 
-                                if(floorhit.distance > 10.0f)
-                                    allow_fire = true;
+                                if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                                {
+                                    if (floorhit.distance > 10.0f)
+                                        allow_fire = true;
 
-                                if (mindist < 20.0f)
-                                    allow_infight = true;
+                                    if (mindist < 20.0f)
+                                        allow_infight = true;
 
-                                if (robotController.shoulderWeapon != null
+                                    if (robotController.shoulderWeapon != null
                                    && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy
                                    || robotController.fire_followthrough > 0 && robotController.shoulderWeapon.canHold))
-                                {
-                                    subfire = true;
+                                    {
+                                        subfire = true;
+                                    }
                                 }
                             }
                             break;

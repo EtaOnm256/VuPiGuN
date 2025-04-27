@@ -61,6 +61,11 @@ using UnityEngine.InputSystem;
 		{
 			LockSwitchInput(value.isPressed);
 		}
+		public bool command; // CPUÇ™ÉÅÉjÉÖÅ[äJÇ≠Ç±Ç∆ÇÕÇ»Ç¢ÇÃÇ≈
+		public void OnCommand(InputValue value)
+		{
+			CommandInput(value.isPressed);
+		}
 #endif
 
 
@@ -108,8 +113,12 @@ using UnityEngine.InputSystem;
 		{
 			menu = newSlashState;
 		}
+		public void CommandInput(bool newSlashState)
+		{
+			command = newSlashState;
+		}
 
-		public void LockSwitchInput(bool newSlashState)
+	public void LockSwitchInput(bool newSlashState)
 		{
 			lockswitch = newSlashState;
 		}

@@ -125,7 +125,7 @@ public class RobotAI_Easy : RobotAI_Base
                 {
                     jump = false;
 
-                    if (fire_wait <= 0)
+                    if (fire_wait <= 0 && robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
                     {
                         if (mindist < 100.0f)
                         {
@@ -226,13 +226,23 @@ public class RobotAI_Easy : RobotAI_Base
                             }
                             else
                             {
-
-
-                                if (moveDirChangeTimer <= 0)
+                                if(robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
                                 {
-                                    move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f));
-                                    moveDirChangeTimer = 60;
+                                    if (moveDirChangeTimer <= 0)
+                                    {
+                                         move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-45.0f * Mathf.Deg2Rad, 45.0f * Mathf.Deg2Rad));
+                                         moveDirChangeTimer = 60;
+                                    }
                                 }
+                                else
+                                {
+                                    if (moveDirChangeTimer <= 0)
+                                    {
+                                        move = VectorUtil.rotate(new Vector2(1.0f, 0.0f), Random.Range(0, 360.0f*Mathf.Deg2Rad));
+                                        moveDirChangeTimer = 60;
+                                    }
+                                }
+                               
                             }
                         }
 
