@@ -78,7 +78,7 @@ public class Bullet : Projectile
             {
                 Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
-                Quaternion qTarget = Quaternion.LookRotation(target.GetCenter() - lineRenderer.GetPosition(1));
+                Quaternion qTarget = Quaternion.LookRotation(target.GetTargetedPosition() - lineRenderer.GetPosition(1));
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {

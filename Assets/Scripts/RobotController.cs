@@ -313,7 +313,7 @@ public class RobotController : Pausable
 
     public bool lockonmode = false;
 
-    private GameObject target_chest;
+    //private GameObject target_chest;
     private GameObject target_head;
 
     public List<RobotController> lockingEnemys = new List<RobotController>(); // 自分をロックオンしてる敵
@@ -325,7 +325,7 @@ public class RobotController : Pausable
     private float _rarmaimwait = 0.0f;
 
     private Vector3 virtual_targeting_position;
-
+    
     public bool fire_done = false;
     public int fire_followthrough = 0;
     public bool rollingfire_followthrough = false;
@@ -803,6 +803,7 @@ public class RobotController : Pausable
             if (shoulderWeapon != null)
                 shoulderWeapon.OnKnockback();
 
+            StopMirage();
         }
 
         
@@ -814,7 +815,7 @@ public class RobotController : Pausable
 
         Target_Robot = robotController;
 
-        target_chest = Target_Robot.Chest;
+        //target_chest = Target_Robot.Chest;
         target_head = Target_Robot.Head;
 
         //rigBuilder.Build();
@@ -839,7 +840,7 @@ public class RobotController : Pausable
         Target_Robot = null;
         lockonmode = false;
 
-        target_chest = null;
+        //target_chest = null;
         target_head = null;
 
         //rigBuilder.Build();
@@ -973,9 +974,9 @@ public class RobotController : Pausable
             boostSlider.value = boostSlider.maxValue = boost = robotParameter.Boost_Max;
 
         AimTargetRotation_Head = Head.transform.rotation;
-        AimTargetRotation_Chest = Chest.transform.rotation;
+        AimTargetRotation_Chest = chest_hint.transform.rotation;
 
-     
+        virtual_targeted_position = GetCenter();
 
         if (Target_Robot != null)
         {
@@ -1253,7 +1254,7 @@ public class RobotController : Pausable
 
                 Target_Robot = null;
                 lockonmode = false;
-                target_chest = null;
+                //target_chest = null;
                 target_head = null;
 
                 if (is_player)
@@ -1562,8 +1563,8 @@ public class RobotController : Pausable
             overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
 
             target_rot_head = Head.transform.rotation;
-            target_rot_chest = Chest.transform.rotation;
-            target_rot_rhand = Chest.transform.rotation;
+            target_rot_chest = chest_hint.transform.rotation;
+            target_rot_rhand = chest_hint.transform.rotation;
 
 
             AimTargetRotation_Head = target_rot_head;
@@ -2371,11 +2372,11 @@ public class RobotController : Pausable
 
 
 
-                        if (target_chest)
+                        if (Target_Robot != null)
                         {
                             float angle;
 
-                            angle = Vector3.Angle(target_chest.transform.position - transform.position, transform.forward);
+                            angle = Vector3.Angle(Target_Robot.GetTargetedPosition() - GetCenter(), transform.forward);
 
                             if (angle > 60)
                             {
@@ -2570,9 +2571,9 @@ public class RobotController : Pausable
 
                     float angle = 180.0f;
 
-                    if (target_chest)
+                    if (Target_Robot != null)
                     {
-                        angle = Vector3.Angle(target_chest.transform.position - transform.position, transform.forward);
+                        angle = Vector3.Angle(Target_Robot.GetTargetedPosition() - GetCenter(), transform.forward);
 
                         if (angle > 60)
                         {
@@ -2698,21 +2699,18 @@ public class RobotController : Pausable
         Quaternion target_rot_chest;
         Quaternion target_rot_rhand;
 
-        if (target_chest != null)
+        if (Target_Robot != null)
         {
             if (aiming_factor < aiming_begin_aiming_factor_current)
-                virtual_targeting_position = target_chest.transform.position;
+                virtual_targeting_position = Target_Robot.GetTargetedPosition();
             else if(!fire_done || canhold_current)
             {
                 Vector3 a = virtual_targeting_position - GetCenter();
-                Vector3 b = target_chest.transform.position - GetCenter();
+                Vector3 b = Target_Robot.GetTargetedPosition() - GetCenter();
 
-                virtual_targeting_position = GetCenter()+Vector3.RotateTowards(a, b, aiming_angle_speed_current * 2 * Mathf.PI / 360.0f,float.MaxValue);
+                virtual_targeting_position = GetCenter() + Vector3.RotateTowards(a, b, aiming_angle_speed_current * 2 * Mathf.PI / 360.0f,float.MaxValue);
             }
-            //else
-            // 仮想ターゲットを、位置じゃなくて方向にする？
-            // 自機中心から仮想ターゲットと実際の位置への角度を、RotateTowardする
-
+           
             target_rot_head = Process_Aiming_Head(true);
             target_rot_chest = Process_Aiming_Chest(true);
             target_rot_rhand = Process_Aiming_RHand(true);
@@ -2789,7 +2787,8 @@ public class RobotController : Pausable
 
         if (aiming)
         {
-            result = Quaternion.LookRotation(target_head.transform.position - Head.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+            //result = Quaternion.LookRotation(Target_Robot.GetCenter() - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
+            result = Quaternion.LookRotation(Target_Robot.GetTargetedPosition() - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
         }
         else
         {
@@ -2808,11 +2807,11 @@ public class RobotController : Pausable
 
             if (rightWeapon == null || rightWeapon.trajectory == Weapon.Trajectory.Straight || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
             {
-                result = Quaternion.LookRotation(virtual_targeting_position - Chest.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+                result = Quaternion.LookRotation(Target_Robot.GetTargetedPosition() - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
             }
             else
             {
-                Vector3 relative = virtual_targeting_position - RHand.transform.position;
+                Vector3 relative = Target_Robot.GetTargetedPosition() - GetCenter();
 
                 float h = relative.y;
 
@@ -2842,7 +2841,7 @@ public class RobotController : Pausable
         }
         else
         {
-            result = Chest.transform.rotation;
+            result = chest_hint.transform.rotation;
         }
 
         return result;
@@ -2896,7 +2895,7 @@ public class RobotController : Pausable
         }
         else
         {
-            result = Chest.transform.rotation;
+            result = chest_hint.transform.rotation;
 
             Quaternion q_aim_global = Quaternion.LookRotation(-aiming_hint.transform.forward, new Vector3(0.0f, 1.0f, 0.0f));
             overrideTransform.data.position = shoulder_hint.transform.position;
@@ -2910,6 +2909,13 @@ public class RobotController : Pausable
     //return angle in range -180 to 180
     float origin = 0.0f;
     bool prev_boosting = false;
+
+    int mirage_time = 0;
+    [SerializeField] AfterimageSample.AfterimageRenderer afterimageRenderer;
+    [SerializeField] AfterimageSample.EnqueueAfterimage enqueueAfterimage;
+
+    private Vector3 virtual_targeted_position;
+
     private void LowerBodyMove()
     {
         float targetSpeed = 0.0f;
@@ -3212,9 +3218,9 @@ public class RobotController : Pausable
                         }
 
 
-                        if (target_chest != null)
+                        if (Target_Robot != null)
                         {
-                            Vector3 target_dir = target_chest.transform.position - transform.position;
+                            Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
                             _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -3646,16 +3652,16 @@ public class RobotController : Pausable
 
 
 
-                        if (target_chest != null)
+                        if (Target_Robot != null)
                         {
                             if (Sword.dashslash_cutthrough && lowerBodyState == LowerBodyState.DASHSLASH_DASH)
                             {
 
                                 Vector3 targetOffset = dashslash_offset;
 
-                                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x * 0.9f);
+                                Vector3 targetPos = Target_Robot.GetTargetedPosition() + targetOffset.normalized * (Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x * 0.9f);
 
-                                Vector3 targetDirection = (targetPos - Chest.transform.position).normalized;
+                                Vector3 targetDirection = (targetPos - GetCenter()).normalized;
 
                                 _targetRotation = Mathf.Atan2(targetDirection.x, targetDirection.z) * Mathf.Rad2Deg;
 
@@ -3667,7 +3673,7 @@ public class RobotController : Pausable
                             }
                             else
                             {
-                                Vector3 target_dir = target_chest.transform.position - transform.position;
+                                Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
                                 _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -3681,7 +3687,7 @@ public class RobotController : Pausable
                         bool slash = false;
                         bool lowerslash = false;
 
-                        if (target_chest == null)
+                        if (Target_Robot == null)
                         {
                             slash = true;
                         }
@@ -3689,7 +3695,7 @@ public class RobotController : Pausable
                         {
                             if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && Sword.dashslash_cutthrough)
                             {
-                                if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x)
+                                if ((Target_Robot.GetTargetedPosition() - GetCenter()).magnitude < Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x)
                                 {
                                     slash = true;
                                 }
@@ -3697,20 +3703,20 @@ public class RobotController : Pausable
                             }
                             else
                             {
-                                if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x)
+                                if ((Target_Robot.GetTargetedPosition() - GetCenter()).magnitude < Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x)
                                 {
                                     slash = true;
                                 }
                             }
 
-                            //if(target_chest.transform.position.y < Chest.transform.position.y - 0.00852969*Chest.transform.lossyScale.y)
+                            //if(Target_Robot.GetTargetPosition().y < Chest.transform.position.y - 0.00852969*Chest.transform.lossyScale.y)
                             if (Target_Robot.lowerBodyState == LowerBodyState.DOWN || Target_Robot.lowerBodyState == LowerBodyState.GETUP)
                             {
                                 lowerslash = true;
                             }
 
-                            if (target_chest.transform.lossyScale.y <= Chest.transform.lossyScale.y * 0.501
-                                && target_chest.transform.position.y < Chest.transform.position.y)
+                            if (Target_Robot.transform.lossyScale.y <= transform.lossyScale.y * 0.501
+                                && Target_Robot.GetTargetedPosition().y < GetCenter().y)
                             {
                                 lowerslash = true;
                             }
@@ -3909,16 +3915,16 @@ public class RobotController : Pausable
 
                         rotatespeed = Sword.motionProperty[motionProperty_key].RotateSpeed;
 
-                        if (target_chest != null)
+                        if (Target_Robot != null)
                         {
                             if (Sword.dashslash_cutthrough && lowerBodyState == LowerBodyState.DashSlash)
                             {
 
                                 Vector3 targetOffset = dashslash_offset;
 
-                                Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].SlashDistance * transform.lossyScale.x * 0.9f);
+                                Vector3 targetPos = Target_Robot.GetTargetedPosition() + targetOffset.normalized * (Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].SlashDistance * transform.lossyScale.x * 0.9f);
 
-                                Vector3 targetDirection = (targetPos - Chest.transform.position).normalized;
+                                Vector3 targetDirection = (targetPos - GetCenter()).normalized;
 
                                 //_targetRotation = Mathf.Atan2(targetDirection.x, targetDirection.z) * Mathf.Rad2Deg;
 
@@ -3927,17 +3933,17 @@ public class RobotController : Pausable
                                 // rotate to face input direction relative to camera position
                                 //transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);*/
 
-                                //if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.SlashDistance * transform.lossyScale.x)
+                                //if ((Target_Robot.GetTargetPosition() - GetCenter()).magnitude > Sword.SlashDistance * transform.lossyScale.x)
                                 {
-                                    _speed = targetSpeed = Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].DashSpeed;
-                                }
+                                _speed = targetSpeed = Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].DashSpeed;
+                            }
                             }
                             else
                             {
                                 if (!Sword.slashing)
                                 {
 
-                                    Vector3 target_dir = target_chest.transform.position - transform.position;
+                                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
                                     _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -3950,7 +3956,7 @@ public class RobotController : Pausable
 
 
 
-                                    if ((target_chest.transform.position - Chest.transform.position).magnitude > Sword.motionProperty[motionProperty_key].SlashDistance * transform.lossyScale.x)
+                                    if ((Target_Robot.GetTargetedPosition() - GetCenter()).magnitude > Sword.motionProperty[motionProperty_key].SlashDistance * transform.lossyScale.x)
                                     {
                                         //if (lowerBodyState == LowerBodyState.DashSlash)// !Sword.dashslash_cutthroughのとき
                                         {
@@ -3961,7 +3967,7 @@ public class RobotController : Pausable
                                             _speed = targetSpeed = robotParameter.MoveSpeed;
                                         }*/
                                     }
-                                    //else if ((target_chest.transform.position - Chest.transform.position).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
+                                    //else if ((Target_Robot.GetTargetPosition() - GetCenter()).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
                                     //{
                                     //_speed = targetSpeed = /*event_stepbegin ? */-robotParameter.SprintSpeed/* : 0.0f*/;
                                     //}
@@ -4027,7 +4033,7 @@ public class RobotController : Pausable
                                         {
                                             bool lowerslash = false;
 
-                                            if (target_chest == null)
+                                            if (Target_Robot == null)
                                             {
                                                 
                                             }
@@ -4038,8 +4044,8 @@ public class RobotController : Pausable
                                                     lowerslash = true;
                                                 }
 
-                                                if (target_chest.transform.lossyScale.y <= Chest.transform.lossyScale.y * 0.501
-                                                    && target_chest.transform.position.y < Chest.transform.position.y)
+                                                if (Target_Robot.transform.lossyScale.y <= transform.lossyScale.y * 0.501
+                                                    && Target_Robot.GetTargetedPosition().y < GetCenter().y)
                                                 {
                                                     lowerslash = true;
                                                 }
@@ -4279,9 +4285,9 @@ public class RobotController : Pausable
                         float dist_xz = float.MinValue;
                         //float dist_y = float.MaxValue;
 
-                        if (target_chest != null)
+                        if (Target_Robot != null)
                         {
-                            Vector3 target_dir = target_chest.transform.position - transform.position;
+                            Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
                             _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -4290,7 +4296,7 @@ public class RobotController : Pausable
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
-                            Vector3 sub_xz = (target_chest.transform.position - Chest.transform.position);
+                            Vector3 sub_xz = (Target_Robot.GetTargetedPosition() - GetCenter());
                             //dist_y = sub_xz.y;
 
                             sub_xz.y = 0.0f;
@@ -4485,15 +4491,15 @@ public class RobotController : Pausable
                 Vector3 targetDirection;
 
 
-                if (target_chest != null)
+                if (Target_Robot != null)
                 {
-                    Vector3 targetOffset = (Chest.transform.position - target_chest.transform.position);
+                    Vector3 targetOffset = (GetCenter() - Target_Robot.GetTargetedPosition());
 
                     targetOffset.y = 0.0f;
 
-                    Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x * 0.9f);
+                    Vector3 targetPos = Target_Robot.GetTargetedPosition() + targetOffset.normalized * (Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x * 0.9f);
 
-                    targetDirection = (targetPos - Chest.transform.position).normalized;
+                    targetDirection = (targetPos - GetCenter()).normalized;
 
                     _verticalVelocity = targetDirection.y * _speed;
 
@@ -4518,13 +4524,13 @@ public class RobotController : Pausable
                 Vector3 targetDirection;
 
 
-                if (target_chest != null)
+                if (Target_Robot != null)
                 {
                     Vector3 targetOffset = dashslash_offset;
 
-                    Vector3 targetPos = target_chest.transform.position + targetOffset.normalized * (Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x * 0.9f);
+                    Vector3 targetPos = Target_Robot.GetTargetedPosition() + targetOffset.normalized * (Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x * 0.9f);
 
-                    targetDirection = (targetPos - Chest.transform.position).normalized;
+                    targetDirection = (targetPos - GetCenter()).normalized;
 
                     targetDirection.y = Math.Min(Math.Max(targetDirection.y, -0.25f), 0.25f);
 
@@ -4676,6 +4682,15 @@ public class RobotController : Pausable
         }
 
         prev_boosting = boosting;
+
+        if(mirage_time > 0)
+        {
+            mirage_time--;
+        }
+        else
+        {
+            StopMirage();
+        }
 
         if (!hitslow_now && !hitstop_now)
             speed_overrideby_knockback = false;
@@ -4947,6 +4962,8 @@ public class RobotController : Pausable
         {
             _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
         }
+
+        StartMirage(10);
     }
     private void JumpAndGravity()
     {
@@ -5110,6 +5127,11 @@ public class RobotController : Pausable
     public Vector3 GetCenter()
     {
         return GetCenterFromTransform(new Transform2(transform));
+    }
+
+    public Vector3 GetTargetedPosition()
+    {
+        return virtual_targeted_position;
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
@@ -5413,9 +5435,9 @@ public class RobotController : Pausable
                 Sword.knockBackType = KnockBackType.KnockUp;
 
                 StartSeeking();
-                if (target_chest != null)
+                if (Target_Robot != null)
                 {
-                    Vector3 target_dir = target_chest.transform.position - transform.position;
+                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
                     _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -5424,7 +5446,7 @@ public class RobotController : Pausable
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
-                    dashslash_offset = (Chest.transform.position - target_chest.transform.position);
+                    dashslash_offset = (GetCenter() - Target_Robot.GetTargetedPosition());
 
                     dashslash_offset.y = 0.0f;
 
@@ -5446,9 +5468,9 @@ public class RobotController : Pausable
 
             if (slash_dispatch && ringMenuDir == RingMenuDir.Down)
             {
-                if (target_chest != null)
+                if (Target_Robot != null)
                 {
-                    Vector3 target_dir = target_chest.transform.position - transform.position;
+                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
                     _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -5696,9 +5718,9 @@ public class RobotController : Pausable
             if (Grounded && !aerial_slash)
             {
 
-                if (target_chest != null)
+                if (Target_Robot != null)
                 {
-                    Vector3 target_dir = target_chest.transform.position - transform.position;
+                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
                     _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -5743,9 +5765,9 @@ public class RobotController : Pausable
                 combo_reserved = false;
                 Sword.emitting = true;
                 StartSeeking();
-                if (target_chest != null)
+                if (Target_Robot != null)
                 {
-                    Vector3 target_dir = target_chest.transform.position - transform.position;
+                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
                     _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -5903,5 +5925,21 @@ public class RobotController : Pausable
             seek_time = (int)(seek_time_max / multiplier);
 #endif        
         }
+    }
+
+    void StartMirage(int duration)
+    {
+        mirage_time = duration;
+        enqueueAfterimage.enabled = true;
+        afterimageRenderer.Clear();
+        virtual_targeted_position = GetCenter();
+    }    
+
+    void StopMirage()
+    {
+        mirage_time = 0;
+        enqueueAfterimage.enabled = false;
+        afterimageRenderer.Clear();
+        virtual_targeted_position = GetCenter();
     }
 }

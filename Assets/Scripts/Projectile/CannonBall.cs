@@ -58,7 +58,7 @@ public class CannonBall : Projectile
 
             if (target != null)
             {
-                Vector3 relative = (target.GetCenter() - transform.position);
+                Vector3 relative = (target.GetTargetedPosition() - transform.position);
                 
                 float h = relative.y;
 
@@ -98,7 +98,7 @@ public class CannonBall : Projectile
 
                 /*Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
-                Quaternion qTarget = Quaternion.LookRotation(target.GetCenter() - transform.position);
+                Quaternion qTarget = Quaternion.LookRotation(target.GetTargetPosition() - transform.position);
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {

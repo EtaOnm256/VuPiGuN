@@ -649,6 +649,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1780507694168998252}
   - component: {fileID: 8369983012435980953}
+  - component: {fileID: 9128911232947972839}
+  - component: {fileID: 4859288484329872701}
   m_Layer: 0
   m_Name: Robot
   m_TagString: Untagged
@@ -752,6 +754,36 @@ SkinnedMeshRenderer:
     m_Center: {x: -9.313226e-10, y: 0.0021604784, z: -0.0013102982}
     m_Extent: {x: 0.024672534, y: 0.03235821, z: 0.020828944}
   m_DirtyAABB: 0
+--- !u!114 &9128911232947972839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1504279445116113268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ff3ee3cc00204a4e9c0166d0552cf4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _material: {fileID: 2100000, guid: a5fd7cd734a5432429c6afba8cd57332, type: 2}
+  _duration: 60
+  _layer: 6
+--- !u!114 &4859288484329872701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1504279445116113268}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67c01df1cb249c74c8434690be4a3731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _afterimageRenderer: {fileID: 9128911232947972839}
+  _intervalFrames: 0
+  _clipFrameBegin: 5
 --- !u!1 &1774696330335166926
 GameObject:
   m_ObjectHideFlags: 0
@@ -3050,6 +3082,8 @@ MonoBehaviour:
   audioClip_Ground: {fileID: 8300000, guid: f0ea08abbd708c14cbeb44d7b36880d9, type: 3}
   audioClip_Step: {fileID: 8300000, guid: 069e328c403251c4cac0fdf29ed1b4ee, type: 3}
   audioClip_Swing: {fileID: 8300000, guid: aabb1c218e1358d488cf4c220d25522a, type: 3}
+  afterimageRenderer: {fileID: 9128911232947972839}
+  enqueueAfterimage: {fileID: 4859288484329872701}
   robotParameter:
     rweapon_prefab: {fileID: 0}
     lweapon_prefab: {fileID: 0}

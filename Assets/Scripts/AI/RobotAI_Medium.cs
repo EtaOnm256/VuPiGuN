@@ -151,7 +151,7 @@ public class RobotAI_Medium : RobotAI_Base
                     RaycastHit floorhit;
 
                     bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, float.MaxValue, 1 << 3);
-                    float target_angle = Vector3.Angle(current_target.Chest.transform.position - transform.position, transform.forward);
+                    float target_angle = Vector3.Angle(current_target.GetTargetedPosition() - robotController.chest_hint.transform.position, transform.forward);
 
                     jump = false;
 

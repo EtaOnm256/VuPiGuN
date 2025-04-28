@@ -59,7 +59,7 @@ public class Missile : Projectile
             {
                 Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
-                Quaternion qTarget = Quaternion.LookRotation(target.GetCenter() - transform.position);
+                Quaternion qTarget = Quaternion.LookRotation(target.GetTargetedPosition() - transform.position);
 
                 float angle = Quaternion.Angle(qDirection, qTarget);
 
@@ -73,7 +73,7 @@ public class Missile : Projectile
 
                     if(cluster)
                     {
-                        float dot = Vector3.Dot(target.GetCenter() - transform.position, direction.normalized);
+                        float dot = Vector3.Dot(target.GetTargetedPosition() - transform.position, direction.normalized);
 
                         if(dot < 25.0f)
                         {

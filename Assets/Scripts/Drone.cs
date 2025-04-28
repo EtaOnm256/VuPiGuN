@@ -73,7 +73,7 @@ public class Drone : Pausable
                 else
                 {
 
-                    Vector3 goal_pos = target.GetCenter()
+                    Vector3 goal_pos = target.GetTargetedPosition()
                         + orient * Vector3.back * 10.0f;
     
 
@@ -111,7 +111,7 @@ public class Drone : Pausable
                 }
                 else
                 {
-                    Vector3 goal_pos = target.GetCenter();
+                    Vector3 goal_pos = target.GetTargetedPosition();
                     Vector3 goal_dir = (goal_pos - transform.position).normalized;
 
                     float angle;
