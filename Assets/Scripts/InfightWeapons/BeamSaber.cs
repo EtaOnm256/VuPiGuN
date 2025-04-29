@@ -76,12 +76,12 @@ public class BeamSaber : InfightWeapon
 
         _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
             {
-                { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashLength = 45 ,SlashDistance=6.0f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
-                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2,SlashDistance=6.0f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45 ,SlashDistance=6.0f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
+                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2,SlashDistance=6.0f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
               //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1),RotateSpeed=4.0f },
-                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 45.0f ,DashLength = 45/2 ,SlashDistance=6.0f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
-                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 60.0f ,DashLength = 45,SlashDistance=6.0f,RotateSpeed=2.0f,SlashDistance_Min = float.MinValue } },
-                  { RobotController.LowerBodyState.JumpSlash_Jump,new MotionProperty{DashSpeed = 60.0f ,DashLength = 20, SlashDistance=6.0f,RotateSpeed=8.0f,SlashDistance_Min = 5.0f} },
+                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2 ,SlashDistance=6.0f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
+                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 50.0f ,DashDuration = 45,SlashDistance=6.0f,RotateSpeed=2.0f,SlashDistance_Min = float.MinValue } },
+                  { RobotController.LowerBodyState.JumpSlash_Jump,new MotionProperty{DashSpeed = 50.0f ,DashDuration = 20, SlashDistance=6.0f,RotateSpeed=6.0f,SlashDistance_Min = 5.0f} },
             };
 
         foreach (var slashmotion in slashMotionInfo)

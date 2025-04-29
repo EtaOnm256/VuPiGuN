@@ -80,7 +80,7 @@ public class InfightWeapon : Pausable
     public struct MotionProperty
     {
         public float DashSpeed;
-        public int DashLength;
+        public int DashDuration;
         public float SlashDistance;
         public float SlashDistance_Min;
         public float RotateSpeed;

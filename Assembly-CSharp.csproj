@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Weapons\BeamRifle.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualJoystick.cs" />
     <Compile Include="Assets\StarterAssets\Mobile\Scripts\VirtualInputs\UIVirtualTouchZone.cs" />
+    <Compile Include="Assets\Scripts\AfterImage.cs" />
     <Compile Include="Assets\Scripts\InfightWeapons\HeatAxe.cs" />
     <Compile Include="Assets\Scripts\WorldManager.cs" />
     <Compile Include="Assets\RainMaker\Demo\DemoScriptStartRainOnSpaceBar.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Assets\Scripts\AI\RobotAI_Shenlong.cs" />
     <Compile Include="Assets\Scripts\InputBase.cs" />
     <Compile Include="Assets\Scripts\Thruster.cs" />
+    <Compile Include="Assets\Scripts\AfterimageRenderer.cs" />
     <Compile Include="Assets\Scripts\WeaponPanelItem.cs" />
     <Compile Include="Assets\Scripts\UI\ResultCanvas.cs" />
     <Compile Include="Assets\StarterAssets\ThirdPersonController\Scripts\BasicRigidBodyPush.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="Assets\Scripts\Loading.cs" />
     <Compile Include="Assets\Scripts\UI\DamageText.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod_Weist.cs" />
+    <Compile Include="Assets\Scripts\EnqueueAfterimage.cs" />
     <Compile Include="Assets\Scripts\Weapons\SprayBeamCannon.cs" />
     <Compile Include="Assets\IgniteCoders\Simple Water Shader\Resources\WaterReflection.cs" />
     <Compile Include="Assets\RainMaker\Demo\DemoScript.cs" />
@@ -181,6 +184,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\Shaders\Afterimage.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
   <ItemGroup>

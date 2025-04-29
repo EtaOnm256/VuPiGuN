@@ -21,10 +21,10 @@ using System.Linq;
 [RequireComponent(typeof(CharacterController))]
 public class RobotController : Pausable
 {
-  
-     
 
- 
+
+
+
 
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
@@ -56,6 +56,11 @@ public class RobotController : Pausable
     [Tooltip("For locking the camera position on all axis")]
     public bool LockCameraPosition = false;
 
+    //振りかぶり中の旋回。2段目以降のスカり防止のためなので、遅めに
+    [SerializeField] float RotateSpeed_BeforeSlash = 3.0f;
+
+    //ジャンプ格闘の上下方向は固定にしたいのでここで持つ。
+    [SerializeField] float InitialVerticalSpeed_JumpSlash = 60.0f;
 
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
@@ -166,7 +171,7 @@ public class RobotController : Pausable
 
     public int slash_count = 0;
     bool combo_reserved = false;
-    
+
     enum ComboType
     {
         SLASH,
@@ -221,11 +226,11 @@ public class RobotController : Pausable
 
         set
         {
-            if(_burst != value)
+            if (_burst != value)
             {
                 _burst = value;
 
-                if(is_player)
+                if (is_player)
                 {
                     ringMenu.SetActive(_burst);
                 }
@@ -233,7 +238,7 @@ public class RobotController : Pausable
         }
     }
 
-   
+
 
     public MultiAimConstraint headmultiAimConstraint;
     public MultiAimConstraint chestmultiAimConstraint;
@@ -300,7 +305,7 @@ public class RobotController : Pausable
 
     [SerializeField]
     List<Thruster> thrusters = new List<Thruster>();
-    
+
     LockonState lockonState = LockonState.FREE;
 
 
@@ -325,7 +330,7 @@ public class RobotController : Pausable
     private float _rarmaimwait = 0.0f;
 
     private Vector3 virtual_targeting_position;
-    
+
     public bool fire_done = false;
     public int fire_followthrough = 0;
     public bool rollingfire_followthrough = false;
@@ -459,7 +464,7 @@ public class RobotController : Pausable
     public enum StepDirection
     {
         FORWARD, LEFT, BACKWARD, RIGHT,
-        FORWARD_LEFT,FORWARD_RIGHT,
+        FORWARD_LEFT, FORWARD_RIGHT,
         BACKWARD_LEFT, BACKWARD_RIGHT,
     }
 
@@ -525,7 +530,7 @@ public class RobotController : Pausable
 
     enum RingMenuState
     {
-        Close,Shoot,Slash
+        Close, Shoot, Slash
     }
 
     RingMenuState ringMenuState = RingMenuState.Close;
@@ -542,7 +547,7 @@ public class RobotController : Pausable
     Vector3 knockbackdir;
     bool speed_overrideby_knockback = false;
 
-    
+
 
     [SerializeField] int _boost;
 
@@ -609,10 +614,15 @@ public class RobotController : Pausable
         JumpSlash = 1 << 11,
         SnipeShoot = 1 << 12,
         QuickDraw = 1 << 13,
-        RunningTakeOff = 1 << 14
+        RunningTakeOff = 1 << 14,
+        CounterMeasure = 1 << 15,
+        AeroMirage = 1 << 16,
+        SensorArray = 1 << 17,
+        MirageCloud = 1 << 18,
+        InfightBoost = 1 << 19
     }
 
- 
+
 
     public AudioSource audioSource;
     public AudioSource audioSource_Boost;
@@ -660,7 +670,7 @@ public class RobotController : Pausable
         intend_animator_speed = 1.0f;
 
         //将来的にはDoDamageを作ってそっちで処理
-        if(dealer && dealer.is_player)
+        if (dealer && dealer.is_player)
             WorldManager.current_instance.player_dealeddamage += damage;
 
         if (knockBackType != KnockBackType.None || dead)
@@ -683,7 +693,7 @@ public class RobotController : Pausable
                     {
                         knockbackdir = dir;
                         knockbackdir.y = 0.0f;
-                  
+
 
                         if (knockBackType == KnockBackType.Finish)
                         {
@@ -806,7 +816,7 @@ public class RobotController : Pausable
             StopMirage();
         }
 
-        
+
     }
 
     private void TargetEnemy(RobotController robotController)
@@ -855,7 +865,7 @@ public class RobotController : Pausable
 
         WorldManager.current_instance.pausables.Add(this);
 
-        
+
     }
 
     private void Start()
@@ -919,13 +929,13 @@ public class RobotController : Pausable
 
             ringMenu_Cursor_rectTfm = ringMenu.transform.Find("Cursor").GetComponent<RectTransform>();
 
-            if(robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot))
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot))
             {
                 ringMenu_Left_LMB.gameObject.SetActive(true);
                 ringMenu_Right_LMB.gameObject.SetActive(true);
             }
 
-            if(robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash))
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash))
             {
                 ringMenu_Up_RMB.gameObject.SetActive(true);
             }
@@ -942,7 +952,7 @@ public class RobotController : Pausable
         }
 
         if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
-            robotParameter.Boost_Max = robotParameter.Boost_Max*2;
+            robotParameter.Boost_Max = robotParameter.Boost_Max * 2;
 
         if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
         {
@@ -996,7 +1006,7 @@ public class RobotController : Pausable
             Sword.emitting = false;
         }
 
-        
+
 
         if (dualwielding)
             animator.Play(ChooseDualwieldStandMotion(), 2);
@@ -1022,8 +1032,8 @@ public class RobotController : Pausable
 
         // _input.worldManager = worldManager;
 
-        if(_input == null)
-             _input = GetComponent<InputBase>();
+        if (_input == null)
+            _input = GetComponent<InputBase>();
 
         _rarmaimwait = 0.0f;
         _chestaimwait = 0.0f;
@@ -1039,7 +1049,7 @@ public class RobotController : Pausable
         prev_sprint = _input.sprint;
         prev_fire = _input.fire;
         prev_lockswitch = _input.lockswitch;
-        
+
     }
 
     private bool ConsumeBoost(int amount)
@@ -1057,7 +1067,7 @@ public class RobotController : Pausable
 
     private void RegenBoost()
     {
-        if(robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
             boost = Math.Min(boost + 24, robotParameter.Boost_Max);
         else
             boost = Math.Min(boost + 12, robotParameter.Boost_Max);
@@ -1110,15 +1120,15 @@ public class RobotController : Pausable
             animator.speed = intend_animator_speed;
     }
 
-    static Color ringMenu_enableColor_LMB = new Color(0.0f, 0.5f, 1.0f,1.0f);
-    static Color ringMenu_disableColor_LMB = new Color(0.0f, 0.5f, 1.0f,0.25f);
+    static Color ringMenu_enableColor_LMB = new Color(0.0f, 0.5f, 1.0f, 1.0f);
+    static Color ringMenu_disableColor_LMB = new Color(0.0f, 0.5f, 1.0f, 0.25f);
 
     static Color ringMenu_enableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 1.0f);
     static Color ringMenu_disableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 0.25f);
 
-    static Color getRingMenuColor(bool enable,bool LMB)
+    static Color getRingMenuColor(bool enable, bool LMB)
     {
-        if(LMB)
+        if (LMB)
         {
             if (enable)
                 return ringMenu_enableColor_LMB;
@@ -1265,13 +1275,13 @@ public class RobotController : Pausable
                 if (Target_Robot != nearest_robot)
                     TargetEnemy(nearest_robot);
             }
-         
+
 
             if (rightWeapon != null)
                 rightWeapon.Target_Robot = Target_Robot;
             if (shoulderWeapon != null)
                 shoulderWeapon.Target_Robot = Target_Robot;
-           
+
 
             if (is_player)
             {
@@ -1282,26 +1292,26 @@ public class RobotController : Pausable
                 {
                     case RingMenuState.Close:
                         {
-                            if(_input.fire)
+                            if (_input.fire)
                             {
                                 ringMenu.SetActive(true);
                                 ringMenuState = RingMenuState.Shoot;
                                 ringMenuDir = RingMenuDir.Center;
                                 ringMenuAccum = Vector2.zero;
                             }
-                            else if(_input.slash)
+                            else if (_input.slash)
                             {
                                 ringMenu.SetActive(true);
                                 ringMenuState = RingMenuState.Slash;
                                 ringMenuDir = RingMenuDir.Center;
                                 ringMenuAccum = Vector2.zero;
                             }
-                                 
+
                         }
                         break;
                     case RingMenuState.Shoot:
                         {
-                            if(!_input.fire)
+                            if (!_input.fire)
                             {
                                 fire_dispatch = true;
                                 ringMenu.SetActive(false);
@@ -1357,7 +1367,7 @@ public class RobotController : Pausable
                 }*/
 
                 {
-                   
+
                     // 視点変更時でも機体基準でのアラートにしたいのでここで再計算
                     Quaternion cameraRotation_tmp = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
                         _cinemachineTargetYaw, 0.0f);
@@ -1409,8 +1419,8 @@ public class RobotController : Pausable
 
             LowerBodyMove(); // HEAVYFIREの反動処理変えたから順番入れ替えても大丈夫かも
             UpperBodyMove();
-     
-            if(ringMenuState != RingMenuState.Close)
+
+            if (ringMenuState != RingMenuState.Close)
             {
                 bool stay = false;
 
@@ -1506,7 +1516,7 @@ public class RobotController : Pausable
                     shoulderWeapon.Destroy_Called_By_Unit();
                 }
 
-                WorldManager.current_instance.HandleRemoveUnit(this,finish_dealer,finish_dir);
+                WorldManager.current_instance.HandleRemoveUnit(this, finish_dealer, finish_dir);
             }
             else if (death_timer <= 0)
             {
@@ -1774,7 +1784,7 @@ public class RobotController : Pausable
                 }
                 break;
             case LowerBodyState.AIRFIRE:
-     
+
                 if (Grounded)
                 {
                     TransitLowerBodyState(LowerBodyState.GROUND_FIRE);
@@ -1998,7 +2008,7 @@ public class RobotController : Pausable
 
             lockonState = LockonState.LOCKON;
 
-            
+
         }
         else
         {
@@ -2011,7 +2021,7 @@ public class RobotController : Pausable
             {
                 if (lockonState == LockonState.FREE)
                 {
-                    if(lockonmode)
+                    if (lockonmode)
                     {
                         StartSeeking();
                     }
@@ -2100,7 +2110,7 @@ public class RobotController : Pausable
 
         }
 
-        if(Target_Robot!=null)
+        if (Target_Robot != null)
         {
             if (_input.lockswitch && !prev_lockswitch)
             {
@@ -2131,12 +2141,16 @@ public class RobotController : Pausable
         float aiming_angle_speed_current = 0.0f;
         bool canhold_current = false;
 
+        bool stealthcloud_invalid = false;
+
         switch (upperBodyState)
         {
             case UpperBodyState.FIRE:
             case UpperBodyState.ROLLINGFIRE:
             case UpperBodyState.SNIPEFIRE:
                 {
+                    stealthcloud_invalid = true;
+
                     if (upperBodyState == UpperBodyState.FIRE)
                     {
                         _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f * firing_multiplier);
@@ -2162,7 +2176,7 @@ public class RobotController : Pausable
                         _chestaimwait = 0.0f;
                         _barmlayerwait = 0.0f;
                         aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                        rhandaimwait_thisframe = Mathf.Clamp( (aiming_factor - 0.75f)*4.0f, 0.0f,1.0f);
+                        rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.75f) * 4.0f, 0.0f, 1.0f);
                     }
 
 
@@ -2217,10 +2231,10 @@ public class RobotController : Pausable
                                 fire_followthrough = 30;
                             }
 
-                            if(upperBodyState == UpperBodyState.ROLLINGFIRE)
+                            if (upperBodyState == UpperBodyState.ROLLINGFIRE)
                             {
                                 upperBodyState = UpperBodyState.FIRE;
-                                if(lowerBodyState == LowerBodyState.ROLLINGFIRE)
+                                if (lowerBodyState == LowerBodyState.ROLLINGFIRE)
                                     TransitLowerBodyState(LowerBodyState.STAND);
                                 else
                                     TransitLowerBodyState(LowerBodyState.AIR);
@@ -2263,9 +2277,9 @@ public class RobotController : Pausable
                             {
                                 TransitLowerBodyState(LowerBodyState.STAND);
                             }
-                            else if(lowerBodyState == LowerBodyState.SNIPEFIRE || lowerBodyState == LowerBodyState.AIRSNIPEFIRE)
+                            else if (lowerBodyState == LowerBodyState.SNIPEFIRE || lowerBodyState == LowerBodyState.AIRSNIPEFIRE)
                             {
-                                if(Grounded)
+                                if (Grounded)
                                     TransitLowerBodyState(LowerBodyState.STAND);
                                 else
                                     TransitLowerBodyState(LowerBodyState.AIR);
@@ -2281,8 +2295,8 @@ public class RobotController : Pausable
 
                     if (upperBodyState == UpperBodyState.FIRE && !rollingfire_followthrough)
                         AcceptRollingShoot();
-                    
-                    if(robotParameter.itemFlag.HasFlag(ItemFlag.ChainFire) && upperBodyState == UpperBodyState.FIRE)
+
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.ChainFire) && upperBodyState == UpperBodyState.FIRE)
                     {
                         AcceptSubFire();
                     }
@@ -2306,6 +2320,8 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.SUBFIRE:
                 {
+                    stealthcloud_invalid = true;
+
                     if (!fire_done)
                     {
                         if (event_subfired)
@@ -2364,7 +2380,7 @@ public class RobotController : Pausable
                         _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
 
                         //if (dualwielding)
-                            _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
                         //else
                         //    _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
 
@@ -2417,6 +2433,8 @@ public class RobotController : Pausable
             case UpperBodyState.ROLLINGHEAVYFIRE:
             case UpperBodyState.SNIPEHEAVYFIRE:
                 {
+                    stealthcloud_invalid = true;
+
                     if (!fire_done)
                     {
                         if (event_heavyfired)
@@ -2497,9 +2515,9 @@ public class RobotController : Pausable
                             else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
                                 TransitLowerBodyState(LowerBodyState.STAND);
 
-                            if(lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE)
+                            if (lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE)
                             {
-                                if(Grounded)
+                                if (Grounded)
                                     TransitLowerBodyState(LowerBodyState.STAND);
                                 else
                                     TransitLowerBodyState(LowerBodyState.AIR);
@@ -2566,7 +2584,7 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.STAND:
                 {
-                    if(!lockonmode)
+                    if (!lockonmode)
                         lockonState = LockonState.FREE;
 
                     float angle = 180.0f;
@@ -2595,16 +2613,16 @@ public class RobotController : Pausable
                         {
                             AcceptMainFire(angle);
                         }
-                                         
+
                     }
-   
+
                     if (Sword != null)
                     {
-                        if(AcceptDashSlash())
+                        if (AcceptDashSlash())
                         {
 
                         }
-                        else if(!AcceptJumpSlash())
+                        else if (!AcceptJumpSlash())
                         {
                             AcceptSlash();
                         }
@@ -2626,6 +2644,7 @@ public class RobotController : Pausable
             case UpperBodyState.KNOCKBACK:
             case UpperBodyState.DOWN:
             case UpperBodyState.GETUP:
+                stealthcloud_invalid = true;
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = 0.0f;
@@ -2634,6 +2653,9 @@ public class RobotController : Pausable
                     lockonState = LockonState.FREE;
                 break;
             case UpperBodyState.LowerSlash:
+
+                stealthcloud_invalid = true;
+
                 _chestaimwait = 0.0f;
                 _headaimwait = 1.0f;
                 _rarmaimwait = 0.0f;
@@ -2652,7 +2674,9 @@ public class RobotController : Pausable
             case UpperBodyState.QuickSlash:
             case UpperBodyState.DashSlash:
 
-                if(upperBodyState != UpperBodyState.DashSlash && upperBodyState != UpperBodyState.DASHSLASH_DASH
+                stealthcloud_invalid = true;
+
+                if (upperBodyState != UpperBodyState.DashSlash && upperBodyState != UpperBodyState.DASHSLASH_DASH
                     && upperBodyState != UpperBodyState.JumpSlash && upperBodyState != UpperBodyState.JumpSlash_Jump && upperBodyState != UpperBodyState.JumpSlash_Ground)
                     AcceptDashSlash();
 
@@ -2667,6 +2691,9 @@ public class RobotController : Pausable
                 _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
                 break;
             case UpperBodyState.JumpSlash_Jump:
+
+                stealthcloud_invalid = true;
+
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
@@ -2675,6 +2702,9 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.JumpSlash:
             case UpperBodyState.JumpSlash_Ground:
+
+                stealthcloud_invalid = true;
+
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
@@ -2703,19 +2733,19 @@ public class RobotController : Pausable
         {
             if (aiming_factor < aiming_begin_aiming_factor_current)
                 virtual_targeting_position = Target_Robot.GetTargetedPosition();
-            else if(!fire_done || canhold_current)
+            else if (!fire_done || canhold_current)
             {
                 Vector3 a = virtual_targeting_position - GetCenter();
                 Vector3 b = Target_Robot.GetTargetedPosition() - GetCenter();
 
-                virtual_targeting_position = GetCenter() + Vector3.RotateTowards(a, b, aiming_angle_speed_current * 2 * Mathf.PI / 360.0f,float.MaxValue);
+                virtual_targeting_position = GetCenter() + Vector3.RotateTowards(a, b, aiming_angle_speed_current * 2 * Mathf.PI / 360.0f, float.MaxValue);
             }
-           
+
             target_rot_head = Process_Aiming_Head(true);
             target_rot_chest = Process_Aiming_Chest(true);
             target_rot_rhand = Process_Aiming_RHand(true);
 
-            
+
         }
         else
         {
@@ -2758,7 +2788,7 @@ public class RobotController : Pausable
         AimHelper_Chest.transform.position = Chest.transform.position + chestAim_Dir;
 
         chestmultiAimConstraint.weight = _chestaimwait;
-            
+
         AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
 
         rhandmultiAimConstraint.weight = rhandaimwait_thisframe;
@@ -2779,6 +2809,25 @@ public class RobotController : Pausable
 
         if (Sword != null)
             Sword.dir = transform.forward;
+
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.MirageCloud))
+        {
+            if (!stealthcloud_invalid)
+            {
+                if (stealthCloud_interval <= 0)
+                {
+                    StartMirage(10);
+                    stealthCloud_interval = 15;
+                }
+            }
+            else
+            {
+                stealthCloud_interval = 30;
+            }
+
+            if (stealthCloud_interval > 0)
+                stealthCloud_interval--;
+        }
     }
 
     Quaternion Process_Aiming_Head(bool aiming)
@@ -2835,7 +2884,7 @@ public class RobotController : Pausable
                 result = Quaternion.LookRotation(relative, new Vector3(0.0f, 1.0f, 0.0f));
 
 
-          
+
 
             }
         }
@@ -2913,6 +2962,8 @@ public class RobotController : Pausable
     int mirage_time = 0;
     [SerializeField] AfterimageSample.AfterimageRenderer afterimageRenderer;
     [SerializeField] AfterimageSample.EnqueueAfterimage enqueueAfterimage;
+
+    int stealthCloud_interval = 0;
 
     private Vector3 virtual_targeted_position;
 
@@ -3079,7 +3130,7 @@ public class RobotController : Pausable
                                 boosting = true;
                             }
                             else
-                            { 
+                            {
                                 if (_input.jump)
                                 {
                                     if (ConsumeBoost(4))
@@ -3090,8 +3141,8 @@ public class RobotController : Pausable
                                     }
                                 }
                             }
-                            
-                            if(!inputing_boost)
+
+                            if (!inputing_boost)
                             {
                                 if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
                                     RegenBoost();
@@ -3182,8 +3233,8 @@ public class RobotController : Pausable
                             )
                         {
                             _verticalVelocity = 0.0f;
-                            if(robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
-                                _speed = robotParameter.StepSpeed*1.5f;
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
+                                _speed = robotParameter.StepSpeed * 1.5f;
                             else
                                 _speed = robotParameter.StepSpeed;
                         }
@@ -3231,7 +3282,7 @@ public class RobotController : Pausable
                                 if (lowerBodyState == LowerBodyState.ROLLINGFIRE || lowerBodyState == LowerBodyState.AIRROLLINGFIRE)
                                     rotation = _targetRotation;
                                 else if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.AIRFIRE)
-                                    rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.RotateSpeed * 2* firing_multiplier);
+                                    rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.RotateSpeed * 2 * firing_multiplier);
                                 else
                                     rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, robotParameter.RotateSpeed * 4);
                             }
@@ -3344,9 +3395,11 @@ public class RobotController : Pausable
                                         if (_input.jump && ConsumeBoost(80))
                                         {
                                             TransitLowerBodyState(LowerBodyState.AIR);
-                                            _verticalVelocity = robotParameter.AscendingVelocity*1.5f;
+                                            _verticalVelocity = robotParameter.AscendingVelocity * 1.5f;
 
                                             _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
+
+                                            StartMirage(10);
                                         }
                                     }
 
@@ -3401,7 +3454,11 @@ public class RobotController : Pausable
                                         _animator.SetFloat("SlashSpeed", 0.0f);
                                         audioSource.PlayOneShot(audioClip_Swing);
 
-                                        _verticalVelocity = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
+                                        _verticalVelocity = InitialVerticalSpeed_JumpSlash;
+                                        //_verticalVelocity = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
+
+                                        //if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
+                                        //    _verticalVelocity *= 1.5f;
 
                                         _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
                                     }
@@ -3499,6 +3556,10 @@ public class RobotController : Pausable
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
                             {
                                 _speed = robotParameter.AirDashSpeed * 2;
+                            }
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroMirage))
+                            {
+                                StartMirage(10);
                             }
                         }
                     }
@@ -3633,7 +3694,15 @@ public class RobotController : Pausable
                             _speed = targetSpeed = 0.0f;//-Sword.motionProperty[lowerBodyState].DashSpeed;
                         }
                         else
+                        {
                             _speed = targetSpeed = Sword.motionProperty[lowerBodyState].DashSpeed;
+
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
+                            {
+                                _speed *= 1.5f;
+                                targetSpeed *= 1.5f;
+                            }
+                        }
 
                         if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && event_swing)
                         {
@@ -3641,6 +3710,11 @@ public class RobotController : Pausable
                         }
 
                         rotatespeed = Sword.motionProperty[lowerBodyState].RotateSpeed;
+
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
+                        {
+                            rotatespeed *= 1.5f;
+                        }
 
                         _animationBlend = 0.0f;
 
@@ -3911,10 +3985,6 @@ public class RobotController : Pausable
 
                         }
 
-                        float rotatespeed;
-
-                        rotatespeed = Sword.motionProperty[motionProperty_key].RotateSpeed;
-
                         if (Target_Robot != null)
                         {
                             if (Sword.dashslash_cutthrough && lowerBodyState == LowerBodyState.DashSlash)
@@ -3935,8 +4005,14 @@ public class RobotController : Pausable
 
                                 //if ((Target_Robot.GetTargetPosition() - GetCenter()).magnitude > Sword.SlashDistance * transform.lossyScale.x)
                                 {
-                                _speed = targetSpeed = Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].DashSpeed;
-                            }
+                                    _speed = targetSpeed = Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].DashSpeed;
+
+                                    if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
+                                    {
+                                        _speed *= 1.5f;
+                                        targetSpeed *= 1.5f;
+                                    }
+                                }
                             }
                             else
                             {
@@ -3947,7 +4023,7 @@ public class RobotController : Pausable
 
                                     _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, rotatespeed);
+                                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed_BeforeSlash);
 
                                     // rotate to face input direction relative to camera position
                                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -3979,6 +4055,12 @@ public class RobotController : Pausable
                             if (lowerBodyState == LowerBodyState.DashSlash)
                             {
                                 _speed = targetSpeed = Sword.motionProperty[LowerBodyState.DASHSLASH_DASH].DashSpeed;
+
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
+                                {
+                                    _speed *= 1.5f;
+                                    targetSpeed *= 1.5f;
+                                }
                             }
                         }
 
@@ -4035,7 +4117,7 @@ public class RobotController : Pausable
 
                                             if (Target_Robot == null)
                                             {
-                                                
+
                                             }
                                             else
                                             {
@@ -4051,7 +4133,7 @@ public class RobotController : Pausable
                                                 }
                                             }
 
-                                            if(lowerslash)
+                                            if (lowerslash)
                                             {
                                                 lowerBodyState = LowerBodyState.LowerSlash;
                                                 upperBodyState = UpperBodyState.LowerSlash;
@@ -4291,7 +4373,12 @@ public class RobotController : Pausable
 
                             _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, Sword.motionProperty[LowerBodyState.JumpSlash_Jump].RotateSpeed);
+                            float rotatespeed = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].RotateSpeed;
+
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
+                                rotatespeed *= 1.5f;
+
+                            float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, rotatespeed);
 
                             // rotate to face input direction relative to camera position
                             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
@@ -4318,10 +4405,16 @@ public class RobotController : Pausable
                         }
 
                         if (!jumpslash_end_forward)
+                        {
                             _speed = targetSpeed = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
+                            {
+                                _speed *= 1.5f;
+                                targetSpeed *= 1.5f;
+                            }
+                        }
                         else
                             _speed = targetSpeed = Mathf.Max(_speed - robotParameter.SpeedChangeRate, 0.0f);
-
 
 
                         /*   if (dist_xz > -dist_y + Sword.motionProperty[LowerBodyState.JumpSlash_Jump].SlashDistance * transform.lossyScale.x)
@@ -4336,7 +4429,16 @@ public class RobotController : Pausable
 
                            }*/
 
-                        _verticalVelocity = Mathf.Max(_verticalVelocity + robotParameter.Gravity * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed/*float.MinValue*/);
+                        //if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
+                        //{
+                        //    _verticalVelocity = Mathf.Max(_verticalVelocity + robotParameter.Gravity * 1.5f * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed * 1.5f);
+                        //}
+                        //else
+                        //{
+                            _verticalVelocity = Mathf.Max(_verticalVelocity + robotParameter.Gravity * Time.deltaTime * 4, -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed/*float.MinValue*/);
+                        //}
+
+
 
 
                         if (_verticalVelocity < 0.0f)
@@ -4464,7 +4566,7 @@ public class RobotController : Pausable
 
                 targetDirection = Quaternion.Euler(0.0f, transform.eulerAngles.y + stepangle, 0.0f) * Vector3.forward;
 
-                transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation,ground_boost_now ? robotParameter.DashRotateSpeed : robotParameter.RotateSpeed), 0.0f);
+                transform.rotation = Quaternion.Euler(0.0f, Mathf.MoveTowardsAngle(transform.eulerAngles.y, steptargetrotation, ground_boost_now ? robotParameter.DashRotateSpeed : robotParameter.RotateSpeed), 0.0f);
 
                 // move the player
                 MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
@@ -4666,7 +4768,7 @@ public class RobotController : Pausable
             thruster.emitting = boosting;
         }
 
-        if(boosting)
+        if (boosting)
         {
             if (!prev_boosting)
             {
@@ -4683,7 +4785,7 @@ public class RobotController : Pausable
 
         prev_boosting = boosting;
 
-        if(mirage_time > 0)
+        if (mirage_time > 0)
         {
             mirage_time--;
         }
@@ -4786,12 +4888,12 @@ public class RobotController : Pausable
                 }
 
                 if (
-                    robotParameter.itemFlag.HasFlag(ItemFlag.DropAssault)&&
+                    robotParameter.itemFlag.HasFlag(ItemFlag.DropAssault) &&
                     (upperBodyState == UpperBodyState.FIRE
                     || upperBodyState == UpperBodyState.SUBFIRE
                     || upperBodyState == UpperBodyState.HEAVYFIRE)
                     && (newState == LowerBodyState.GROUND || newState == LowerBodyState.GROUND_FIRE || newState == LowerBodyState.GROUND_SUBFIRE || newState == LowerBodyState.GROUND_HEAVYFIRE)
-                    ) 
+                    )
                 {
                     if (fire_done)
                     {
@@ -5106,7 +5208,7 @@ public class RobotController : Pausable
 
             Vector3 rot = Quaternion.Inverse(rotation) * sub;
 
-            return new Vector3(rot.x/ localScale.x,rot.y/ localScale.y,rot.z/ localScale.z);
+            return new Vector3(rot.x / localScale.x, rot.y / localScale.y, rot.z / localScale.z);
         }
 
         public Transform2(Transform transform)
@@ -5192,7 +5294,7 @@ public class RobotController : Pausable
         backblast_processed = false;
     }
 
-    void DoMainFire(float angle,bool quick)
+    void DoMainFire(float angle, bool quick)
     {
         if (rightWeapon.heavy)
         {
@@ -5214,12 +5316,12 @@ public class RobotController : Pausable
             _animator.CrossFadeInFixedTime(_animIDHeavyFire, 0.25f, 0);
             intend_animator_speed = 1.0f;
             backblast_processed = true;
-            
+
         }
         else
         {
             upperBodyState = UpperBodyState.FIRE;
- 
+
 
             if (dualwielding)
                 animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
@@ -5360,6 +5462,10 @@ public class RobotController : Pausable
                     {
                         _speed = robotParameter.AirDashSpeed * 2;
                     }
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroMirage))
+                    {
+                        StartMirage(10);
+                    }
                 }
                 else
                 {
@@ -5400,7 +5506,7 @@ public class RobotController : Pausable
                 fire_followthrough = 0;
             }
 
-           StartStep();
+            StartStep();
 
             if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
             {
@@ -5424,7 +5530,7 @@ public class RobotController : Pausable
                 event_stepbegin = event_stepped = false;
                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[0], 0.0f, 0);
                 intend_animator_speed = 1.0f;
-                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                stepremain = Sword.motionProperty[lowerBodyState].DashDuration;
                 combo_reserved = false;
                 Sword.slashing = false;
                 Sword.emitting = true;
@@ -5669,7 +5775,7 @@ public class RobotController : Pausable
                         }
 
                         upperBodyState = UpperBodyState.SNIPEFIRE;
-                      
+
                         if (carrying_weapon)
                         {
                             animator.Play(_animIDSnipeFire2, 0, 0.0f);
@@ -5677,7 +5783,7 @@ public class RobotController : Pausable
                         }
                         else
                             animator.Play(_animIDSnipeFire, 0, 0.0f);
-           
+
                         //_animator.CrossFadeInFixedTime(_animIDRollingFire_Left, 0.25f, 0);
                         intend_animator_speed = 1.0f;
 
@@ -5736,7 +5842,7 @@ public class RobotController : Pausable
                     upperBodyState = UpperBodyState.GROUNDSLASH_DASH;
                     event_stepbegin = event_stepped = false;
                     _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                    stepremain = Sword.motionProperty[lowerBodyState].DashDuration;
                     combo_reserved = false;
                     Sword.emitting = true;
                     StartSeeking();
@@ -5747,7 +5853,7 @@ public class RobotController : Pausable
                     upperBodyState = UpperBodyState.QUICKSLASH_DASH;
                     event_stepbegin = event_stepped = false;
                     _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                    stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                    stepremain = Sword.motionProperty[lowerBodyState].DashDuration;
                     combo_reserved = false;
                     Sword.emitting = true;
                     StartSeeking();
@@ -5761,7 +5867,7 @@ public class RobotController : Pausable
                 event_stepbegin = event_stepped = false;
                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[0], 0.0f, 0);
                 intend_animator_speed = 0.0f;
-                stepremain = Sword.motionProperty[lowerBodyState].DashLength;
+                stepremain = Sword.motionProperty[lowerBodyState].DashDuration;
                 combo_reserved = false;
                 Sword.emitting = true;
                 StartSeeking();
@@ -5927,13 +6033,20 @@ public class RobotController : Pausable
         }
     }
 
-    void StartMirage(int duration)
+    void StartMirage(int baseduration)
     {
-        mirage_time = duration;
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.CounterMeasure))
+            mirage_time = baseduration + 5;
+        else
+            mirage_time = baseduration;
+
+        if (team.affected_by_sensorarray > 0)
+            mirage_time /= 2;
+
         enqueueAfterimage.enabled = true;
         afterimageRenderer.Clear();
         virtual_targeted_position = GetCenter();
-    }    
+    }
 
     void StopMirage()
     {

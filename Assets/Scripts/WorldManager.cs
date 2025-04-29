@@ -42,6 +42,8 @@ public class WorldManager : MonoBehaviour
 
         public OrderToAI orderToAI = OrderToAI.NORMAL;
         public RobotController target_by_commander = null;
+
+        public int affected_by_sensorarray = 0;
     }
 
     public List<Pausable> pausables = new List<Pausable>();
@@ -202,6 +204,14 @@ public class WorldManager : MonoBehaviour
             {
                 robot.OnRobotAdded(robotController);
                 robotController.OnRobotAdded(robot);
+            }
+
+            if(team != robotController.team)
+            {
+                if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.SensorArray))
+                {
+                    team.affected_by_sensorarray++;
+                }
             }
         }
     }
@@ -703,6 +713,20 @@ public class WorldManager : MonoBehaviour
 
                 victory = robotController.team != teams[0];
 
+            }
+        }
+
+        if(robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.SensorArray))
+        {
+            foreach(var team in teams)
+            {
+                if (team == robotController.team)
+                    continue;
+
+                team.affected_by_sensorarray--;
+
+                if (team.affected_by_sensorarray < 0)
+                    Debug.Log("team.affected_by_sensorarray < 0");
             }
         }
 

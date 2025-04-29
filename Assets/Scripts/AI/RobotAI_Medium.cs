@@ -158,6 +158,11 @@ public class RobotAI_Medium : RobotAI_Base
                     bool allow_fire = false;
                     bool allow_infight = false;
 
+                    float infight_dist = 20.0f;
+
+                    if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.InfightBoost))
+                        infight_dist *= 1.5f;
+
                     switch (state)
                     {
                         case State.Ground:
@@ -313,7 +318,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
                                     {
 
-                                        if (current_target.Grounded && mindist < 20.0f)
+                                        if (current_target.Grounded && mindist < infight_dist)
                                             allow_infight = true;
 
                                         if (target_angle <= 90)
@@ -344,7 +349,7 @@ public class RobotAI_Medium : RobotAI_Base
 
                                 if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
                                 {
-                                    if (mindist < 20.0f)
+                                    if (mindist < infight_dist)
                                         allow_infight = true;
                                 }
                             }
@@ -397,7 +402,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (target_angle <= 90)
                                         allow_fire = true;
 
-                                    if (mindist < 20.0f)
+                                    if (mindist < infight_dist)
                                         allow_infight = true;
                                 }
                               
@@ -416,7 +421,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (floorhit.distance > 10.0f)
                                         allow_fire = true;
 
-                                    if (mindist < 20.0f)
+                                    if (mindist < infight_dist)
                                         allow_infight = true;
 
                                     if (robotController.shoulderWeapon != null

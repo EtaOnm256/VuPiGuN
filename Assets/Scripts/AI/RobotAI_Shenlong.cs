@@ -162,6 +162,11 @@ public class RobotAI_Shenlong : RobotAI_Base
                     bool allow_fire = false;
                     bool allow_infight = false;
 
+                    float infight_dist = 20.0f;
+
+                    if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.InfightBoost))
+                        infight_dist *= 1.5f;
+
                     switch (state)
                     {
                         case State.Ground:
@@ -313,7 +318,9 @@ public class RobotAI_Shenlong : RobotAI_Base
                                         //}
                                     }
 
-                                    if (current_target.Grounded && mindist < 20.0f && robotController.boost >= robotController.robotParameter.Boost_Max /2)
+                                   
+
+                                    if (current_target.Grounded && mindist < infight_dist && robotController.boost >= robotController.robotParameter.Boost_Max /2)
                                         allow_infight = true;
 
                                     if (jumpinfight_reload <= 0 && robotController.boost >= robotController.robotParameter.Boost_Max)
@@ -348,7 +355,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (mindist < 20.0f)
+                                if (mindist < infight_dist)
                                     allow_infight = true;
                             }
                             break;
@@ -383,7 +390,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                                 if (target_angle <= 90)
                                     allow_fire = true;
 
-                                if (mindist < 20.0f)
+                                if (mindist < infight_dist)
                                     allow_infight = true;
                               
                             }
