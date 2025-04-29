@@ -3899,7 +3899,7 @@ public class RobotController : Pausable
                                 Sword.slashing = false;
                                 slash_count = 0;
                                 Sword.damage = 100;
-                                Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
+                                Sword.knockBackType = KnockBackType.Normal;
                                 _verticalVelocity = 0.0f;
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.AirSlash]._animID[slash_count], 0.0f, 0);
                                 audioSource.PlayOneShot(audioClip_Swing);
@@ -4099,7 +4099,16 @@ public class RobotController : Pausable
                             }
                         }
 
-                        if (combo_reserved && event_acceptnextslash)
+                    
+
+                        bool combo_accepted = false;
+
+                        if(combo_reserved)
+                        {
+                            combo_accepted = comboType == ComboType.SLASH || Sword.hitHistoryRCCount > 0;
+                        }
+
+                        if (combo_accepted && (event_acceptnextslash || comboType == ComboType.SHOOT))
                             event_slash = true;
 
                         if (event_slash)
@@ -4107,7 +4116,7 @@ public class RobotController : Pausable
                             if (lowerBodyState == LowerBodyState.AirSlash)
                             {
                                 slash_count++;
-                                if (!combo_reserved)
+                                if (!combo_accepted)
                                 {
                                     Sword.emitting = false;
 
@@ -4171,7 +4180,7 @@ public class RobotController : Pausable
                                     {
 
                                         TransitLowerBodyState(LowerBodyState.AIR);
-                                        DoMainFire(180.0f, true);
+                                        DoMainFire(0.0f, true);
 
                                         Sword.emitting = false;
                                     }
@@ -4180,7 +4189,7 @@ public class RobotController : Pausable
                             else if (lowerBodyState == LowerBodyState.GroundSlash)
                             {
                                 slash_count++;
-                                if (!combo_reserved)
+                                if (!combo_accepted)
                                 {
                                     Sword.emitting = false;
                                     TransitLowerBodyState(LowerBodyState.STAND);
@@ -4220,7 +4229,7 @@ public class RobotController : Pausable
                                     {
 
                                         TransitLowerBodyState(LowerBodyState.STAND);
-                                        DoMainFire(180.0f, true);
+                                        DoMainFire(0.0f, true);
 
                                         Sword.emitting = false;
                                     }
@@ -4229,7 +4238,7 @@ public class RobotController : Pausable
                             else if (lowerBodyState == LowerBodyState.LowerSlash)
                             {
                                 slash_count++;
-                                if (!combo_reserved)
+                                if (!combo_accepted)
                                 {
                                     Sword.emitting = false;
                                     TransitLowerBodyState(LowerBodyState.STAND);
@@ -4266,7 +4275,7 @@ public class RobotController : Pausable
                                     {
 
                                         TransitLowerBodyState(LowerBodyState.STAND);
-                                        DoMainFire(180.0f, true);
+                                        DoMainFire(0.0f, true);
 
                                         Sword.emitting = false;
                                     }
@@ -4275,7 +4284,7 @@ public class RobotController : Pausable
                             else if (lowerBodyState == LowerBodyState.QuickSlash)
                             {
                                 slash_count++;
-                                if (!combo_reserved)
+                                if (!combo_accepted)
                                 {
                                     Sword.emitting = false;
                                     TransitLowerBodyState(LowerBodyState.STAND);
@@ -4300,7 +4309,7 @@ public class RobotController : Pausable
                                     {
 
                                         TransitLowerBodyState(LowerBodyState.STAND);
-                                        DoMainFire(180.0f, true);
+                                        DoMainFire(0.0f, true);
 
                                         Sword.emitting = false;
                                     }
@@ -4310,7 +4319,7 @@ public class RobotController : Pausable
                             if (lowerBodyState == LowerBodyState.DashSlash)
                             {
                                 slash_count++;
-                                if (!combo_reserved)
+                                if (!combo_accepted)
                                 {
                                     Sword.emitting = false;
 
@@ -4339,7 +4348,7 @@ public class RobotController : Pausable
                                     {
 
                                         TransitLowerBodyState(LowerBodyState.AIR);
-                                        DoMainFire(180.0f, true);
+                                        DoMainFire(0.0f, true);
 
                                         Sword.emitting = false;
                                     }
