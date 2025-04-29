@@ -70,14 +70,14 @@ namespace AfterimageSample
         /// <summary>
         /// 記憶したメッシュを全て描画する.
         /// </summary>
-        public void RenderMeshes(int ClipFrameBegin)
+        public void RenderMeshes(int ClipFrameBegin,Material material)
         {
             if (FrameCount >= ClipFrameBegin)
             {
                 for (int i = 0; i < _meshes.Length; i++)
                 {
                     for (int subMesh = 0; subMesh < _meshes[i].subMeshCount; subMesh++)
-                        Graphics.RenderMesh(_params[i], _meshes[i], subMesh, _matrices[i]);
+                        Graphics.DrawMesh(_meshes[i], _matrices[i], material,0,Camera.current, subMesh);
                 }
             }
             FrameCount++;

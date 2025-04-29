@@ -34,7 +34,7 @@ namespace AfterimageSample
             {
                 var afterimage = _renderQueue.Dequeue();
 
-                afterimage.RenderMeshes(_clipFrameBegin);
+                afterimage.RenderMeshes(_clipFrameBegin, _material);
 
                 // 描画回数が限度を超えるまで繰り返しキューに入れる.
                 // 限度を超えたらプールに返す.
