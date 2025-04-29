@@ -90,6 +90,8 @@ MonoBehaviour:
   speed: 0
   dead: 0
   owner: {fileID: 0}
+  trajectory: 1
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   hitEffect_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   meshRenderer: {fileID: 0}
+  chargeshot: 0

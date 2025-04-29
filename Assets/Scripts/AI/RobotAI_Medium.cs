@@ -163,72 +163,80 @@ public class RobotAI_Medium : RobotAI_Base
                     if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.InfightBoost))
                         infight_dist *= 1.5f;
 
+                    bool dodge = false;
+
+                    foreach (var team in WorldManager.current_instance.teams)
+                    {
+                        if (team == robotController.team)
+                            continue;
+
+                        foreach (var robot in team.robotControllers)
+                        {
+                            if (robot.dead || robot.Target_Robot != robotController)
+                                continue;
+
+                            if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
+                                continue;
+
+                            if (robot.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
+                                || robot.lowerBodyState == RobotController.LowerBodyState.AirSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.DashSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
+                                || robot.lowerBodyState == RobotController.LowerBodyState.GroundSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
+                                || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump
+                                || robot.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
+                                || robot.lowerBodyState == RobotController.LowerBodyState.QuickSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                            {
+                                dodge = true;
+                                stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
+                                break;
+                            }
+                        }
+
+                        float evade_thresh;
+
+                        if (state != State.Ground)
+                            evade_thresh = 40.0f;
+                        else
+                            evade_thresh = 30.0f;
+
+                        foreach (var projectile in team.projectiles)
+                        {
+                            if (projectile.dead)
+                                continue;
+
+                            //if ( Vector3.Dot(.normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
+
+                            float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.position)).magnitude;
+
+                            float dist = (robotController.GetCenter() - projectile.position).magnitude;
+
+                            if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
+                                && (shift < 3.0f || projectile.trajectory == Weapon.Trajectory.Curved)
+                                && dist / projectile.speed < evade_thresh
+                                )
+                            {
+                                dodge = true;
+                                if (!prev_dodge)
+                                    stepMove = ThreatPosToStepMove(projectile.transform.position, targetQ);
+                                break;
+                            }
+                        }
+                    }
+
                     switch (state)
                     {
                         case State.Ground:
                             {
-                                bool dodge = false;
-                                Vector2 stepMove = Vector2.zero;
-
-                                foreach (var team in WorldManager.current_instance.teams)
-                                {
-                                    if (team == robotController.team)
-                                        continue;
-
-                                    foreach (var robot in team.robotControllers)
-                                    {
-                                        if (robot.dead || robot.Target_Robot != robotController)
-                                            continue;
-
-                                        if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
-                                            continue;
-
-                                        if (robot.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.AirSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.DashSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.GroundSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.QuickSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
-                                        {
-                                            dodge = true;
-                                            stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
-                                            break;
-                                        }
-                                    }
-
-                                    foreach (var projectile in team.projectiles)
-                                    {
-                                        if (projectile.dead)
-                                            continue;
-
-                                        //if ( Vector3.Dot(.normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
-
-                                        float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.position)).magnitude;
-
-                                        float dist = (robotController.GetCenter() - projectile.position).magnitude;
-
-                                        if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
-                                            && (/*projectile.target == robotController || */shift < 3.0f)
-                                            && dist / projectile.speed < 20.0f
-                                            )
-                                        {
-                                            dodge = true;
-                                            stepMove = ThreatPosToStepMove(projectile.transform.position, targetQ);
-                                            break;
-                                        }
-                                    }
-                                }
-
                                 if (dodge)
                                 {
                                     move = stepMove;
 
-                                    if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
+                                    if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP
+                                        && IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
                                         sprint = true;
                                     else
                                         sprint = !prev_sprint;
@@ -367,9 +375,25 @@ public class RobotAI_Medium : RobotAI_Base
 
                                 if (far)
                                 {
-                                    move.y = 1.0f;
-                                    move.x = 0.0f;
-                                    //moveDirChangeTimer = 60;
+                                    if (dodge)
+                                    {
+                                        move = stepMove;
+
+                                        Vector3 stepMove_horizon = new Vector3(stepMove.x, 0.0f, stepMove.y);
+
+                                        Vector3 rel = Quaternion.Inverse(targetQ) * transform.forward;
+
+                                        if(Vector3.Dot(stepMove_horizon,rel) < Mathf.Cos(45.0f*Mathf.Deg2Rad))
+                                        {
+                                            if (robotController.lowerBodyState == RobotController.LowerBodyState.DASH)
+                                                sprint = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        move.y = 1.0f;
+                                        move.x = 0.0f;
+                                    }
                                 }
                                 else
                                 {
@@ -515,6 +539,7 @@ public class RobotAI_Medium : RobotAI_Base
                     fire_wait--;
                     infight_wait--;
                     moveDirChangeTimer--;
+                    prev_dodge = dodge;
                 }
             }
         }

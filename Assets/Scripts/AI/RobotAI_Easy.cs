@@ -153,7 +153,6 @@ public class RobotAI_Easy : RobotAI_Base
                     {
 
                         bool dodge = false;
-                        Vector2 stepMove = Vector2.zero;
                         foreach (var team in WorldManager.current_instance.teams)
                         {
                             if (team == robotController.team)
@@ -185,6 +184,13 @@ public class RobotAI_Easy : RobotAI_Base
                                 }
                             }
 
+                            float evade_thresh;
+
+                            //if (state != State.Ground)
+                            //    evade_thresh = 40.0f;
+                            //else
+                                evade_thresh = 30.0f;
+
                             foreach (var projectile in team.projectiles)
                             {
                                 if (projectile.dead)
@@ -197,8 +203,8 @@ public class RobotAI_Easy : RobotAI_Base
                                 float dist = (robotController.GetCenter() - projectile.position).magnitude;
 
                                 if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
-                                    && (/*projectile.target == robotController || */shift < 3.0f)
-                                    && dist / projectile.speed < 20.0f
+                                    && (shift < 3.0f || projectile.trajectory == Weapon.Trajectory.Curved)
+                                    && dist / projectile.speed < evade_thresh
                                     )
                                 {
                                     dodge = true;
@@ -248,6 +254,7 @@ public class RobotAI_Easy : RobotAI_Base
 
                         fire_wait--;
                         moveDirChangeTimer--;
+                        prev_dodge = dodge;
                     }
                 }
             }

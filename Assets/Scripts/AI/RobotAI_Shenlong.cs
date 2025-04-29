@@ -172,7 +172,6 @@ public class RobotAI_Shenlong : RobotAI_Base
                         case State.Ground:
                             {
                                 bool dodge = false;
-                                Vector2 stepMove = Vector2.zero;
                                 /*if (nearest_robot != null && mindist < 10.0f)
                                 {
                                     if ( (nearest_robot.upperBodyState == RobotController.UpperBodyState.FIRE
@@ -217,6 +216,13 @@ public class RobotAI_Shenlong : RobotAI_Base
                                             }
                                         }
 
+                                        float evade_thresh;
+
+                                        if (state != State.Ground)
+                                            evade_thresh = 40.0f;
+                                        else
+                                            evade_thresh = 30.0f;
+
                                         foreach (var projectile in team.projectiles)
                                         {
                                             if (projectile.dead)
@@ -229,8 +235,8 @@ public class RobotAI_Shenlong : RobotAI_Base
                                             float dist = (robotController.GetCenter() - projectile.position).magnitude;
 
                                             if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
-                                                && (/*projectile.target == robotController || */shift < 3.0f)
-                                                && dist / projectile.speed < 20.0f
+                                                && (shift < 3.0f || projectile.trajectory == Weapon.Trajectory.Curved)
+                                                && dist / projectile.speed < evade_thresh
                                                 )
                                             {
                                                 dodge = true;
@@ -246,15 +252,16 @@ public class RobotAI_Shenlong : RobotAI_Base
                                     //move.x = 1.0f;
                                     //move.y = 0.0f;
 
-                                    if (stepDirChangeTimer == 0)
-                                    {
-                                        stepdir = VectorUtil.rotate(stepMove, Random.Range(0, 2) != 0 ? 0.0f * Mathf.Deg2Rad : 180.0f * Mathf.Deg2Rad);
-                                    }
+                                    //if (stepDirChangeTimer == 0)
+                                    //{
+                                    //    stepdir = VectorUtil.rotate(stepMove, Random.Range(0, 2) != 0 ? 0.0f * Mathf.Deg2Rad : 180.0f * Mathf.Deg2Rad);
+                                    //}
 
                                     
-                                    move = stepdir;
+                                    move = stepMove;
 
-                                    if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
+                                    if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP
+                                      && IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
                                         sprint = true;
                                     else
                                         sprint = !prev_sprint;
@@ -279,7 +286,9 @@ public class RobotAI_Shenlong : RobotAI_Base
                                     {
                                         if (mindist > lock_range / 2)
                                         {
-                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) != 0 ? 45.0f * Mathf.Deg2Rad : -45.0f * Mathf.Deg2Rad);
+                                            //move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) != 0 ? 45.0f * Mathf.Deg2Rad : -45.0f * Mathf.Deg2Rad);
+                                            move.y = 1.0f;
+                                            move.x = 0.0f;
                                         }
                                         else
                                         {
@@ -333,9 +342,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                                     if (target_angle <= 90)
                                         allow_fire = true;
                                 }
-
-                                //if (!robotController.Grounded)
-                                //    state = State.Ascend;
+                                prev_dodge = dodge;
                             }
                             break;
                         case State.Ascend:

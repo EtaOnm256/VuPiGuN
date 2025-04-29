@@ -5,6 +5,8 @@ using UnityEngine;
 public class RobotAI_Base : InputBase
 {
     protected RobotController robotController = null;
+    protected bool prev_dodge = false;
+    protected Vector2 stepMove = Vector2.zero;
     void Awake()
     {
         robotController = GetComponent<RobotController>();
@@ -17,17 +19,21 @@ public class RobotAI_Base : InputBase
 
         if (Mathf.Abs(rel.x) > Mathf.Abs(rel.z))
         {
-            if (rel.x > 0.0f)
-                stepMove.y = 1.0f;
-            else
-                stepMove.y = -1.0f;
+            //if (rel.x > 0.0f)
+            //    stepMove.y = 1.0f;
+            //else
+            //    stepMove.y = -1.0f;
+
+            stepMove.y = Random.Range(0, 2) == 0 ? stepMove.y = 1.0f : stepMove.y = -1.0f;
         }
         else
         {
-            if (rel.z > 0.0f)
-                stepMove.x = -1.0f;
-            else
-                stepMove.x = 1.0f;
+            //if (rel.z > 0.0f)
+            //    stepMove.x = -1.0f;
+            //else
+            //    stepMove.x = 1.0f;
+
+            stepMove.x = Random.Range(0, 2) == 0 ? stepMove.x = 1.0f : stepMove.x = -1.0f;
         }
 
         return stepMove;
@@ -103,5 +109,13 @@ public class RobotAI_Base : InputBase
             }
 
         }
+    }
+
+    protected bool IsStepDirectionCrossed(RobotController.StepDirection l,RobotController.StepDirection r)
+    {
+        if(l == RobotController.StepDirection.FORWARD || r== RobotController.StepDirection.BACKWARD)
+            return r != RobotController.StepDirection.FORWARD && r != RobotController.StepDirection.BACKWARD;
+        else
+            return r == RobotController.StepDirection.FORWARD || r == RobotController.StepDirection.BACKWARD;
     }
 }

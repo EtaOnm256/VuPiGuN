@@ -12,6 +12,8 @@ public class Projectile : Pausable
     public bool dead = false;
     public RobotController owner = null;
 
+    public Weapon.Trajectory trajectory = Weapon.Trajectory.Straight;
+
     // Start is called before the first frame update
     void Start()
     {

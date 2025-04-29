@@ -783,7 +783,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _afterimageRenderer: {fileID: 9128911232947972839}
   _intervalFrames: 0
-  _clipFrameBegin: 5
+  _clipFrameBegin: 3
 --- !u!1 &1774696330335166926
 GameObject:
   m_ObjectHideFlags: 0
@@ -3022,6 +3022,8 @@ MonoBehaviour:
   BottomClamp: 60
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  RotateSpeed_BeforeSlash: 3
+  InitialVerticalSpeed_JumpSlash: 60
   cameraPosition: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   _HP: 500

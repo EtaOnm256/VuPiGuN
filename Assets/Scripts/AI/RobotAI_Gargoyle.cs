@@ -61,7 +61,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
         if (current_target == null)
         {
-           
+
         }
         else
         {
@@ -90,7 +90,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
             //if (robotController.upperBodyState == RobotController.UpperBodyState.FIRE)
             //{
-                
+
             //}
             //else
             {
@@ -154,71 +154,79 @@ public class RobotAI_Gargoyle : RobotAI_Base
                     bool allow_fire = false;
                     bool allow_infight = false;
 
+                    bool dodge = false;
+                    foreach (var team in WorldManager.current_instance.teams)
+                    {
+                        if (team == robotController.team)
+                            continue;
+
+                        foreach (var robot in team.robotControllers)
+                        {
+                            if (robot.dead || robot.Target_Robot != robotController)
+                                continue;
+
+                            if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
+                                continue;
+
+                            if (robot.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
+                                || robot.lowerBodyState == RobotController.LowerBodyState.AirSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.DashSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
+                                || robot.lowerBodyState == RobotController.LowerBodyState.GroundSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
+                                || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump
+                                || robot.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
+                                || robot.lowerBodyState == RobotController.LowerBodyState.QuickSlash
+                                || robot.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                            {
+                                dodge = true;
+                                stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
+                                break;
+                            }
+                        }
+
+                        float evade_thresh;
+
+                        if (state != State.Ground)
+                            evade_thresh = 40.0f;
+                        else
+                            evade_thresh = 30.0f;
+
+                        foreach (var projectile in team.projectiles)
+                        {
+                            if (projectile.dead)
+                                continue;
+
+                            //if ( Vector3.Dot(.normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
+
+                            float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.position)).magnitude;
+
+                            float dist = (robotController.GetCenter() - projectile.position).magnitude;
+
+                            if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
+                                && (shift < 3.0f || projectile.trajectory == Weapon.Trajectory.Curved)
+                                && dist / projectile.speed < evade_thresh
+                                )
+                            {
+                                dodge = true;
+                                if (!prev_dodge)
+                                    stepMove = ThreatPosToStepMove(projectile.transform.position, targetQ);
+                                break;
+                            }
+                        }
+                    }
+
                     switch (state)
                     {
                         case State.Ground:
                             {
-                                bool dodge = false;
-                                Vector2 stepMove = Vector2.zero;
-                                foreach (var team in WorldManager.current_instance.teams)
-                                {
-                                    if (team == robotController.team)
-                                        continue;
-
-                                    foreach (var robot in team.robotControllers)
-                                    {
-                                        if (robot.dead || robot.Target_Robot != robotController)
-                                            continue;
-
-                                        if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
-                                            continue;
-
-                                        if (robot.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.AirSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.DashSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.GroundSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.QuickSlash
-                                            || robot.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
-                                        {
-                                            dodge = true;
-                                            stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
-                                            break;
-                                        }
-                                    }
-
-                                    foreach (var projectile in team.projectiles)
-                                    {
-                                        if (projectile.dead)
-                                            continue;
-
-                                        //if ( Vector3.Dot(.normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
-
-                                        float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.position)).magnitude;
-
-                                        float dist = (robotController.GetCenter() - projectile.position).magnitude;
-
-                                        if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
-                                            && (/*projectile.target == robotController || */shift < 3.0f)
-                                            && dist / projectile.speed < 20.0f
-                                            )
-                                        {
-                                            dodge = true;
-                                            stepMove = ThreatPosToStepMove(projectile.transform.position, targetQ);
-                                            break;
-                                        }
-                                    }
-                                }
-
                                 if (dodge)
                                 {
                                     move = stepMove;
 
-                                    if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP)
+                                    if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP
+                                        && IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
                                         sprint = true;
                                     else
                                         sprint = !prev_sprint;
@@ -231,8 +239,15 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     {
                                         if (mindist > lock_range / 2)
                                         {
-                                            move.y = 1.0f;
-                                            move.x = 0.0f;
+                                            if (dodge)
+                                            {
+                                                move = stepMove;
+                                            }
+                                            else
+                                            {
+                                                move.y = 0.0f;
+                                                move.x = 1.0f;
+                                            }
                                         }
                                         else
                                         {
@@ -256,8 +271,15 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     {
                                         if (mindist > lock_range)
                                         {
-                                            move.y = 1.0f;
-                                            move.x = 0.0f;
+                                            if (dodge)
+                                            {
+                                                move = stepMove;
+                                            }
+                                            else
+                                            {
+                                                move.y = 1.0f;
+                                                move.x = 0.0f;
+                                            }
                                             //moveDirChangeTimer = 60;
                                         }
                                         else
@@ -303,7 +325,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                         firing_sub = true;
                                         jump = true;
 
-                                        if(floorhit.distance > 25.0f && robotController._verticalVelocity > robotController.robotParameter.AscendingVelocity * 3 / 4)
+                                        if (floorhit.distance > 25.0f && robotController._verticalVelocity > robotController.robotParameter.AscendingVelocity * 3 / 4)
                                         {
                                             subfire = true;
                                         }
@@ -313,9 +335,9 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
                                 if (!firing_sub)
                                 {
-                                    if ( (floorhit.distance > 25.0f
+                                    if ((floorhit.distance > 25.0f
                                             || robotController._verticalVelocity < -robotController.robotParameter.AscendingVelocity * 3 / 4)
-                                            && ( (robotController.upperBodyState != RobotController.UpperBodyState.FIRE && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
+                                            && ((robotController.upperBodyState != RobotController.UpperBodyState.FIRE && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
                                                   || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive)
                                                   ))
                                     {
@@ -331,8 +353,15 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
                                 if (mindist > lock_range * 3 / 4)
                                 {
-                                    move.y = 1.0f;
-                                    move.x = 0.0f;
+                                    if (dodge)
+                                    {
+                                        move = stepMove;
+                                    }
+                                    else
+                                    {
+                                        move.y = 1.0f;
+                                        move.x = 0.0f;
+                                    }
                                     //moveDirChangeTimer = 60;
                                 }
                                 else
@@ -363,20 +392,37 @@ public class RobotAI_Gargoyle : RobotAI_Base
                             {
                                 sprint = true;
 
-                                if (mindist > lock_range*3/4)
+                                if (mindist > lock_range * 3 / 4)
                                 {
-                                    move.y = 1.0f;
-                                    move.x = 0.0f;
+                                    if (dodge)
+                                    {
+                                        move = stepMove;
+
+                                        Vector3 stepMove_horizon = new Vector3(stepMove.x, 0.0f, stepMove.y);
+
+                                        Vector3 rel = Quaternion.Inverse(targetQ) * transform.forward;
+
+                                        if (Vector3.Dot(stepMove_horizon, rel) < Mathf.Cos(45.0f * Mathf.Deg2Rad))
+                                        {
+                                            if (robotController.lowerBodyState == RobotController.LowerBodyState.DASH)
+                                                sprint = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        move.y = 1.0f;
+                                        move.x = 0.0f;
+                                    }
                                     //moveDirChangeTimer = 60;
                                 }
                                 else
                                 {
-                                   
+
 
                                     if (moveDirChangeTimer <= 0)
                                     {
                                         //move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
-                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0,2) == 0 ? 90 * Mathf.Deg2Rad : -90 * Mathf.Deg2Rad);
+                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) == 0 ? 90 * Mathf.Deg2Rad : -90 * Mathf.Deg2Rad);
                                         moveDirChangeTimer = 60;
                                     }
                                 }
@@ -413,7 +459,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
                                 if (mindist < 20.0f)
                                     allow_infight = true;
-                              
+
                             }
                             break;
                         case State.Decend:
@@ -438,13 +484,13 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     }
                                 }
 
-                                if(floorhit.distance > 25.0f && target_angle <= 90)
+                                if (floorhit.distance > 25.0f && target_angle <= 90)
                                     allow_fire = true;
 
                                 if (mindist < 20.0f)
                                     allow_infight = true;
 
-                               
+
                             }
                             break;
                     }
@@ -455,15 +501,15 @@ public class RobotAI_Gargoyle : RobotAI_Base
                         || robotController.lowerBodyState == RobotController.LowerBodyState.LowerSlash
                         || robotController.lowerBodyState == RobotController.LowerBodyState.DashSlash)
                     {
-                        if(robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.lowerBodyState].num-1)
+                        if (robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.lowerBodyState].num - 1)
                             infight_reload = 60;
                     }
-                    else if(infight_reload > 0)
+                    else if (infight_reload > 0)
                         infight_reload--;
 
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.JumpSlash)
                         jumpinfight_reload = 90;
-                    else if(jumpinfight_reload > 0)
+                    else if (jumpinfight_reload > 0)
                         jumpinfight_reload--;
 
                     /*if(robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide) && robotController.lowerBodyState == RobotController.LowerBodyState.JUMPSLASH_GROUND)
@@ -539,6 +585,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                     fire_wait--;
                     infight_wait--;
                     moveDirChangeTimer--;
+                    prev_dodge = dodge;
                 }
             }
         }

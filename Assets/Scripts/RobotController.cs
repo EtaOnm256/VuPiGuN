@@ -473,7 +473,7 @@ public class RobotController : Pausable
         FORWARD, LEFT, BACKWARD, RIGHT
     }
 
-    StepDirection stepDirection;
+    public StepDirection stepDirection; //AIから参照するので
     StepMotion stepMotion;
 
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
@@ -3763,7 +3763,13 @@ public class RobotController : Pausable
 
                         if (Target_Robot == null)
                         {
-                            slash = true;
+                            if(lowerBodyState == LowerBodyState.DASHSLASH_DASH)
+                            {
+                                if(event_swing)
+                                    slash = true;
+                            }
+                            else
+                                slash = true;
                         }
                         else
                         {
@@ -4949,7 +4955,8 @@ public class RobotController : Pausable
         lowerBodyState = newState;
     }
 
-    StepDirection determineStepDirection(Vector3 inputDirection)
+    //AIから使う
+    static public StepDirection determineStepDirection(Vector3 inputDirection)
     {
         float stepdirectiondegree = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
 
