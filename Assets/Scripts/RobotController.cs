@@ -2124,7 +2124,18 @@ public class RobotController : Pausable
     private void UpperBodyMove()
     {
         if (hitstop_timer > 0)
+        {
+            // トリガーホールド実装時に実装変えた方がいい…ように見えて、
+            // 実際はフリックとの兼ね合いでホールドが難しいからずっとこのままでよさそう
+
+            if (rightWeapon != null)
+                rightWeapon.trigger = false;
+
+            if (shoulderWeapon != null)
+                shoulderWeapon.trigger = false;
+
             return;
+        }
 
         bool head_no_aim_smooth = false;
         bool chest_no_aim_smooth = false;
