@@ -226,7 +226,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     move = stepMove;
 
                                     if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP
-                                        && IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
+                                        && !IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
                                         sprint = true;
                                     else
                                         sprint = !prev_sprint;

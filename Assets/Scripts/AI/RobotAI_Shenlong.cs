@@ -261,7 +261,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                                     move = stepMove;
 
                                     if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP
-                                      && IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
+                                      && !IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
                                         sprint = true;
                                     else
                                         sprint = !prev_sprint;
@@ -286,9 +286,9 @@ public class RobotAI_Shenlong : RobotAI_Base
                                     {
                                         if (mindist > lock_range / 2)
                                         {
-                                            //move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) != 0 ? 45.0f * Mathf.Deg2Rad : -45.0f * Mathf.Deg2Rad);
-                                            move.y = 1.0f;
-                                            move.x = 0.0f;
+                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) != 0 ? 45.0f * Mathf.Deg2Rad : -45.0f * Mathf.Deg2Rad);
+                                            //move.y = 1.0f;
+                                            //move.x = 0.0f;
                                         }
                                         else
                                         {
@@ -332,12 +332,12 @@ public class RobotAI_Shenlong : RobotAI_Base
                                     if (current_target.Grounded && mindist < infight_dist && robotController.boost >= robotController.robotParameter.Boost_Max /2)
                                         allow_infight = true;
 
-                                    if (jumpinfight_reload <= 0 && robotController.boost >= robotController.robotParameter.Boost_Max)
+                                    /*if (jumpinfight_reload <= 0 && robotController.boost >= robotController.robotParameter.Boost_Max)
                                     {
                                         ringMenuDir = RobotController.RingMenuDir.Down;
                                         allow_infight = true;
                                         infight_wait = 0;
-                                    }
+                                    }*/
 
                                     if (target_angle <= 90)
                                         allow_fire = true;

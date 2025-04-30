@@ -113,7 +113,7 @@ public class RobotAI_Base : InputBase
 
     protected bool IsStepDirectionCrossed(RobotController.StepDirection l,RobotController.StepDirection r)
     {
-        if(l == RobotController.StepDirection.FORWARD || r== RobotController.StepDirection.BACKWARD)
+        if(l == RobotController.StepDirection.FORWARD || l== RobotController.StepDirection.BACKWARD)
             return r != RobotController.StepDirection.FORWARD && r != RobotController.StepDirection.BACKWARD;
         else
             return r == RobotController.StepDirection.FORWARD || r == RobotController.StepDirection.BACKWARD;

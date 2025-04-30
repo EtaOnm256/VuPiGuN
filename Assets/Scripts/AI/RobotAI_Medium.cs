@@ -236,7 +236,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     move = stepMove;
 
                                     if (robotController.lowerBodyState == RobotController.LowerBodyState.STEP
-                                        && IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
+                                        && !IsStepDirectionCrossed(RobotController.determineStepDirection(stepMove), robotController.stepDirection))
                                         sprint = true;
                                     else
                                         sprint = !prev_sprint;
