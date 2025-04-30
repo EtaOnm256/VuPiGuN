@@ -3277,8 +3277,19 @@ public class RobotController : Pausable
                             {
                                 _speed = targetSpeed;
                             }
-                        }
 
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
+                            {
+                                if (_input.jump)
+                                {
+                                    if (ConsumeBoost(4))
+                                    {
+                                        _verticalVelocity = Mathf.Min(_verticalVelocity + robotParameter.AscendingAccelerate, robotParameter.AscendingVelocity);
+                                        boosting = true;
+                                    }
+                                }
+                            }
+                        }
 
                         if (Target_Robot != null)
                         {
@@ -3314,13 +3325,15 @@ public class RobotController : Pausable
                         }
 
                         if (lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE
-                            || lowerBodyState == LowerBodyState.AIRROLLINGFIRE || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE)
+                            || lowerBodyState == LowerBodyState.AIRROLLINGFIRE || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE
+                            || lowerBodyState == LowerBodyState.AIRSNIPEFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE
+                            )
                         {
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                                 AcceptDash(true);
 
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
-                                RegenBoost();
+                            //if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
+                            //    RegenBoost();
                         }
                         else
                         {

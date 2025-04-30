@@ -36,7 +36,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
     public enum State
     {
         Ground,
-        Ascend,
+        Floating,
         Dash,
         Decend
     }
@@ -302,10 +302,10 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                 }
 
                                 if (!robotController.Grounded)
-                                    state = State.Ascend;
+                                    state = State.Floating;
                             }
                             break;
-                        case State.Ascend:
+                        case State.Floating:
                             {
                                 bool firing_sub = false;
 
@@ -323,7 +323,6 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     if (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy)
                                     {
                                         firing_sub = true;
-                                        jump = true;
 
                                         if (floorhit.distance > 25.0f && robotController._verticalVelocity > robotController.robotParameter.AscendingVelocity * 3 / 4)
                                         {
@@ -345,8 +344,6 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                         moveDirChangeTimer = 0;
                                         jump = false;
                                     }
-                                    else
-                                        jump = true;
                                 }
 
 
@@ -375,7 +372,10 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     }
                                 }
 
-                                if (overheating)
+                                if (floorhit.distance < 25.0f && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
+                                    jump = true;
+
+                                if (robotController.boost < robotController.robotParameter.Boost_Max * 1 / 4)
                                     state = State.Decend;
 
                                 if (robotController.Grounded)
@@ -434,7 +434,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                 }
                                 else if (floorhit.distance < 15.0f)
                                 {
-                                    state = State.Ascend;
+                                    state = State.Floating;
                                 }
                                 else
                                 {
@@ -480,7 +480,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                 {
                                     if (robotController.boost > robotController.robotParameter.Boost_Max / 2)
                                     {
-                                        state = State.Ascend;
+                                        state = State.Floating;
                                     }
                                 }
 
