@@ -783,7 +783,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _afterimageRenderer: {fileID: 9128911232947972839}
   _intervalFrames: 0
-  _clipFrameBegin: 3
+  _clipFrameBegin: 1
 --- !u!1 &1774696330335166926
 GameObject:
   m_ObjectHideFlags: 0

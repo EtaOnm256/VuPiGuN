@@ -70,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8788691653540996990, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: robotParameter.MaxHP
-      value: 1600
+      value: 1400
       objectReference: {fileID: 0}
     - target: {fileID: 8788691653540996990, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: robotParameter.itemFlag

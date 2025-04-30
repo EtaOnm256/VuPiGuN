@@ -80,6 +80,10 @@ namespace AfterimageSample
                         Graphics.DrawMesh(_meshes[i], _matrices[i], material,0,Camera.current, subMesh);
                 }
             }
+        }
+
+        public void Increment()
+        {
             FrameCount++;
         }
     }

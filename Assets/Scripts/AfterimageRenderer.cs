@@ -25,16 +25,13 @@ namespace AfterimageSample
             Render();
         }
 
-        /// <summary>
-        /// キューに入っているAfterImageのメッシュを描画する.
-        /// </summary>
-        public void Render()
+        private void FixedUpdate()
         {
             for (int i = 0; i < _renderQueue.Count;)
             {
                 var afterimage = _renderQueue.Dequeue();
 
-                afterimage.RenderMeshes(_clipFrameBegin, _material);
+                afterimage.Increment();
 
                 // 描画回数が限度を超えるまで繰り返しキューに入れる.
                 // 限度を超えたらプールに返す.
@@ -48,6 +45,22 @@ namespace AfterimageSample
                     afterimage.Reset();
                     _pool.Push(afterimage);
                 }
+            }
+        }
+
+        /// <summary>
+        /// キューに入っているAfterImageのメッシュを描画する.
+        /// </summary>
+        public void Render()
+        {
+            for (int i = 0; i < _renderQueue.Count;)
+            {
+                var afterimage = _renderQueue.Dequeue();
+
+                afterimage.RenderMeshes(_clipFrameBegin, _material);
+ 
+                _renderQueue.Enqueue(afterimage);
+                i++;
             }
         }
 

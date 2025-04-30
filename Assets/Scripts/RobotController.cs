@@ -2827,8 +2827,8 @@ public class RobotController : Pausable
             {
                 if (stealthCloud_interval <= 0)
                 {
-                    StartMirage(10);
-                    stealthCloud_interval = 15;
+                    StartMirage(15);
+                    stealthCloud_interval = 30;
                 }
             }
             else
@@ -6064,7 +6064,7 @@ public class RobotController : Pausable
     void StartMirage(int baseduration)
     {
         if (robotParameter.itemFlag.HasFlag(ItemFlag.CounterMeasure))
-            mirage_time = baseduration + 5;
+            mirage_time = baseduration * 2;
         else
             mirage_time = baseduration;
 
