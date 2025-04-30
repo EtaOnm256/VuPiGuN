@@ -43,7 +43,7 @@ public class WorldManager : MonoBehaviour
         public OrderToAI orderToAI = OrderToAI.NORMAL;
         public RobotController target_by_commander = null;
 
-        public int affected_by_sensorarray = 0;
+        //public int affected_by_sensorarray = 0;
     }
 
     public List<Pausable> pausables = new List<Pausable>();
@@ -208,10 +208,10 @@ public class WorldManager : MonoBehaviour
 
             if(team != robotController.team)
             {
-                if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.SensorArray))
-                {
-                    team.affected_by_sensorarray++;
-                }
+                //if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.SensorArray))
+                //{
+                    //team.affected_by_sensorarray++;
+                //}
             }
         }
     }
@@ -716,17 +716,17 @@ public class WorldManager : MonoBehaviour
             }
         }
 
-        if(robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.SensorArray))
+        if(robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))
         {
             foreach(var team in teams)
             {
                 if (team == robotController.team)
                     continue;
 
-                team.affected_by_sensorarray--;
+                //team.affected_by_sensorarray--;
 
-                if (team.affected_by_sensorarray < 0)
-                    Debug.Log("team.affected_by_sensorarray < 0");
+                //if (team.affected_by_sensorarray < 0)
+                //    Debug.Log("team.affected_by_sensorarray < 0");
             }
         }
 

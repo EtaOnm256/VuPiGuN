@@ -14,6 +14,8 @@ public class Projectile : Pausable
 
     public Weapon.Trajectory trajectory = Weapon.Trajectory.Straight;
 
+    public RobotController.ItemFlag itemFlag;
+
     // Start is called before the first frame update
     void Start()
     {

@@ -35,6 +35,12 @@ public class SMGBullet : Projectile
             speed *= 1.3f;
             damage = (int)(damage * 1.5f);
         }
+
+        //if (itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))
+        //{
+        //    homing_limit *= 1.5f;
+        //    homing_strength *= 1.5f;
+        //}
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];

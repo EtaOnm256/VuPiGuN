@@ -38,6 +38,12 @@ public class Bullet : Projectile
             speed *= 1.3f;
             damage = (int)(damage * 1.5f);
         }
+
+        //if (itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))
+        //{
+        //    homing_limit *= 1.5f;
+        //    homing_strength *= 1.5f;
+        //}
     }
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
@@ -51,6 +57,9 @@ public class Bullet : Projectile
     int hitHistoryRCCount = 0;
 
 	int time = 120;
+
+    [SerializeField] float homing_strength = 0.75f;
+    [SerializeField] float homing_limit = 7.5f;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -82,9 +91,9 @@ public class Bullet : Projectile
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {
-                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, 0.75f);
+                    Quaternion qDirection_new = Quaternion.RotateTowards(qDirection, qTarget, homing_strength);
 
-                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, 7.5f);
+                    Quaternion qDirection_result = Quaternion.RotateTowards(initial_direction, qDirection_new, homing_limit);
 
                     direction = qDirection_result * Vector3.forward;
                 }

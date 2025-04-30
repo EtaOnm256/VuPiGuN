@@ -130,6 +130,7 @@ public class MissilePod_Weist : Weapon
                     beam.team = owner.team;
                     //beam.worldManager = owner.worldManager;
                     beam.owner = owner;
+                    beam.itemFlag = owner.robotParameter.itemFlag;
                     energy -= Reload_Time;
 
                     Duration_Time = 10;

@@ -617,7 +617,7 @@ public class RobotController : Pausable
         RunningTakeOff = 1 << 14,
         CounterMeasure = 1 << 15,
         AeroMirage = 1 << 16,
-        SensorArray = 1 << 17,
+        TrackingSystem = 1 << 17,
         MirageCloud = 1 << 18,
         InfightBoost = 1 << 19
     }
@@ -2731,7 +2731,7 @@ public class RobotController : Pausable
 
         if (Target_Robot != null)
         {
-            if (aiming_factor < aiming_begin_aiming_factor_current)
+            if (aiming_factor < aiming_begin_aiming_factor_current || robotParameter.itemFlag.HasFlag(ItemFlag.TrackingSystem))
                 virtual_targeting_position = Target_Robot.GetTargetedPosition();
             else if (!fire_done || canhold_current)
             {
@@ -6057,8 +6057,8 @@ public class RobotController : Pausable
         else
             mirage_time = baseduration;
 
-        if (team.affected_by_sensorarray > 0)
-            mirage_time /= 2;
+        //if (team.affected_by_sensorarray > 0)
+        //    mirage_time /= 2;
 
         enqueueAfterimage.enabled = true;
         afterimageRenderer.Clear();

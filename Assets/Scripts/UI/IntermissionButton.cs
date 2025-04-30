@@ -78,6 +78,7 @@ public class IntermissionButton : MonoBehaviour
 
     ShopItemParts[] shopItemParts =
     {
+        new ShopItemParts{tier=1,name = "トラッキングシステム",description="近距離における射撃の照準性能が強化される。",price=1000,itemFlag=RobotController.ItemFlag.TrackingSystem},
         new ShopItemParts{tier=1,name = "クイックイグナイター",description="ステップと空中ダッシュの初速が速くなる。",price=1500,itemFlag=RobotController.ItemFlag.QuickIgniter },
         new ShopItemParts{tier=1,name = "スナイプショット",description="射撃+下フリックで強力な射撃ができるようになる。全ての攻撃からキャンセル可能。",price=2000,itemFlag=RobotController.ItemFlag.SnipeShoot},
         new ShopItemParts{tier=1,name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。また、サブ射撃の弾数が早く回復する。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },
@@ -94,7 +95,6 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemParts{tier=2,name = "ダッシュスラッシュ",description="格闘+上フリックでダッシュ斬りができるようになる。射撃または格闘からキャンセル可能。",price=4000,itemFlag=RobotController.ItemFlag.DashSlash },
         new ShopItemParts{tier=2,name = "エアロミラージュ",description="空中ダッシュの開始時、残像を発生させる。\n\n※残像…ステップなどの行動時に発生し、攻撃の追尾を振り切る効果がある。",price=5000,itemFlag=RobotController.ItemFlag.AeroMirage },
         new ShopItemParts{tier=2,name = "リープストライク",description="格闘+下フリックでジャンプ斬りができるようになる。射撃または格闘からキャンセル可能。",price=5000,itemFlag=RobotController.ItemFlag.JumpSlash},
-        new ShopItemParts{tier=2,name = "センサーアレイ",description="敵の残像の効果時間を半減させる。\n\n※残像…ステップなどの行動時に発生し、攻撃の追尾を振り切る効果がある。",price=4000,itemFlag=RobotController.ItemFlag.SensorArray},
         new ShopItemParts{tier=3,name = "ネクストドライブ",description="全ての行動を空中ダッシュでキャンセルできるようになり、空中ダッシュ前の旋回時間がなくなる。また、ブースト容量が2倍になる。",price=9000,itemFlag=RobotController.ItemFlag.NextDrive },
         new ShopItemParts{tier=3,name = "エクストリームスライド",description="全ての行動をステップでキャンセルできるようになる。",price=10000,itemFlag=RobotController.ItemFlag.ExtremeSlide },
         new ShopItemParts{tier=3,name = "ミラージュクラウド",description="一定時間ごとに残像を発生させる。攻撃中、よろけ・ダウン中は無効。\n\n※残像…ステップなどの行動時に発生し、攻撃の追尾を振り切る効果がある。",price=11000,itemFlag=RobotController.ItemFlag.MirageCloud },

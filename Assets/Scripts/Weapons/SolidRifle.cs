@@ -98,6 +98,7 @@ public class SolidRifle : Weapon
             bullet.team = owner.team;
             //bullet.worldManager = owner.worldManager;
             bullet.owner = owner;
+            bullet.itemFlag = owner.robotParameter.itemFlag;
             bullet.chargeshot = chargeshot;
             GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 

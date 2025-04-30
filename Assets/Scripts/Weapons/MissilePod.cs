@@ -101,6 +101,7 @@ public class MissilePod : Weapon
                  GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
                 beam.team = owner.team;
                 beam.owner = owner;
+                beam.itemFlag = owner.robotParameter.itemFlag;
                 energy -= Reload_Time;
 
                 Duration_Time = 5;

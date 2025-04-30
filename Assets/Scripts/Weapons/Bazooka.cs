@@ -88,6 +88,7 @@ public class Bazooka : Weapon
             beam.target = Target_Robot;
             beam.team = owner.team;
             beam.owner = owner;
+            beam.itemFlag = owner.robotParameter.itemFlag;
             beam.chargeshot = chargeshot;
             GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 

@@ -102,6 +102,7 @@ public class HandCannon : Weapon
                 beam.target = Target_Robot;
                 beam.team = owner.team;
                 beam.owner = owner;
+                beam.itemFlag = owner.robotParameter.itemFlag;
                 beam.chargeshot = chargeshot;
 
                 if (beamemit_prefab)

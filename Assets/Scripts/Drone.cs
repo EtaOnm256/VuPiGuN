@@ -132,7 +132,7 @@ public class Drone : Pausable
                         beam.target = target;
                         beam.team = owner.team;
                         beam.owner = owner;
-
+                        beam.itemFlag = owner.robotParameter.itemFlag;
                         GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
                         state = State.Homing;
