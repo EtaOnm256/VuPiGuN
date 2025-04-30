@@ -3390,7 +3390,7 @@ public class RobotController : Pausable
                                 {
                                     _speed = 0.0f;
 
-                                    if (robotParameter.itemFlag.HasFlag(ItemFlag.RunningTakeOff))
+                                    if (robotParameter.itemFlag.HasFlag(ItemFlag.RunningTakeOff) && lowerBodyState == LowerBodyState.STEPGROUND)
                                     {
                                         if (_input.jump && ConsumeBoost(80))
                                         {
@@ -4488,6 +4488,7 @@ public class RobotController : Pausable
                                 GroundedCheck();
                                 if (Grounded)
                                 {
+                                    Sword.slashing = false;
                                     TransitLowerBodyState(LowerBodyState.JumpSlash_Ground);
                                     upperBodyState = UpperBodyState.JumpSlash_Ground;
                                 }

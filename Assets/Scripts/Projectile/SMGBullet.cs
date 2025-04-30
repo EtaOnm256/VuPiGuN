@@ -52,7 +52,7 @@ public class SMGBullet : Projectile
 
     int time = 120;
 
-    [SerializeField] bool knockback = false;
+    [SerializeField] RobotController.KnockBackType knockBackType = RobotController.KnockBackType.None;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -113,19 +113,11 @@ public class SMGBullet : Projectile
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    RobotController.KnockBackType knockBackType;
-
-                    if (knockback)
-                        knockBackType = RobotController.KnockBackType.Weak;
-                    else
-                    {
+                    if (knockBackType == RobotController.KnockBackType.None)
                         robotController.DoHitStop();
-                        knockBackType = RobotController.KnockBackType.None;
-                    }
-
+                 
                     robotController.TakeDamage(rayCastHit[i].point,direction, damage, knockBackType, owner);
                     
-
                     dead = true;
                 }
                 else
