@@ -147,15 +147,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc8b5dc4d7cd8b540b7428b018109511, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldManager: {fileID: 0}
   direction: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
   speed: 1.6
   dead: 0
+  owner: {fileID: 0}
+  trajectory: 0
+  itemFlag: 0
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   hitEffect_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
-  homing_strength: 0.5
+  homing_strength: 1
   homing_limit: 10
   meshRenderer: {fileID: 2531235709028449202}
   boostEmitter: {fileID: 5888104768997859529}
+  chargeshot: 0
+  damage: 100
+  cluster: 0
+  cluster_prefab: {fileID: 0}
