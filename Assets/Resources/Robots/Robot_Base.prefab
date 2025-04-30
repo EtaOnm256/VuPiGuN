@@ -3063,6 +3063,7 @@ MonoBehaviour:
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   stompHitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
+  stepDirection: 0
   upperBodyState: 0
   lowerBodyState: 0
   HUDCanvas: {fileID: 0}
@@ -3109,7 +3110,7 @@ MonoBehaviour:
     AirMoveSpeed: 8
     SpeedChangeRate: 10
     Gravity: -60
-    TerminalVelocity: 53
+    TerminalVelocity: 75
     AscendingVelocity: 20
     AscendingAccelerate: 2.5
     KnockbackSpeed: 30

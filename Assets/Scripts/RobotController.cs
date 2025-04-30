@@ -659,7 +659,7 @@ public class RobotController : Pausable
             //damageText.worldManager = worldManager;
         }
 
-        if (HP <= 0)
+        if (HP <= 0 && robotParameter.MaxHP > 0)
         {
             dead = true;
             death_timer = death_timer_max;
@@ -667,7 +667,7 @@ public class RobotController : Pausable
             finish_dir = dir;
         }
 
-        intend_animator_speed = 1.0f;
+        
 
         //将来的にはDoDamageを作ってそっちで処理
         if (dealer && dealer.is_player)
@@ -5833,7 +5833,7 @@ public class RobotController : Pausable
 
             if (Target_Robot != null)
             {
-                if (robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && !Target_Robot.Grounded)
+                if (robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && !Target_Robot.Grounded && !(Target_Robot.lowerBodyState == LowerBodyState.DOWN || Target_Robot.lowerBodyState == LowerBodyState.GETUP))
                     aerial_slash = true;
             }
 

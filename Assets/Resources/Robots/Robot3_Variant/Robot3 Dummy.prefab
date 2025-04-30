@@ -9,12 +9,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1720923761284985917, guid: b33b50d8743964a438f0006a533e2b95, type: 3}
+      propertyPath: robotParameter.MaxHP
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1720923761284985917, guid: b33b50d8743964a438f0006a533e2b95, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1720923761284985917, guid: b33b50d8743964a438f0006a533e2b95, type: 3}
       propertyPath: robotParameter.dualwield_lightweapon
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3307503245084373907, guid: b33b50d8743964a438f0006a533e2b95, type: 3}
+      propertyPath: dummy
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3635106266836114833, guid: b33b50d8743964a438f0006a533e2b95, type: 3}
       propertyPath: m_RootOrder

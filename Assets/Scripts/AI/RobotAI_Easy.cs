@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class RobotAI_Easy : RobotAI_Base
 {
+    [SerializeField] bool dummy;
+
+    bool dodge_ready;
+
     int moveDirChangeTimer = 0;
 
 
@@ -216,6 +220,15 @@ public class RobotAI_Easy : RobotAI_Base
                            
                         }
 
+                        if(dummy)
+                        {
+                            if (robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND)
+                                dodge_ready = false;
+
+                            if (!dodge_ready)
+                                dodge = false;
+                        }
+
                         if (dodge)
                         {
                             move = stepMove;
@@ -327,5 +340,13 @@ public class RobotAI_Easy : RobotAI_Base
 
         if (robotController.Target_Robot != null)
             robotController.cameraRotation = robotController.GetTargetQuaternionForView(robotController.Target_Robot);*/
+    }
+
+    public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType knockBackType, RobotController dealer)
+    {
+        if (dummy)
+            dodge_ready = true;
+
+        base.OnTakeDamage(pos, dir, damage, knockBackType, dealer);
     }
 }
