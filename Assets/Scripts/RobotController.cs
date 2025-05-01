@@ -619,7 +619,8 @@ public class RobotController : Pausable
         AeroMirage = 1 << 16,
         TrackingSystem = 1 << 17,
         MirageCloud = 1 << 18,
-        InfightBoost = 1 << 19
+        InfightBoost = 1 << 19,
+        MassIllusion = 1 << 20
     }
 
 
@@ -2152,7 +2153,8 @@ public class RobotController : Pausable
         float aiming_angle_speed_current = 0.0f;
         bool canhold_current = false;
 
-        bool stealthcloud_invalid = false;
+        bool miragecloud_invalid = false;
+        bool massillusion_invalid = false;
 
         switch (upperBodyState)
         {
@@ -2160,7 +2162,7 @@ public class RobotController : Pausable
             case UpperBodyState.ROLLINGFIRE:
             case UpperBodyState.SNIPEFIRE:
                 {
-                    stealthcloud_invalid = true;
+                    miragecloud_invalid = true;
 
                     if (upperBodyState == UpperBodyState.FIRE)
                     {
@@ -2331,7 +2333,7 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.SUBFIRE:
                 {
-                    stealthcloud_invalid = true;
+                    miragecloud_invalid = true;
 
                     if (!fire_done)
                     {
@@ -2444,7 +2446,7 @@ public class RobotController : Pausable
             case UpperBodyState.ROLLINGHEAVYFIRE:
             case UpperBodyState.SNIPEHEAVYFIRE:
                 {
-                    stealthcloud_invalid = true;
+                    miragecloud_invalid = true;
 
                     if (!fire_done)
                     {
@@ -2595,6 +2597,8 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.STAND:
                 {
+                    massillusion_invalid = true;
+
                     if (!lockonmode)
                         lockonState = LockonState.FREE;
 
@@ -2655,7 +2659,8 @@ public class RobotController : Pausable
             case UpperBodyState.KNOCKBACK:
             case UpperBodyState.DOWN:
             case UpperBodyState.GETUP:
-                stealthcloud_invalid = true;
+                miragecloud_invalid = true;
+                massillusion_invalid = true;
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
                 _rarmaimwait = 0.0f;
@@ -2665,7 +2670,7 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.LowerSlash:
 
-                stealthcloud_invalid = true;
+                miragecloud_invalid = true;
 
                 _chestaimwait = 0.0f;
                 _headaimwait = 1.0f;
@@ -2685,7 +2690,7 @@ public class RobotController : Pausable
             case UpperBodyState.QuickSlash:
             case UpperBodyState.DashSlash:
 
-                stealthcloud_invalid = true;
+                miragecloud_invalid = true;
 
                 if (upperBodyState != UpperBodyState.DashSlash && upperBodyState != UpperBodyState.DASHSLASH_DASH
                     && upperBodyState != UpperBodyState.JumpSlash && upperBodyState != UpperBodyState.JumpSlash_Jump && upperBodyState != UpperBodyState.JumpSlash_Ground)
@@ -2703,7 +2708,7 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.JumpSlash_Jump:
 
-                stealthcloud_invalid = true;
+                miragecloud_invalid = true;
 
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
@@ -2714,7 +2719,7 @@ public class RobotController : Pausable
             case UpperBodyState.JumpSlash:
             case UpperBodyState.JumpSlash_Ground:
 
-                stealthcloud_invalid = true;
+                miragecloud_invalid = true;
 
                 _chestaimwait = 0.0f;
                 _headaimwait = 0.0f;
@@ -2821,24 +2826,27 @@ public class RobotController : Pausable
         if (Sword != null)
             Sword.dir = transform.forward;
 
-        if (robotParameter.itemFlag.HasFlag(ItemFlag.MirageCloud))
+        bool passivemirage_thistime =
+            (!miragecloud_invalid && robotParameter.itemFlag.HasFlag(ItemFlag.MirageCloud))
+            || (!massillusion_invalid && robotParameter.itemFlag.HasFlag(ItemFlag.MassIllusion))
+            ;
+        
+        if (passivemirage_thistime)
         {
-            if (!stealthcloud_invalid)
+            if (passiveMirage_interval <= 0)
             {
-                if (stealthCloud_interval <= 0)
-                {
-                    StartMirage(15);
-                    stealthCloud_interval = 30;
-                }
+                StartMirage(15);
+                passiveMirage_interval = 30;
             }
-            else
-            {
-                stealthCloud_interval = 30;
-            }
-
-            if (stealthCloud_interval > 0)
-                stealthCloud_interval--;
         }
+        else
+        {
+            passiveMirage_interval = 30;
+        }
+
+        if (passiveMirage_interval > 0)
+            passiveMirage_interval--;
+        
     }
 
     Quaternion Process_Aiming_Head(bool aiming)
@@ -2974,7 +2982,7 @@ public class RobotController : Pausable
     [SerializeField] AfterimageSample.AfterimageRenderer afterimageRenderer;
     [SerializeField] AfterimageSample.EnqueueAfterimage enqueueAfterimage;
 
-    int stealthCloud_interval = 0;
+    int passiveMirage_interval = 0;
 
     private Vector3 virtual_targeted_position;
 
@@ -3321,7 +3329,7 @@ public class RobotController : Pausable
                         if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE
                             || lowerBodyState == LowerBodyState.ROLLINGFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)
                         {
-                            RegenBoost();
+                            //RegenBoost();
                         }
 
                         if (lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE
@@ -5654,7 +5662,7 @@ public class RobotController : Pausable
                 ringMenu_Left_LMB_available = true;
                 ringMenu_Right_LMB_available = true;
 
-                if (fire_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right))
+                if (fire_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right) && ConsumeBoost(40))
                 {
                     if (rightWeapon.heavy)
                     {
