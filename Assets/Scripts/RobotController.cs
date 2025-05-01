@@ -5564,7 +5564,7 @@ public class RobotController : Pausable
         {
             ringMenu_Up_RMB_available = true;
 
-            if (slash_dispatch && ringMenuDir == RingMenuDir.Up)
+            if (slash_dispatch && ringMenuDir == RingMenuDir.Up && ConsumeBoost(80))
             {
                 lowerBodyState = LowerBodyState.DASHSLASH_DASH;
                 upperBodyState = UpperBodyState.DASHSLASH_DASH;
@@ -5613,7 +5613,7 @@ public class RobotController : Pausable
         {
             ringMenu_Down_RMB_available = true;
 
-            if (slash_dispatch && ringMenuDir == RingMenuDir.Down)
+            if (slash_dispatch && ringMenuDir == RingMenuDir.Down && ConsumeBoost(80))
             {
                 if (Target_Robot != null)
                 {

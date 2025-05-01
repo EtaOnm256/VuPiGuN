@@ -318,7 +318,7 @@ public class RobotAI_Shenlong : RobotAI_Base
 
                                             move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0,2) != 0 ? 45.0f * Mathf.Deg2Rad : -45.0f * Mathf.Deg2Rad);
 
-                                            moveDirChangeTimer = 1;
+                                            moveDirChangeTimer = 60;
                                         }
 
                                         //if (robotController.boost >= robotController.Boost_Max)
@@ -329,7 +329,7 @@ public class RobotAI_Shenlong : RobotAI_Base
 
                                    
 
-                                    if (current_target.Grounded && mindist < infight_dist && robotController.boost >= robotController.robotParameter.Boost_Max /2)
+                                    if (current_target.Grounded && mindist < infight_dist && robotController.boost >= robotController.robotParameter.Boost_Max / 2)
                                         allow_infight = true;
 
                                     /*if (jumpinfight_reload <= 0 && robotController.boost >= robotController.robotParameter.Boost_Max)
@@ -426,6 +426,8 @@ public class RobotAI_Shenlong : RobotAI_Base
                             break;
                     }
 
+                    bool infight_now = false;
+
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.AirSlash
                         || robotController.lowerBodyState == RobotController.LowerBodyState.GroundSlash
                         || robotController.lowerBodyState == RobotController.LowerBodyState.QuickSlash
@@ -433,20 +435,26 @@ public class RobotAI_Shenlong : RobotAI_Base
                         || robotController.lowerBodyState == RobotController.LowerBodyState.DashSlash)
                     {
                         if(robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.lowerBodyState].num-1)
-                            infight_reload = 60;
+                            infight_reload = 0;
                     }
                     else if(infight_reload > 0)
                         infight_reload--;
+
+                    if(robotController.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.AirSlash
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.DashSlash
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.GroundSlash
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.QuickSlash
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                        infight_now = true;
 
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.JumpSlash)
                         jumpinfight_reload = 30;
                     else if(jumpinfight_reload > 0)
                         jumpinfight_reload--;
-
-                    /*if(robotController.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide) && robotController.lowerBodyState == RobotController.LowerBodyState.JUMPSLASH_GROUND)
-                    {
-                        robotController.
-                    }*/
 
                     if (robotController.Sword == null)
                         allow_infight = false;
@@ -459,7 +467,8 @@ public class RobotAI_Shenlong : RobotAI_Base
                         if (infight_wait <= 0)
                         {
 
-                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0 && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash))
+                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0 && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash)
+                                && robotController.boost >= 80 && !infight_now)
                             {
                                 ringMenuDir = RobotController.RingMenuDir.Down;
                                 slash = true;
@@ -476,7 +485,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                     }
                     else
                     {
-                        infight_wait = 15;
+                        infight_wait = 0;
 
                         if (fire_wait <= 0 && allow_fire)
                         {

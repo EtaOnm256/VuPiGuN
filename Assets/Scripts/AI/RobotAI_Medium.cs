@@ -459,6 +459,8 @@ public class RobotAI_Medium : RobotAI_Base
                             break;
                     }
 
+                    bool infight_now = false;
+
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.AirSlash
                         || robotController.lowerBodyState == RobotController.LowerBodyState.GroundSlash
                         || robotController.lowerBodyState == RobotController.LowerBodyState.QuickSlash
@@ -470,6 +472,17 @@ public class RobotAI_Medium : RobotAI_Base
                     }
                     else if(infight_reload > 0)
                         infight_reload--;
+
+                    if (robotController.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
+                     || robotController.lowerBodyState == RobotController.LowerBodyState.AirSlash
+                     || robotController.lowerBodyState == RobotController.LowerBodyState.DashSlash
+                     || robotController.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
+                     || robotController.lowerBodyState == RobotController.LowerBodyState.GroundSlash
+                     || robotController.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
+                     || robotController.lowerBodyState == RobotController.LowerBodyState.QuickSlash
+                     || robotController.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
+                     || robotController.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                        infight_now = true;
 
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.JumpSlash)
                         jumpinfight_reload = 90;
@@ -487,7 +500,8 @@ public class RobotAI_Medium : RobotAI_Base
                         if (infight_wait <= 0)
                         {
 
-                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0 && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash))
+                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0 && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash)
+                                 && robotController.boost >= 80 && !infight_now)
                             {
                                 ringMenuDir = RobotController.RingMenuDir.Down;
                                 slash = true;
