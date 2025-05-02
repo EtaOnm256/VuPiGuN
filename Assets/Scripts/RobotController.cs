@@ -3536,6 +3536,7 @@ public class RobotController : Pausable
 
                                     JumpAndGravity();
                                     GroundedCheck();
+                                    RegenBoost();
                                 }
                                 break;
 
@@ -3558,6 +3559,7 @@ public class RobotController : Pausable
 
                                         _verticalVelocity = (newheight - prevheight) / Time.deltaTime / 2;
                                     }
+                                    RegenBoost();
                                 }
                                 break;
                         }
@@ -4005,7 +4007,7 @@ public class RobotController : Pausable
 
                         JumpAndGravity();
                         GroundedCheck();
-
+                        RegenBoost();
                     }
                     break;
                 case LowerBodyState.GroundSlash:
