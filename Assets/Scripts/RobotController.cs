@@ -1418,6 +1418,18 @@ public class RobotController : Pausable
                 ringMenuDir = _input.ringMenuDir;
             }
 
+            if (_input.fire_forcedispatch)
+            {
+                fire_dispatch = true;
+                ringMenuDir = _input.ringMenuDir;
+            }
+
+            if (_input.slash_forcedispatch)
+            {
+                slash_dispatch = true;
+                ringMenuDir = _input.ringMenuDir;
+            }
+
             LowerBodyMove(); // HEAVYFIREの反動処理変えたから順番入れ替えても大丈夫かも
             UpperBodyMove();
 
@@ -1534,6 +1546,10 @@ public class RobotController : Pausable
 
         prev_slash = _input.slash;
         prev_sprint = _input.sprint;
+
+        if (!_input.sprint_once)
+            sprint_once_consumed = false;
+
         prev_fire = _input.fire;
     }
 
@@ -3178,7 +3194,7 @@ public class RobotController : Pausable
 
                             bool boost_remain = ConsumeBoost(4);
 
-                            if ((!_input.sprint /*_input.move == Vector2.zero*/ || _input.jump || !boost_remain) && event_dashed)
+                            if (( (!_input.sprint  && !_input.sprint_once)/*_input.move == Vector2.zero*/ || _input.jump || !boost_remain) && event_dashed)
                             {
                                 TransitLowerBodyState(LowerBodyState.AIR);
                             }
@@ -3636,7 +3652,7 @@ public class RobotController : Pausable
 
                             bool stop = false;
 
-                            if (!_input.sprint/*_input.move == Vector2.zero*/)
+                            if (!_input.sprint && !_input.sprint_once/*_input.move == Vector2.zero*/)
                                 stop = true;
                             else
                             {
@@ -3920,7 +3936,7 @@ public class RobotController : Pausable
                                 //_animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.DashSlash]._animID[slash_count], 0.0f, 0);
                                 audioSource.PlayOneShot(audioClip_Swing);
                             }
-                            else
+                            else if(lowerBodyState == LowerBodyState.AIRSLASH_DASH)
                             {
                                 lowerBodyState = LowerBodyState.AirSlash;
                                 upperBodyState = UpperBodyState.AirSlash;
@@ -5478,10 +5494,12 @@ public class RobotController : Pausable
                 return;
         }
 
-        if (_input.sprint && (!canceling || ConsumeBoost(80)))
+        if ((_input.sprint || (_input.sprint_once && !sprint_once_consumed)) && (!canceling || ConsumeBoost(80)))
         {
             if (ConsumeBoost(4))
             {
+                sprint_once_consumed = true;
+
                 if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                 {
                     upperBodyState = UpperBodyState.STAND;
@@ -5535,6 +5553,7 @@ public class RobotController : Pausable
         }
     }
 
+    bool sprint_once_consumed = false;
     void AcceptStep(bool canceling)
     {
         if (upperBodyState != UpperBodyState.STAND)
@@ -5547,8 +5566,10 @@ public class RobotController : Pausable
                 return;
         }
 
-        if (_input.sprint && (!canceling || ConsumeBoost(80)))
+        if ( (_input.sprint || (_input.sprint_once && !sprint_once_consumed)) && (!canceling || ConsumeBoost(80)))
         {
+            sprint_once_consumed = true;
+
             if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide))
             {
                 upperBodyState = UpperBodyState.STAND;

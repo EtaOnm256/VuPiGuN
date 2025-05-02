@@ -9,9 +9,12 @@ public class InputBase : Pausable
     public Vector2 look;
     public bool jump;
     public bool sprint;
+    public bool sprint_once;
     public bool fire;
+    public bool fire_forcedispatch;
     public bool down;
     public bool slash;
+    public bool slash_forcedispatch;
     public bool subfire;
     public bool lockswitch;
     public RobotController.RingMenuDir ringMenuDir = RobotController.RingMenuDir.Center;

@@ -103,6 +103,60 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ForwardStep",
+                    "type": "PassThrough",
+                    "id": "b1cc86d6-9f39-445d-b916-72b328cf6652",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "MultiTapAndHold(tapTime=0.25,tapDelay=0.25)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BackwardStep",
+                    "type": "PassThrough",
+                    "id": "8e55b8f8-0f9f-48ba-9dce-4fbb38b1bf3e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "MultiTapAndHold(tapTime=0.25,tapDelay=0.25)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftStep",
+                    "type": "PassThrough",
+                    "id": "16f29585-53a0-4694-84a8-b141226cc2db",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "MultiTapAndHold(tapTime=0.25,tapDelay=0.25)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightStep",
+                    "type": "PassThrough",
+                    "id": "4e3ca78f-bae1-4a7d-90fc-319bb0fa71a9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "MultiTapAndHold(tapTime=0.25,tapDelay=0.25)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SubFireOrRingMenu",
+                    "type": "PassThrough",
+                    "id": "da58039c-a398-403c-b9d6-17ef0d4440c6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SlashRingMenu",
+                    "type": "PassThrough",
+                    "id": "01f4b829-b1b6-4622-9d6e-54108711bc71",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -207,6 +261,17 @@
                 },
                 {
                     "name": "",
+                    "id": "1658c231-906f-4ec1-8045-57d368f1986b",
+                    "path": "<Gamepad>/dpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "ed66cbff-2900-4a62-8896-696503cfcd31",
                     "path": "<Pointer>/delta",
                     "interactions": "",
@@ -218,11 +283,33 @@
                 },
                 {
                     "name": "",
+                    "id": "28950c04-7d4a-44f1-a68b-e9553dd86e68",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "InvertVector2(invertX=false),ScaleVector2",
+                    "groups": "Gamepad",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1bd55a0b-761e-4ae4-89ae-8ec127e08a29",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14476934-cce6-4ad8-b958-7ee7475a68e6",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -251,6 +338,17 @@
                 },
                 {
                     "name": "",
+                    "id": "7995febc-aabe-45c0-a3ef-d27b51945ea9",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "771f4adf-a501-4d33-b03b-a04268b77cc0",
                     "path": "<Keyboard>/z",
                     "interactions": "",
@@ -267,6 +365,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
+                    "action": "Slash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b83b6640-4d35-4b21-a95c-326655776ec7",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "Slash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -299,7 +408,18 @@
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "KeyboardMouse",
+                    "action": "LockSwitch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "72fcc11a-fdfb-4a7a-adda-8de1e8bba4a3",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "LockSwitch",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -312,6 +432,83 @@
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Command",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7d46506e-6c6c-4bd4-84eb-0e14e17b43ea",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Command",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a4584424-17b1-4e59-b8ee-5a1a54737cc9",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "ForwardStep",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ceac651f-5236-4b10-959a-be89c80f55d3",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "BackwardStep",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4d771bed-4e24-4fb1-94a8-5ff9c46db317",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "LeftStep",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9a95eaf8-b8a2-4118-8f68-56f5b33b3f4d",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "RightStep",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a874725c-d11a-434c-94a4-f5338e6f0ed7",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SubFireOrRingMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c647b61c-e899-4d64-9a19-f60579af36d5",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SlashRingMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -62,6 +62,7 @@
     <Compile Include="Assets\Scripts\RobotController.cs" />
     <Compile Include="Assets\LightProbeHelper\LightProbeGenerator.cs" />
     <Compile Include="Assets\Scripts\Weapons\Bazooka.cs" />
+    <Compile Include="Assets\Scripts\MultiTapAndHoldInteraction.cs" />
     <Compile Include="Assets\Scripts\InfightWeapons\BeamSaber.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod.cs" />
     <Compile Include="Assets\Scripts\GameState.cs" />
