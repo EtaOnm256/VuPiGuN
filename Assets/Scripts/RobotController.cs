@@ -329,7 +329,8 @@ public class RobotController : Pausable
 
     private float _rarmaimwait = 0.0f;
 
-    private Vector3 virtual_targeting_position;
+    public Vector3 virtual_targeting_position_forBody;
+    public Vector3 virtual_targeting_position_forUI;
 
     public bool fire_done = false;
     public int fire_followthrough = 0;
@@ -1555,9 +1556,15 @@ public class RobotController : Pausable
 
     private void DeadBodyMove()
     {
+        if (rightWeapon != null)
+            rightWeapon.trigger = false;
+
+        if (shoulderWeapon != null)
+            shoulderWeapon.trigger = false;
+
         if (hitslow_timer <= 0 && hitstop_timer <= 0)
         {
-            float aiming_factor = 0.0f;
+
 
             bool chest_pitch_aim = false;
 
@@ -1903,6 +1910,46 @@ public class RobotController : Pausable
                 CinemachineCameraTarget.transform.rotation = cameraRotation;
             }
         }
+
+        if (Target_Robot != null)
+        {
+            if (aiming_factor < aiming_begin_aiming_factor_current || robotParameter.itemFlag.HasFlag(ItemFlag.TrackingSystem))
+            {
+                virtual_targeting_position_forUI = Target_Robot.GetTargetedPosition();
+
+                //if (is_player)
+                //    uIController_Overlay.aim_fixed = true;
+            }
+            else
+            {
+                Vector3 a = virtual_targeting_position_forUI - GetCenter();
+                Vector3 b = Target_Robot.GetTargetedPosition() - GetCenter();
+
+                if (Vector3.Angle(a, b) < aiming_angle_speed_current)
+                {
+                    //if (is_player)
+                    //    uIController_Overlay.aim_fixed = true;
+
+                    virtual_targeting_position_forUI = GetCenter() + b;
+                }
+                else
+                {
+                    //if (is_player)
+                    //    uIController_Overlay.aim_fixed = false;
+
+                    virtual_targeting_position_forUI = GetCenter() + Vector3.RotateTowards(a, b, aiming_angle_speed_current * Mathf.Deg2Rad, float.MaxValue);
+                }
+            }
+
+        }
+        else
+        {
+            if (is_player)
+            {
+                //uIController_Overlay.aiming = false;
+                //uIController_Overlay.aim_fixed = false;
+            }
+        }
     }
 
     private IEnumerator UpdateLateFixedUpdate()
@@ -2138,6 +2185,9 @@ public class RobotController : Pausable
         prev_lockswitch = _input.lockswitch;
     }
 
+    float aiming_begin_aiming_factor_current = 0.0f;
+    float aiming_angle_speed_current = 0.0f;
+    float aiming_factor = 0.0f;
     private void UpperBodyMove()
     {
         if (hitstop_timer > 0)
@@ -2158,15 +2208,15 @@ public class RobotController : Pausable
         bool chest_no_aim_smooth = false;
 
         float rhandaimwait_thisframe = 0.0f;
-        float aiming_factor = 0.0f;
 
         bool chest_pitch_aim = false;
 
         bool rightWeapon_trigger_thisframe = false;
         bool shoulderWeapon_trigger_thisframe = false;
 
-        float aiming_begin_aiming_factor_current = 0.0f;
-        float aiming_angle_speed_current = 0.0f;
+        //float aiming_begin_aiming_factor_current = 0.0f;
+        //float aiming_angle_speed_current = 0.0f;
+        bool current_aiming = false;
         bool canhold_current = false;
 
         bool miragecloud_invalid = false;
@@ -2344,6 +2394,7 @@ public class RobotController : Pausable
 
                     aiming_begin_aiming_factor_current = rightWeapon.aiming_begin_aiming_factor;
                     aiming_angle_speed_current = rightWeapon.aiming_angle_speed;
+                    current_aiming = true;
                     canhold_current = rightWeapon.canHold;
                 }
                 break;
@@ -2455,6 +2506,7 @@ public class RobotController : Pausable
 
                     aiming_begin_aiming_factor_current = shoulderWeapon.aiming_begin_aiming_factor;
                     aiming_angle_speed_current = shoulderWeapon.aiming_angle_speed;
+                    current_aiming = true;
                     canhold_current = shoulderWeapon.canHold;
                 }
                 break;
@@ -2608,6 +2660,7 @@ public class RobotController : Pausable
 
                     aiming_begin_aiming_factor_current = rightWeapon.aiming_begin_aiming_factor;
                     aiming_angle_speed_current = rightWeapon.aiming_angle_speed;
+                    current_aiming = true;
                     canhold_current = rightWeapon.canHold;
                 }
                 break;
@@ -2721,6 +2774,10 @@ public class RobotController : Pausable
                 _headaimwait = 0.0f;
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+
+                current_aiming = true;
+                aiming_begin_aiming_factor_current = float.MaxValue;
+
                 break;
             case UpperBodyState.JumpSlash_Jump:
 
@@ -2731,6 +2788,8 @@ public class RobotController : Pausable
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = 0.0f;
                 AcceptSnipeShoot();
+                current_aiming = true;
+                aiming_begin_aiming_factor_current = float.MaxValue;
                 break;
             case UpperBodyState.JumpSlash:
             case UpperBodyState.JumpSlash_Ground:
@@ -2742,6 +2801,8 @@ public class RobotController : Pausable
                 _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
                 _barmlayerwait = 0.0f;
                 AcceptSnipeShoot();
+                current_aiming = true;
+                aiming_begin_aiming_factor_current = float.MaxValue;
                 break;
             default:
                 _chestaimwait = 0.0f;
@@ -2763,14 +2824,38 @@ public class RobotController : Pausable
 
         if (Target_Robot != null)
         {
+            // キャラの処理順で狙いが1フレームずれる（公平性はともかく、ロックオンカーソルがずれる）
+            // 問題の対処のため、一旦LateFixedUpdate()との二重処理にする
+
+            if(is_player)
+                uIController_Overlay.aiming = current_aiming;
+
             if (aiming_factor < aiming_begin_aiming_factor_current || robotParameter.itemFlag.HasFlag(ItemFlag.TrackingSystem))
-                virtual_targeting_position = Target_Robot.GetTargetedPosition();
-            else if (!fire_done || canhold_current)
             {
-                Vector3 a = virtual_targeting_position - GetCenter();
+                virtual_targeting_position_forBody = Target_Robot.GetTargetedPosition();
+
+                //if (is_player)
+                //    uIController_Overlay.aim_fixed = true;
+            }
+            else
+            {
+                Vector3 a = virtual_targeting_position_forBody - GetCenter();
                 Vector3 b = Target_Robot.GetTargetedPosition() - GetCenter();
 
-                virtual_targeting_position = GetCenter() + Vector3.RotateTowards(a, b, aiming_angle_speed_current * 2 * Mathf.PI / 360.0f, float.MaxValue);
+                if (Vector3.Angle(a, b) < aiming_angle_speed_current)
+                {
+                    //if (is_player)
+                    //    uIController_Overlay.aim_fixed = true;
+
+                    virtual_targeting_position_forBody = GetCenter() + b;
+                }
+                else
+                {
+                    //if (is_player)
+                    //    uIController_Overlay.aim_fixed = false;
+
+                    virtual_targeting_position_forBody = GetCenter() + Vector3.RotateTowards(a, b, aiming_angle_speed_current * Mathf.Deg2Rad, float.MaxValue);
+                }
             }
 
             target_rot_head = Process_Aiming_Head(true);
@@ -2781,6 +2866,12 @@ public class RobotController : Pausable
         }
         else
         {
+            if (is_player)
+            {
+                uIController_Overlay.aiming = false;
+                //uIController_Overlay.aim_fixed = false;
+            }
+
             target_rot_head = Process_Aiming_Head(false);
             target_rot_chest = Process_Aiming_Chest(false);
             target_rot_rhand = Process_Aiming_RHand(false);
@@ -2941,15 +3032,15 @@ public class RobotController : Pausable
 
             if (rightWeapon == null || rightWeapon.trajectory == Weapon.Trajectory.Straight || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
             {
-                result = Quaternion.LookRotation(virtual_targeting_position - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
+                result = Quaternion.LookRotation(virtual_targeting_position_forBody - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
-                Quaternion q_aim_global = Quaternion.LookRotation(aiming_hint.transform.position - virtual_targeting_position, new Vector3(0.0f, 1.0f, 0.0f));
+                Quaternion q_aim_global = Quaternion.LookRotation(aiming_hint.transform.position - virtual_targeting_position_forBody, new Vector3(0.0f, 1.0f, 0.0f));
                 overrideTransform.data.position = shoulder_hint.transform.position;
                 overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
             }
             else
             {
-                Vector3 relative = virtual_targeting_position - RHand.transform.position;
+                Vector3 relative = virtual_targeting_position_forBody - RHand.transform.position;
 
                 float h = relative.y;
 

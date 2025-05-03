@@ -3929,6 +3929,7 @@ MonoBehaviour:
   target: {fileID: 0}
   lockonmode: 0
   infight: 0
+  aiming: 0
   canvas: {fileID: 2473136957011414772}
   weaponPanel: {fileID: 5147641052444578625}
   distance: 1000
@@ -3936,6 +3937,7 @@ MonoBehaviour:
   reticle_prefab: {fileID: 8512639838007763070, guid: 1da334217594bc94f9aa77a072397c40, type: 3}
   guideline_prefab: {fileID: 398901199261938353, guid: 43503e800d93d234a96d723c761662f4, type: 3}
   icon_prefab: {fileID: 2196102411661085521, guid: 91f3d6c86e0146b47865715c07899ade, type: 3}
+  inner_prefab: {fileID: 8512639838007763070, guid: f1c2c79f130764f469d4ce63e449c767, type: 3}
   radarPanel: {fileID: 649859675882362778}
   guideline_lineRenderer_l: {fileID: 4825948696295552023}
   guideline_lineRenderer_r: {fileID: 4825948696551370250}

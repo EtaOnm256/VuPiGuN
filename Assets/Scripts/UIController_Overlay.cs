@@ -11,6 +11,8 @@ public class UIController_Overlay : MonoBehaviour
 
     public bool lockonmode = false;
     public bool infight = false;
+    public bool aiming = false;
+    //public bool aim_fixed = false;
 
     public Dictionary<RobotController, ReticleAndGuideline> robotReticle = new Dictionary<RobotController, ReticleAndGuideline>();
 
@@ -29,6 +31,7 @@ public class UIController_Overlay : MonoBehaviour
     [SerializeField] GameObject reticle_prefab;
     [SerializeField] GameObject guideline_prefab;
     [SerializeField] GameObject icon_prefab;
+    [SerializeField] GameObject inner_prefab;
 
     public GameObject radarPanel;
 
@@ -50,6 +53,11 @@ public class UIController_Overlay : MonoBehaviour
         public RectTransform radarrectTransform;
         public GameObject outer;
         public Image outer_image;
+
+        public GameObject inner_gameObject;
+        public Image inner_image;
+        public RectTransform inner_rectTfm;
+
     }
     public class Guideline
     {
@@ -73,11 +81,17 @@ public class UIController_Overlay : MonoBehaviour
         reticle.rectTfm = reticle.gameObject.GetComponent<RectTransform>();
         reticle.rectTfm.localScale = Vector3.one;
         reticle.image = reticle.gameObject.GetComponent<Image>();
+
         reticle.HPrectTransform = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<RectTransform>();
         reticle.HPslider = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<Slider>();
 
         reticle.outer = reticle.gameObject.transform.Find("Outer").gameObject;
         reticle.outer_image = reticle.outer.GetComponent<Image>();
+
+        reticle.inner_gameObject = Instantiate(inner_prefab, transform);
+        reticle.inner_image = reticle.inner_gameObject.GetComponent<Image>();
+        reticle.inner_rectTfm = reticle.inner_gameObject.GetComponent<RectTransform>();
+        reticle.inner_rectTfm.localScale = Vector3.one;
 
         reticle.radaricon_obj = Instantiate(icon_prefab, radarPanel.transform);
         reticle.radaricon_image = reticle.radaricon_obj.GetComponent<Image>();
@@ -101,6 +115,7 @@ public class UIController_Overlay : MonoBehaviour
         Destroy(robotReticle[robotController].reticle.gameObject);
         Destroy(robotReticle[robotController].guideline.gameObject);
         Destroy(robotReticle[robotController].reticle.radaricon_obj);
+        Destroy(robotReticle[robotController].reticle.inner_gameObject);
 
         robotReticle.Remove(robotController);
     }
@@ -176,18 +191,45 @@ public class UIController_Overlay : MonoBehaviour
             if (reticle.Key.team != origin.team && z >= 0)
             {
                 Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, reticle.Key.GetCenter());
-                Vector2 uiPoint;
+                {
+                    Vector2 uiPoint;
 
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    canvas.GetComponent<RectTransform>(),
-                    screenPoint,
-                    uiCamera,
-                    out uiPoint
-                );
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                        canvas.GetComponent<RectTransform>(),
+                        screenPoint,
+                        uiCamera,
+                        out uiPoint
+                    );
 
-                reticle.Value.reticle.rectTfm.localPosition = uiPoint;
-                //reticle.Value.reticle.image.enabled = true;
-                reticle.Value.reticle.gameObject.SetActive(true);
+                    reticle.Value.reticle.rectTfm.localPosition = uiPoint;
+                    //reticle.Value.reticle.image.enabled = true;
+                    reticle.Value.reticle.gameObject.SetActive(true);
+                }
+
+                if(target == reticle.Key && lockonState != RobotController.LockonState.FREE && aiming && origin && !origin.dead)
+                {
+                    Vector2 screenPoint_inner;
+                    
+                    //if(aim_fixed)
+                    //    screenPoint_inner = RectTransformUtility.WorldToScreenPoint(Camera.main, reticle.Key.GetTargetedPosition());
+                    //else
+                        screenPoint_inner = RectTransformUtility.WorldToScreenPoint(Camera.main, origin.virtual_targeting_position_forUI);
+
+                    Vector2 uiPoint;
+
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                        canvas.GetComponent<RectTransform>(),
+                        screenPoint_inner,
+                        uiCamera,
+                        out uiPoint
+                    );
+
+                    reticle.Value.reticle.inner_rectTfm.localPosition = uiPoint;
+                    //reticle.Value.reticle.image.enabled = true;
+                    reticle.Value.reticle.inner_gameObject.SetActive(true);
+                }
+                else
+                    reticle.Value.reticle.inner_gameObject.SetActive(false);
 
                 reticle.Value.guideline.lineRenderer.positionCount = 2;
 
@@ -279,6 +321,7 @@ public class UIController_Overlay : MonoBehaviour
                 //reticle.Value.reticle.HPslider.enabled = false;
 
                 reticle.Value.reticle.gameObject.SetActive(false);
+                reticle.Value.reticle.inner_gameObject.SetActive(false);
             }
 
             reticle.Value.reticle.radarrectTransform.anchoredPosition = new Vector3(relative.x, relative.z, 0.0f);
