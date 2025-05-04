@@ -52,7 +52,7 @@ public class UIController_Overlay : MonoBehaviour
         public Image radaricon_image;
         public RectTransform radarrectTransform;
         public GameObject outer;
-        public Image outer_image;
+        public Image[] outer_image;
 
         public GameObject inner_gameObject;
         public Image inner_image;
@@ -86,8 +86,13 @@ public class UIController_Overlay : MonoBehaviour
         reticle.HPslider = reticle.gameObject.transform.Find("HPSlider").gameObject.GetComponent<Slider>();
 
         reticle.outer = reticle.gameObject.transform.Find("Outer").gameObject;
-        reticle.outer_image = reticle.outer.GetComponent<Image>();
+        reticle.outer_image = new Image[4];
 
+        for(int i=0;i<4;i++)
+        {
+            reticle.outer_image[i] = reticle.outer.transform.Find($"Outer ({i})").GetComponent<Image>();
+        }
+                
         reticle.inner_gameObject = Instantiate(inner_prefab, transform);
         reticle.inner_image = reticle.inner_gameObject.GetComponent<Image>();
         reticle.inner_rectTfm = reticle.inner_gameObject.GetComponent<RectTransform>();
@@ -282,8 +287,12 @@ public class UIController_Overlay : MonoBehaviour
                     switch (lockonState)
                     {
                         case RobotController.LockonState.FREE:
-                            reticle.Value.reticle.image.color = reticle.Value.reticle.outer_image.color =
-                                 reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.yellow;
+                            reticle.Value.reticle.image.color = reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.yellow;
+
+                            foreach(var image in reticle.Value.reticle.outer_image)
+                            {
+                                image.color = Color.yellow;
+                            }
                             break;
                         case RobotController.LockonState.SEEKING:
 #if !ACCURATE_SEEK
@@ -291,8 +300,12 @@ public class UIController_Overlay : MonoBehaviour
                             break;
 #endif
                         case RobotController.LockonState.LOCKON:
-                            reticle.Value.reticle.image.color = reticle.Value.reticle.outer_image.color =
+                            reticle.Value.reticle.image.color = 
                                 reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.red;
+                            foreach (var image in reticle.Value.reticle.outer_image)
+                            {
+                                image.color = Color.red;
+                            }
                             break;
                     }
 
@@ -311,7 +324,7 @@ public class UIController_Overlay : MonoBehaviour
                     reticle.Value.reticle.HPslider.value = reticle.Key.HP;
                 reticle.Value.reticle.HPslider.maxValue = reticle.Key.robotParameter.MaxHP;
 
-                reticle.Value.reticle.HPrectTransform.anchoredPosition = new Vector3(0.0f, 2500.0f/z, 0.0f);
+                reticle.Value.reticle.HPrectTransform.anchoredPosition = new Vector3(0.0f, Mathf.Max(47.0f,2500.0f/z), 0.0f);
 
             }
             else
