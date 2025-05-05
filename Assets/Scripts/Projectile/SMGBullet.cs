@@ -120,7 +120,7 @@ public class SMGBullet : Projectile
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
                     if (knockBackType == RobotController.KnockBackType.None)
-                        robotController.DoHitStop();
+                        robotController.DoHitStop(5);
                  
                     robotController.TakeDamage(rayCastHit[i].point,direction, damage, knockBackType, owner);
                     

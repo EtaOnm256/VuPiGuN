@@ -566,7 +566,7 @@ public class RobotController : Pausable
         }
     }
 
-
+    int boost_regen_time = 0;
 
 
     public GameObject Rhand;
@@ -1056,9 +1056,10 @@ public class RobotController : Pausable
 
     private bool ConsumeBoost(int amount)
     {
-        if (boost >= amount)
+        if(boost > 0)
         {
             boost -= amount;
+            boost_regen_time = robotParameter.BoostRegenDelay;
             return true;
         }
         else
@@ -1156,18 +1157,22 @@ public class RobotController : Pausable
                 _input.move = Vector2.zero;
             }
 
-            ringMenu_Center_LMB_available = false;
-            ringMenu_Center_RMB_available = false;
-            ringMenu_Up_LMB_available = false;
-            ringMenu_Up_RMB_available = false;
-            ringMenu_Down_LMB_available = false;
-            ringMenu_Down_RMB_available = false;
-            ringMenu_Left_LMB_available = false;
-            ringMenu_Left_RMB_available = false;
-            ringMenu_Right_LMB_available = false;
-            ringMenu_Right_RMB_available = false;
+            if (hitstop_timer <= 0)
+            {
+                ringMenu_Center_LMB_available = false;
+                ringMenu_Center_RMB_available = false;
+                ringMenu_Up_LMB_available = false;
+                ringMenu_Up_RMB_available = false;
+                ringMenu_Down_LMB_available = false;
+                ringMenu_Down_RMB_available = false;
+                ringMenu_Left_LMB_available = false;
+                ringMenu_Left_RMB_available = false;
+                ringMenu_Right_LMB_available = false;
+                ringMenu_Right_RMB_available = false;
+                fire_dispatch = slash_dispatch = false;
+            }
 
-            fire_dispatch = slash_dispatch = false;
+            
 
             _hasAnimator = TryGetComponent(out _animator);
 
@@ -3098,6 +3103,7 @@ public class RobotController : Pausable
         float targetSpeed = 0.0f;
         bool boosting = false;
         bool ground_boost_now = false;
+        bool regen_boost_now = false;
 
         if (hitslow_timer <= 0 && hitstop_timer <= 0)
         {
@@ -3241,7 +3247,7 @@ public class RobotController : Pausable
 
                             }
 
-                            RegenBoost();
+                            regen_boost_now = true;
                         }
 
                         if (lowerBodyState == LowerBodyState.AIR)
@@ -3271,7 +3277,7 @@ public class RobotController : Pausable
                             if (!inputing_boost)
                             {
                                 if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
-                                    RegenBoost();
+                                    regen_boost_now = true;
 
                                 AcceptDash(false);
                             }
@@ -3436,7 +3442,7 @@ public class RobotController : Pausable
                         if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE
                             || lowerBodyState == LowerBodyState.ROLLINGFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)
                         {
-                            //RegenBoost();
+                            regen_boost_now = true;
                         }
 
                         if (lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE
@@ -3447,8 +3453,8 @@ public class RobotController : Pausable
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                                 AcceptDash(true);
 
-                            //if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
-                            //    RegenBoost();
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.FlightUnit))
+                                regen_boost_now = true;
                         }
                         else
                         {
@@ -3582,7 +3588,7 @@ public class RobotController : Pausable
                                         combo_reserved = false;
                                         Sword.slashing = false;
                                         slash_count = 0;
-                                        Sword.damage = 100;
+                                        Sword.damage = 200;
                                         Sword.knockBackType = KnockBackType.Finish;
                                         //stepremain = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashLength;
 
@@ -3627,7 +3633,7 @@ public class RobotController : Pausable
 
                                     JumpAndGravity();
                                     GroundedCheck();
-                                    RegenBoost();
+                                    regen_boost_now = true;
                                 }
                                 break;
 
@@ -3650,7 +3656,7 @@ public class RobotController : Pausable
 
                                         _verticalVelocity = (newheight - prevheight) / Time.deltaTime / 2;
                                     }
-                                    RegenBoost();
+                                    regen_boost_now = true;
                                 }
                                 break;
                         }
@@ -3914,20 +3920,13 @@ public class RobotController : Pausable
                         }
                         else
                         {
-                            if (lowerBodyState == LowerBodyState.DASHSLASH_DASH && Sword.dashslash_cutthrough)
-                            {
-                                if ((Target_Robot.GetTargetedPosition() - GetCenter()).magnitude < Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x)
-                                {
-                                    slash = true;
-                                }
+                            Vector3 rel = Target_Robot.GetTargetedPosition() - GetCenter();
+                            float rely = rel.y;
+                            rel.y = 0.0f;
 
-                            }
-                            else
+                            if(rel.magnitude < Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x && rely < 1.0f && rely > -3.0f)
                             {
-                                if ((Target_Robot.GetTargetedPosition() - GetCenter()).magnitude < Sword.motionProperty[lowerBodyState].SlashDistance * transform.lossyScale.x)
-                                {
-                                    slash = true;
-                                }
+                                slash = true;
                             }
 
                             //if(Target_Robot.GetTargetPosition().y < Chest.transform.position.y - 0.00852969*Chest.transform.lossyScale.y)
@@ -3960,7 +3959,7 @@ public class RobotController : Pausable
                                     combo_reserved = false;
                                     Sword.slashing = false;
                                     slash_count = 0;
-                                    Sword.damage = 100;
+                                    Sword.damage = 200;
                                     Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
@@ -3994,7 +3993,7 @@ public class RobotController : Pausable
                                     combo_reserved = false;
                                     Sword.slashing = false;
                                     slash_count = 0;
-                                    Sword.damage = 100;
+                                    Sword.damage = 200;
                                     Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[LowerBodyState.LowerSlash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
@@ -4098,7 +4097,7 @@ public class RobotController : Pausable
 
                         JumpAndGravity();
                         GroundedCheck();
-                        RegenBoost();
+                        regen_boost_now = true;
                     }
                     break;
                 case LowerBodyState.GroundSlash:
@@ -4311,7 +4310,7 @@ public class RobotController : Pausable
                                         combo_reserved = false;
                                         Sword.slashing = false;
                                         _verticalVelocity = 0.0f;
-                                        Sword.damage = 100;
+                                        Sword.damage = lowerBodyState == LowerBodyState.LowerSlash ? 200 : 100;
                                         Sword.knockBackType = slash_count < Sword.slashMotionInfo[lowerBodyState].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
                                         _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[lowerBodyState]._animID[slash_count], 0.0f, 0);
@@ -4906,6 +4905,20 @@ public class RobotController : Pausable
                                         new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
                 }
+            }
+
+            if(regen_boost_now)
+            {
+                if (boost_regen_time <= 0)
+                {
+                    RegenBoost();
+                }
+                else
+                    boost_regen_time--;
+            }
+            else
+            {
+                boost_regen_time = robotParameter.BoostRegenDelay;
             }
         }
 
@@ -5587,7 +5600,7 @@ public class RobotController : Pausable
                 return;
         }
 
-        if ((_input.sprint || (_input.sprint_once && !sprint_once_consumed)) && (!canceling || ConsumeBoost(80)))
+        if ((_input.sprint || (_input.sprint_once && !sprint_once_consumed)) && (!canceling || ConsumeBoost(80)) )
         {
             if (ConsumeBoost(4))
             {
@@ -5659,7 +5672,9 @@ public class RobotController : Pausable
                 return;
         }
 
-        if ( (_input.sprint || (_input.sprint_once && !sprint_once_consumed)) && (!canceling || ConsumeBoost(80)))
+        if (
+            (_input.sprint || (_input.sprint_once && !sprint_once_consumed)) &&  (!canceling || ConsumeBoost(80))
+            ) 
         {
             sprint_once_consumed = true;
 
@@ -6063,21 +6078,21 @@ public class RobotController : Pausable
     {
         WorldManager.current_instance.pausables.Remove(this);
     }
-    public void DoHitStop()
+    public void DoHitStop(int time)
     {
         if (hitstop_timer == 0)
         {
         }
 
-        hitstop_timer = 5;
+        hitstop_timer = time;
     }
-    public void DoHitSlow()
+    public void DoHitSlow(int time)
     {
         if (hitslow_timer == 0)
         {
         }
 
-        hitslow_timer = 5;
+        hitslow_timer = time;
     }
     [System.Serializable]
     public class RobotParameter
@@ -6093,6 +6108,7 @@ public class RobotController : Pausable
         public int Cost = 100;
         public int MaxHP = 500;
         public int Boost_Max = 200;
+        public int BoostRegenDelay = 15;
 
         public float MoveSpeed = 2.0f;
         public float StepSpeed = 5.335f;

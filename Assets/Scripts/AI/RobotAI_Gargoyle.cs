@@ -372,6 +372,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     }
                                 }
 
+                                // サブ発射中は前後左右に動かないので、落下回避としてブーストを切る
                                 if (floorhit.distance < 25.0f && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
                                     jump = true;
 

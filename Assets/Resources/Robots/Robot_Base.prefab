@@ -3056,6 +3056,8 @@ MonoBehaviour:
   Target_Robot: {fileID: 0}
   lockonmode: 0
   lockingEnemys: []
+  virtual_targeting_position_forBody: {x: 0, y: 0, z: 0}
+  virtual_targeting_position_forUI: {x: 0, y: 0, z: 0}
   fire_done: 0
   fire_followthrough: 0
   rollingfire_followthrough: 0
@@ -3097,6 +3099,7 @@ MonoBehaviour:
     Cost: 310
     MaxHP: 650
     Boost_Max: 500
+    BoostRegenDelay: 15
     MoveSpeed: 15
     StepSpeed: 30
     AirDashSpeed: 30

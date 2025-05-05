@@ -176,8 +176,16 @@ public class BeamSaber : InfightWeapon
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
                 robotController.TakeDamage(rayCastHit[idx_hit].point,dir, damage, knockBackType, owner);
-                robotController.DoHitSlow();
-                owner.DoHitSlow();
+                if (knockBackType == RobotController.KnockBackType.Finish || knockBackType == RobotController.KnockBackType.KnockUp)
+                {
+                    robotController.DoHitStop(10);
+                    owner.DoHitStop(10);
+                }
+                else
+                {
+                    robotController.DoHitSlow(5);
+                    owner.DoHitSlow(5);
+                }
 
                 GameObject.Instantiate(hitEffect_prefab, rayCastHit[idx_hit].point, Quaternion.identity);
             }
