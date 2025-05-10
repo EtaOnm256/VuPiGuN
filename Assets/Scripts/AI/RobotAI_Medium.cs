@@ -157,8 +157,10 @@ public class RobotAI_Medium : RobotAI_Base
 
                     bool allow_fire = false;
                     bool allow_infight = false;
+                    bool allow_jumpslash = false;
 
                     float infight_dist = 20.0f;
+                    float jumpslash_dist = 40.0f;
 
                     if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.InfightBoost))
                         infight_dist *= 1.5f;
@@ -325,6 +327,8 @@ public class RobotAI_Medium : RobotAI_Base
 
                                     if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
                                     {
+                                        if (mindist < jumpslash_dist)
+                                            allow_jumpslash = true;
 
                                         if (current_target.Grounded && mindist < infight_dist)
                                             allow_infight = true;
@@ -357,6 +361,9 @@ public class RobotAI_Medium : RobotAI_Base
 
                                 if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
                                 {
+                                    if (mindist < jumpslash_dist)
+                                        allow_jumpslash = true;
+
                                     if (mindist < infight_dist)
                                         allow_infight = true;
                                 }
@@ -426,6 +433,9 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (target_angle <= 90)
                                         allow_fire = true;
 
+                                    if (mindist < jumpslash_dist)
+                                        allow_jumpslash = true;
+
                                     if (mindist < infight_dist)
                                         allow_infight = true;
                                 }
@@ -444,6 +454,9 @@ public class RobotAI_Medium : RobotAI_Base
                                 {
                                     if (floorhit.distance > 10.0f)
                                         allow_fire = true;
+
+                                    if (mindist < jumpslash_dist)
+                                        allow_jumpslash = true;
 
                                     if (mindist < infight_dist)
                                         allow_infight = true;
@@ -494,19 +507,17 @@ public class RobotAI_Medium : RobotAI_Base
                     if (robotController.rightWeapon == null)
                         allow_fire = false;
 
-
-                    if (allow_infight)
+                    if(robotController.Sword != null && robotController.Sword.can_jump_slash && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash)
+                        && allow_jumpslash && jumpinfight_reload <= 0 && !prev_slash && robotController.boost >= 80 && !infight_now)
+                    {
+                        ringMenuDir = RobotController.RingMenuDir.Down;
+                        slash = true;
+                    }
+                    else if (allow_infight)
                     {
                         if (infight_wait <= 0)
                         {
-
-                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0 && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash)
-                                 && robotController.boost >= 80 && !infight_now)
-                            {
-                                ringMenuDir = RobotController.RingMenuDir.Down;
-                                slash = true;
-                            }
-                            else if (!prev_slash && infight_reload <= 0)
+                            if (!prev_slash && infight_reload <= 0)
                             {
                                 slash = true;
                             }

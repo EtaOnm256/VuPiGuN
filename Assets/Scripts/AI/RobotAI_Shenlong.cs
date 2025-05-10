@@ -161,8 +161,10 @@ public class RobotAI_Shenlong : RobotAI_Base
 
                     bool allow_fire = false;
                     bool allow_infight = false;
+                    bool allow_jumpslash = false;
 
                     float infight_dist = 20.0f;
+                    float jumpslash_dist = 40.0f;
 
                     if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.InfightBoost))
                         infight_dist *= 1.5f;
@@ -327,7 +329,8 @@ public class RobotAI_Shenlong : RobotAI_Base
                                         //}
                                     }
 
-                                   
+                                    if (mindist < jumpslash_dist && robotController.boost >= robotController.robotParameter.Boost_Max / 2)
+                                        allow_jumpslash = true;
 
                                     if (current_target.Grounded && mindist < infight_dist && robotController.boost >= robotController.robotParameter.Boost_Max / 2)
                                         allow_infight = true;
@@ -361,6 +364,9 @@ public class RobotAI_Shenlong : RobotAI_Base
 
                                 if (robotController.Grounded)
                                     state = State.Ground;
+
+                                if (mindist < jumpslash_dist && robotController.boost >= robotController.robotParameter.Boost_Max / 2)
+                                    allow_jumpslash = true;
 
                                 if (mindist < infight_dist)
                                     allow_infight = true;
@@ -397,6 +403,9 @@ public class RobotAI_Shenlong : RobotAI_Base
                                 if (target_angle <= 90)
                                     allow_fire = true;
 
+                                if (mindist < jumpslash_dist && robotController.boost >= robotController.robotParameter.Boost_Max / 2)
+                                    allow_jumpslash = true;
+
                                 if (mindist < infight_dist)
                                     allow_infight = true;
                               
@@ -412,6 +421,9 @@ public class RobotAI_Shenlong : RobotAI_Base
 
                                 if(floorhit.distance > 10.0f)
                                     allow_fire = true;
+
+                                if (mindist < jumpslash_dist && robotController.boost >= robotController.robotParameter.Boost_Max / 2)
+                                    allow_jumpslash = true;
 
                                 if (mindist < 20.0f)
                                     allow_infight = true;
@@ -462,21 +474,18 @@ public class RobotAI_Shenlong : RobotAI_Base
                         allow_fire = false;
 
 
-                    if (allow_infight)
+                    if (robotController.Sword != null && robotController.Sword.can_jump_slash && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash)
+                        && allow_jumpslash && jumpinfight_reload <= 0 && !prev_slash && robotController.boost >= 80 && !infight_now)
+                    {
+                        ringMenuDir = RobotController.RingMenuDir.Down;
+                        slash = true;
+                    }
+                    else if (allow_infight)
                     {
                         if (infight_wait <= 0)
                         {
-
-                            if (robotController.Sword.can_jump_slash && !prev_slash && jumpinfight_reload <= 0 && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash)
-                                && robotController.boost >= 80 && !infight_now)
+                            if (!prev_slash && infight_reload <= 0)
                             {
-                                ringMenuDir = RobotController.RingMenuDir.Down;
-                                slash = true;
-                            }
-                            else if (!prev_slash && infight_reload <= 0)
-                            {
-                                move.x = 0.0f;
-                                move.y = 0.0f;
                                 slash = true;
                             }
                         }

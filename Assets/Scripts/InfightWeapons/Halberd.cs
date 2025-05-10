@@ -99,7 +99,7 @@ public class Halberd : InfightWeapon
               //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
                  { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2, SlashDistance=8.0f,RotateSpeed=4.0f,SlashDistance_Min = 7.5f } },
                  { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 50.0f ,DashDuration = 45*3/4, SlashDistance=8.0f,RotateSpeed=2.0f,SlashDistance_Min = 7.5f} },
-                  { RobotController.LowerBodyState.JumpSlash_Jump,new MotionProperty{DashSpeed = 50.0f ,DashDuration = 20, SlashDistance=6.0f,RotateSpeed=6.0f,SlashDistance_Min = 5.0f} },
+                  { RobotController.LowerBodyState.JumpSlash_Jump,new MotionProperty{DashSpeed = 60.0f ,DashDuration = 20, SlashDistance=6.0f,RotateSpeed=6.0f,SlashDistance_Min = 5.0f} },
             };
 
 
