@@ -95,14 +95,23 @@ public class Beam : Projectile
 
             int numhit = 0;
 
+            Vector3 origin, goal;
+
+            if (first)
+                origin = barrel_origin;
+            else
+                origin = lineRenderer.GetPosition(1);
+
+            goal = lineRenderer.GetPosition(1) + direction.normalized * speed;
+
             if (hitsphere_width <= 0.0f)
             {
-                Ray ray = new Ray(lineRenderer.GetPosition(1), direction);
-                numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
+                Ray ray = new Ray(origin, goal - origin);
+                numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal - origin).magnitude, 1 << 6 | 1 << 3);
             }
             else
             {
-                numhit = Physics.SphereCastNonAlloc(lineRenderer.GetPosition(1), hitsphere_width,direction,rayCastHit, speed, 1 << 6 | 1 << 3);
+                numhit = Physics.SphereCastNonAlloc(origin, hitsphere_width, (goal - origin).normalized, rayCastHit, (goal - origin).magnitude, 1 << 6 | 1 << 3);
             }
 
             for (int i = 0; i < numhit; i++)
@@ -112,6 +121,11 @@ public class Beam : Projectile
 
                 if (hitHistoryCount >= hitHistory.Length)
                     break;
+
+                if (rayCastHit[i].distance == 0.0f)
+                {
+                    rayCastHit[i].point = goal;
+                }
 
                 hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;
 
@@ -174,5 +188,7 @@ public class Beam : Projectile
                 lineRenderer.SetPosition(0, lineRenderer.GetPosition(0) + view_dir * speed);
             }
         }
+
+        first = false;
     }
 }

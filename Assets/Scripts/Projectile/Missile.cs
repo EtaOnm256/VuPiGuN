@@ -101,6 +101,7 @@ public class Missile : Projectile
                                 beam.team = owner.team;
                                 beam.owner = owner;
                                 beam.chargeshot = chargeshot;
+                                beam.barrel_origin = position;
                             }
                             dead = true;
                         }
@@ -110,10 +111,18 @@ public class Missile : Projectile
 
             if (!dead)
             {
+                Vector3 origin,goal;
 
-                Ray ray = new Ray(transform.position, direction);
+                if (first)
+                    origin = barrel_origin;
+                else
+                    origin = transform.position;
 
-                int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
+                goal = transform.position + direction.normalized * speed;
+
+                Ray ray = new Ray(origin, goal-origin);
+
+                int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal-origin).magnitude, 1 << 6 | 1 << 3);
 
                 for (int i = 0; i < numhit; i++)
                 {
@@ -166,6 +175,8 @@ public class Missile : Projectile
             if (boostEmitter.instanceCount <= 0)
                 GameObject.Destroy(gameObject);
         }
+
+        first = false;
     }
 
     private void Awake()

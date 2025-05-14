@@ -110,9 +110,18 @@ public class CannonBall : Projectile
                 }*/
             }
 
-            Ray ray = new Ray(transform.position, direction);
+            Vector3 origin, goal;
 
-            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
+            if (first)
+                origin = barrel_origin;
+            else
+                origin = transform.position;
+
+            goal = transform.position + direction.normalized * speed;
+
+            Ray ray = new Ray(origin, goal - origin);
+
+            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal - origin).magnitude, 1 << 6 | 1 << 3);
 
             for (int i = 0; i < numhit; i++)
             {
@@ -159,6 +168,7 @@ public class CannonBall : Projectile
                 GameObject.Destroy(gameObject);
             }
         }
-     
+
+        first = false;
     }
 }

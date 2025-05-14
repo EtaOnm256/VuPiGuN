@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1191585114736190082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4841564336985881853}
+  m_Layer: 0
+  m_Name: BarrelOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4841564336985881853
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191585114736190082}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.005620003, z: -0.009290003}
+  m_LocalScale: {x: 0.0005689, y: 0.0002515, z: 0.00009999998}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4735893393083617490}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8217520916323313477
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +123,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 805f0bf578f40ea4e94aec836b6e3cfb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4073539051035776848}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 805f0bf578f40ea4e94aec836b6e3cfb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4841564336985881853}
   m_SourcePrefab: {fileID: 100100000, guid: 805f0bf578f40ea4e94aec836b6e3cfb, type: 3}
 --- !u!4 &4735893393083617490 stripped
 Transform:
@@ -130,9 +164,11 @@ MonoBehaviour:
   bullet_prefab: {fileID: 6571210301752455124, guid: b45ac389190c8704c8c8c3a5cd3a7786, type: 3}
   beam: 0
   solidemit_prefab: {fileID: 8961267772553168207, guid: a9188262140e6d748bca1106490714a3, type: 3}
+  Max_Ammo: 30
   Reload_Time: 12
   firePoint: {fileID: 8217520916323313477}
   MaxMagazine: 5
   fire_interval: 5
   _fire_followthrough: 30
+  barrel_origin: {fileID: 1191585114736190082}
   _firing_multiplier: 2

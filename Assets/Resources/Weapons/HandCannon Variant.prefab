@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6955608505559269435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8007778145924756716}
+  m_Layer: 0
+  m_Name: BarrelOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8007778145924756716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6955608505559269435}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.0048, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9206627185565556227}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8551960592390016984
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +123,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 22a0d2e40f5bf994c8fe2affeba78504, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4874759110738872161}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 22a0d2e40f5bf994c8fe2affeba78504, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8007778145924756716}
   m_SourcePrefab: {fileID: 100100000, guid: 22a0d2e40f5bf994c8fe2affeba78504, type: 3}
 --- !u!1 &8399022032530343097 stripped
 GameObject:
@@ -124,6 +158,8 @@ MonoBehaviour:
   _chargeshot: 0
   cannonball_prefab: {fileID: 4123693753031922193, guid: 96b804910c3d8ea4fab5f88d18f1eac8, type: 3}
   beamemit_prefab: {fileID: 8961267772553168207, guid: 12f4edc718b5d9d4ab137281ddcd9849, type: 3}
+  barrel_origin: {fileID: 6955608505559269435}
+  _fire_followthrough: 45
   firePoint: {fileID: 8551960592390016984}
 --- !u!4 &9206627185565556227 stripped
 Transform:

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &155563097948370489
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6242587505833877013}
+  m_Layer: 0
+  m_Name: BarrelOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6242587505833877013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155563097948370489}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.00513, z: -0.01006}
+  m_LocalScale: {x: 0.010000002, y: 0.009999999, z: 0.009999999}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1905193246014706893}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6222065125445818555
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,13 +128,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 34ad5e228cc9ca147a2c80d8af9c33c1, type: 3}
       propertyPath: m_Name
-      value: SniperRifle Variant
+      value: SniperRifle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 34ad5e228cc9ca147a2c80d8af9c33c1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8965579673801684891}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 34ad5e228cc9ca147a2c80d8af9c33c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6242587505833877013}
   m_SourcePrefab: {fileID: 100100000, guid: 34ad5e228cc9ca147a2c80d8af9c33c1, type: 3}
 --- !u!1 &1241669158410538615 stripped
 GameObject:
@@ -135,6 +169,7 @@ MonoBehaviour:
   projectile_speed: 0
   _chargeshot: 0
   bullet_prefab: {fileID: 6571210301752455124, guid: 64c6e0df19fe59744a52c7a8e6de6751, type: 3}
+  barrel_origin: {fileID: 155563097948370489}
   firePoint: {fileID: 6222065125445818555}
 --- !u!4 &1905193246014706893 stripped
 Transform:

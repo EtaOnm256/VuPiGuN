@@ -7,6 +7,8 @@ public class Projectile : Pausable
     public WorldManager.Team team;
     public Vector3 direction;
     public Vector3 position;
+    public Vector3 barrel_origin;
+    protected bool first = true;
     public RobotController target = null;
     public float speed;
     public bool dead = false;

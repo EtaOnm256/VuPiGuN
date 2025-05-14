@@ -6,7 +6,7 @@ public class SolidRifle : Weapon
 {
     [SerializeField]GameObject bullet_prefab;
     GameObject solidemit_prefab;
-
+    [SerializeField] GameObject barrel_origin;
 
     private const int Max_Ammo = 6;
 
@@ -100,6 +100,7 @@ public class SolidRifle : Weapon
             bullet.owner = owner;
             bullet.itemFlag = owner.robotParameter.itemFlag;
             bullet.chargeshot = chargeshot;
+            bullet.barrel_origin = barrel_origin.transform.position;
             GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             solidemit_obj.transform.localScale = Vector3.one;

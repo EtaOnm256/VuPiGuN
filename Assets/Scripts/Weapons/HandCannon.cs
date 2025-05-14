@@ -6,7 +6,7 @@ public class HandCannon : Weapon
 {
     [SerializeField]GameObject cannonball_prefab;
     [SerializeField]GameObject beamemit_prefab;
-
+    [SerializeField] GameObject barrel_origin;
 
     private const int Max_Ammo = 6;
 
@@ -104,6 +104,7 @@ public class HandCannon : Weapon
                 beam.owner = owner;
                 beam.itemFlag = owner.robotParameter.itemFlag;
                 beam.chargeshot = chargeshot;
+                beam.barrel_origin = barrel_origin.transform.position;
 
                 if (beamemit_prefab)
                     GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -118,6 +119,7 @@ public class HandCannon : Weapon
                 beam.team = owner.team;
                 beam.owner = owner;
                 beam.chargeshot = chargeshot;
+                beam.barrel_origin = barrel_origin.transform.position;
 
                 if (beamemit_prefab)
                     GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);

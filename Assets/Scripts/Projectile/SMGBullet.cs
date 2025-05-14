@@ -97,9 +97,18 @@ public class SMGBullet : Projectile
                 }
             }
 
-            Ray ray = new Ray(lineRenderer.GetPosition(positionCount - 1), direction);
+            Vector3 origin, goal;
 
-            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
+            if (first)
+                origin = barrel_origin;
+            else
+                origin = lineRenderer.GetPosition(positionCount - 1);
+
+            goal = lineRenderer.GetPosition(positionCount - 1) + direction.normalized * speed;
+       
+            Ray ray = new Ray(origin, goal - origin);
+
+            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal - origin).magnitude, 1 << 6 | 1 << 3);
 
             for (int i = 0; i < numhit; i++)
             {
@@ -168,5 +177,7 @@ public class SMGBullet : Projectile
         {
             lineRenderer.SetPosition(i, lineRenderer.GetPosition(0)+ (lineRenderer.GetPosition(positionCount - 1)- lineRenderer.GetPosition(0))*i/(positionCount-i));
         }
+
+        first = false;
     }
 }

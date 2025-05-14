@@ -33,7 +33,7 @@ public class SMG : Weapon
     [SerializeField] int fire_interval = 5;
 
     [SerializeField] int _fire_followthrough = 30;
-
+    [SerializeField] GameObject barrel_origin;
     override public int fire_followthrough
     {
         get { return _fire_followthrough; }
@@ -130,6 +130,7 @@ public class SMG : Weapon
                 bullet.owner = owner;
                 bullet.itemFlag = owner.robotParameter.itemFlag;
                 bullet.chargeshot = chargeshot;
+                bullet.barrel_origin = barrel_origin.transform.position;
                 GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
                 solidemit_obj.transform.localScale = Vector3.one / 2.0f;
@@ -145,6 +146,7 @@ public class SMG : Weapon
                 bullet.owner = owner;
                 bullet.itemFlag = owner.robotParameter.itemFlag;
                 bullet.chargeshot = chargeshot;
+                bullet.barrel_origin = barrel_origin.transform.position;
                 GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
                 solidemit_obj.transform.localScale = Vector3.one / 2.0f;
