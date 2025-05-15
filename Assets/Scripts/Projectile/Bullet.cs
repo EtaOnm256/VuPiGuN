@@ -101,7 +101,7 @@ public class Bullet : Projectile
 
             Vector3 origin, goal;
 
-            if (first)
+            if (first && barrel_origin.x != Mathf.NegativeInfinity)
                 origin = barrel_origin;
             else
                 origin = lineRenderer.GetPosition(positionCount - 1);

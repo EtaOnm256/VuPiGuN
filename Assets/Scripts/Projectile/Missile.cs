@@ -101,7 +101,6 @@ public class Missile : Projectile
                                 beam.team = owner.team;
                                 beam.owner = owner;
                                 beam.chargeshot = chargeshot;
-                                beam.barrel_origin = position;
                             }
                             dead = true;
                         }
@@ -113,7 +112,7 @@ public class Missile : Projectile
             {
                 Vector3 origin,goal;
 
-                if (first)
+                if (first && barrel_origin.x != Mathf.NegativeInfinity)
                     origin = barrel_origin;
                 else
                     origin = transform.position;

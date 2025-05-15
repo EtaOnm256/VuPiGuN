@@ -88,6 +88,11 @@ public class SprayBeam : Projectile
                 if (hitHistory.Contains(rayCastHit[i].collider.gameObject))
                     continue;
 
+
+                if (hitHistoryCount >= hitHistory.Length)
+                    break;
+
+
                 hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;
 
 
@@ -98,6 +103,9 @@ public class SprayBeam : Projectile
                 {
                     if (hitHistoryRC.Contains(robotController))
                         continue;
+
+                    if (hitHistoryRCCount >= hitHistoryRC.Length)
+                        break;
 
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 

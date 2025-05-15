@@ -112,7 +112,7 @@ public class CannonBall : Projectile
 
             Vector3 origin, goal;
 
-            if (first)
+            if (first && barrel_origin.x != Mathf.NegativeInfinity)
                 origin = barrel_origin;
             else
                 origin = transform.position;
