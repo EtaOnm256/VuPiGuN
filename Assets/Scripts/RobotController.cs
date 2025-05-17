@@ -92,6 +92,7 @@ public class RobotController : Pausable
 
 
     int stepremain = 0;
+    int nextdrive_free_boost = 0;
 
     public bool is_player;
 
@@ -342,6 +343,7 @@ public class RobotController : Pausable
     private int death_timer = 0;
     private int death_timer_max = 30;
 
+    private bool nextdrive = false;
 
     RobotController finish_dealer;
     Vector3 finish_dir;
@@ -2861,31 +2863,34 @@ public class RobotController : Pausable
             if(is_player)
                 uIController_Overlay.aiming = current_aiming;
 
-            if (aiming_factor < aiming_begin_aiming_factor_current || robotParameter.itemFlag.HasFlag(ItemFlag.TrackingSystem))
+            if (!fire_done || canhold_current)
             {
-                virtual_targeting_position_forBody = Target_Robot.GetTargetedPosition();
-
-                //if (is_player)
-                //    uIController_Overlay.aim_fixed = true;
-            }
-            else
-            {
-                Vector3 a = virtual_targeting_position_forBody - GetCenter();
-                Vector3 b = Target_Robot.GetTargetedPosition() - GetCenter();
-
-                if (Vector3.Angle(a, b) < aiming_angle_speed_current)
+                if (aiming_factor < aiming_begin_aiming_factor_current || robotParameter.itemFlag.HasFlag(ItemFlag.TrackingSystem))
                 {
+                    virtual_targeting_position_forBody = Target_Robot.GetTargetedPosition();
+
                     //if (is_player)
                     //    uIController_Overlay.aim_fixed = true;
-
-                    virtual_targeting_position_forBody = GetCenter() + b;
                 }
                 else
                 {
-                    //if (is_player)
-                    //    uIController_Overlay.aim_fixed = false;
+                    Vector3 a = virtual_targeting_position_forBody - GetCenter();
+                    Vector3 b = Target_Robot.GetTargetedPosition() - GetCenter();
 
-                    virtual_targeting_position_forBody = GetCenter() + Vector3.RotateTowards(a, b, aiming_angle_speed_current * Mathf.Deg2Rad, float.MaxValue);
+                    if (Vector3.Angle(a, b) < aiming_angle_speed_current)
+                    {
+                        //if (is_player)
+                        //    uIController_Overlay.aim_fixed = true;
+
+                        virtual_targeting_position_forBody = GetCenter() + b;
+                    }
+                    else
+                    {
+                        //if (is_player)
+                        //    uIController_Overlay.aim_fixed = false;
+
+                        virtual_targeting_position_forBody = GetCenter() + Vector3.RotateTowards(a, b, aiming_angle_speed_current * Mathf.Deg2Rad, float.MaxValue);
+                    }
                 }
             }
 
@@ -3183,7 +3188,7 @@ public class RobotController : Pausable
                                 // creates curved result rather than a linear one giving a more organic speed change
                                 // note T in Lerp is clamped, so we don't need to clamp our speed
                                 _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                                    Time.deltaTime * robotParameter.SpeedChangeRate);
+                                Time.deltaTime * robotParameter.SpeedChangeRate);
 
                                 // round speed to 3 decimal places
                                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -3309,15 +3314,45 @@ public class RobotController : Pausable
                             }
                             _animator.SetFloat(_animIDVerticalSpeed, _verticalVelocity);
                         }
-
-
-                        if (lowerBodyState == LowerBodyState.DASH)
+                        else if (lowerBodyState == LowerBodyState.DASH)
                         {
                             _verticalVelocity = 0.0f;
 
-                            bool boost_remain = ConsumeBoost(4);
+                            bool boost_remain;
+                            bool force_boost = false;
 
-                            if (( (!_input.sprint  && !_input.sprint_once)/*_input.move == Vector2.zero*/ || _input.jump || !boost_remain) && event_dashed)
+                            if (nextdrive && upperBodyState == UpperBodyState.FIRE && (!fire_done || rightWeapon.canHold))
+                            {
+                                stepremain = 30;
+                                force_boost = true;
+
+                                if (nextdrive_free_boost > 0)
+                                {
+                                    boost_remain = true;
+                                    nextdrive_free_boost--;
+                                }
+                                else
+                                    boost_remain = ConsumeBoost(4);
+                            }
+                            else if (nextdrive && stepremain > 0)
+                            {
+                                stepremain--;
+                                force_boost = true;
+
+                                if (nextdrive_free_boost > 0)
+                                {
+                                    boost_remain = true;
+                                    nextdrive_free_boost--;
+                                }
+                                else
+                                    boost_remain = ConsumeBoost(4);
+                            }
+                            else
+                                boost_remain = ConsumeBoost(4);
+                       
+                            if (
+                                ((!_input.sprint && !_input.sprint_once && !force_boost)/*_input.move == Vector2.zero*/ || _input.jump || !boost_remain) && event_dashed
+                                )
                             {
                                 TransitLowerBodyState(LowerBodyState.AIR);
                             }
@@ -3325,12 +3360,14 @@ public class RobotController : Pausable
                             {
                                 boosting = true;
                             }
+
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive) && !prev_sprint)
+                                AcceptDash(false);
                         }
+                        
+                        if(lowerBodyState != LowerBodyState.DASH)
+                            JumpAndGravity();
 
-
-
-
-                        JumpAndGravity();
                         GroundedCheck();
                     }
                     break;
@@ -5003,6 +5040,12 @@ public class RobotController : Pausable
             intend_animator_speed = 1.0f;
         }
 
+        if (newState != LowerBodyState.DASH)
+        {
+            nextdrive = false;
+        }
+            
+
         switch (newState)
         {
             case LowerBodyState.AIR:
@@ -5597,6 +5640,19 @@ public class RobotController : Pausable
         {
             if (ConsumeBoost(4))
             {
+                nextdrive = canceling;
+
+                if (nextdrive)
+                {
+                    stepremain = 30;
+                    nextdrive_free_boost = 30;
+                }
+                else
+                {
+                    stepremain = 0;
+                    nextdrive_free_boost = 0;
+                }
+
                 sprint_once_consumed = true;
 
                 if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))

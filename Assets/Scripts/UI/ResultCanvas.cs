@@ -15,6 +15,9 @@ public class ResultCanvas : MonoBehaviour
     [SerializeField] Image background;
     [SerializeField] GameState gameState;
     [SerializeField] Image blackout;
+    [SerializeField] GameObject proceedButton;
+    [SerializeField] GameObject retryButton;
+    [SerializeField] GameObject endButton;
 
     public bool victory;
 
@@ -45,11 +48,17 @@ public class ResultCanvas : MonoBehaviour
 
             bigResultText.text = resultText.text = "çÏêÌê¨å˜";
             background.color = new Color(1.0f, 1.0f, 1.0f, 0.125f);
+            proceedButton.SetActive(true);
+            retryButton.SetActive(false);
+            endButton.SetActive(false);
         }
         else
         {
             bigResultText.text = resultText.text = "çÏêÌé∏îs";
             background.color = new Color(0.0f, 0.0f, 0.0f, 0.5f);
+            proceedButton.SetActive(false);
+            retryButton.SetActive(true);
+            endButton.SetActive(true);
         }
 
         Cursor.lockState = CursorLockMode.None;
@@ -84,6 +93,17 @@ public class ResultCanvas : MonoBehaviour
             StartCoroutine("Blackout");
         }
 
+        finished = true;
+    }
+
+    public void OnClickRetry()
+    {
+        if (finished)
+            return;
+
+        gameState.loadingDestination = GameState.LoadingDestination.Intermission;
+        StartCoroutine("Blackout");
+  
         finished = true;
     }
 

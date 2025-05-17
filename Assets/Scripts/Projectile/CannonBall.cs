@@ -134,22 +134,25 @@ public class CannonBall : Projectile
 
                 RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
 
-                if (robotController != null)
+                if (robotController != owner || owner == null)
                 {
-                    if (hitHistoryRC.Contains(robotController))
-                        continue;
+                    if (robotController != null)
+                    {
+                        if (hitHistoryRC.Contains(robotController))
+                            continue;
 
-                    hitHistoryRC[hitHistoryRCCount++] = robotController;
+                        hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.Normal, owner);
+                        robotController.TakeDamage(rayCastHit[i].point, direction, damage, RobotController.KnockBackType.Normal, owner);
 
 
+                    }
+
+                    GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, transform.rotation);
+                    explode.transform.localScale = Vector3.one * 0.5f;
+                    GameObject.Destroy(gameObject);
+                    return;
                 }
-
-                GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, transform.rotation);
-                explode.transform.localScale = Vector3.one * 0.5f;
-                GameObject.Destroy(gameObject);
-                return;
             }
 
             Vector3 Velocity = direction * speed;

@@ -91,28 +91,31 @@ public class DroneBeam : Projectile
 
                 RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
 
-                if (robotController != null)
+                if (robotController != owner || owner == null)
                 {
-                    if (hitHistoryRC.Contains(robotController))
-                        continue;
+                    if (robotController != null)
+                    {
+                        if (hitHistoryRC.Contains(robotController))
+                            continue;
 
-                    if (hitHistoryRCCount >= hitHistoryRC.Length)
-                        break;
+                        if (hitHistoryRCCount >= hitHistoryRC.Length)
+                            break;
 
-                    hitHistoryRC[hitHistoryRCCount++] = robotController;
+                        hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, 45, RobotController.KnockBackType.Normal, owner);
+                        robotController.TakeDamage(rayCastHit[i].point, direction, 45, RobotController.KnockBackType.Normal, owner);
 
-                    
+
+                    }
+                    else
+                    {
+                        dead = true;
+                    }
+
+                    GameObject hitEffectObj = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
+
+                    hitEffectObj.transform.localScale = Vector3.one * 0.75f;
                 }
-                else
-                {
-                    dead = true;
-                }
-
-                GameObject hitEffectObj = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
-
-                hitEffectObj.transform.localScale = Vector3.one * 0.75f;
             }
 
             position = lineRenderer.GetPosition(1) + direction * speed;

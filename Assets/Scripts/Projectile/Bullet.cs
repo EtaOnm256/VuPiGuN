@@ -123,27 +123,30 @@ public class Bullet : Projectile
 
                 RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
 
-                if (robotController != null)
+                if (robotController != owner || owner == null)
                 {
-                    if (hitHistoryRC.Contains(robotController))
-                        continue;
+                    if (robotController != null)
+                    {
+                        if (hitHistoryRC.Contains(robotController))
+                            continue;
 
-                    hitHistoryRC[hitHistoryRCCount++] = robotController;
+                        hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, RobotController.KnockBackType.Normal, owner);
+                        robotController.TakeDamage(rayCastHit[i].point, direction, damage, RobotController.KnockBackType.Normal, owner);
 
-                    dead = true;
-                }
-                else
-                {
-                    dead = true;
-                }
+                        dead = true;
+                    }
+                    else
+                    {
+                        dead = true;
+                    }
 
-                if (rayCastHit[i].collider.gameObject.layer != 3)
-                {
-                    GameObject hitEffect = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.LookRotation(view_dir, Vector3.up));
+                    if (rayCastHit[i].collider.gameObject.layer != 3)
+                    {
+                        GameObject hitEffect = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.LookRotation(view_dir, Vector3.up));
 
-                    hitEffect.transform.localScale = Vector3.one * 0.5f;
+                        hitEffect.transform.localScale = Vector3.one * 0.5f;
+                    }
                 }
             }
 

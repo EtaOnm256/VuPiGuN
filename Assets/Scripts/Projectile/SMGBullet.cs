@@ -121,29 +121,32 @@ public class SMGBullet : Projectile
 
                 RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
 
-                if (robotController != null)
+                if (robotController != owner || owner == null)
                 {
-                    if (hitHistoryRC.Contains(robotController))
-                        continue;
+                    if (robotController != null && robotController != owner)
+                    {
+                        if (hitHistoryRC.Contains(robotController))
+                            continue;
 
-                    hitHistoryRC[hitHistoryRCCount++] = robotController;
+                        hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    if (knockBackType == RobotController.KnockBackType.None)
-                        robotController.DoHitStop(5);
-                 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, knockBackType, owner);
-                    
-                    dead = true;
-                }
-                else
-                {
-                    dead = true;
-                }
-                if (rayCastHit[i].collider.gameObject.layer != 3)
-                {
-                    GameObject hitEffect = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.LookRotation(view_dir, Vector3.up));
+                        if (knockBackType == RobotController.KnockBackType.None)
+                            robotController.DoHitStop(5);
 
-                    hitEffect.transform.localScale = Vector3.one * 0.5f;
+                        robotController.TakeDamage(rayCastHit[i].point, direction, damage, knockBackType, owner);
+
+                        dead = true;
+                    }
+                    else
+                    {
+                        dead = true;
+                    }
+                    if (rayCastHit[i].collider.gameObject.layer != 3)
+                    {
+                        GameObject hitEffect = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.LookRotation(view_dir, Vector3.up));
+
+                        hitEffect.transform.localScale = Vector3.one * 0.5f;
+                    }
                 }
             }
 

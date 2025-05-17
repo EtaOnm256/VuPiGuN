@@ -344,7 +344,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.49835816
+      - time: 1
         functionName: OnDashed
         data: 
         objectReferenceParameter: {instanceID: 0}

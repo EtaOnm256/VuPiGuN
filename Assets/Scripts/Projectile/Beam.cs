@@ -133,27 +133,30 @@ public class Beam : Projectile
 
                 RobotController robotController = rayCastHit[i].collider.gameObject.GetComponentInParent<RobotController>();
 
-                if (robotController != null)
+                if (robotController != owner || owner == null)
                 {
-                    if (hitHistoryRC.Contains(robotController))
-                        continue;
+                    if (robotController != null)
+                    {
+                        if (hitHistoryRC.Contains(robotController))
+                            continue;
 
-                    if (hitHistoryRCCount >= hitHistoryRC.Length)
-                        break;
+                        if (hitHistoryRCCount >= hitHistoryRC.Length)
+                            break;
 
-                    hitHistoryRC[hitHistoryRCCount++] = robotController;
+                        hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                    robotController.TakeDamage(rayCastHit[i].point,direction, damage, KnockBackType, owner);
+                        robotController.TakeDamage(rayCastHit[i].point, direction, damage, KnockBackType, owner);
 
-                    
+
+                    }
+                    else
+                    {
+                        dead = true;
+                    }
+
+                    GameObject hitEffect_obj = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
+                    hitEffect_obj.transform.localScale = new Vector3(hiteffect_scale, hiteffect_scale, hiteffect_scale);
                 }
-                else
-                {
-                    dead = true;
-                }
-
-                GameObject hitEffect_obj = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
-                hitEffect_obj.transform.localScale = new Vector3(hiteffect_scale, hiteffect_scale, hiteffect_scale);
             }
 
             position = lineRenderer.GetPosition(1) + direction * speed;

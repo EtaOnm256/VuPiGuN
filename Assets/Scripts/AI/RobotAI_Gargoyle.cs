@@ -429,7 +429,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                 }
 
                                 //if (overheating)
-                                if (robotController.boost < robotController.robotParameter.Boost_Max * 1 / 4)
+                                if (robotController.boost < robotController.robotParameter.Boost_Max * 2 / 4)
                                 {
                                     state = State.Decend;
                                 }
