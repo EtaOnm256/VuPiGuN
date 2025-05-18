@@ -1,6 +1,6 @@
 
-#ifndef UNIVERSAL_TERRAIN_LIT_PASSES_INCLUDED
-#define UNIVERSAL_TERRAIN_LIT_PASSES_INCLUDED
+#ifndef UNIVERSAL_TERRAIN_LIT_PASSES_DRAWBORDER_INCLUDED
+#define UNIVERSAL_TERRAIN_LIT_PASSES_DRAWBORDER_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
@@ -13,7 +13,7 @@ struct Attributes
     float2 texcoord : TEXCOORD0;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
-
+SamplerState my_point_aniso16_clamp_sampler;
 struct Varyings
 {
     float4 uvMainAndLM              : TEXCOORD0; // xy: control, zw: lightmap
@@ -176,7 +176,6 @@ void SplatmapMix(float4 uvMainAndLM, float4 uvSplat01, float4 uvSplat23, inout h
     // lighting result can be correctly weighted.
     splatControl /= (weight + HALF_MIN);
 #endif
-
     mixedDiffuse = 0.0h;
     mixedDiffuse += diffAlbedo[0] * half4(_DiffuseRemapScale0.rgb * splatControl.rrr, 1.0h);
     mixedDiffuse += diffAlbedo[1] * half4(_DiffuseRemapScale1.rgb * splatControl.ggg, 1.0h);
@@ -342,8 +341,55 @@ half4 SplatmapFragment(Varyings IN) : SV_TARGET
     ComputeMasks(masks, hasMask, IN);
 
     float2 splatUV = (IN.uvMainAndLM.xy * (_Control_TexelSize.zw - 1.0f) + 0.5f) * _Control_TexelSize.xy;
-    half4 splatControl = SAMPLE_TEXTURE2D(_Control, sampler_Control, splatUV);
 
+#ifdef SHARP_EDGE
+    half4 splatControl = SAMPLE_TEXTURE2D(_Control, my_point_aniso16_clamp_sampler, splatUV);
+
+    if (dot(splatControl, 1.0h) <= 0.5f)
+    {
+        splatControl = 0.0f;
+    }
+    else
+    {
+       if (splatControl.r >= splatControl.g && splatControl.r >= splatControl.b && splatControl.r >= splatControl.a)
+       {
+           splatControl.r = 1;
+           splatControl.g = 0;
+           splatControl.b = 0;
+           splatControl.a = 0;
+       }
+       if (splatControl.g >= splatControl.r && splatControl.g >= splatControl.b && splatControl.g >= splatControl.a)
+       {
+           splatControl.r = 0;
+           splatControl.g = 1;
+           splatControl.b = 0;
+           splatControl.a = 0;
+       }
+       if (splatControl.b >= splatControl.g && splatControl.b >= splatControl.r && splatControl.b >= splatControl.a)
+       {
+           splatControl.r = 0;
+           splatControl.g = 0;
+           splatControl.b = 1;
+           splatControl.a = 0;
+       }
+       if (splatControl.a >= splatControl.g && splatControl.a >= splatControl.b && splatControl.a >= splatControl.r)
+       {
+           splatControl.g = 0;
+           splatControl.b = 0;
+           splatControl.r = 0;
+           splatControl.a = 1;
+       }
+       if (splatControl.a >= splatControl.g && splatControl.a >= splatControl.b && splatControl.a >= splatControl.r)
+       {
+           splatControl.g = 0;
+           splatControl.b = 0;
+           splatControl.r = 0;
+           splatControl.a = 1;
+       }
+    }
+#else
+    half4 splatControl = SAMPLE_TEXTURE2D(_Control, sampler_Control, splatUV);
+#endif
     half alpha = dot(splatControl, 1.0h);
 #ifdef _TERRAIN_BLEND_HEIGHT
     // disable Height Based blend when there are more than 4 layers (multi-pass breaks the normalization)

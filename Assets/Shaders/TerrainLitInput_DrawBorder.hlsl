@@ -1,5 +1,5 @@
-#ifndef UNIVERSAL_TERRAIN_LIT_INPUT_INCLUDED
-#define UNIVERSAL_TERRAIN_LIT_INPUT_INCLUDED
+#ifndef UNIVERSAL_TERRAIN_LIT_INPUT_DRAWBORDER_INCLUDED
+#define UNIVERSAL_TERRAIN_LIT_INPUT_DRAWBORDER_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
