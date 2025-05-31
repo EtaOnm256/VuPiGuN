@@ -98,7 +98,7 @@ Shader "Custom/TerrainLit_DrawBorder_SharpEdge"
             #pragma shader_feature_local _TERRAIN_INSTANCED_PERPIXEL_NORMAL
 
 #define SHARP_EDGE
-
+#define FAKE_LIGHTMAP
             #include "Assets/Shaders/TerrainLitInput_DrawBorder.hlsl"
             #include "Assets/Shaders/TerrainLitPasses_DrawBorder.hlsl"
             ENDHLSL

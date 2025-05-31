@@ -56,7 +56,7 @@ TEXTURE2D(_Normal2);
 TEXTURE2D(_Normal3);
 #endif
 
-#ifdef _MASKMAP
+#if defined(_MASKMAP) || defined(FAKE_LIGHTMAP)
 TEXTURE2D(_Mask0);      SAMPLER(sampler_Mask0);
 TEXTURE2D(_Mask1);
 TEXTURE2D(_Mask2);

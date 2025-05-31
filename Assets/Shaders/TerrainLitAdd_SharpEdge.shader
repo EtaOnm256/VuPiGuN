@@ -86,7 +86,8 @@ Shader "Custom/TerrainLitAdd_SharpEdge"
             // Sample normal in pixel shader when doing instancing
             #pragma shader_feature_local _TERRAIN_INSTANCED_PERPIXEL_NORMAL
             #define TERRAIN_SPLAT_ADDPASS
-        #define SHARP_EDGE
+            #define SHARP_EDGE
+            #define FAKE_LIGHTMAP
             #include "Assets/Shaders/TerrainLitInput_DrawBorder.hlsl"
             #include "Assets/Shaders/TerrainLitPasses_DrawBorder.hlsl"
             ENDHLSL

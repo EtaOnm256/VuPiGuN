@@ -14,6 +14,8 @@ struct Attributes
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 SamplerState my_point_aniso16_clamp_sampler;
+SamplerState my_point_clamp_sampler;
+SamplerState my_linear_clamp_sampler;
 struct Varyings
 {
     float4 uvMainAndLM              : TEXCOORD0; // xy: control, zw: lightmap
@@ -168,7 +170,7 @@ void SplatmapMix(float4 uvMainAndLM, float4 uvSplat01, float4 uvSplat23, inout h
     weight = dot(splatControl, 1.0h);
 
 #ifdef TERRAIN_SPLAT_ADDPASS
-    clip(weight <= 0.005h ? -1.0h : 1.0h);
+//    clip(weight <= 0.005h ? -1.0h : 1.0h);
 #endif
 
 #ifndef _TERRAIN_BASEMAP_GEN
@@ -186,6 +188,19 @@ void SplatmapMix(float4 uvMainAndLM, float4 uvSplat01, float4 uvSplat23, inout h
 }
 
 #endif
+
+#ifdef FAKE_LIGHTMAP
+void FakeLightMapMix(float4 uvSplat01, float4 uvSplat23, inout half4 splatControl, inout half4 mixedFLM)
+{
+    mixedFLM = half4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    mixedFLM += splatControl.r * SAMPLE_TEXTURE2D(_Mask0, sampler_Mask0, uvSplat01.xy);
+    mixedFLM += splatControl.g * SAMPLE_TEXTURE2D(_Mask1, sampler_Mask0, uvSplat01.zw);
+    mixedFLM += splatControl.b * SAMPLE_TEXTURE2D(_Mask2, sampler_Mask0, uvSplat23.xy);
+    mixedFLM += splatControl.a * SAMPLE_TEXTURE2D(_Mask3, sampler_Mask0, uvSplat23.zw);
+}
+#endif
+
 
 #ifdef _TERRAIN_BLEND_HEIGHT
 void HeightBasedSplatModify(inout half4 splatControl, in half4 masks[4])
@@ -335,17 +350,18 @@ half4 SplatmapFragment(Varyings IN) : SV_TARGET
     half alpha = 1;
     half occlusion = 1;
 #else
-
-    half4 hasMask = half4(_LayerHasMask0, _LayerHasMask1, _LayerHasMask2, _LayerHasMask3);
+    //half4 hasMask = half4(_LayerHasMask0, _LayerHasMask1, _LayerHasMask2, _LayerHasMask3);
+    half4 hasMask = half4(0.0f, 0.0f, 0.0f, 0.0f);
     half4 masks[4];
     ComputeMasks(masks, hasMask, IN);
 
     float2 splatUV = (IN.uvMainAndLM.xy * (_Control_TexelSize.zw - 1.0f) + 0.5f) * _Control_TexelSize.xy;
 
 #ifdef SHARP_EDGE
-    half4 splatControl = SAMPLE_TEXTURE2D(_Control, my_point_aniso16_clamp_sampler, splatUV);
+    half4 splatControl = SAMPLE_TEXTURE2D(_Control, my_linear_clamp_sampler, splatUV);
+    float remain = 1.0f - splatControl.r - splatControl.g - splatControl.b - splatControl.a;
 
-    if (dot(splatControl, 1.0h) <= 0.5f)
+    if (remain >= 0.5f)
     {
         splatControl = 0.0f;
     }
@@ -378,14 +394,7 @@ half4 SplatmapFragment(Varyings IN) : SV_TARGET
            splatControl.b = 0;
            splatControl.r = 0;
            splatControl.a = 1;
-       }
-       if (splatControl.a >= splatControl.g && splatControl.a >= splatControl.b && splatControl.a >= splatControl.r)
-       {
-           splatControl.g = 0;
-           splatControl.b = 0;
-           splatControl.r = 0;
-           splatControl.a = 1;
-       }
+       }     
     }
 #else
     half4 splatControl = SAMPLE_TEXTURE2D(_Control, sampler_Control, splatUV);
@@ -438,11 +447,15 @@ half4 SplatmapFragment(Varyings IN) : SV_TARGET
                 && inputData.positionWS.x < _BorderDistance + _BorderWidth && inputData.positionWS.x > -_BorderDistance - _BorderWidth)
     )
     {
+#ifdef TERRAIN_SPLAT_ADDPASS
+        return half4(0.0f, 0.0f, 0.0f, 0.0f);
+#else
         return half4(1.0f,0.25f,0.0f, 0.0f);
+#endif
     }
 
 #if defined(_DBUFFER)
-    half3 specular = half3(0.0h, 0.0h, 0.0h);
+   half3 specular = half3(0.0h, 0.0h, 0.0h);
     ApplyDecal(IN.clipPos,
         albedo,
         specular,
@@ -451,7 +464,6 @@ half4 SplatmapFragment(Varyings IN) : SV_TARGET
         occlusion,
         smoothness);
 #endif
-
 #ifdef TERRAIN_GBUFFER
 
     BRDFData brdfData;
@@ -479,9 +491,25 @@ half4 SplatmapFragment(Varyings IN) : SV_TARGET
 
 #else
 
-    half4 color = UniversalFragmentPBR(inputData, albedo, metallic, /* specular */ half3(0.0h, 0.0h, 0.0h), smoothness, occlusion, /* emission */ half3(0, 0, 0), alpha);
+#ifdef FAKE_LIGHTMAP
+    half4 color = UniversalFragmentPBR(inputData, albedo, 0.0f, /* specular */ half3(0.0h, 0.0h, 0.0h), 0.0f, occlusion, /* emission */ half3(0, 0, 0), alpha);
 
+    half4 mixedFLM;
+
+    FakeLightMapMix(IN.uvSplat01, IN.uvSplat23, splatControl, mixedFLM);
+    
+    float lumi = mixedFLM.r * mixedFLM.r;
+
+    color += half4(albedo.rgb * lumi/4,1.0f);
+    
     SplatmapFinalColor(color, inputData.fogCoord);
+
+
+#else
+    half4 color = UniversalFragmentPBR(inputData, albedo, metallic, /* specular */ half3(0.0h, 0.0h, 0.0h), smoothness, occlusion, /* emission */ half3(0, 0, 0), alpha);
+    SplatmapFinalColor(color, inputData.fogCoord);
+#endif
+    
 
     return half4(color.rgb, 1.0h);
 #endif
