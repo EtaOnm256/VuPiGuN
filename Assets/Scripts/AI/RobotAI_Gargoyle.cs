@@ -94,59 +94,76 @@ public class RobotAI_Gargoyle : RobotAI_Base
             //}
             //else
             {
-                bool Aim_blocked;
+                RaycastHit aimblockhit;
+                bool Aim_blocked = Physics.Raycast(robotController.GetCenter(), targetQ * Vector3.forward, out aimblockhit, mindist, WorldManager.layerPattern_Building);
+
+                bool climbing = Aim_blocked && aimblockhit.collider.gameObject.layer == 3;
+                bool tallbuilding = Aim_blocked && aimblockhit.collider.gameObject.layer == 7;
+
+                if (ascending)
                 {
-                    RaycastHit aimblockhit;
-                    Aim_blocked = Physics.Raycast(robotController.GetCenter(), targetQ * Vector3.forward, out aimblockhit, mindist, 1 << 3);
-
-                    if (ascending)
-                    {
-                        if (!Aim_blocked)
-                            ascend_margin--;
-                        else
-                            ascend_margin = 60;
-
-                        if (ascend_margin <= 0)
-                        {
-                            ascending = false;
-                        }
-
-                    }
+                    if (!climbing)
+                        ascend_margin--;
                     else
-                    {
-                        if (Aim_blocked)
-                        {
-                            if (aimblockhit.distance < 10.0f)
-                            {
-                                ascending = true;
-                                ascend_margin = 60;
-                            }
-                        }
+                        ascend_margin = 60;
 
+                    if (ascend_margin <= 0)
+                    {
+                        ascending = false;
                     }
+
+                }
+                else
+                {
+                    if (climbing)
+                    {
+                        if (aimblockhit.distance < 10.0f)
+                        {
+                            ascending = true;
+                            ascend_margin = 60;
+                        }
+                    }
+
                 }
 
                 if (Aim_blocked)
                 {
-                    move.y = 1.0f;
-                    move.x = 0.0f;
-
-                    if (overheating || !ascending)
+                    if (tallbuilding)
                     {
-                        jump = false;
+                        move.y = 1.0f;
+                        move.x = 1.0f;
+
                         if (!overheating)
                             sprint = true;
+
+                        jump = false;
                     }
                     else
                     {
-                        jump = true;
+                        move.y = 1.0f;
+                        move.x = 0.0f;
+
+                        if (ascending)
+                        {
+                            if (overheating || !ascending)
+                            {
+                                jump = false;
+
+                                if (!overheating)
+                                    sprint = true;
+                            }
+                            else
+                            {
+                                jump = true;
+                            }
+                        }
                     }
                 }
                 else
                 {
                     RaycastHit floorhit;
 
-                    bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, float.MaxValue, 1 << 3);
+                    bool ground = Physics.Raycast(robotController.GetCenter(), Vector3.down, out floorhit, float.MaxValue, WorldManager.layerPattern_Building);
                     float target_angle = Vector3.Angle(current_target.GetTargetedPosition() - robotController.chest_hint.transform.position, transform.forward);
 
                     jump = false;

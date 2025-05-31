@@ -107,11 +107,11 @@ public class Beam : Projectile
             if (hitsphere_width <= 0.0f)
             {
                 Ray ray = new Ray(origin, goal - origin);
-                numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal - origin).magnitude, 1 << 6 | 1 << 3);
+                numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal - origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
             }
             else
             {
-                numhit = Physics.SphereCastNonAlloc(origin, hitsphere_width, (goal - origin).normalized, rayCastHit, (goal - origin).magnitude, 1 << 6 | 1 << 3);
+                numhit = Physics.SphereCastNonAlloc(origin, hitsphere_width, (goal - origin).normalized, rayCastHit, (goal - origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
             }
 
             for (int i = 0; i < numhit; i++)

@@ -82,12 +82,15 @@ public class RobotAI_Easy : RobotAI_Base
             }
             else
             {
-                RaycastHit hit;
-                bool Aim_blocked = Physics.Raycast(robotController.GetCenter(), targetQ * Vector3.forward, out hit, mindist, 1 << 3);
+                RaycastHit aimblockhit;
+                bool Aim_blocked = Physics.Raycast(robotController.GetCenter(), targetQ * Vector3.forward, out aimblockhit, mindist, WorldManager.layerPattern_Building);
 
-                if(ascending)
+                bool climbing = Aim_blocked && aimblockhit.collider.gameObject.layer == 3;
+                bool tallbuilding = Aim_blocked && aimblockhit.collider.gameObject.layer == 7;
+
+                if (ascending)
                 {
-                    if (!Aim_blocked)
+                    if (!climbing)
                         ascend_margin--;
                     else
                         ascend_margin = 60;
@@ -96,13 +99,13 @@ public class RobotAI_Easy : RobotAI_Base
                     {
                         ascending = false;
                     }
-                    
+
                 }
                 else
                 {
-                    if (Aim_blocked)
+                    if (climbing)
                     {
-                        if (hit.distance < 10.0f)
+                        if (aimblockhit.distance < 10.0f)
                         {
                             ascending = true;
                             ascend_margin = 60;
@@ -113,16 +116,35 @@ public class RobotAI_Easy : RobotAI_Base
 
                 if (Aim_blocked)
                 {
-                    move.y = 1.0f;
-                    move.x = 0.0f;
-
-                    if (overheating || !ascending)
+                    if (tallbuilding)
                     {
+                        move.y = 1.0f;
+                        move.x = 1.0f;
+
+                        //if (!overheating)
+                        //    sprint = true;
+
                         jump = false;
                     }
                     else
                     {
-                        jump = true;
+                        move.y = 1.0f;
+                        move.x = 0.0f;
+
+                        if (ascending)
+                        {
+                            if (overheating || !ascending)
+                            {
+                                jump = false;
+
+                                //if (!overheating)
+                                //    sprint = true;
+                            }
+                            else
+                            {
+                                jump = true;
+                            }
+                        }
                     }
                 }
                 else
@@ -329,7 +351,7 @@ public class RobotAI_Easy : RobotAI_Base
 
         Vector3 move_pos = new Vector3(move.x, 0.0f, move.y);
 
-        bool coli = Physics.Raycast(robotController.transform.position, robotController.cameraRotation*move_pos, 10.0f,1 << 3);
+        bool coli = Physics.Raycast(robotController.transform.position, robotController.cameraRotation*move_pos, 10.0f,WorldManager.layerPattern_Building);
 
         if(coli)
         {

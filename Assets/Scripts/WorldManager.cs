@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class WorldManager : MonoBehaviour
 {
     static public WorldManager current_instance = null;
+
+    static public int layerPattern_Building = 1 << 3 | 1 << 7;
     public class Team
     {
         public List<RobotController> robotControllers = new List<RobotController>();
@@ -383,7 +385,7 @@ public class WorldManager : MonoBehaviour
         Vector3 pos = new Vector3(Random.value * 200.0f - 100.0f, 0, Random.value * 200.0f - 100.0f);
         RaycastHit raycastHit;
 
-        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
+        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
         float min_dist = float.MaxValue;
         RobotController nearest_robot = null;
 
@@ -745,7 +747,7 @@ public class WorldManager : MonoBehaviour
 
         RaycastHit raycastHit;
 
-        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
+        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
 
         GameObject robotObj = GameObject.Instantiate(gameState.player_variant, raycastHit.point, rot);
         //RobotController robot = variant.Spawn(raycastHit.point, rot,this);
@@ -777,7 +779,7 @@ public class WorldManager : MonoBehaviour
 
         RaycastHit raycastHit;
 
-        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, 1 << 3);
+        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
 
         GameObject robotObj = GameObject.Instantiate(variant_obj, raycastHit.point, rot);
         //RobotController robot = variant.Spawn(raycastHit.point, rot,this);

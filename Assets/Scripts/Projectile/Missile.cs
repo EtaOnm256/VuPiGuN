@@ -121,7 +121,7 @@ public class Missile : Projectile
 
                 Ray ray = new Ray(origin, goal-origin);
 
-                int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal-origin).magnitude, 1 << 6 | 1 << 3);
+                int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal-origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
 
                 for (int i = 0; i < numhit; i++)
                 {

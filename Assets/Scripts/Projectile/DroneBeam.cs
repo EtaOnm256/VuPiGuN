@@ -73,7 +73,7 @@ public class DroneBeam : Projectile
 
             Ray ray = new Ray(lineRenderer.GetPosition(1), direction);
 
-            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | 1 << 3);
+            int numhit = Physics.RaycastNonAlloc(ray, rayCastHit, speed, 1 << 6 | WorldManager.layerPattern_Building);
 
             for (int i = 0; i < numhit; i++)
             {
