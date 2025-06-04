@@ -217,17 +217,11 @@ public class RobotAI_Shenlong : RobotAI_Base
                                             if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
                                                 continue;
 
-                                            if (robot.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
-                                                || robot.lowerBodyState == RobotController.LowerBodyState.AirSlash
-                                                || robot.lowerBodyState == RobotController.LowerBodyState.DashSlash
-                                                || robot.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
-                                                || robot.lowerBodyState == RobotController.LowerBodyState.GroundSlash
-                                                || robot.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
+                                            if (robot.lowerBodyState == RobotController.LowerBodyState.SLASH
+                                                || robot.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH
                                                 || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
                                                 || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump
-                                                || robot.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
-                                                || robot.lowerBodyState == RobotController.LowerBodyState.QuickSlash
-                                                || robot.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                                                                                                                        )
                                             {
                                                 dodge = true;
                                                 stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
@@ -457,27 +451,18 @@ public class RobotAI_Shenlong : RobotAI_Base
 
                     bool infight_now = false;
 
-                    if (robotController.lowerBodyState == RobotController.LowerBodyState.AirSlash
-                        || robotController.lowerBodyState == RobotController.LowerBodyState.GroundSlash
-                        || robotController.lowerBodyState == RobotController.LowerBodyState.QuickSlash
-                        || robotController.lowerBodyState == RobotController.LowerBodyState.LowerSlash
-                        || robotController.lowerBodyState == RobotController.LowerBodyState.DashSlash)
+                    if (robotController.lowerBodyState == RobotController.LowerBodyState.SLASH
+                      )
                     {
-                        if(robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.lowerBodyState].num-1)
+                        if(robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.subState_Slash].num-1)
                             infight_reload = 0;
                     }
                     else if(infight_reload > 0)
                         infight_reload--;
 
-                    if(robotController.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
-                       || robotController.lowerBodyState == RobotController.LowerBodyState.AirSlash
-                       || robotController.lowerBodyState == RobotController.LowerBodyState.DashSlash
-                       || robotController.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
-                       || robotController.lowerBodyState == RobotController.LowerBodyState.GroundSlash
-                       || robotController.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
-                       || robotController.lowerBodyState == RobotController.LowerBodyState.QuickSlash
-                       || robotController.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
-                       || robotController.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                    if(robotController.lowerBodyState == RobotController.LowerBodyState.SLASH
+                       || robotController.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH
+                        )
                         infight_now = true;
 
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.JumpSlash)

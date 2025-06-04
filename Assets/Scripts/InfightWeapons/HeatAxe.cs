@@ -64,22 +64,22 @@ public class HeatAxe : InfightWeapon
         meshRenderer = GetComponent<MeshRenderer>();
         powerID = Shader.PropertyToID("_Power");
 
-        _slashMotionInfo = new Dictionary<RobotController.LowerBodyState, SlashMotionInfo>
+        _slashMotionInfo = new Dictionary<RobotController.SubState_Slash, SlashMotionInfo>
         {
-            { RobotController.LowerBodyState.GroundSlash,new SlashMotionInfo(2) },
-            { RobotController.LowerBodyState.AirSlash,new SlashMotionInfo(1) },
-            { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
-            { RobotController.LowerBodyState.QuickSlash,new SlashMotionInfo(2) },
-            { RobotController.LowerBodyState.DashSlash,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.GroundSlash,new SlashMotionInfo(2) },
+            { RobotController.SubState_Slash.AirSlash,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.LowerSlash,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.QuickSlash,new SlashMotionInfo(2) },
+            { RobotController.SubState_Slash.DashSlash,new SlashMotionInfo(1) },
         };
 
-            _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
+            _motionProperty = new Dictionary<RobotController.SubState_Slash, MotionProperty>
             {
-                { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 20.0f ,DashDuration = 67 ,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
-                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
-              //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
-                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 30.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
-                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 40.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                { RobotController.SubState_Slash.GroundSlash,new MotionProperty{DashSpeed = 20.0f ,DashDuration = 67 ,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
+                { RobotController.SubState_Slash.AirSlash,new MotionProperty{DashSpeed = 30.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                { RobotController.SubState_Slash.LowerSlash,new MotionProperty{DashSpeed = 30.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                 { RobotController.SubState_Slash.QuickSlash,new MotionProperty{DashSpeed = 30.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                 { RobotController.SubState_Slash.DashSlash,new MotionProperty{DashSpeed = 40.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
             };
 
 
@@ -89,13 +89,13 @@ public class HeatAxe : InfightWeapon
             {
                 switch (slashmotion.Key)
                 {
-                    case RobotController.LowerBodyState.GroundSlash:
-                    case RobotController.LowerBodyState.AirSlash:
-                    case RobotController.LowerBodyState.QuickSlash:
+                    case RobotController.SubState_Slash.GroundSlash:
+                    case RobotController.SubState_Slash.AirSlash:
+                    case RobotController.SubState_Slash.QuickSlash:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}2_{i}");
                         break;
-                    case RobotController.LowerBodyState.LowerSlash:
-                    case RobotController.LowerBodyState.DashSlash:
+                    case RobotController.SubState_Slash.LowerSlash:
+                    case RobotController.SubState_Slash.DashSlash:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
                         break;
 

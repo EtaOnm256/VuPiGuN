@@ -80,26 +80,26 @@ public class Halberd : InfightWeapon
         meshRenderer = GetComponent<MeshRenderer>();
         powerID = Shader.PropertyToID("_Power");
 
-        _slashMotionInfo = new Dictionary<RobotController.LowerBodyState, SlashMotionInfo>
+        _slashMotionInfo = new Dictionary<RobotController.SubState_Slash, SlashMotionInfo>
         {
-            { RobotController.LowerBodyState.GroundSlash,new SlashMotionInfo(3) },
-            { RobotController.LowerBodyState.AirSlash,new SlashMotionInfo(1) },
-            { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
-            { RobotController.LowerBodyState.QuickSlash,new SlashMotionInfo(2) },
-            { RobotController.LowerBodyState.DashSlash,new SlashMotionInfo(1) },
-            { RobotController.LowerBodyState.JumpSlash,new SlashMotionInfo(1) },
-            { RobotController.LowerBodyState.JumpSlash_Jump,new SlashMotionInfo(1) },
-            { RobotController.LowerBodyState.JumpSlash_Ground,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.GroundSlash,new SlashMotionInfo(3) },
+            { RobotController.SubState_Slash.AirSlash,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.LowerSlash,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.QuickSlash,new SlashMotionInfo(2) },
+            { RobotController.SubState_Slash.DashSlash,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.JumpSlash,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.JumpSlash_Jump,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.JumpSlash_Ground,new SlashMotionInfo(1) },
         };
 
-            _motionProperty = new Dictionary<RobotController.LowerBodyState, MotionProperty>
+            _motionProperty = new Dictionary<RobotController.SubState_Slash, MotionProperty>
             {
-                   { RobotController.LowerBodyState.GROUNDSLASH_DASH,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f } },
-                { RobotController.LowerBodyState.AIRSLASH_DASH,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f } },
-              //  { RobotController.LowerBodyState.LowerSlash,new SlashMotionInfo(1) },
-                 { RobotController.LowerBodyState.QUICKSLASH_DASH,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2, SlashDistance=8.0f,RotateSpeed=4.0f,SlashDistance_Min = 7.5f } },
-                 { RobotController.LowerBodyState.DASHSLASH_DASH,new MotionProperty{DashSpeed = 50.0f ,DashDuration = 45*3/4, SlashDistance=8.0f,RotateSpeed=2.0f,SlashDistance_Min = 7.5f} },
-                  { RobotController.LowerBodyState.JumpSlash_Jump,new MotionProperty{DashSpeed = 60.0f ,DashDuration = 20, SlashDistance=6.0f,RotateSpeed=6.0f,SlashDistance_Min = 5.0f} },
+                   { RobotController.SubState_Slash.GroundSlash,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f } },
+                { RobotController.SubState_Slash.AirSlash,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f } },
+                { RobotController.SubState_Slash.LowerSlash,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f } },
+                 { RobotController.SubState_Slash.QuickSlash,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2, SlashDistance=8.0f,RotateSpeed=4.0f,SlashDistance_Min = 7.5f } },
+                 { RobotController.SubState_Slash.DashSlash,new MotionProperty{DashSpeed = 50.0f ,DashDuration = 45*3/4, SlashDistance=8.0f,RotateSpeed=2.0f,SlashDistance_Min = 7.5f} },
+                  { RobotController.SubState_Slash.JumpSlash_Jump,new MotionProperty{DashSpeed = 60.0f ,DashDuration = 20, SlashDistance=6.0f,RotateSpeed=6.0f,SlashDistance_Min = 5.0f} },
             };
 
 
@@ -109,16 +109,16 @@ public class Halberd : InfightWeapon
             {
                 switch (slashmotion.Key)
                 {
-                    case RobotController.LowerBodyState.GroundSlash:
-                    case RobotController.LowerBodyState.QuickSlash:
-                    case RobotController.LowerBodyState.AirSlash:
-                    case RobotController.LowerBodyState.LowerSlash:
-                    case RobotController.LowerBodyState.DashSlash:
+                    case RobotController.SubState_Slash.GroundSlash:
+                    case RobotController.SubState_Slash.QuickSlash:
+                    case RobotController.SubState_Slash.AirSlash:
+                    case RobotController.SubState_Slash.LowerSlash:
+                    case RobotController.SubState_Slash.DashSlash:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}3_{i}");
                         break;
-                    case RobotController.LowerBodyState.JumpSlash:
-                    case RobotController.LowerBodyState.JumpSlash_Jump:
-                    case RobotController.LowerBodyState.JumpSlash_Ground:
+                    case RobotController.SubState_Slash.JumpSlash:
+                    case RobotController.SubState_Slash.JumpSlash_Jump:
+                    case RobotController.SubState_Slash.JumpSlash_Ground:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
                         break;
                 }

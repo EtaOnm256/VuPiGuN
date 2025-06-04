@@ -17,10 +17,10 @@ public class InfightWeapon : Pausable
         }
     }
 
-    protected Dictionary<RobotController.LowerBodyState, SlashMotionInfo> _slashMotionInfo;
+    protected Dictionary<RobotController.SubState_Slash, SlashMotionInfo> _slashMotionInfo;
       
 
-    virtual public Dictionary<RobotController.LowerBodyState, SlashMotionInfo> slashMotionInfo
+    virtual public Dictionary<RobotController.SubState_Slash, SlashMotionInfo> slashMotionInfo
     {
         get { return _slashMotionInfo; }
     }
@@ -86,12 +86,12 @@ public class InfightWeapon : Pausable
         public float RotateSpeed;
     }
 
-    virtual public Dictionary<RobotController.LowerBodyState, MotionProperty> motionProperty
+    virtual public Dictionary<RobotController.SubState_Slash, MotionProperty> motionProperty
     {
         get { return _motionProperty; }
     }
 
-    protected Dictionary<RobotController.LowerBodyState, MotionProperty> _motionProperty;
+    protected Dictionary<RobotController.SubState_Slash, MotionProperty> _motionProperty;
 
    /* virtual public float SlashDistance
     {

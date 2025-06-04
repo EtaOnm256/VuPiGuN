@@ -192,17 +192,11 @@ public class RobotAI_Easy : RobotAI_Base
                                 if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
                                     continue;
 
-                                if (robot.lowerBodyState == RobotController.LowerBodyState.AIRSLASH_DASH
-                                    || robot.lowerBodyState == RobotController.LowerBodyState.AirSlash
-                                    || robot.lowerBodyState == RobotController.LowerBodyState.DashSlash
-                                    || robot.lowerBodyState == RobotController.LowerBodyState.DASHSLASH_DASH
-                                    || robot.lowerBodyState == RobotController.LowerBodyState.GroundSlash
-                                    || robot.lowerBodyState == RobotController.LowerBodyState.GROUNDSLASH_DASH
+                                if (robot.lowerBodyState == RobotController.LowerBodyState.SLASH
+                                    || robot.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH
                                     || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
                                     || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump
-                                    || robot.lowerBodyState == RobotController.LowerBodyState.QUICKSLASH_DASH
-                                    || robot.lowerBodyState == RobotController.LowerBodyState.QuickSlash
-                                    || robot.lowerBodyState == RobotController.LowerBodyState.LowerSlash)
+                               )
                                 {
                                     dodge = true;
                                     stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
