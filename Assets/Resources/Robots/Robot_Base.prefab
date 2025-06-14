@@ -3024,6 +3024,7 @@ MonoBehaviour:
   LockCameraPosition: 0
   RotateSpeed_BeforeSlash: 3
   InitialVerticalSpeed_JumpSlash: 90
+  seedSlash_PitchLimit: 30
   cameraPosition: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   _HP: 500
@@ -3065,6 +3066,7 @@ MonoBehaviour:
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   stompHitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
+  subState_Slash: 0
   stepDirection: 0
   upperBodyState: 0
   lowerBodyState: 0

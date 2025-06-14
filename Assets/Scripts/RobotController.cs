@@ -62,6 +62,9 @@ public class RobotController : Pausable
     //ジャンプ格闘の上下方向は固定にしたいのでここで持つ。
     [SerializeField] float InitialVerticalSpeed_JumpSlash = 60.0f;
 
+    //連ザ格闘の上下角度限界。
+    [SerializeField] float seedSlash_PitchLimit = 30.0f;
+
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
 
@@ -455,10 +458,29 @@ public class RobotController : Pausable
         LowerSlash,
         QuickSlash,
         DashSlash,
+        AirSlashSeed,
+        SlideSlashSeed,
         JumpSlash, //SlashMotionInfoの定義用
         JumpSlash_Jump, //SlashMotionInfoの定義用
         JumpSlash_Ground, //SlashMotionInfoの定義用
     }
+
+    public enum SubState_SlashType
+    {
+        GROUND,
+        AIR
+    }
+
+    public Dictionary<SubState_Slash, SubState_SlashType> dicSubStateSlashType = new Dictionary<SubState_Slash, SubState_SlashType>
+    {
+        {SubState_Slash.GroundSlash,SubState_SlashType.GROUND},
+        {SubState_Slash.AirSlash,SubState_SlashType.AIR},
+        {SubState_Slash.LowerSlash,SubState_SlashType.GROUND},
+        {SubState_Slash.QuickSlash,SubState_SlashType.GROUND},
+        {SubState_Slash.DashSlash,SubState_SlashType.AIR},
+        {SubState_Slash.AirSlashSeed,SubState_SlashType.AIR },
+        {SubState_Slash.SlideSlashSeed,SubState_SlashType.AIR }
+    };
 
     public SubState_Slash subState_Slash;
 
@@ -597,7 +619,8 @@ public class RobotController : Pausable
         Down,
         Finish,
         KnockUp,
-        Weak
+        Weak,
+        Aerial
     }
 
     [Flags]
@@ -623,7 +646,8 @@ public class RobotController : Pausable
         TrackingSystem = 1 << 17,
         MirageCloud = 1 << 18,
         InfightBoost = 1 << 19,
-        MassIllusion = 1 << 20
+        MassIllusion = 1 << 20,
+        SeedOfArts = 1 << 21
     }
 
 
@@ -681,7 +705,7 @@ public class RobotController : Pausable
         {
             //if (lowerBodyState != LowerBodyState.DOWN || !Grounded)
             {
-                if (!Grounded || knockBackType == KnockBackType.Down || knockBackType == KnockBackType.KnockUp)
+                if ((!Grounded && knockBackType!=KnockBackType.Aerial) || knockBackType == KnockBackType.Down || knockBackType == KnockBackType.KnockUp)
                 {
 
 
@@ -820,6 +844,8 @@ public class RobotController : Pausable
                 shoulderWeapon.OnKnockback();
 
             StopMirage();
+
+            transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y, 0.0f);
         }
 
 
@@ -2055,7 +2081,7 @@ public class RobotController : Pausable
 
     private void CameraAndLockon()
     {
-        float dist_enemy = float.MaxValue;
+        int cam_norm0_infight1_seed2 = 0;
 
         if (Target_Robot != null &&
                         (
@@ -2069,10 +2095,25 @@ public class RobotController : Pausable
                    ) && lockonState != LockonState.FREE
                    )
         {
+            float dist_enemy = float.MaxValue;
+
             dist_enemy = (GetCenter() - Target_Robot.GetCenter()).magnitude;
+
+            if (
+                (subState_Slash != SubState_Slash.AirSlashSeed && subState_Slash != SubState_Slash.SlideSlashSeed)
+              )
+            {
+                cam_norm0_infight1_seed2 = dist_enemy < 20.0f ? 1 : 0;
+            }
+            else if (lowerBodyState == LowerBodyState.SLASH && slash_count >= Sword.slashMotionInfo[subState_Slash].num - 1)
+            {
+                cam_norm0_infight1_seed2 = dist_enemy < 20.0f ? 2 : 0;
+            }
+
+
         }
 
-        if (dist_enemy < 20.0f)
+        if (cam_norm0_infight1_seed2!=0)
         {
             if (is_player)
                 uIController_Overlay.infight = true;
@@ -2080,15 +2121,25 @@ public class RobotController : Pausable
             Vector3 off_hori = GetCenter() - Target_Robot.GetCenter();
             off_hori.y = 0.0f;
 
-            if (Sword.dashslash_cutthrough && (lowerBodyState == LowerBodyState.SLASH || lowerBodyState == LowerBodyState.SLASH_DASH) && subState_Slash == SubState_Slash.DashSlash)
+            if (cam_norm0_infight1_seed2 == 1)
             {
-                if (!slash_camera_offset_set)
+                if (Sword.dashslash_cutthrough && (lowerBodyState == LowerBodyState.SLASH || lowerBodyState == LowerBodyState.SLASH_DASH) && subState_Slash == SubState_Slash.DashSlash)
                 {
-                    slash_camera_offset = Quaternion.AngleAxis(180.0f, Vector3.up) * (off_hori).normalized * 20.0f;
+                    if (!slash_camera_offset_set)
+                    {
+                        slash_camera_offset = Quaternion.AngleAxis(180.0f, Vector3.up) * (off_hori).normalized * 20.0f;
+                    }
                 }
+                else
+                    slash_camera_offset = Quaternion.AngleAxis(90.0f, Vector3.up) * (off_hori).normalized * 20.0f;
             }
             else
-                slash_camera_offset = Quaternion.AngleAxis(90.0f, Vector3.up) * (off_hori).normalized * 20.0f;
+            {
+                if(subState_Slash == SubState_Slash.AirSlashSeed)
+                    slash_camera_offset = Quaternion.AngleAxis(135.0f, Vector3.up) *  off_hori.normalized * 15.0f+ Vector3.up*7.5f;
+                else
+                    slash_camera_offset = Quaternion.AngleAxis(-90.0f, Vector3.up) * off_hori.normalized * 15.0f + Vector3.up * 5.0f;
+            }
 
             slash_camera_offset_set = true;
 
@@ -2938,8 +2989,8 @@ public class RobotController : Pausable
 
         chestmultiAimConstraint.weight = _chestaimwait;
 
-        AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
-
+        AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 10.0f;
+      
         rhandmultiAimConstraint.weight = rhandaimwait_thisframe;
 
         overrideTransform.weight = _rarmaimwait;
@@ -3916,7 +3967,7 @@ public class RobotController : Pausable
                         _animationBlend = 0.0f;
 
 
-                        if (subState_Slash == SubState_Slash.AirSlash || subState_Slash == SubState_Slash.DashSlash)
+                        if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
                         {
                             boosting = true;
                         }
@@ -3941,6 +3992,21 @@ public class RobotController : Pausable
                                 // rotate to face input direction relative to camera position
                                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 
+                            }
+                            else if(subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+                            {
+                                Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
+
+                                _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                                float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, rotatespeed);
+
+                                Quaternion look = Quaternion.LookRotation(target_dir, Vector3.up);
+
+                                float rotation_pitch = Mathf.Clamp(Mathf.DeltaAngle(0.0f, look.eulerAngles.x), -seedSlash_PitchLimit, seedSlash_PitchLimit);
+
+                                // rotate to face input direction relative to camera position
+                                transform.rotation = Quaternion.Euler(rotation_pitch, rotation, 0.0f);
                             }
                             else
                             {
@@ -3971,13 +4037,26 @@ public class RobotController : Pausable
                         else
                         {
                             Vector3 rel = Target_Robot.GetTargetedPosition() - GetCenter();
-                            float rely = rel.y;
-                            rel.y = 0.0f;
 
-                            if(rel.magnitude < Sword.motionProperty[subState_Slash].SlashDistance * transform.lossyScale.x && rely < 1.0f && rely > -3.0f)
+                            if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
                             {
-                                slash = true;
+                                if (rel.magnitude < Sword.motionProperty[subState_Slash].SlashDistance * transform.lossyScale.x)
+                                {
+                                    slash = true;
+                                }
                             }
+                            else
+                            {
+                                float rely = rel.y;
+                                rel.y = 0.0f;
+
+                                if (rel.magnitude < Sword.motionProperty[subState_Slash].SlashDistance * transform.lossyScale.x && rely < 1.0f && rely > -3.0f)
+                                {
+                                    slash = true;
+                                }
+                            }
+
+                          
 
                             //if(Target_Robot.GetTargetPosition().y < Chest.transform.position.y - 0.00852969*Chest.transform.lossyScale.y)
                             if (Target_Robot.lowerBodyState == LowerBodyState.DOWN || Target_Robot.lowerBodyState == LowerBodyState.GETUP)
@@ -4020,6 +4099,8 @@ public class RobotController : Pausable
                                 Sword.knockBackType = KnockBackType.Normal;
                             else if(subState_Slash == SubState_Slash.DashSlash)
                                 Sword.knockBackType = KnockBackType.KnockUp;
+                            else if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+                                Sword.knockBackType = KnockBackType.Aerial;
                             else
                                 Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
@@ -4030,7 +4111,7 @@ public class RobotController : Pausable
         
                         }
 
-                        if (subState_Slash == SubState_Slash.AirSlash || subState_Slash == SubState_Slash.DashSlash)
+                        if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
                         {
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                                 AcceptDash(true);
@@ -4073,7 +4154,10 @@ public class RobotController : Pausable
 
                         if (event_knockbacked)
                         {
-                            TransitLowerBodyState(LowerBodyState.STAND);
+                            if(Grounded)
+                                TransitLowerBodyState(LowerBodyState.STAND);
+                            else
+                                TransitLowerBodyState(LowerBodyState.AIR);
 
                         }
 
@@ -4120,16 +4204,32 @@ public class RobotController : Pausable
                             {
                                 if (!Sword.slashing)
                                 {
+                                    if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+                                    {
+                                        Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
-                                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
+                                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
-                                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+                                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed_BeforeSlash);
 
-                                    float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed_BeforeSlash);
+                                        Quaternion look = Quaternion.LookRotation(target_dir, Vector3.up);
 
-                                    // rotate to face input direction relative to camera position
-                                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                                        float rotation_pitch = Mathf.Clamp(Mathf.DeltaAngle(0.0f, look.eulerAngles.x), -seedSlash_PitchLimit, seedSlash_PitchLimit);
 
+                                        // rotate to face input direction relative to camera position
+                                        transform.rotation = Quaternion.Euler(rotation_pitch, rotation, 0.0f);
+                                    }
+                                    else
+                                    {
+                                        Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
+
+                                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                                        float rotation = Mathf.MoveTowardsAngle(transform.eulerAngles.y, _targetRotation, RotateSpeed_BeforeSlash);
+
+                                        // rotate to face input direction relative to camera position
+                                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                                    }
 
 
 
@@ -4176,16 +4276,12 @@ public class RobotController : Pausable
                             {
                                 combo_reserved = true;
                                 comboType = ComboType.SLASH;
-
-                                Sword.knockBackType = KnockBackType.Normal;
                             }
 
                             if (fire_dispatch && ringMenuDir == RingMenuDir.Center && robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
                             {
                                 combo_reserved = true;
                                 comboType = ComboType.SHOOT;
-
-                                Sword.knockBackType = KnockBackType.Normal;
                             }
                         }
 
@@ -4208,7 +4304,7 @@ public class RobotController : Pausable
                             {
                                 Sword.emitting = false;
 
-                                if(subState_Slash == SubState_Slash.AirSlash || subState_Slash == SubState_Slash.DashSlash)
+                                if(dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
                                     TransitLowerBodyState(LowerBodyState.AIR);
                                 else
                                     TransitLowerBodyState(LowerBodyState.STAND);
@@ -4264,7 +4360,10 @@ public class RobotController : Pausable
                                     else
                                         Sword.damage = 100;
 
-                                    Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
+                                    if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+                                        Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Aerial : KnockBackType.Finish;
+                                    else
+                                        Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
                                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[slash_count], 0.0f, 0);
                                     audioSource.PlayOneShot(audioClip_Swing);
@@ -4272,7 +4371,7 @@ public class RobotController : Pausable
                                 else
                                 {
 
-                                    if (subState_Slash == SubState_Slash.AirSlash || subState_Slash == SubState_Slash.DashSlash)
+                                    if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
                                         TransitLowerBodyState(LowerBodyState.AIR);
                                     else
                                         TransitLowerBodyState(LowerBodyState.STAND);
@@ -4288,7 +4387,7 @@ public class RobotController : Pausable
                         JumpAndGravity();
                         GroundedCheck();
 
-                        if (subState_Slash == SubState_Slash.AirSlash || subState_Slash == SubState_Slash.DashSlash)
+                        if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
                         {
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                                 AcceptDash(true);
@@ -4523,29 +4622,56 @@ public class RobotController : Pausable
                 MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
                                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
             }
-            else if (lowerBodyState == LowerBodyState.SLASH_DASH && (subState_Slash == SubState_Slash.AirSlash || (Sword.dashslash_cutthrough && subState_Slash == SubState_Slash.DashSlash)))
+            else if (lowerBodyState == LowerBodyState.SLASH_DASH && (subState_Slash != SubState_Slash.DashSlash && dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR))
             {
                 Vector3 targetDirection;
 
 
                 if (Target_Robot != null)
                 {
+ 
                     Vector3 targetOffset = (GetCenter() - Target_Robot.GetTargetedPosition());
 
-                    targetOffset.y = 0.0f;
+                    
+
+                    if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+                    {
+                        //Vector3 targetOffset_Horiz = targetOffset;
+                        //targetOffset_Horiz.y = 0.0f;
+
+                        //float rotation_pitch = Mathf.Asin(Vector3.Cross(targetOffset, targetOffset_Horiz).magnitude / targetOffset.magnitude / targetOffset_Horiz.magnitude) * Mathf.Rad2Deg;
+
+                        Quaternion look = Quaternion.LookRotation(targetOffset, Vector3.up);
+
+                        float rotation_pitch = Mathf.Clamp(Mathf.DeltaAngle(0.0f,look.eulerAngles.x), -seedSlash_PitchLimit, seedSlash_PitchLimit);
+
+                        targetOffset = Quaternion.Euler(rotation_pitch, look.eulerAngles.y, look.eulerAngles.z) *Vector3.forward;
+                    }
+                    else
+                        targetOffset.y = 0.0f;
 
                     Vector3 targetPos = Target_Robot.GetTargetedPosition() + targetOffset.normalized * (Sword.motionProperty[subState_Slash].SlashDistance * transform.lossyScale.x * 0.9f);
 
                     targetDirection = (targetPos - GetCenter()).normalized;
 
                     if (subState_Slash == SubState_Slash.DashSlash)
-                        targetDirection.y = Mathf.Min(Mathf.Max(targetDirection.y,Mathf.Sin(-15.0f*Mathf.Deg2Rad)), Mathf.Sin(15.0f * Mathf.Deg2Rad));
+                        targetDirection.y = Mathf.Min(Mathf.Max(targetDirection.y, Mathf.Sin(-15.0f * Mathf.Deg2Rad)), Mathf.Sin(15.0f * Mathf.Deg2Rad));
+
+                    if(subState_Slash == SubState_Slash.SlideSlashSeed)
+                    {
+                        Quaternion targetQ = Quaternion.LookRotation(targetDirection);
+                        if (stepDirection == StepDirection.LEFT)
+                        {
+                            targetDirection = targetQ*Quaternion.Euler(0.0f, -30.0f, 0.0f)*Vector3.forward;
+                        }
+                        else
+                            targetDirection = targetQ * Quaternion.Euler(0.0f, 30.0f, 0.0f) * Vector3.forward;
+                    }
 
                     _verticalVelocity = targetDirection.y * _speed;
 
                     targetDirection.y = 0.0f;
 
-                    targetDirection = transform.rotation * Vector3.forward * targetDirection.magnitude;
                 }
                 else
                 {
@@ -4776,6 +4902,14 @@ public class RobotController : Pausable
             nextdrive = false;
         }
             
+        if(
+            (lowerBodyState == LowerBodyState.SLASH || lowerBodyState == LowerBodyState.SLASH_DASH)
+            && (newState != LowerBodyState.SLASH && newState != LowerBodyState.SLASH_DASH)
+            && (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+            )
+        {
+            transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y, 0.0f);
+        }
 
         switch (newState)
         {
@@ -4786,14 +4920,11 @@ public class RobotController : Pausable
                 else
                     _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
 
-                if (lowerBodyState == LowerBodyState.SLASH)
+                if (lowerBodyState == LowerBodyState.SLASH || lowerBodyState == LowerBodyState.SLASH_DASH || lowerBodyState == LowerBodyState.KNOCKBACK)
                 {
                     upperBodyState = UpperBodyState.STAND;
                 }
-                if (lowerBodyState == LowerBodyState.SLASH_DASH)
-                {
-                    upperBodyState = UpperBodyState.STAND;
-                }
+             
 
                 Grounded = false;
                 break;
@@ -5777,52 +5908,23 @@ public class RobotController : Pausable
                     aerial_slash = true;
             }
 
-            if (Grounded && !aerial_slash)
-            {
-
-                if (Target_Robot != null)
-                {
-                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
-
-                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
-
-                    float rotation = _targetRotation;
-
-                    // rotate to face input direction relative to camera position
-                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-                }
-
-                if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
-                {
-                    lowerBodyState = LowerBodyState.SLASH_DASH;
-                    upperBodyState = UpperBodyState.SLASH_DASH;
-                    subState_Slash = SubState_Slash.GroundSlash;
-                    event_stepbegin = event_stepped = false;
-                    _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                    stepremain = Sword.motionProperty[subState_Slash].DashDuration;
-                    combo_reserved = false;
-                    Sword.emitting = true;
-                    StartSeeking();
-                }
-                else
-                {
-                    lowerBodyState = LowerBodyState.SLASH_DASH;
-                    upperBodyState = UpperBodyState.SLASH_DASH;
-                    subState_Slash = SubState_Slash.QuickSlash;
-                    event_stepbegin = event_stepped = false;
-                    _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
-                    stepremain = Sword.motionProperty[subState_Slash].DashDuration;
-                    combo_reserved = false;
-                    Sword.emitting = true;
-                    StartSeeking();
-                }
-                intend_animator_speed = 1.0f;
-            }
-            else
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
             {
                 lowerBodyState = LowerBodyState.SLASH_DASH;
                 upperBodyState = UpperBodyState.SLASH_DASH;
-                subState_Slash = SubState_Slash.AirSlash;
+
+                if (_input.move.x == 0.0f)
+                    subState_Slash = SubState_Slash.AirSlashSeed;
+                else
+                {
+                    subState_Slash = SubState_Slash.SlideSlashSeed;
+
+                    if (_input.move.x > 0.0f)
+                        stepDirection = StepDirection.RIGHT;
+                    else
+                        stepDirection = StepDirection.LEFT;
+                }
+
                 event_stepbegin = event_stepped = false;
                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[0], 0.0f, 0);
                 intend_animator_speed = 0.0f;
@@ -5840,6 +5942,76 @@ public class RobotController : Pausable
 
                     // rotate to face input direction relative to camera position
                     transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                }
+                Grounded = false;
+            }
+            else
+            {
+                if (Grounded && !aerial_slash)
+                {
+
+                    if (Target_Robot != null)
+                    {
+                        Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
+
+                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                        float rotation = _targetRotation;
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                    }
+
+                    if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
+                    {
+                        lowerBodyState = LowerBodyState.SLASH_DASH;
+                        upperBodyState = UpperBodyState.SLASH_DASH;
+                        subState_Slash = SubState_Slash.GroundSlash;
+                        event_stepbegin = event_stepped = false;
+                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                        stepremain = Sword.motionProperty[subState_Slash].DashDuration;
+                        combo_reserved = false;
+                        Sword.emitting = true;
+                        StartSeeking();
+                    }
+                    else
+                    {
+                        lowerBodyState = LowerBodyState.SLASH_DASH;
+                        upperBodyState = UpperBodyState.SLASH_DASH;
+                        subState_Slash = SubState_Slash.QuickSlash;
+                        event_stepbegin = event_stepped = false;
+                        _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
+                        stepremain = Sword.motionProperty[subState_Slash].DashDuration;
+                        combo_reserved = false;
+                        Sword.emitting = true;
+                        StartSeeking();
+                    }
+                    intend_animator_speed = 1.0f;
+                }
+                else
+                {
+                    lowerBodyState = LowerBodyState.SLASH_DASH;
+                    upperBodyState = UpperBodyState.SLASH_DASH;
+                    subState_Slash = SubState_Slash.AirSlash;
+                    event_stepbegin = event_stepped = false;
+                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[0], 0.0f, 0);
+                    intend_animator_speed = 0.0f;
+                    stepremain = Sword.motionProperty[subState_Slash].DashDuration;
+                    combo_reserved = false;
+                    Sword.emitting = true;
+                    StartSeeking();
+                    if (Target_Robot != null)
+                    {
+                        Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
+
+                        _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                        float rotation = _targetRotation;
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                    }
+                    Grounded = false;
                 }
             }
         }
