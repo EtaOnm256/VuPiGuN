@@ -95,7 +95,7 @@ public class Halberd : InfightWeapon
             _motionProperty = new Dictionary<RobotController.SubState_Slash, MotionProperty>
             {
                    { RobotController.SubState_Slash.GroundSlash,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f } },
-                { RobotController.SubState_Slash.AirSlash,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f } },
+                { RobotController.SubState_Slash.AirSlash,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f} },
                 { RobotController.SubState_Slash.LowerSlash,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45, SlashDistance=6.5f,RotateSpeed=4.0f,SlashDistance_Min = 6.0f } },
                  { RobotController.SubState_Slash.QuickSlash,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2, SlashDistance=8.0f,RotateSpeed=4.0f,SlashDistance_Min = 7.5f } },
                  { RobotController.SubState_Slash.DashSlash,new MotionProperty{DashSpeed = 50.0f ,DashDuration = 45*3/4, SlashDistance=8.0f,RotateSpeed=2.0f,SlashDistance_Min = 7.5f} },

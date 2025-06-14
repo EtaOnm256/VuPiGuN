@@ -78,12 +78,14 @@ public class InfightWeapon : Pausable
     }
 
     public struct MotionProperty
-    {
+    { 
         public float DashSpeed;
         public int DashDuration;
         public float SlashDistance;
         public float SlashDistance_Min;
         public float RotateSpeed;
+        public bool AlwaysForward;
+        public bool ForceProceed;
     }
 
     virtual public Dictionary<RobotController.SubState_Slash, MotionProperty> motionProperty

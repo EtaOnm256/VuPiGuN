@@ -179,7 +179,9 @@ public class RobotController : Pausable
     enum ComboType
     {
         SLASH,
-        SHOOT
+        SHOOT,
+        ROLLINGSLASH,
+        DASHSLASH
     }
 
     ComboType comboType;
@@ -460,6 +462,7 @@ public class RobotController : Pausable
         DashSlash,
         AirSlashSeed,
         SlideSlashSeed,
+        RollingSlash,
         JumpSlash, //SlashMotionInfoの定義用
         JumpSlash_Jump, //SlashMotionInfoの定義用
         JumpSlash_Ground, //SlashMotionInfoの定義用
@@ -479,7 +482,8 @@ public class RobotController : Pausable
         {SubState_Slash.QuickSlash,SubState_SlashType.GROUND},
         {SubState_Slash.DashSlash,SubState_SlashType.AIR},
         {SubState_Slash.AirSlashSeed,SubState_SlashType.AIR },
-        {SubState_Slash.SlideSlashSeed,SubState_SlashType.AIR }
+        {SubState_Slash.SlideSlashSeed,SubState_SlashType.AIR },
+        {SubState_Slash.RollingSlash,SubState_SlashType.AIR }
     };
 
     public SubState_Slash subState_Slash;
@@ -647,7 +651,8 @@ public class RobotController : Pausable
         MirageCloud = 1 << 18,
         InfightBoost = 1 << 19,
         MassIllusion = 1 << 20,
-        SeedOfArts = 1 << 21
+        SeedOfArts = 1 << 21,
+        RollingSlash = 1 << 22
     }
 
 
@@ -3939,7 +3944,7 @@ public class RobotController : Pausable
 
                         if (subState_Slash == SubState_Slash.DashSlash && !event_swing)
                         {
-                            _speed = targetSpeed = 0.0f;//-Sword.motionProperty[lowerBodyState].DashSpeed;
+                            _speed = targetSpeed = 0.0f;
                         }
                         else
                         {
@@ -3981,7 +3986,7 @@ public class RobotController : Pausable
 
                                 Vector3 targetOffset = dashslash_offset;
 
-                                Vector3 targetPos = Target_Robot.GetTargetedPosition() + targetOffset.normalized * (Sword.motionProperty[subState_Slash].SlashDistance * transform.lossyScale.x * 0.9f);
+                                Vector3 targetPos = Target_Robot.GetTargetedPosition() + targetOffset.normalized * (Sword.motionProperty[subState_Slash].SlashDistance * transform.lossyScale.x * 0.75f);
 
                                 Vector3 targetDirection = (targetPos - GetCenter()).normalized;
 
@@ -4073,7 +4078,7 @@ public class RobotController : Pausable
 
                         stepremain--;
 
-                        if (slash || stepremain <= 0)
+                        if ( (slash || stepremain <= 0) && (subState_Slash != SubState_Slash.DashSlash || event_swing))
                         {
                             if (subState_Slash == SubState_Slash.GroundSlash || subState_Slash == SubState_Slash.QuickSlash)
                             {
@@ -4087,7 +4092,8 @@ public class RobotController : Pausable
                             event_slash = false;
                             event_acceptnextslash = false;
                             combo_reserved = false;
-                            Sword.slashing = false;
+                            if (subState_Slash != SubState_Slash.DashSlash)
+                                Sword.slashing = false;
                             slash_count = 0;
 
                             if(subState_Slash == SubState_Slash.DashSlash || subState_Slash == SubState_Slash.LowerSlash)
@@ -4202,7 +4208,7 @@ public class RobotController : Pausable
                             }
                             else
                             {
-                                if (!Sword.slashing)
+                                if (!Sword.slashing || Sword.motionProperty[subState_Slash].AlwaysForward)
                                 {
                                     if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
                                     {
@@ -4271,11 +4277,21 @@ public class RobotController : Pausable
 
                         //if (Sword.hitHistoryRCCount == 0)
                         {
-                            if (slash_dispatch && ringMenuDir == RingMenuDir.Center
+                            if ( ((slash_dispatch && ringMenuDir == RingMenuDir.Center) || Sword.motionProperty[subState_Slash].ForceProceed)
                                 && (slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 || air_to_ground_chain))
                             {
                                 combo_reserved = true;
-                                comboType = ComboType.SLASH;
+
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingSlash) &&  _input.move.y < 0.0f && subState_Slash != SubState_Slash.RollingSlash)
+                                {
+                                    comboType = ComboType.ROLLINGSLASH;
+                                }
+                                else if (robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash) && _input.move.y > 0.0f && subState_Slash != SubState_Slash.RollingSlash)
+                                {
+                                    comboType = ComboType.DASHSLASH;
+                                }
+                                else
+                                    comboType = ComboType.SLASH;
                             }
 
                             if (fire_dispatch && ringMenuDir == RingMenuDir.Center && robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
@@ -4291,7 +4307,7 @@ public class RobotController : Pausable
 
                         if(combo_reserved)
                         {
-                            combo_accepted = comboType == ComboType.SLASH || Sword.hitHistoryRCCount > 0;
+                            combo_accepted = comboType != ComboType.SHOOT || Sword.hitHistoryRCCount > 0;
                         }
 
                         if (combo_accepted && (event_acceptnextslash || comboType == ComboType.SHOOT))
@@ -4311,7 +4327,7 @@ public class RobotController : Pausable
                             }
                             else
                             {
-                                if (comboType == ComboType.SLASH)
+                                if (comboType == ComboType.SLASH || comboType == ComboType.ROLLINGSLASH || comboType == ComboType.DASHSLASH)
                                 {
                                     if (air_to_ground_chain)
                                     {
@@ -4345,28 +4361,43 @@ public class RobotController : Pausable
                                         }
                                         slash_count = 0;
                                     }
-                                
-                                    event_slash = false;
-                                    event_acceptnextslash = false;
-                                    combo_reserved = false;
-                                    Sword.slashing = false;
-                                    _verticalVelocity = 0.0f;
-                                    if (subState_Slash == SubState_Slash.GroundSlash)
-                                        Sword.damage = slash_count < Sword.slashMotionInfo[SubState_Slash.GroundSlash].num - 1 ? 100 : 200;
-                                    else if (subState_Slash == SubState_Slash.LowerSlash)
-                                        Sword.damage = 200;
-                                    else if(subState_Slash == SubState_Slash.DashSlash)
-                                        Sword.damage = 200;
-                                    else
-                                        Sword.damage = 100;
 
-                                    if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
-                                        Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Aerial : KnockBackType.Finish;
-                                    else
-                                        Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
+                                    if (comboType == ComboType.ROLLINGSLASH && Sword.hitHistoryRCCount > 0)
+                                    {
+                                        subState_Slash = SubState_Slash.RollingSlash;
+                                        slash_count = 0;
+                                    }
 
-                                    _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[slash_count], 0.0f, 0);
-                                    audioSource.PlayOneShot(audioClip_Swing);
+                                    if (comboType == ComboType.DASHSLASH && Sword.hitHistoryRCCount > 0)
+                                    {
+                                        DoDashSlash(true);
+                                    }
+                                    else
+                                    {
+                                        event_slash = false;
+                                        event_acceptnextslash = false;
+                                        combo_reserved = false;
+                                        Sword.slashing = false;
+                                        _verticalVelocity = 0.0f;
+                                        if (subState_Slash == SubState_Slash.GroundSlash)
+                                            Sword.damage = slash_count < Sword.slashMotionInfo[SubState_Slash.GroundSlash].num - 1 ? 100 : 150;
+                                        else if (subState_Slash == SubState_Slash.LowerSlash)
+                                            Sword.damage = 200;
+                                        else if (subState_Slash == SubState_Slash.RollingSlash)
+                                            Sword.damage = 50;
+                                        else
+                                            Sword.damage = 100;
+
+                                        if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Aerial : KnockBackType.Finish;
+                                        else if (subState_Slash == SubState_Slash.DashSlash)
+                                            Sword.knockBackType = KnockBackType.KnockUp;
+                                        else
+                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
+
+                                        _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[slash_count], 0.0f, 0);
+                                        audioSource.PlayOneShot(audioClip_Swing);
+                                    }
                                 }
                                 else
                                 {
@@ -5603,6 +5634,51 @@ public class RobotController : Pausable
         }
     }
 
+    void DoDashSlash(bool combo)
+    {
+        lowerBodyState = LowerBodyState.SLASH_DASH;
+        upperBodyState = UpperBodyState.SLASH_DASH;
+        subState_Slash = SubState_Slash.DashSlash;
+        event_stepbegin = event_stepped = false;
+        _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[0], 0.0f, 0);
+
+        if(combo)
+            intend_animator_speed = 1.0f;
+        else
+            intend_animator_speed = 0.5f;
+
+        stepremain = Sword.motionProperty[subState_Slash].DashDuration;
+        combo_reserved = false;
+        Sword.slashing = false;
+        Sword.emitting = true;
+        event_swing = false;
+
+        // DashSlashに遷移する前にslashingがtrueになることがあるので
+        Sword.damage = 200;
+        Sword.knockBackType = KnockBackType.KnockUp;
+
+        StartSeeking();
+        if (Target_Robot != null)
+        {
+            dashslash_offset = (GetCenter() - Target_Robot.GetTargetedPosition());
+
+            dashslash_offset.y = 0.0f;
+
+            dashslash_offset = Quaternion.AngleAxis(45, new Vector3(0.0f, 1.0f, 0.0f)) * dashslash_offset;
+
+            Vector3 targetPos = Target_Robot.GetTargetedPosition() + dashslash_offset.normalized * (Sword.motionProperty[SubState_Slash.DashSlash].SlashDistance * transform.lossyScale.x * 0.75f);
+
+            Vector3 target_dir = targetPos - GetCenter();
+
+            _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+            float rotation = _targetRotation;
+
+            // rotate to face input direction relative to camera position
+            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+        }
+    }
+
     bool AcceptDashSlash()
     {
         if (Sword != null && robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash) && Sword.can_dash_slash)
@@ -5611,40 +5687,7 @@ public class RobotController : Pausable
 
             if (slash_dispatch && ringMenuDir == RingMenuDir.Up && ConsumeBoost(80))
             {
-                lowerBodyState = LowerBodyState.SLASH_DASH;
-                upperBodyState = UpperBodyState.SLASH_DASH;
-                subState_Slash = SubState_Slash.DashSlash;
-                event_stepbegin = event_stepped = false;
-                _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[0], 0.0f, 0);
-                intend_animator_speed = 0.5f;
-                stepremain = Sword.motionProperty[subState_Slash].DashDuration;
-                combo_reserved = false;
-                Sword.slashing = false;
-                Sword.emitting = true;
-                event_swing = false;
-
-                // DashSlashに遷移する前にslashingがtrueになることがあるので
-                Sword.damage = 200;
-                Sword.knockBackType = KnockBackType.KnockUp;
-
-                StartSeeking();
-                if (Target_Robot != null)
-                {
-                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
-
-                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
-
-                    float rotation = _targetRotation;
-
-                    // rotate to face input direction relative to camera position
-                    transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
-
-                    dashslash_offset = (GetCenter() - Target_Robot.GetTargetedPosition());
-
-                    dashslash_offset.y = 0.0f;
-
-                    dashslash_offset = Quaternion.AngleAxis(45, new Vector3(0.0f, 1.0f, 0.0f)) * dashslash_offset;
-                }
+                DoDashSlash(false);
 
                 return true;
             }
