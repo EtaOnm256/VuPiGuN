@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class InfightWeapon : Pausable
@@ -8,12 +9,14 @@ public class InfightWeapon : Pausable
     {
         public int num;
         public int[] _animID;
+        public int[] damage;
 
         public SlashMotionInfo(int _num)
         {
             num = _num;
             _animID = new int[_num];
-
+            damage = System.Linq.Enumerable.Repeat(100,_num).ToArray();
+            
         }
     }
 
@@ -36,6 +39,10 @@ public class InfightWeapon : Pausable
     [System.NonSerialized] public GameObject[] hitHistory = new GameObject[64];
     [System.NonSerialized] public RobotController[] hitHistoryRC = new RobotController[16];
     public RobotController owner;
+
+    public InfightWeapon another = null;
+    public bool this_is_slave = false;
+
     virtual public bool emitting
     {
         set

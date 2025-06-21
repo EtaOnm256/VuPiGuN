@@ -3697,7 +3697,7 @@ public class RobotController : Pausable
                                         combo_reserved = false;
                                         Sword.slashing = false;
                                         slash_count = 0;
-                                        Sword.damage = 200;
+                                        Sword.damage = Sword.slashMotionInfo[SubState_Slash.JumpSlash].damage[slash_count];
                                         Sword.knockBackType = KnockBackType.Finish;
                                         //stepremain = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashLength;
 
@@ -4096,11 +4096,8 @@ public class RobotController : Pausable
                                 Sword.slashing = false;
                             slash_count = 0;
 
-                            if(subState_Slash == SubState_Slash.DashSlash || subState_Slash == SubState_Slash.LowerSlash)
-                                Sword.damage = 200;
-                            else
-                                Sword.damage = 100;
-
+                            Sword.damage = Sword.slashMotionInfo[subState_Slash].damage[slash_count];
+ 
                             if (subState_Slash == SubState_Slash.AirSlash)
                                 Sword.knockBackType = KnockBackType.Normal;
                             else if(subState_Slash == SubState_Slash.DashSlash)
@@ -4379,14 +4376,8 @@ public class RobotController : Pausable
                                         combo_reserved = false;
                                         Sword.slashing = false;
                                         _verticalVelocity = 0.0f;
-                                        if (subState_Slash == SubState_Slash.GroundSlash)
-                                            Sword.damage = slash_count < Sword.slashMotionInfo[SubState_Slash.GroundSlash].num - 1 ? 100 : 150;
-                                        else if (subState_Slash == SubState_Slash.LowerSlash)
-                                            Sword.damage = 200;
-                                        else if (subState_Slash == SubState_Slash.RollingSlash)
-                                            Sword.damage = 50;
-                                        else
-                                            Sword.damage = 100;
+          
+                                        Sword.damage = Sword.slashMotionInfo[subState_Slash].damage[slash_count];
 
                                         if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
                                             Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Aerial : KnockBackType.Finish;
@@ -5654,7 +5645,7 @@ public class RobotController : Pausable
         event_swing = false;
 
         // DashSlashに遷移する前にslashingがtrueになることがあるので
-        Sword.damage = 200;
+        Sword.damage = Sword.slashMotionInfo[SubState_Slash.DashSlash].damage[0];
         Sword.knockBackType = KnockBackType.KnockUp;
 
         StartSeeking();
@@ -6095,6 +6086,7 @@ public class RobotController : Pausable
     {
         public GameObject rweapon_prefab = null;
         public GameObject lweapon_prefab = null;
+        public bool infight_weapon_paired = false;
         public GameObject subweapon_prefab = null;
         public bool weapon_chest_paired = false;
         public bool dualwield_lightweapon = false;
@@ -6145,14 +6137,41 @@ public class RobotController : Pausable
 
         if (robotParameter.lweapon_prefab != null)
         {
-            GameObject playerlweapon = GameObject.Instantiate(robotParameter.lweapon_prefab);
+            if (robotParameter.infight_weapon_paired)
+            {
+                GameObject playerlweapon_r = GameObject.Instantiate(robotParameter.lweapon_prefab);
 
-            playerlweapon.transform.parent = LHand.transform;
-            playerlweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-            playerlweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
-            playerlweapon.transform.localScale = new Vector3(1, 1, 1);
+                playerlweapon_r.transform.parent = RHand.transform;
+                playerlweapon_r.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+                playerlweapon_r.transform.localEulerAngles = new Vector3(-90, 0, 180);
+                playerlweapon_r.transform.localScale = new Vector3(1, 1, 1);
 
-            Sword = playerlweapon.GetComponent<InfightWeapon>();
+                playerlweapon_r.GetComponent<InfightWeapon>().this_is_slave = true;
+
+                GameObject playerlweapon_l = GameObject.Instantiate(robotParameter.lweapon_prefab);
+
+                playerlweapon_l.transform.parent = LHand.transform;
+                playerlweapon_l.transform.localPosition = new Vector3(-0.0004f, 0.0072f, 0.004f);
+                playerlweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
+                playerlweapon_l.transform.localScale = new Vector3(1, 1, 1);
+
+                playerlweapon_l.GetComponent<InfightWeapon>().this_is_slave = false;
+                playerlweapon_l.GetComponent<InfightWeapon>().another = playerlweapon_r.GetComponent<InfightWeapon>();
+                playerlweapon_r.GetComponent<InfightWeapon>().another = playerlweapon_l.GetComponent<InfightWeapon>();
+
+                Sword = playerlweapon_l.GetComponent<InfightWeapon>();
+            }
+            else
+            {
+                GameObject playerlweapon = GameObject.Instantiate(robotParameter.lweapon_prefab);
+
+                playerlweapon.transform.parent = LHand.transform;
+                playerlweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+                playerlweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
+                playerlweapon.transform.localScale = new Vector3(1, 1, 1);
+
+                Sword = playerlweapon.GetComponent<InfightWeapon>();
+            }
         }
 
         if (robotParameter.subweapon_prefab != null)

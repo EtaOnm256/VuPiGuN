@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scripts\VectorUtil.cs" />
     <Compile Include="Assets\Scripts\Projectile\CannonBall.cs" />
     <Compile Include="Assets\Scripts\Projectile\SprayBeam.cs" />
+    <Compile Include="Assets\Scripts\InfightWeapons\BeamDagger.cs" />
     <Compile Include="Assets\Scripts\RobotController.cs" />
     <Compile Include="Assets\LightProbeHelper\LightProbeGenerator.cs" />
     <Compile Include="Assets\Scripts\Weapons\Bazooka.cs" />

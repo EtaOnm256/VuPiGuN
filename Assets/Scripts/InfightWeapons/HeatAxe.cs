@@ -97,6 +97,7 @@ public class HeatAxe : InfightWeapon
                     case RobotController.SubState_Slash.LowerSlash:
                     case RobotController.SubState_Slash.DashSlash:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
+
                         break;
 
                 }

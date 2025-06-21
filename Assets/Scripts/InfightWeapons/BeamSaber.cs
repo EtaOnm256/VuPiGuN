@@ -100,9 +100,26 @@ public class BeamSaber : InfightWeapon
                     case RobotController.SubState_Slash.JumpSlash_Jump:
                     case RobotController.SubState_Slash.JumpSlash_Ground:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}2_{i}");
+                        slashmotion.Value.damage[i] = 200;
                         break;
                     default:
                         slashmotion.Value._animID[i] = Animator.StringToHash($"{slashmotion.Key.ToString()}_{i}");
+
+                        if(slashmotion.Key == RobotController.SubState_Slash.GroundSlash
+                            || slashmotion.Key == RobotController.SubState_Slash.AirSlashSeed)
+                        {
+                            if (i == slashmotion.Value.num - 1)
+                                slashmotion.Value.damage[i] = 150;
+                        }
+
+                        if(slashmotion.Key == RobotController.SubState_Slash.RollingSlash)
+                            slashmotion.Value.damage[i] = 50;
+
+                        if (slashmotion.Key == RobotController.SubState_Slash.LowerSlash)
+                        {
+                            slashmotion.Value.damage[i] = 150;
+                        }
+
                         break;
                 }
                 
