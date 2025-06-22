@@ -70,6 +70,11 @@ public class MissilePod_Weist : Weapon
         }
     }
 
+    override public bool chest_paired
+    {
+        get { return true; }
+    }
+
     protected override void OnAwake()
     {
         missile_prefab = Resources.Load<GameObject>("Projectile/LargeMissile");

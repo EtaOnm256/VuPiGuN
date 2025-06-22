@@ -43,6 +43,10 @@ public class InfightWeapon : Pausable
     public InfightWeapon another = null;
     public bool this_is_slave = false;
 
+    virtual public bool paired
+    {
+        get { return false; }
+    }
     virtual public bool emitting
     {
         set

@@ -60,7 +60,8 @@ public class BeamSaber : InfightWeapon
         get { return true; }
     }
 
-    private void Awake()
+  
+        private void Awake()
     {
        _slashMotionInfo = new Dictionary<RobotController.SubState_Slash, SlashMotionInfo>
        {

@@ -6086,9 +6086,7 @@ public class RobotController : Pausable
     {
         public GameObject rweapon_prefab = null;
         public GameObject lweapon_prefab = null;
-        public bool infight_weapon_paired = false;
         public GameObject subweapon_prefab = null;
-        public bool weapon_chest_paired = false;
         public bool dualwield_lightweapon = false;
         public ItemFlag itemFlag = 0;
         //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
@@ -6125,58 +6123,54 @@ public class RobotController : Pausable
     {
         if (robotParameter.rweapon_prefab != null)
         {
-            GameObject playerrweapon = GameObject.Instantiate(robotParameter.rweapon_prefab);
+            GameObject playerrweapon_l = GameObject.Instantiate(robotParameter.rweapon_prefab);
 
-            playerrweapon.transform.parent = RHand.transform;
-            playerrweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-            playerrweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
-            playerrweapon.transform.localScale = new Vector3(1, 1, 1);
+            playerrweapon_l.transform.parent = RHand.transform;
+            playerrweapon_l.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+            playerrweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
+            playerrweapon_l.transform.localScale = new Vector3(1, 1, 1);
 
-            rightWeapon = playerrweapon.GetComponent<Weapon>();
+            rightWeapon = playerrweapon_l.GetComponent<Weapon>();
         }
 
         if (robotParameter.lweapon_prefab != null)
         {
-            if (robotParameter.infight_weapon_paired)
+            GameObject playerlweapon_l = GameObject.Instantiate(robotParameter.lweapon_prefab);
+
+            playerlweapon_l.transform.parent = LHand.transform;
+            playerlweapon_l.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+            playerlweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
+            playerlweapon_l.transform.localScale = new Vector3(1, 1, 1);
+
+            if (playerlweapon_l.GetComponent<InfightWeapon>().paired)
             {
                 GameObject playerlweapon_r = GameObject.Instantiate(robotParameter.lweapon_prefab);
 
                 playerlweapon_r.transform.parent = RHand.transform;
-                playerlweapon_r.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+                playerlweapon_r.transform.localPosition = new Vector3(-0.0004f, 0.0072f, 0.004f);
                 playerlweapon_r.transform.localEulerAngles = new Vector3(-90, 0, 180);
                 playerlweapon_r.transform.localScale = new Vector3(1, 1, 1);
 
-                playerlweapon_r.GetComponent<InfightWeapon>().this_is_slave = true;
-
-                GameObject playerlweapon_l = GameObject.Instantiate(robotParameter.lweapon_prefab);
-
-                playerlweapon_l.transform.parent = LHand.transform;
-                playerlweapon_l.transform.localPosition = new Vector3(-0.0004f, 0.0072f, 0.004f);
-                playerlweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
-                playerlweapon_l.transform.localScale = new Vector3(1, 1, 1);
-
                 playerlweapon_l.GetComponent<InfightWeapon>().this_is_slave = false;
                 playerlweapon_l.GetComponent<InfightWeapon>().another = playerlweapon_r.GetComponent<InfightWeapon>();
+
+                playerlweapon_r.GetComponent<InfightWeapon>().this_is_slave = true;
                 playerlweapon_r.GetComponent<InfightWeapon>().another = playerlweapon_l.GetComponent<InfightWeapon>();
-
-                Sword = playerlweapon_l.GetComponent<InfightWeapon>();
             }
-            else
-            {
-                GameObject playerlweapon = GameObject.Instantiate(robotParameter.lweapon_prefab);
-
-                playerlweapon.transform.parent = LHand.transform;
-                playerlweapon.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-                playerlweapon.transform.localEulerAngles = new Vector3(-90, 0, 180);
-                playerlweapon.transform.localScale = new Vector3(1, 1, 1);
-
-                Sword = playerlweapon.GetComponent<InfightWeapon>();
-            }
+    
+            Sword = playerlweapon_l.GetComponent<InfightWeapon>();
         }
 
         if (robotParameter.subweapon_prefab != null)
         {
-            if (robotParameter.weapon_chest_paired)
+            GameObject playersubweapon_l = GameObject.Instantiate(robotParameter.subweapon_prefab);
+
+            playersubweapon_l.transform.parent = chestWeapon_anchor[0].transform;
+            playersubweapon_l.transform.localPosition = Vector3.zero;
+            playersubweapon_l.transform.localEulerAngles = Vector3.zero;
+            playersubweapon_l.transform.localScale = Vector3.one;
+
+            if (playersubweapon_l.GetComponent<Weapon>().chest_paired)
             {
                 GameObject playersubweapon_r = GameObject.Instantiate(robotParameter.subweapon_prefab);
 
@@ -6187,30 +6181,13 @@ public class RobotController : Pausable
 
                 playersubweapon_r.GetComponent<Weapon>().this_is_slave = true;
 
-                GameObject playersubweapon_l = GameObject.Instantiate(robotParameter.subweapon_prefab);
-
-                playersubweapon_l.transform.parent = chestWeapon_anchor[0].transform;
-                playersubweapon_l.transform.localPosition = Vector3.zero;
-                playersubweapon_l.transform.localEulerAngles = Vector3.zero;
-                playersubweapon_l.transform.localScale = Vector3.one;
                 playersubweapon_l.GetComponent<Weapon>().this_is_slave = false;
                 playersubweapon_l.GetComponent<Weapon>().another = playersubweapon_r.GetComponent<Weapon>();
 
-                shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
-
-
+                
             }
-            else
-            {
-                GameObject playersubweapon_l = GameObject.Instantiate(robotParameter.subweapon_prefab);
-
-                playersubweapon_l.transform.parent = chestWeapon_anchor[0].transform;
-                playersubweapon_l.transform.localPosition = Vector3.zero;
-                playersubweapon_l.transform.localEulerAngles = Vector3.zero;
-                playersubweapon_l.transform.localScale = Vector3.one;
-
-                shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
-            }
+  
+            shoulderWeapon = playersubweapon_l.GetComponent<Weapon>();
 
         }
     }

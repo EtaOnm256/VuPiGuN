@@ -15,6 +15,11 @@ public class Weapon : Pausable
     public bool this_is_slave = false;
     private bool _trigger;
 
+    virtual public bool chest_paired
+    {
+        get { return false; }
+    }
+
     public enum Trajectory
     {
         Straight,
