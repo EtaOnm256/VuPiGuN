@@ -5415,7 +5415,10 @@ public class RobotController : Pausable
                 animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
             else
             {
-                animator.Play("Fire", 1, 0.0f);
+                if(rightWeapon.wrist_equipped)
+                    animator.Play("Fire4", 1, 0.0f);
+                else
+                    animator.Play("Fire", 1, 0.0f);
             }
 
 

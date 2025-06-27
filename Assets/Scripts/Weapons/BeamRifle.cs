@@ -5,7 +5,7 @@ using UnityEngine;
 public class BeamRifle : Weapon
 {
     [SerializeField]GameObject beam_prefab;
-    GameObject beamemit_prefab;
+    [SerializeField] GameObject beamemit_prefab = null;
     [SerializeField] GameObject barrel_origin;
 
     private const int Max_Ammo = 6;
@@ -71,10 +71,14 @@ public class BeamRifle : Weapon
         }
     }
 
+    [SerializeField] private bool _wrist_equipped = false;
+    override public bool wrist_equipped
+    {
+        get { return _wrist_equipped; }
+    }
+
     protected override void OnAwake()
     {
-        beamemit_prefab = Resources.Load<GameObject>("Effects/BeamEmit");
-
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
 
@@ -104,7 +108,9 @@ public class BeamRifle : Weapon
             beam.itemFlag = owner.robotParameter.itemFlag;
             beam.chargeshot = chargeshot;
             beam.barrel_origin = barrel_origin.transform.position;
-            GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+
+            if(beamemit_prefab!=null)
+                GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             energy -= Reload_Time;
         }

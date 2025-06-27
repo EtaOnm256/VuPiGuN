@@ -18,15 +18,17 @@ public class Beam : Projectile
 
     [SerializeField]int damage = 100;
 
+    [SerializeField] bool pierce = true;
+
     // Start is called before the first frame update
     protected override void OnStart()
     {
-        lineRenderer.positionCount = 2;
-
         position = start_pos = transform.position;
 
-        lineRenderer.SetPosition(0, start_pos);
-        lineRenderer.SetPosition(1, start_pos);
+        for (int i = 0; i < lineRenderer.positionCount; i++)
+        {
+            lineRenderer.SetPosition(i, start_pos);
+        }
 
         initial_direction = Quaternion.LookRotation(direction);
 
@@ -81,7 +83,7 @@ public class Beam : Projectile
             {
                 Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
-                Quaternion qTarget = Quaternion.LookRotation(target.GetTargetedPosition() - lineRenderer.GetPosition(1));
+                Quaternion qTarget = Quaternion.LookRotation(target.GetTargetedPosition() - lineRenderer.GetPosition(lineRenderer.positionCount - 1));
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {
@@ -100,9 +102,9 @@ public class Beam : Projectile
             if (first && barrel_origin.x != Mathf.NegativeInfinity)
                 origin = barrel_origin;
             else
-                origin = lineRenderer.GetPosition(1);
+                origin = lineRenderer.GetPosition(lineRenderer.positionCount-1);
 
-            goal = lineRenderer.GetPosition(1) + direction.normalized * speed;
+            goal = lineRenderer.GetPosition(lineRenderer.positionCount - 1) + direction.normalized * speed;
 
             if (hitsphere_width <= 0.0f)
             {
@@ -147,7 +149,8 @@ public class Beam : Projectile
 
                         robotController.TakeDamage(rayCastHit[i].point, direction, damage, KnockBackType, owner);
 
-
+                        if(!pierce)
+                            dead = true;
                     }
                     else
                     {
@@ -159,18 +162,23 @@ public class Beam : Projectile
                 }
             }
 
-            position = lineRenderer.GetPosition(1) + direction * speed;
+            position = lineRenderer.GetPosition(lineRenderer.positionCount - 1) + direction * speed;
 
-            lineRenderer.SetPosition(1, lineRenderer.GetPosition(1) + direction * speed);
+            lineRenderer.SetPosition(lineRenderer.positionCount - 1, lineRenderer.GetPosition(lineRenderer.positionCount - 1) + direction * speed);
 
 
-            float length = (lineRenderer.GetPosition(1) - start_pos).magnitude;
+            float length = (lineRenderer.GetPosition(lineRenderer.positionCount - 1) - start_pos).magnitude;
 
             length = Mathf.Min(length, MaxLength);
 
-            Vector3 view_dir = (lineRenderer.GetPosition(1) - start_pos).normalized;
+            Vector3 view_dir = (lineRenderer.GetPosition(lineRenderer.positionCount - 1) - start_pos).normalized;
 
-            lineRenderer.SetPosition(0, lineRenderer.GetPosition(1) - view_dir * length);
+            lineRenderer.SetPosition(0, lineRenderer.GetPosition(lineRenderer.positionCount - 1) - view_dir * length);
+
+            for(int i=1;i< lineRenderer.positionCount - 1;i++)
+            {
+                lineRenderer.SetPosition(i, Vector3.Lerp(lineRenderer.GetPosition(0), lineRenderer.GetPosition(lineRenderer.positionCount - 1), ((float)i) / (lineRenderer.positionCount-1)));
+            }
 
 
             if (time-- <= 0)
@@ -180,15 +188,20 @@ public class Beam : Projectile
         }
         else
         {
-            Vector3 view_dir = (lineRenderer.GetPosition(1) - start_pos).normalized;
+            Vector3 view_dir = (lineRenderer.GetPosition(lineRenderer.positionCount - 1) - start_pos).normalized;
 
-            if ((lineRenderer.GetPosition(1) - lineRenderer.GetPosition(0)).magnitude <= speed)
+            if ((lineRenderer.GetPosition(lineRenderer.positionCount - 1) - lineRenderer.GetPosition(0)).magnitude <= speed)
             {
                 GameObject.Destroy(gameObject);
             }
             else
             {
                 lineRenderer.SetPosition(0, lineRenderer.GetPosition(0) + view_dir * speed);
+
+                for (int i = 1; i < lineRenderer.positionCount - 1; i++)
+                {
+                    lineRenderer.SetPosition(i, Vector3.Lerp(lineRenderer.GetPosition(0), lineRenderer.GetPosition(lineRenderer.positionCount - 1), ((float)i) / lineRenderer.positionCount));
+                }
             }
         }
 

@@ -20,6 +20,11 @@ public class Weapon : Pausable
         get { return false; }
     }
 
+    virtual public bool wrist_equipped
+    {
+        get { return false; }
+    }
+
     public enum Trajectory
     {
         Straight,

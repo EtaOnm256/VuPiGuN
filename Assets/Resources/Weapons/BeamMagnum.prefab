@@ -111,9 +111,11 @@ MonoBehaviour:
   projectile_speed: 0
   _chargeshot: 0
   beam_prefab: {fileID: 6571210301752455124, guid: d2d5df60a1166cb48802f1d723a8800f, type: 3}
+  beamemit_prefab: {fileID: 8961267772553168207, guid: b521a327ac0a02e4ca152e212c684058, type: 3}
   barrel_origin: {fileID: 5450431873248077509}
   firePoint: {fileID: 2128976343315254439}
   _fire_followthrough: 45
+  _wrist_equipped: 0
 --- !u!1 &2128976343315254439
 GameObject:
   m_ObjectHideFlags: 0
