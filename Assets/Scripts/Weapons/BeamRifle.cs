@@ -25,9 +25,11 @@ public class BeamRifle : Weapon
 
     public GameObject firePoint;
 
+    [SerializeField] float _firing_multiplier = 1.3f;
+
     override public float firing_multiplier
     {
-        get { return 1.3f; }
+        get { return _firing_multiplier; }
     }
     override public float lockon_multiplier
     {

@@ -148,8 +148,6 @@ public class SMG : Weapon
                 bullet.chargeshot = chargeshot;
                 bullet.barrel_origin = barrel_origin.transform.position;
                 GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
-
-                solidemit_obj.transform.localScale = Vector3.one / 2.0f;
             }
           
 

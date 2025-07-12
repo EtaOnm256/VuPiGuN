@@ -2995,7 +2995,7 @@ public class RobotController : Pausable
         chestmultiAimConstraint.weight = _chestaimwait;
 
         AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 10.0f;
-      
+
         rhandmultiAimConstraint.weight = rhandaimwait_thisframe;
 
         overrideTransform.weight = _rarmaimwait;
@@ -6128,10 +6128,21 @@ public class RobotController : Pausable
         {
             GameObject playerrweapon_l = GameObject.Instantiate(robotParameter.rweapon_prefab);
 
+            rightWeapon = playerrweapon_l.GetComponent<Weapon>();
+
             playerrweapon_l.transform.parent = RHand.transform;
-            playerrweapon_l.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-            playerrweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
             playerrweapon_l.transform.localScale = new Vector3(1, 1, 1);
+
+            if (rightWeapon.wrist_equipped)
+            {
+                playerrweapon_l.transform.localPosition = new Vector3(-0.00892f, -0.00069f, 0.00044f);
+                playerrweapon_l.transform.localEulerAngles = new Vector3(-90, 0, -90);
+            }
+            else
+            {
+                playerrweapon_l.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+                playerrweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
+            }
 
             rightWeapon = playerrweapon_l.GetComponent<Weapon>();
         }

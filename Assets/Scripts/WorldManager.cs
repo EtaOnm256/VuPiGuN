@@ -752,6 +752,8 @@ public class WorldManager : MonoBehaviour
         GameObject robotObj = GameObject.Instantiate(gameState.player_variant, raycastHit.point, rot);
         //RobotController robot = variant.Spawn(raycastHit.point, rot,this);
 
+        robotObj.tag = "Player";
+
         RobotController robot = robotObj.GetComponent<RobotController>();
 
         robot.HUDCanvas = canvasControl.HUDCanvas;
