@@ -194,6 +194,9 @@ public class BeamSaber : InfightWeapon
                 if (robotController.team == owner.team)
                     continue;
 
+                if (!robotController.has_hitbox)
+                    continue;
+
                 if (hitHistoryRC.Contains(robotController))
                     continue;
 

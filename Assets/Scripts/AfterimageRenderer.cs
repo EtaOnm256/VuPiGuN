@@ -8,16 +8,20 @@ namespace AfterimageSample
         [SerializeField] Material _material;
         [SerializeField] int _duration = 150;
         [SerializeField] int _layer = 6;
+        [SerializeField] int _interpolate = 1;
 
-        SkinnedMeshRenderer[] _renderers;
+        [SerializeField] SkinnedMeshRenderer[] _renderers;
         Stack<AfterImage> _pool = new Stack<AfterImage>();
         Queue<AfterImage> _renderQueue = new Queue<AfterImage>();
 
         [System.NonSerialized] public int _clipFrameBegin;
 
+        bool prevmatrix_valid = false;
+        Matrix4x4 prevmatrix = new Matrix4x4();
+
         void Awake()
         {
-            _renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+            //_renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
         }
 
         void Update()
@@ -69,17 +73,32 @@ namespace AfterimageSample
         /// </summary>
         public void Enqueue()
         {
-            AfterImage afterimage;
-            if (_pool.Count > 0)
+            for (int idx_inter = 0; idx_inter < _interpolate; idx_inter++)
             {
-                afterimage = _pool.Pop();
+
+                AfterImage afterimage;
+                if (_pool.Count > 0)
+                {
+                    afterimage = _pool.Pop();
+                }
+                else
+                {
+                    afterimage = new AfterImage(_renderers.Length);
+                }
+
+                float t = (_interpolate - idx_inter) / (float)_interpolate;
+
+                if (prevmatrix_valid)
+                    afterimage.Setup(_material, _layer, _renderers, prevmatrix, t);
+                else
+                    afterimage.Setup(_material, _layer, _renderers, _renderers[0].localToWorldMatrix, t);
+
+                _renderQueue.Enqueue(afterimage);
             }
-            else
-            {
-                afterimage = new AfterImage(_renderers.Length);
-            }
-            afterimage.Setup(_material, _layer, _renderers);
-            _renderQueue.Enqueue(afterimage);
+
+            prevmatrix = _renderers[0].localToWorldMatrix;
+            prevmatrix_valid = true;
+            
         }        
 
         public void Clear()
@@ -90,6 +109,7 @@ namespace AfterimageSample
                 afterimage.Reset();
                 _pool.Push(afterimage);
             }
+            prevmatrix_valid = false;
         }
     }
 }

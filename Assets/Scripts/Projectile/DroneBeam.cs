@@ -95,6 +95,9 @@ public class DroneBeam : Projectile
                 {
                     if (robotController != null)
                     {
+                        if (!robotController.has_hitbox)
+                            continue;
+
                         if (hitHistoryRC.Contains(robotController))
                             continue;
 

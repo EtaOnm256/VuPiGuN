@@ -182,6 +182,9 @@ public class BeamDagger : InfightWeapon
                     if (robotController.team == another.owner.team)
                         continue;
 
+                    if (!robotController.has_hitbox)
+                        continue;
+
                     if (another.hitHistoryRC.Contains(robotController))
                         continue;
 
@@ -214,6 +217,9 @@ public class BeamDagger : InfightWeapon
                 if (robotController != null)
                 {
                     if (robotController.team == owner.team)
+                        continue;
+
+                    if (!robotController.has_hitbox)
                         continue;
 
                     if (hitHistoryRC.Contains(robotController))

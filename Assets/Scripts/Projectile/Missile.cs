@@ -137,6 +137,9 @@ public class Missile : Projectile
                     {
                         if (robotController != null && robotController != owner)
                         {
+                            if (!robotController.has_hitbox)
+                                continue;
+
                             if (hitHistoryRC.Contains(robotController))
                                 continue;
 

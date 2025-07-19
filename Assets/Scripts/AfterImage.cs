@@ -1,32 +1,34 @@
-using UnityEngine;
-
+ï»¿using UnityEngine;
+using Unityâ€‹Engine.Rendering;
+using System.Collections.Generic;
 namespace AfterimageSample
 {
     public class AfterImage
     {
-        RenderParams[] _params;
+        //RenderParams[] _params;
         Mesh[] _meshes;
         Matrix4x4[] _matrices;
-
+        List<Material[]> materials;
         /// <summary>
-        /// •`‰æ‚³‚ê‚½‰ñ”.
+        /// æç”»ã•ã‚ŒãŸå›æ•°.
         /// </summary>
         public int FrameCount { get; private set; }
 
         /// <summary>
-        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^.
+        /// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿.
         /// </summary>
-        /// <param name="meshCount">•`‰æ‚·‚éƒƒbƒVƒ…‚Ì”.</param>
+        /// <param name="meshCount">æç”»ã™ã‚‹ãƒ¡ãƒƒã‚·ãƒ¥ã®æ•°.</param>
         public AfterImage(int meshCount)
         {
-            _params = new RenderParams[meshCount];
+            //_params = new RenderParams[meshCount];
             _meshes = new Mesh[meshCount];
             _matrices = new Matrix4x4[meshCount];
+            materials = new List<Material[]>();
             Reset();
         }
 
         /// <summary>
-        /// •`‰æ‘O‚à‚µ‚­‚ÍŒã‚ÉÀs‚·‚é.
+        /// æç”»å‰ã‚‚ã—ãã¯å¾Œã«å®Ÿè¡Œã™ã‚‹.
         /// </summary>
         public void Reset()
         {
@@ -34,41 +36,91 @@ namespace AfterimageSample
         }
 
         /// <summary>
-        /// ƒƒbƒVƒ…‚²‚Æ‚Ég—p‚·‚éƒ}ƒeƒŠƒAƒ‹‚ğ—pˆÓ‚µAŒ»İ‚ÌƒƒbƒVƒ…‚ÌŒ`ó‚ğ‹L‰¯‚³‚¹‚é.
+        /// ãƒ¡ãƒƒã‚·ãƒ¥ã”ã¨ã«ä½¿ç”¨ã™ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ç”¨æ„ã—ã€ç¾åœ¨ã®ãƒ¡ãƒƒã‚·ãƒ¥ã®å½¢çŠ¶ã‚’è¨˜æ†¶ã•ã›ã‚‹.
         /// </summary>
-        /// <param name="material">g—p‚·‚éƒ}ƒeƒŠƒAƒ‹. </param>
-        /// <param name="layer">•`‰æ‚·‚éƒŒƒCƒ„[.</param>
-        /// <param name="renderers">‹L‰¯‚³‚¹‚éSkinnedMeshRendere‚Ì”z—ñ.</param>
-        public void Setup(Material material, int layer, SkinnedMeshRenderer[] renderers)
+        /// <param name="material">ä½¿ç”¨ã™ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«. </param>
+        /// <param name="layer">æç”»ã™ã‚‹ãƒ¬ã‚¤ãƒ¤ãƒ¼.</param>
+        /// <param name="renderers">è¨˜æ†¶ã•ã›ã‚‹SkinnedMeshRendereã®é…åˆ—.</param>
+        public void Setup(Material material, int layer, SkinnedMeshRenderer[] renderers, Matrix4x4 prevmatrix,float t)
         {
             for (int i = 0; i < renderers.Length; i++)
             {
-                // ƒ}ƒeƒŠƒAƒ‹‚Énull‚ª“n‚³‚ê‚½‚çƒIƒuƒWƒFƒNƒg‚Ìƒ}ƒeƒŠƒAƒ‹‚ğ‚»‚Ì‚Ü‚Üg‚¤.
+                // ãƒãƒ†ãƒªã‚¢ãƒ«ã«nullãŒæ¸¡ã•ã‚ŒãŸã‚‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ãã®ã¾ã¾ä½¿ã†.
                 if (material == null)
                 {
-                    material = renderers[i].material;
+                    materials.Clear();
+
+                    Material[] materials_now = new Material[renderers[i].materials.Length];
+
+                    for (int j = 0; j < materials_now.Length; j++)
+                    {
+                        Material thismaterial = new Material(renderers[i].materials[j]);
+
+                        /*thismaterial.SetFloat("_Surface", 1);
+
+                        thismaterial.SetOverrideTag("RenderType", "Transparent");
+
+                        thismaterial.renderQueue = (int)RenderQueue.Transparent;
+
+                        thismaterial.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
+
+                        thismaterial.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+
+                        thismaterial.SetInt("_ZWrite", 0);
+
+                        thismaterial.DisableKeyword("_ALPHATEST_ON");
+
+                        thismaterial.EnableKeyword("_ALPHABLEND_ON");
+
+                        thismaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+
+                        var color = thismaterial.color;
+
+                        color.a = 0.1f;
+
+                        thismaterial.color = color;*/
+
+                        materials_now[j] = thismaterial;
+                    }
+
+                    materials.Add(materials_now);
+
+                    //materials.Add(renderers[i].materials);
                 }
-                if (_params[i].material != material)
-                {
-                    _params[i] = new RenderParams(material);
-                }
-                // ƒŒƒCƒ„[‚ğİ’è‚·‚é.
-                if (_params[i].layer != layer)
-                {
-                    _params[i].layer = layer;
-                }
-                // Œ»İ‚ÌƒƒbƒVƒ…‚Ìó‘Ô‚ğŠi”[‚·‚é.
+                //if (_params[i].material != material)
+                //{
+                //    _params[i] = new RenderParams(material);
+                //}
+                // ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¨­å®šã™ã‚‹.
+                //if (_params[i].layer != layer)
+                //{
+                //    _params[i].layer = layer;
+                //}
+                // ç¾åœ¨ã®ãƒ¡ãƒƒã‚·ãƒ¥ã®çŠ¶æ…‹ã‚’æ ¼ç´ã™ã‚‹.
                 if (_meshes[i] == null)
                 {
                     _meshes[i] = new Mesh();
                 }
-                renderers[i].BakeMesh(_meshes[i],true);
-                _matrices[i] = renderers[i].transform.localToWorldMatrix;
+                renderers[i].BakeMesh(_meshes[i], true);
+
+                Vector3 position_now = renderers[i].transform.localToWorldMatrix.GetPosition();
+                Quaternion rotation_now = renderers[i].transform.localToWorldMatrix.rotation;
+                Vector3 scale_now = renderers[i].transform.localToWorldMatrix.lossyScale;
+
+                Vector3 prev_position = prevmatrix.GetPosition();
+                Quaternion prev_rotation = prevmatrix.rotation;
+                Vector3 prev_scale = prevmatrix.lossyScale;
+
+                Vector3 position = Vector3.Lerp(prev_position, position_now, t);
+                Quaternion rotation = Quaternion.Lerp(prev_rotation, rotation_now, t);
+                Vector3 scale = Vector3.Lerp(prev_scale, scale_now, t);
+
+                _matrices[i] = Matrix4x4.Translate(position)*Matrix4x4.Rotate(rotation) * Matrix4x4.Scale(scale);
             }
         }
 
         /// <summary>
-        /// ‹L‰¯‚µ‚½ƒƒbƒVƒ…‚ğ‘S‚Ä•`‰æ‚·‚é.
+        /// è¨˜æ†¶ã—ãŸãƒ¡ãƒƒã‚·ãƒ¥ã‚’å…¨ã¦æç”»ã™ã‚‹.
         /// </summary>
         public void RenderMeshes(int ClipFrameBegin,Material material)
         {
@@ -77,7 +129,12 @@ namespace AfterimageSample
                 for (int i = 0; i < _meshes.Length; i++)
                 {
                     for (int subMesh = 0; subMesh < _meshes[i].subMeshCount; subMesh++)
-                        Graphics.DrawMesh(_meshes[i], _matrices[i], material,0,Camera.current, subMesh);
+                    {
+                        if (material == null)
+                            Graphics.DrawMesh(_meshes[i], _matrices[i], materials[i][subMesh], 0, Camera.current, subMesh);
+                        else
+                            Graphics.DrawMesh(_meshes[i], _matrices[i], material, 0, Camera.current, subMesh);
+                    }
                 }
             }
         }

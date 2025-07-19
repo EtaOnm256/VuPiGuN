@@ -62,8 +62,6 @@ public class EraseObject : MonoBehaviour
 		//　操作キャラクターとカメラの距離
 		//distanceBetweenCharacterAndCamera = Vector3.Distance(mainCamera.transform.position, characterTransform.position);
 
-		Debug.Log(distance);
-
 		//　操作キャラクターとカメラの間に自身がいる場合、かつcameraDistanceより短い距離にいた場合は距離に応じたアルファ値にする
 		if (distance < cameraDistance)
 		{

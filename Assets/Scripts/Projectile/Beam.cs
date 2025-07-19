@@ -139,9 +139,12 @@ public class Beam : Projectile
                 {
                     if (robotController != null)
                     {
-                        if (hitHistoryRC.Contains(robotController))
+                        if (!robotController.has_hitbox)
                             continue;
 
+                        if (hitHistoryRC.Contains(robotController))
+                            continue;
+                      
                         if (hitHistoryRCCount >= hitHistoryRC.Length)
                             break;
 

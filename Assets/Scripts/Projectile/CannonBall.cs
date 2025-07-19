@@ -138,6 +138,9 @@ public class CannonBall : Projectile
                 {
                     if (robotController != null)
                     {
+                        if (!robotController.has_hitbox)
+                            continue;
+
                         if (hitHistoryRC.Contains(robotController))
                             continue;
 

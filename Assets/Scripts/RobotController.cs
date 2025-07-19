@@ -10,6 +10,7 @@ using UnityEngine.Animations.Rigging;
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using Unity​Engine.Rendering;
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
  */
 
@@ -64,6 +65,10 @@ public class RobotController : Pausable
 
     //連ザ格闘の上下角度限界。
     [SerializeField] float seedSlash_PitchLimit = 30.0f;
+
+    const float voidshift_limit_distance = 20.0f;
+    const float voidshift_speed = 120.0f;
+
 
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
@@ -372,7 +377,10 @@ public class RobotController : Pausable
 
     public GameObject stompHitEffect_prefab;
 
+    SkinnedMeshRenderer skinnedMeshRenderer;
 
+    Material[] material_org;
+    Material[] material_in_voidshift;
 
     public WorldManager.Team team;
 
@@ -412,7 +420,8 @@ public class RobotController : Pausable
         ROLLINGFIRE,
         ROLLINGHEAVYFIRE,
         SNIPEFIRE,
-        SNIPEHEAVYFIRE
+        SNIPEHEAVYFIRE,
+        VOIDSHIFT
     }
 
     public enum LowerBodyState
@@ -450,7 +459,8 @@ public class RobotController : Pausable
         AIRSNIPEHEAVYFIRE,
         GROUND_FIRE,
         GROUND_SUBFIRE,
-        GROUND_HEAVYFIRE
+        GROUND_HEAVYFIRE,
+        VOIDSHIFT
     }
 
     public enum SubState_Slash
@@ -652,7 +662,8 @@ public class RobotController : Pausable
         InfightBoost = 1 << 19,
         MassIllusion = 1 << 20,
         SeedOfArts = 1 << 21,
-        RollingSlash = 1 << 22
+        RollingSlash = 1 << 22,
+        VoidShift = 1 << 23
     }
 
 
@@ -665,13 +676,24 @@ public class RobotController : Pausable
     [SerializeField] AudioClip audioClip_Step;
     [SerializeField] AudioClip audioClip_Swing;
 
+    public bool has_hitbox
+    {
+        get
+        {
+            return spawn_completed && !dead && lowerBodyState != LowerBodyState.VOIDSHIFT;
+        }
+    }
+
     public void TakeDamage(Vector3 pos, Vector3 dir, int damage, KnockBackType knockBackType, RobotController dealer)
     {
-        if (!spawn_completed)
+        /*if (!spawn_completed)
             return;
 
         if (dead)
             return;
+
+        if (lowerBodyState == LowerBodyState.VOIDSHIFT)
+            return;*/
 
         _input.OnTakeDamage(pos, dir, damage, knockBackType, dealer);
 
@@ -899,6 +921,43 @@ public class RobotController : Pausable
     private void Awake()
     {
         ArmWeapon();
+
+        skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+
+        material_org = skinnedMeshRenderer.materials;
+
+        material_in_voidshift = new Material[skinnedMeshRenderer.materials.Length];
+
+        for (int j = 0; j < material_in_voidshift.Length; j++)
+        {
+            Material material = new Material(material_org[j]);
+
+            material.SetFloat("_Surface", 1);
+
+            material.SetOverrideTag("RenderType", "Transparent");
+
+            material.renderQueue = (int)RenderQueue.Transparent;
+
+            material.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
+
+            material.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+
+            material.SetInt("_ZWrite", 0);
+
+            material.DisableKeyword("_ALPHATEST_ON");
+
+            material.EnableKeyword("_ALPHABLEND_ON");
+
+            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+
+            var color = material.color;
+
+            color.a = 0.1f;
+
+            material.color = color;
+
+            material_in_voidshift[j] = material;
+        }
 
         WorldManager.current_instance.pausables.Add(this);
 
@@ -1933,6 +1992,9 @@ public class RobotController : Pausable
                             if (robotController.team == team)
                                 continue;
 
+                            if (!robotController.has_hitbox)
+                                continue;
+
                             if (Sword.hitHistoryRC.Contains(robotController))
                                 continue;
 
@@ -2831,6 +2893,7 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.SLASH:
             case UpperBodyState.SLASH_DASH:
+            case UpperBodyState.VOIDSHIFT:
 
                 miragecloud_invalid = true;
 
@@ -3170,6 +3233,9 @@ public class RobotController : Pausable
     int mirage_time = 0;
     [SerializeField] AfterimageSample.AfterimageRenderer afterimageRenderer;
     [SerializeField] AfterimageSample.EnqueueAfterimage enqueueAfterimage;
+
+    [SerializeField] AfterimageSample.AfterimageRenderer afterimageRenderer_VoidShift;
+    [SerializeField] AfterimageSample.EnqueueAfterimage enqueueAfterimage_VoidShift;
 
     int passiveMirage_interval = 0;
 
@@ -3939,6 +4005,7 @@ public class RobotController : Pausable
                     }
                     break;
                 case LowerBodyState.SLASH_DASH:
+                case LowerBodyState.VOIDSHIFT:
                     {
                         float rotatespeed;
 
@@ -3948,12 +4015,17 @@ public class RobotController : Pausable
                         }
                         else
                         {
-                            _speed = targetSpeed = Sword.motionProperty[subState_Slash].DashSpeed;
-
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost) && subState_Slash != SubState_Slash.DashSlash)
+                            if (lowerBodyState == LowerBodyState.VOIDSHIFT)
+                                _speed = targetSpeed = voidshift_speed;
+                            else
                             {
-                                _speed *= 1.5f;
-                                targetSpeed *= 1.5f;
+                                _speed = targetSpeed = Sword.motionProperty[subState_Slash].DashSpeed;
+
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost) && subState_Slash != SubState_Slash.DashSlash)
+                                {
+                                    _speed *= 1.5f;
+                                    targetSpeed *= 1.5f;
+                                }
                             }
                         }
 
@@ -4041,6 +4113,11 @@ public class RobotController : Pausable
                         }
                         else
                         {
+                            if(lowerBodyState == LowerBodyState.VOIDSHIFT && Vector3.Distance(Target_Robot.GetTargetedPosition(),GetCenter()) < voidshift_limit_distance)
+                            {
+                                lowerBodyState = LowerBodyState.SLASH_DASH;
+                            }
+
                             Vector3 rel = Target_Robot.GetTargetedPosition() - GetCenter();
 
                             if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
@@ -4076,7 +4153,8 @@ public class RobotController : Pausable
                             }
                         }
 
-                        stepremain--;
+                        if(lowerBodyState == LowerBodyState.SLASH_DASH)
+                            stepremain--;
 
                         if ( (slash || stepremain <= 0) && (subState_Slash != SubState_Slash.DashSlash || event_swing))
                         {
@@ -4542,6 +4620,19 @@ public class RobotController : Pausable
                     break;
             }
         }
+
+        if (lowerBodyState == LowerBodyState.VOIDSHIFT)
+        {
+            skinnedMeshRenderer.materials = material_in_voidshift;
+            enqueueAfterimage_VoidShift.enabled = true;
+        }
+        else
+        {
+            skinnedMeshRenderer.materials = material_org;
+            enqueueAfterimage_VoidShift.enabled = false;
+            afterimageRenderer_VoidShift.Clear();
+        }
+
         bool hitslow_now = false;
         if (hitslow_timer > 0)
         {
@@ -4644,7 +4735,7 @@ public class RobotController : Pausable
                 MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
                                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
             }
-            else if (lowerBodyState == LowerBodyState.SLASH_DASH && (subState_Slash != SubState_Slash.DashSlash && dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR))
+            else if ( (lowerBodyState == LowerBodyState.SLASH_DASH || lowerBodyState == LowerBodyState.VOIDSHIFT) && (subState_Slash != SubState_Slash.DashSlash && dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR))
             {
                 Vector3 targetDirection;
 
@@ -4679,7 +4770,7 @@ public class RobotController : Pausable
                     if (subState_Slash == SubState_Slash.DashSlash)
                         targetDirection.y = Mathf.Min(Mathf.Max(targetDirection.y, Mathf.Sin(-15.0f * Mathf.Deg2Rad)), Mathf.Sin(15.0f * Mathf.Deg2Rad));
 
-                    if(subState_Slash == SubState_Slash.SlideSlashSeed)
+                    if(subState_Slash == SubState_Slash.SlideSlashSeed && lowerBodyState != LowerBodyState.VOIDSHIFT)
                     {
                         Quaternion targetQ = Quaternion.LookRotation(targetDirection);
                         if (stepDirection == StepDirection.LEFT)
@@ -4707,7 +4798,7 @@ public class RobotController : Pausable
                 MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
             }
-            else if (lowerBodyState == LowerBodyState.SLASH_DASH && subState_Slash == SubState_Slash.DashSlash) // Sword.dashslash_cutthrough有効時のDASHSLASH_DASH
+            else if ( (lowerBodyState == LowerBodyState.SLASH_DASH || lowerBodyState == LowerBodyState.VOIDSHIFT) && subState_Slash == SubState_Slash.DashSlash) // Sword.dashslash_cutthrough有効時のDASHSLASH_DASH
             {
                 Vector3 targetDirection;
 
@@ -5938,17 +6029,34 @@ public class RobotController : Pausable
         if (slash_dispatch && ringMenuDir == RingMenuDir.Center)
         {
             bool aerial_slash = false;
-
+            float dist = 0.0f;
             if (Target_Robot != null)
             {
                 if (robotParameter.itemFlag.HasFlag(ItemFlag.IaiSlash) && !Target_Robot.Grounded && !(Target_Robot.lowerBodyState == LowerBodyState.DOWN || Target_Robot.lowerBodyState == LowerBodyState.GETUP))
                     aerial_slash = true;
+
+                dist = Vector3.Distance(Target_Robot.GetCenter(), GetCenter());
+            }
+
+            bool voidshift = false;
+
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.VoidShift) && dist >= voidshift_limit_distance)
+            {
+                voidshift = true;
             }
 
             if (robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
             {
-                lowerBodyState = LowerBodyState.SLASH_DASH;
-                upperBodyState = UpperBodyState.SLASH_DASH;
+                if (voidshift)
+                {
+                    lowerBodyState = LowerBodyState.VOIDSHIFT;
+                    upperBodyState = UpperBodyState.VOIDSHIFT;
+                }
+                else
+                {
+                    lowerBodyState = LowerBodyState.SLASH_DASH;
+                    upperBodyState = UpperBodyState.SLASH_DASH;
+                }
 
                 if (_input.move.x == 0.0f)
                     subState_Slash = SubState_Slash.AirSlashSeed;
@@ -5984,7 +6092,7 @@ public class RobotController : Pausable
             }
             else
             {
-                if (Grounded && !aerial_slash)
+                if (Grounded && !aerial_slash && !voidshift)
                 {
 
                     if (Target_Robot != null)
@@ -6001,8 +6109,16 @@ public class RobotController : Pausable
 
                     if (lowerBodyState == LowerBodyState.STAND || lowerBodyState == LowerBodyState.WALK)
                     {
-                        lowerBodyState = LowerBodyState.SLASH_DASH;
-                        upperBodyState = UpperBodyState.SLASH_DASH;
+                        if (voidshift)
+                        {
+                            lowerBodyState = LowerBodyState.VOIDSHIFT;
+                            upperBodyState = UpperBodyState.VOIDSHIFT;
+                        }
+                        else
+                        {
+                            lowerBodyState = LowerBodyState.SLASH_DASH;
+                            upperBodyState = UpperBodyState.SLASH_DASH;
+                        }
                         subState_Slash = SubState_Slash.GroundSlash;
                         event_stepbegin = event_stepped = false;
                         _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
@@ -6013,8 +6129,16 @@ public class RobotController : Pausable
                     }
                     else
                     {
-                        lowerBodyState = LowerBodyState.SLASH_DASH;
-                        upperBodyState = UpperBodyState.SLASH_DASH;
+                        if (voidshift)
+                        {
+                            lowerBodyState = LowerBodyState.VOIDSHIFT;
+                            upperBodyState = UpperBodyState.VOIDSHIFT;
+                        }
+                        else
+                        {
+                            lowerBodyState = LowerBodyState.SLASH_DASH;
+                            upperBodyState = UpperBodyState.SLASH_DASH;
+                        }
                         subState_Slash = SubState_Slash.QuickSlash;
                         event_stepbegin = event_stepped = false;
                         _animator.CrossFadeInFixedTime(_animIDStep_Front, 0.0f, 0);
@@ -6027,8 +6151,16 @@ public class RobotController : Pausable
                 }
                 else
                 {
-                    lowerBodyState = LowerBodyState.SLASH_DASH;
-                    upperBodyState = UpperBodyState.SLASH_DASH;
+                    if (voidshift)
+                    {
+                        lowerBodyState = LowerBodyState.VOIDSHIFT;
+                        upperBodyState = UpperBodyState.VOIDSHIFT;
+                    }
+                    else
+                    {
+                        lowerBodyState = LowerBodyState.SLASH_DASH;
+                        upperBodyState = UpperBodyState.SLASH_DASH;
+                    }
                     subState_Slash = SubState_Slash.AirSlash;
                     event_stepbegin = event_stepped = false;
                     _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[0], 0.0f, 0);
