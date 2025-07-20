@@ -339,7 +339,8 @@ public class RobotAI_Medium : RobotAI_Base
                                         if (mindist < jumpslash_dist)
                                             allow_jumpslash = true;
 
-                                        if (current_target.Grounded && mindist < infight_dist)
+                                        if ( (current_target.Grounded || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.IaiSlash) || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.SeedOfArts))
+                                            && (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
                                             allow_infight = true;
 
                                         if (target_angle <= 90)
@@ -373,7 +374,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (mindist < jumpslash_dist)
                                         allow_jumpslash = true;
 
-                                    if (mindist < infight_dist)
+                                    if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
                                         allow_infight = true;
                                 }
                             }
@@ -445,7 +446,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (mindist < jumpslash_dist)
                                         allow_jumpslash = true;
 
-                                    if (mindist < infight_dist)
+                                    if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
                                         allow_infight = true;
                                 }
                               
@@ -467,7 +468,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (mindist < jumpslash_dist)
                                         allow_jumpslash = true;
 
-                                    if (mindist < infight_dist)
+                                    if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
                                         allow_infight = true;
 
                                     if (robotController.shoulderWeapon != null

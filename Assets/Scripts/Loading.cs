@@ -27,7 +27,7 @@ public class Loading : MonoBehaviour
 
 	IEnumerator LoadData()
 	{
-		if (gameState.stage <= 6)
+		if (gameState.stage <= 7)
 		{
 			switch(gameState.loadingDestination)
             {

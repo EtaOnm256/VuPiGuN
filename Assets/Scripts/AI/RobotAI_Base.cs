@@ -41,14 +41,35 @@ public class RobotAI_Base : InputBase
 
     protected RobotController current_target = null;
 
+    public enum AI_Type
+    {
+        NORMAL,
+        FRANK
+    }
+
+    [SerializeField] AI_Type type = AI_Type.NORMAL;
+
     protected void DetermineTarget()
     {
         switch (robotController.team.orderToAI)
         {
             case WorldManager.OrderToAI.NORMAL:
-                if (current_target == null || !current_target)
+
+                if (type == AI_Type.FRANK)
                 {
-                    TargetNearest(null);
+                    TargetBackstab();
+
+                    if (current_target == null || !current_target)
+                    {
+                        TargetNearest(null);
+                    }
+                }
+                else
+                {
+                    if (current_target == null || !current_target)
+                    {
+                        TargetNearest(null);
+                    }
                 }
                 break;
             case WorldManager.OrderToAI.FOCUS:
@@ -97,6 +118,32 @@ public class RobotAI_Base : InputBase
             foreach (var robot in team.robotControllers)
             {
                 if (robot == exclude)
+                    continue;
+
+                float dist = (robotController.GetCenter() - robot.GetCenter()).magnitude;
+
+                if (dist < mindist)
+                {
+                    mindist = dist;
+                    current_target = robot;
+                }
+            }
+
+        }
+    }
+
+    protected void TargetBackstab()
+    {
+        float mindist = float.MaxValue;
+
+        foreach (var team in WorldManager.current_instance.teams)
+        {
+            if (team == robotController.team)
+                continue;
+
+            foreach (var robot in team.robotControllers)
+            {
+                if (robot.Target_Robot == robotController)
                     continue;
 
                 float dist = (robotController.GetCenter() - robot.GetCenter()).magnitude;
