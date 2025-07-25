@@ -164,6 +164,9 @@ public class RobotController : Pausable
     private int _animIDSnipeFire2;
     private int _animIDSnipeFire3;
 
+    private int _animIDSweep_Left;
+    private int _animIDSweep_Right;
+
     int ChooseDualwieldStandMotion()
     {
         if (Sword != null && Sword.dualwielded)
@@ -421,7 +424,8 @@ public class RobotController : Pausable
         ROLLINGHEAVYFIRE,
         SNIPEFIRE,
         SNIPEHEAVYFIRE,
-        VOIDSHIFT
+        VOIDSHIFT,
+        SWEEP
     }
 
     public enum LowerBodyState
@@ -460,7 +464,8 @@ public class RobotController : Pausable
         GROUND_FIRE,
         GROUND_SUBFIRE,
         GROUND_HEAVYFIRE,
-        VOIDSHIFT
+        VOIDSHIFT,
+        SWEEP
     }
 
     public enum SubState_Slash
@@ -663,7 +668,8 @@ public class RobotController : Pausable
         MassIllusion = 1 << 20,
         SeedOfArts = 1 << 21,
         RollingSlash = 1 << 22,
-        VoidShift = 1 << 23
+        VoidShift = 1 << 23,
+        HorizonSweep = 1 << 24
     }
 
 
@@ -1044,6 +1050,12 @@ public class RobotController : Pausable
             if (robotParameter.itemFlag.HasFlag(ItemFlag.SnipeShoot))
             {
                 ringMenu_Down_LMB.gameObject.SetActive(true);
+            }
+
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.HorizonSweep))
+            {
+                ringMenu_Left_RMB.gameObject.SetActive(true);
+                ringMenu_Right_RMB.gameObject.SetActive(true);
             }
         }
 
@@ -1870,6 +1882,9 @@ public class RobotController : Pausable
         _animIDSnipeFire = Animator.StringToHash("SnipeFire");
         _animIDSnipeFire2 = Animator.StringToHash("SnipeFire2");
         _animIDSnipeFire3 = Animator.StringToHash("SnipeFire3");
+
+        _animIDSweep_Left = Animator.StringToHash("Sweep_Left");
+        _animIDSweep_Right = Animator.StringToHash("Sweep_Right");
     }
 
     Collider[] stompHit = new Collider[16];
@@ -2860,10 +2875,17 @@ public class RobotController : Pausable
                         {
 
                         }
-                        else if (!AcceptJumpSlash())
+                        else if (AcceptJumpSlash())
                         {
-                            AcceptSlash();
+                            
                         }
+                        else if(AcceptSweep())
+                        {
+
+                        }
+                        else
+                            AcceptSlash();
+
                     }
 
                     AcceptSubFire();
@@ -2935,7 +2957,7 @@ public class RobotController : Pausable
                 break;
             case UpperBodyState.JumpSlash:
             case UpperBodyState.JumpSlash_Ground:
-
+            case UpperBodyState.SWEEP:
                 miragecloud_invalid = true;
 
                 _chestaimwait = 0.0f;
@@ -4618,6 +4640,20 @@ public class RobotController : Pausable
 
                     }
                     break;
+                case LowerBodyState.SWEEP:
+
+                    _speed = targetSpeed = _verticalVelocity = 0.0f;
+
+                    if (event_slash)
+                    {
+                        if(Grounded)
+                            TransitLowerBodyState(LowerBodyState.STAND);
+                        else
+                            TransitLowerBodyState(LowerBodyState.AIR);
+                    }
+
+                    GroundedCheck();
+                    break;
             }
         }
 
@@ -4999,7 +5035,7 @@ public class RobotController : Pausable
 
         if (
             (lowerBodyState == LowerBodyState.SLASH && newState != LowerBodyState.SLASH)
-           
+            || (lowerBodyState == LowerBodyState.SWEEP && newState != LowerBodyState.SWEEP)
             )
         {
             Sword.emitting = false;
@@ -5033,7 +5069,8 @@ public class RobotController : Pausable
                 else
                     _animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
 
-                if (lowerBodyState == LowerBodyState.SLASH || lowerBodyState == LowerBodyState.SLASH_DASH || lowerBodyState == LowerBodyState.KNOCKBACK)
+                if (lowerBodyState == LowerBodyState.SLASH || lowerBodyState == LowerBodyState.SLASH_DASH || lowerBodyState == LowerBodyState.KNOCKBACK
+                    || lowerBodyState == LowerBodyState.SWEEP)
                 {
                     upperBodyState = UpperBodyState.STAND;
                 }
@@ -5111,6 +5148,7 @@ public class RobotController : Pausable
                     case LowerBodyState.KNOCKBACK:
                     case LowerBodyState.SLASH:
                     case LowerBodyState.JumpSlash_Ground:
+                    case LowerBodyState.SWEEP:
                         upperBodyState = UpperBodyState.STAND;
                         _animator.CrossFadeInFixedTime(_animIDStand, 0.5f, 0);
 
@@ -5736,6 +5774,7 @@ public class RobotController : Pausable
         combo_reserved = false;
         Sword.slashing = false;
         Sword.emitting = true;
+        Sword.sweep = false;
         event_swing = false;
 
         // DashSlashに遷移する前にslashingがtrueになることがあるので
@@ -5808,6 +5847,7 @@ public class RobotController : Pausable
                 combo_reserved = false;
                 jumpslash_end_forward = false;
                 Sword.emitting = true;
+                Sword.sweep = false;
                 StartSeeking();
 
                 intend_animator_speed = 0.75f;
@@ -5817,6 +5857,60 @@ public class RobotController : Pausable
 
         return false;
     }
+
+    bool AcceptSweep()
+    {
+        if (Sword != null && robotParameter.itemFlag.HasFlag(ItemFlag.HorizonSweep))
+        {
+            ringMenu_Left_RMB_available = true;
+            ringMenu_Right_RMB_available = true;
+
+            if (slash_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right))
+            {
+                if (Target_Robot != null)
+                {
+                    Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
+
+                    _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
+
+                    float rotation = _targetRotation;
+  
+                    Quaternion look = Quaternion.LookRotation(target_dir, Vector3.up);
+
+                    float rotation_pitch = Mathf.Clamp(Mathf.DeltaAngle(0.0f, look.eulerAngles.x), -seedSlash_PitchLimit, seedSlash_PitchLimit);
+
+                    // rotate to face input direction relative to camera position
+                    transform.rotation = Quaternion.Euler(rotation_pitch, rotation, 0.0f);
+                }
+
+                event_slash = false;
+                lowerBodyState = LowerBodyState.SWEEP;
+                upperBodyState = UpperBodyState.SWEEP;
+
+                if (ringMenuDir == RingMenuDir.Left)
+                {
+                    _animator.CrossFadeInFixedTime(_animIDSweep_Left, 0.0f, 0);
+                }
+                else
+                {
+                    _animator.CrossFadeInFixedTime(_animIDSweep_Right, 0.0f, 0);
+                }
+
+                Sword.emitting = true;
+                Sword.sweep = true;
+                Sword.damage = 100;
+                Sword.knockBackType = KnockBackType.Normal;
+                
+                StartSeeking();
+
+                intend_animator_speed = 1.0f;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     bool AcceptRollingShoot()
     {
         bool start = false;
@@ -6076,6 +6170,7 @@ public class RobotController : Pausable
                 stepremain = Sword.motionProperty[subState_Slash].DashDuration;
                 combo_reserved = false;
                 Sword.emitting = true;
+                Sword.sweep = false;
                 StartSeeking();
                 if (Target_Robot != null)
                 {
@@ -6125,6 +6220,7 @@ public class RobotController : Pausable
                         stepremain = Sword.motionProperty[subState_Slash].DashDuration;
                         combo_reserved = false;
                         Sword.emitting = true;
+                        Sword.sweep = false;
                         StartSeeking();
                     }
                     else
@@ -6145,6 +6241,7 @@ public class RobotController : Pausable
                         stepremain = Sword.motionProperty[subState_Slash].DashDuration;
                         combo_reserved = false;
                         Sword.emitting = true;
+                        Sword.sweep = false;
                         StartSeeking();
                     }
                     intend_animator_speed = 1.0f;
@@ -6168,6 +6265,7 @@ public class RobotController : Pausable
                     stepremain = Sword.motionProperty[subState_Slash].DashDuration;
                     combo_reserved = false;
                     Sword.emitting = true;
+                    Sword.sweep = false;
                     StartSeeking();
                     if (Target_Robot != null)
                     {

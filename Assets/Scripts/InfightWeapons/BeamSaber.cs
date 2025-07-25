@@ -131,13 +131,12 @@ public class BeamSaber : InfightWeapon
     // Start is called before the first frame update
     void Start()
     {
-        Vector3 start = transform.TransformPoint(new Vector3(0.0f,0.02f,0.0f));
-        Vector3 end = transform.TransformPoint(lineRenderer.GetPosition(1));
-
-  
+        org_end = lineRenderer.GetPosition(1);
     }
 
-    const int num_points = 3;
+    Vector3 org_end;
+
+    const int num_points = 7;
 
     Vector3[] prev_points = new Vector3[num_points];
     Vector3[] points = new Vector3[num_points];
@@ -145,6 +144,13 @@ public class BeamSaber : InfightWeapon
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
+        if(sweep)
+        {
+            lineRenderer.SetPosition(1, org_end * 2);
+        }
+        else
+            lineRenderer.SetPosition(1, org_end);
+
         Vector3 start = transform.TransformPoint(new Vector3(0.0f, 0.02f, 0.0f));
         Vector3 end = transform.TransformPoint(lineRenderer.GetPosition(1));
 
@@ -157,7 +163,8 @@ public class BeamSaber : InfightWeapon
 
         if (slashing)
         {
-            EvalHit(start, end);
+            if(!sweep)
+                EvalHit(start, end);
 
 
             for (int idx_point=0; idx_point < num_points; idx_point++)
@@ -202,7 +209,23 @@ public class BeamSaber : InfightWeapon
 
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                robotController.TakeDamage(rayCastHit[idx_hit].point,dir, damage, knockBackType, owner);
+                Vector3 knockbackDir;
+
+                if(!sweep)
+                {
+                    knockbackDir = dir;
+                }
+                else
+                {
+                    /*if (sweepDirection == RobotController.StepMotion.LEFT)
+                        knockbackDir = Quaternion.AngleAxis(-90.0f, Vector3.up) * dir;
+                    else
+                        knockbackDir = Quaternion.AngleAxis(90.0f, Vector3.up) * dir;*/
+
+                    knockbackDir = p1 - p2;
+                }
+
+                robotController.TakeDamage(rayCastHit[idx_hit].point, knockbackDir, damage, knockBackType, owner);
                 if (knockBackType == RobotController.KnockBackType.Finish || knockBackType == RobotController.KnockBackType.KnockUp)
                 {
                     robotController.DoHitStop(10);
