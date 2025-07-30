@@ -59,7 +59,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemWeapon{tier=2,name = "クラスターランチャー",description="敵前で散弾をばらまく弾頭を発射する。",price=4500,prefabname="Cluster Launcher" ,type=ShopItemWeapon.Type.Main},
         new ShopItemWeapon{tier=3,name = "メガビームランチャー",description="大型のビーム砲。",price=9000,prefabname="BeamLauncher",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=3,name = "ビームマグナム",description="火力を上げたビームライフル。発射後の制動が長い。",price=8500,prefabname="BeamMagnum",type=ShopItemWeapon.Type.Main },
-        new ShopItemWeapon{tier=3,name = "マシンキャノン",description="手持ちの機関砲。追加入力で連射可能。",price=8000,prefabname="MachineCannon",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{tier=3,name = "ガトリングキャノン",description="手持ちの機関砲。追加入力で連射可能。",price=8000,prefabname="GatlingCannon",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=3,name = "ビームサブマシンガン",description="小型化を実現したビーム兵器。追加入力で連射可能。",price=8500,prefabname="BeamMachineGun",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=3,name = "アドバンスドドローン",description="サブ武器。運用能力を強化したドローン兵器。ボタン押し続けで追加射出。",price=9000,prefabname="AdvancedDronePlatform",type=ShopItemWeapon.Type.Back },
     };

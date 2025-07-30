@@ -50,6 +50,12 @@ public class Weapon : Pausable
     {
         get { return false; }
     }
+
+    virtual public bool gatling
+    {
+        get { return false; }
+    }
+
     virtual public bool heavy
     {
         get { return false; }

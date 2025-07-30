@@ -34,9 +34,24 @@ public class SMG : Weapon
 
     [SerializeField] int _fire_followthrough = 30;
     [SerializeField] GameObject barrel_origin;
+
+    [SerializeField] bool rotary = false;
+    [SerializeField] GameObject rotary_barrel;
+    Vector3 rotary_center;
+    float rotary_current_angle = 0.0f;
+    Vector3 rotary_original_local_position;
+    Quaternion rotary_original_local_rotation;
+    Vector3 rotary_original_local_scale;
+
     override public int fire_followthrough
     {
         get { return _fire_followthrough; }
+    }
+
+    [SerializeField] bool _gatling = false;
+    override public bool gatling
+    {
+        get { return _gatling; }
     }
 
     //public override bool dualwielded
@@ -89,6 +104,14 @@ public class SMG : Weapon
     protected override void OnAwake()
     {
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
+
+        if (rotary)
+        {
+            rotary_center = rotary_barrel.GetComponent<MeshFilter>().mesh.bounds.center;
+            rotary_original_local_position = rotary_barrel.transform.localPosition;
+            rotary_original_local_rotation = rotary_barrel.transform.localRotation;
+            rotary_original_local_scale = rotary_barrel.transform.localScale;
+        }
     }
 
     // Start is called before the first frame update
@@ -112,6 +135,17 @@ public class SMG : Weapon
         {
          
             canHold = true;
+        }
+
+        if(rotary && trigger)
+        {
+            rotary_barrel.transform.localPosition = rotary_original_local_position;
+            rotary_barrel.transform.localRotation = rotary_original_local_rotation;
+            rotary_barrel.transform.localScale = rotary_original_local_scale;
+
+            rotary_current_angle += 12.0f;
+
+            rotary_barrel.transform.RotateAround(rotary_barrel.transform.TransformPoint(rotary_center), rotary_barrel.transform.TransformDirection(Vector3.forward), rotary_current_angle);
         }
 
         if (energy >= Reload_Time && trigger && Duration_Time <= 30- fire_interval)

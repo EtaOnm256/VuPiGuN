@@ -722,6 +722,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-3484816098934501734
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SnipeFire4
+  m_Speed: 3
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 1
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -7292629847126020794, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: FiringSpeed
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-3299275258479802909
 AnimatorState:
   serializedVersion: 6
@@ -1083,6 +1109,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-516299610976330490
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: RollingFire4_Left
+  m_Speed: 1.5
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 1
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 4097481883476144871, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: FiringSpeed
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &-209537748126318683
 AnimatorState:
   serializedVersion: 6
@@ -1285,13 +1337,13 @@ AnimatorStateMachine:
     m_Position: {x: 910, y: 60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1450159664554318339}
-    m_Position: {x: 1750, y: 0, z: 0}
+    m_Position: {x: 1720, y: 0, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7419002647044648854}
-    m_Position: {x: 1750, y: 80, z: 0}
+    m_Position: {x: 1720, y: 80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6538669355609032786}
-    m_Position: {x: 1750, y: 150, z: 0}
+    m_Position: {x: 1720, y: 150, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3818684777333855938}
     m_Position: {x: 1280, y: 840, z: 0}
@@ -1343,6 +1395,15 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 8121667992970952354}
     m_Position: {x: 1760, y: 380, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -516299610976330490}
+    m_Position: {x: 1240, y: 220, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 3265406777969285804}
+    m_Position: {x: 1460, y: 220, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -3484816098934501734}
+    m_Position: {x: 1720, y: 220, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -1844,6 +1905,58 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &3094989412937129133
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Stand5
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -1626117103590831219, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
+--- !u!1102 &3265406777969285804
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: RollingFire4_Right
+  m_Speed: 1.5
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 1
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -5354254647001781009, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: FiringSpeed
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &3636581176507018851
 AnimatorState:
   serializedVersion: 6
@@ -2212,6 +2325,12 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -8018824995852611300}
     m_Position: {x: 310, y: 560, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 3094989412937129133}
+    m_Position: {x: 310, y: 700, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 5888502996805939929}
+    m_Position: {x: 310, y: 630, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -2222,6 +2341,32 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 3636581176507018851}
+--- !u!1102 &5888502996805939929
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Fire5
+  m_Speed: 1.5
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 1
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: -7219444184003978607, guid: 0338e67c635275b41a12c1eefc75989d, type: 3}
+  m_Tag: 
+  m_SpeedParameter: FiringSpeed
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1102 &6013164771745626093
 AnimatorState:
   serializedVersion: 6

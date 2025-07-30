@@ -152,6 +152,7 @@ public class RobotController : Pausable
     private int _animIDStand2;
     private int _animIDStand3;
     private int _animIDStand4;
+    private int _animIDStand5;
 
     private int _animIDRollingFire_Left;
     private int _animIDRollingFire_Right;
@@ -159,10 +160,13 @@ public class RobotController : Pausable
     private int _animIDRollingFire2_Right;
     private int _animIDRollingFire3_Left;
     private int _animIDRollingFire3_Right;
+    private int _animIDRollingFire4_Left;
+    private int _animIDRollingFire4_Right;
 
     private int _animIDSnipeFire;
     private int _animIDSnipeFire2;
     private int _animIDSnipeFire3;
+    private int _animIDSnipeFire4;
 
     private int _animIDSweep_Left;
     private int _animIDSweep_Right;
@@ -173,6 +177,8 @@ public class RobotController : Pausable
             return _animIDStand4;
         if (carrying_weapon)
             return _animIDStand3;
+        if (gatling)
+            return _animIDStand5;
         else
             return _animIDStand2;
     }
@@ -294,7 +300,7 @@ public class RobotController : Pausable
             bool rightWeapon_heavy = rightWeapon == null ? false : rightWeapon.heavy;
             bool Sword_dualwielded = Sword == null ? false : Sword.dualwielded;
 
-            return rightWeapon_heavy || robotParameter.dualwield_lightweapon || Sword_dualwielded || carrying_weapon;
+            return rightWeapon_heavy || robotParameter.dualwield_lightweapon || Sword_dualwielded || carrying_weapon || gatling;
         }
     }
 
@@ -304,6 +310,17 @@ public class RobotController : Pausable
         {
             if (rightWeapon != null)
                 return rightWeapon.carrying;
+            else
+                return false;
+        }
+    }
+
+    public bool gatling
+    {
+        get
+        {
+            if (rightWeapon != null)
+                return rightWeapon.gatling;
             else
                 return false;
         }
@@ -1865,6 +1882,7 @@ public class RobotController : Pausable
         _animIDStand2 = Animator.StringToHash("Stand2");
         _animIDStand3 = Animator.StringToHash("Stand3");
         _animIDStand4 = Animator.StringToHash("Stand4");
+        _animIDStand5 = Animator.StringToHash("Stand5");
 
         _animIDSubFire = Animator.StringToHash("SubFire");
 
@@ -1878,10 +1896,13 @@ public class RobotController : Pausable
         _animIDRollingFire2_Right = Animator.StringToHash("RollingFire2_Right");
         _animIDRollingFire3_Left = Animator.StringToHash("RollingFire3_Left");
         _animIDRollingFire3_Right = Animator.StringToHash("RollingFire3_Right");
+        _animIDRollingFire4_Left = Animator.StringToHash("RollingFire4_Left");
+        _animIDRollingFire4_Right = Animator.StringToHash("RollingFire4_Right");
 
         _animIDSnipeFire = Animator.StringToHash("SnipeFire");
         _animIDSnipeFire2 = Animator.StringToHash("SnipeFire2");
         _animIDSnipeFire3 = Animator.StringToHash("SnipeFire3");
+        _animIDSnipeFire4 = Animator.StringToHash("SnipeFire4");
 
         _animIDSweep_Left = Animator.StringToHash("Sweep_Left");
         _animIDSweep_Right = Animator.StringToHash("Sweep_Right");
@@ -3150,6 +3171,11 @@ public class RobotController : Pausable
             if (rightWeapon == null || rightWeapon.trajectory == Weapon.Trajectory.Straight || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
             {
                 result = Quaternion.LookRotation(Target_Robot.GetTargetedPosition() - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
+
+                if(gatling)
+                {
+                    result = result * Quaternion.Euler(0.0f, 20.0f, 0.0f);
+                }
             }
             else
             {
@@ -5543,7 +5569,7 @@ public class RobotController : Pausable
 
 
             if (dualwielding)
-                animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
+                animator.Play(gatling ? "Fire5" : (carrying_weapon ? "Fire3" : "Fire2"), 2, 0.0f);
             else
             {
                 if(rightWeapon.wrist_equipped)
@@ -5989,7 +6015,12 @@ public class RobotController : Pausable
                             if (carrying_weapon)
                             {
                                 animator.Play(_animIDRollingFire2_Left, 0, 0.0f);
-                                animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
+                                animator.Play("Fire3", 2, 0.0f);
+                            }
+                            else if (gatling)
+                            {
+                                animator.Play(_animIDRollingFire4_Left, 0, 0.0f);
+                                animator.Play("Fire5", 2, 0.0f);
                             }
                             else
                                 animator.Play(_animIDRollingFire_Left, 0, 0.0f);
@@ -6001,7 +6032,12 @@ public class RobotController : Pausable
                             if (carrying_weapon)
                             {
                                 animator.Play(_animIDRollingFire2_Right, 0, 0.0f);
-                                animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
+                                animator.Play("Fire3", 2, 0.0f);
+                            }
+                            else if (gatling)
+                            {
+                                animator.Play(_animIDRollingFire4_Right, 0, 0.0f);
+                                animator.Play("Fire5", 2, 0.0f);
                             }
                             else
                                 animator.Play(_animIDRollingFire_Right, 0, 0.0f);
@@ -6090,7 +6126,12 @@ public class RobotController : Pausable
                         if (carrying_weapon)
                         {
                             animator.Play(_animIDSnipeFire2, 0, 0.0f);
-                            animator.Play(carrying_weapon ? "Fire3" : "Fire2", 2, 0.0f);
+                            animator.Play("Fire3", 2, 0.0f);
+                        }
+                        else if (gatling)
+                        {
+                            animator.Play(_animIDSnipeFire4, 0, 0.0f);
+                            animator.Play("Fire5", 2, 0.0f);
                         }
                         else
                             animator.Play(_animIDSnipeFire, 0, 0.0f);
@@ -6358,25 +6399,25 @@ public class RobotController : Pausable
     {
         if (robotParameter.rweapon_prefab != null)
         {
-            GameObject playerrweapon_l = GameObject.Instantiate(robotParameter.rweapon_prefab);
+            GameObject playerrweapon_r = GameObject.Instantiate(robotParameter.rweapon_prefab);
 
-            rightWeapon = playerrweapon_l.GetComponent<Weapon>();
+            rightWeapon = playerrweapon_r.GetComponent<Weapon>();
 
-            playerrweapon_l.transform.parent = RHand.transform;
-            playerrweapon_l.transform.localScale = new Vector3(1, 1, 1);
+            playerrweapon_r.transform.parent = RHand.transform;
+            playerrweapon_r.transform.localScale = new Vector3(1, 1, 1);
 
             if (rightWeapon.wrist_equipped)
             {
-                playerrweapon_l.transform.localPosition = new Vector3(-0.00892f, -0.00069f, 0.00044f);
-                playerrweapon_l.transform.localEulerAngles = new Vector3(-90, 0, -90);
+                playerrweapon_r.transform.localPosition = new Vector3(-0.00892f, -0.00069f, 0.00044f);
+                playerrweapon_r.transform.localEulerAngles = new Vector3(-90, 0, -90);
             }
             else
             {
-                playerrweapon_l.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
-                playerrweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
+                playerrweapon_r.transform.localPosition = new Vector3(0.0004f, 0.0072f, 0.004f);
+                playerrweapon_r.transform.localEulerAngles = new Vector3(-90, 0, 180);
             }
 
-            rightWeapon = playerrweapon_l.GetComponent<Weapon>();
+            rightWeapon = playerrweapon_r.GetComponent<Weapon>();
         }
 
         if (robotParameter.lweapon_prefab != null)
