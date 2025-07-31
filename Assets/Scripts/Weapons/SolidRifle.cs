@@ -5,7 +5,7 @@ using UnityEngine;
 public class SolidRifle : Weapon
 {
     [SerializeField]GameObject bullet_prefab;
-    GameObject solidemit_prefab;
+    [SerializeField] GameObject solidemit_prefab;
     [SerializeField] GameObject barrel_origin;
 
     private const int Max_Ammo = 6;
@@ -28,9 +28,11 @@ public class SolidRifle : Weapon
     //    get { return true; }
     //}
 
+    [SerializeField] float _firing_multiplier = 1.15f;
+
     override public float firing_multiplier
     {
-        get { return 1.15f; }
+        get { return _firing_multiplier; }
     }
     override public float lockon_multiplier
     {
@@ -69,8 +71,6 @@ public class SolidRifle : Weapon
 
     protected override void OnAwake()
     {
-        solidemit_prefab = Resources.Load<GameObject>("Effects/SolidEmit");
-
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
     }
 

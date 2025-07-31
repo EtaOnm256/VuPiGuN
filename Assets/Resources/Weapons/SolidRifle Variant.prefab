@@ -169,8 +169,10 @@ MonoBehaviour:
   projectile_speed: 0
   _chargeshot: 0
   bullet_prefab: {fileID: 6571210301752455124, guid: 061c6a1a9f65dca49ae8a2b99227947d, type: 3}
+  solidemit_prefab: {fileID: 8961267772553168207, guid: 307e6bb8977a3cf4cb5014d37f59192b, type: 3}
   barrel_origin: {fileID: 5133274788191711885}
   firePoint: {fileID: 6222065125445818555}
+  _firing_multiplier: 1.15
 --- !u!4 &1905193246014706893 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 34ad5e228cc9ca147a2c80d8af9c33c1, type: 3}
