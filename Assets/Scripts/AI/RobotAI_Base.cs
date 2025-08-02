@@ -134,6 +134,8 @@ public class RobotAI_Base : InputBase
 
     protected void TargetBackstab()
     {
+        current_target = null;
+
         float mindist = float.MaxValue;
 
         foreach (var team in WorldManager.current_instance.teams)
