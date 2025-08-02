@@ -91,11 +91,11 @@ PrefabInstance:
     - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: robotParameter.lweapon_prefab
       value: 
-      objectReference: {fileID: 228844574215034437, guid: faaab445f01af1442af2bcb09d0faf80, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 2737446823111496146, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
-      objectReference: {fileID: 1241669158410538615, guid: 253294a87d2f5b4488d9eb7b43c420c8, type: 3}
+      objectReference: {fileID: 3217626463133207502, guid: 5e4737fa8d7a9ff40ae9310c69a38e68, type: 3}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
