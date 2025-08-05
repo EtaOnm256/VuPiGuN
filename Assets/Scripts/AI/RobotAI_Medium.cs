@@ -486,8 +486,15 @@ public class RobotAI_Medium : RobotAI_Base
 
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.SLASH)
                     {
-                        if(robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.subState_Slash].num-1)
+                        if (robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.subState_Slash].num - 1)
+                        {
                             infight_reload = 60;
+
+                            if (type == AI_Type.FRANK)
+                            {
+                                TargetNearest(current_target);
+                            }
+                        }
                     }
                     else if(infight_reload > 0)
                         infight_reload--;

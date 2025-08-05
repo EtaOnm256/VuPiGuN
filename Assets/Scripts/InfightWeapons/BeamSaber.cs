@@ -228,8 +228,8 @@ public class BeamSaber : InfightWeapon
                 robotController.TakeDamage(rayCastHit[idx_hit].point, knockbackDir, damage, knockBackType, owner);
                 if (knockBackType == RobotController.KnockBackType.Finish || knockBackType == RobotController.KnockBackType.KnockUp)
                 {
-                    robotController.DoHitStop(10);
-                    owner.DoHitStop(10);
+                    robotController.DoHitSlow(10);
+                    owner.DoHitSlow(10);
                 }
                 else
                 {

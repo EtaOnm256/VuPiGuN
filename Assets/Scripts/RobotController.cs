@@ -3296,7 +3296,7 @@ public class RobotController : Pausable
         bool ground_boost_now = false;
         bool regen_boost_now = false;
 
-        if (hitslow_timer <= 0 && hitstop_timer <= 0)
+        if (hitstop_timer <= 0)
         {
 
             switch (lowerBodyState)
@@ -4679,6 +4679,17 @@ public class RobotController : Pausable
                         else
                             TransitLowerBodyState(LowerBodyState.AIR);
                     }
+    
+                    if (Grounded)
+                    {
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                            AcceptStep(true);
+                    }
+                    else
+                    {
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
+                            AcceptDash(true);
+                    }
 
                     GroundedCheck();
                     break;
@@ -5927,7 +5938,11 @@ public class RobotController : Pausable
                 Sword.emitting = true;
                 Sword.sweep = true;
                 Sword.damage = 100;
-                Sword.knockBackType = KnockBackType.Normal;
+
+                if(robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
+                    Sword.knockBackType = KnockBackType.Aerial;
+                else
+                    Sword.knockBackType = KnockBackType.Normal;
                 
                 StartSeeking();
 

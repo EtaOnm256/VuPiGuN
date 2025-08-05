@@ -47,7 +47,7 @@ public class RobotAI_Base : InputBase
         FRANK
     }
 
-    [SerializeField] AI_Type type = AI_Type.NORMAL;
+    [SerializeField] protected AI_Type type = AI_Type.NORMAL;
 
     protected void DetermineTarget()
     {
@@ -55,7 +55,7 @@ public class RobotAI_Base : InputBase
         {
             case WorldManager.OrderToAI.NORMAL:
 
-                if (type == AI_Type.FRANK)
+                /*if (type == AI_Type.FRANK)
                 {
                     TargetBackstab();
 
@@ -64,7 +64,7 @@ public class RobotAI_Base : InputBase
                         TargetNearest(null);
                     }
                 }
-                else
+                else*/
                 {
                     if (current_target == null || !current_target)
                     {
