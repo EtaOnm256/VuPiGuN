@@ -106,7 +106,8 @@ public class DroneBeam : Projectile
 
                         hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                        robotController.TakeDamage(rayCastHit[i].point, direction, 45, RobotController.KnockBackType.Normal, owner);
+                        if (owner == null || robotController.team != owner.team)
+                            robotController.TakeDamage(rayCastHit[i].point, direction, 45, RobotController.KnockBackType.Normal, owner);
 
 
                     }

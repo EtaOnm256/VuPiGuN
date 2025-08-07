@@ -136,7 +136,8 @@ public class SMGBullet : Projectile
                         if (knockBackType == RobotController.KnockBackType.None)
                             robotController.DoHitStop(5);
 
-                        robotController.TakeDamage(rayCastHit[i].point, direction, damage, knockBackType, owner);
+                        if (owner == null || robotController.team != owner.team)
+                            robotController.TakeDamage(rayCastHit[i].point, direction, damage, knockBackType, owner);
 
                         dead = true;
                     }

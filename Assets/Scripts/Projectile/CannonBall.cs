@@ -146,7 +146,8 @@ public class CannonBall : Projectile
 
                         hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                        robotController.TakeDamage(rayCastHit[i].point, direction, damage, RobotController.KnockBackType.Normal, owner);
+                        if (owner == null || robotController.team != owner.team)
+                            robotController.TakeDamage(rayCastHit[i].point, direction, damage, RobotController.KnockBackType.Normal, owner);
 
 
                     }
