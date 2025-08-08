@@ -283,6 +283,9 @@ ModelImporter:
     animationImportWarnings: Event OnStepped has a time (0.792789) outside the clip's
       valid range (0.000000..0.791667). It will never be firedEvent OnStepped has
       a time (0.792789) outside the clip's valid range (0.000000..0.791667). It will
+      never be firedEvent OnAcceptNextSlash has a time (1.644778) outside the clip's
+      valid range (0.000000..0.833333). It will never be firedEvent OnSlashEnd has
+      a time (2.500000) outside the clip's valid range (0.000000..0.833333). It will
       never be fired
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
@@ -2814,7 +2817,7 @@ ModelImporter:
       takeName: Armature|AirSlashSeed_2
       internalID: 0
       firstFrame: 0
-      lastFrame: 80
+      lastFrame: 60
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2834,14 +2837,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.64240503
+      - time: 0.4342832
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.82626575
+      - time: 0.7425094
         functionName: OnAcceptNextSlash
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -2864,7 +2867,7 @@ ModelImporter:
       takeName: Armature|SlideSlashSeed_0
       internalID: 0
       firstFrame: 0
-      lastFrame: 60
+      lastFrame: 20
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -151,7 +151,7 @@ public class Beam : Projectile
                         hitHistoryRC[hitHistoryRCCount++] = robotController;
 
                         if(owner == null || robotController.team != owner.team)
-                        robotController.TakeDamage(rayCastHit[i].point, direction, damage, KnockBackType, owner);
+                            robotController.TakeDamage(rayCastHit[i].point, direction, damage, KnockBackType, owner);
 
                         if(!pierce)
                             dead = true;

@@ -2239,7 +2239,7 @@ public class RobotController : Pausable
             else
             {
                 if(subState_Slash == SubState_Slash.AirSlashSeed)
-                    slash_camera_offset = Quaternion.AngleAxis(135.0f, Vector3.up) *  off_hori.normalized * 15.0f+ Vector3.up*7.5f;
+                    slash_camera_offset = Quaternion.AngleAxis(90.0f, Vector3.up) *  off_hori.normalized * 15.0f+ Vector3.up*5.0f;
                 else
                     slash_camera_offset = Quaternion.AngleAxis(-90.0f, Vector3.up) * off_hori.normalized * 15.0f + Vector3.up * 5.0f;
             }
@@ -4240,15 +4240,33 @@ public class RobotController : Pausable
         
                         }
 
-                        if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
                         {
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
-                                AcceptDash(true);
+                            GroundedCheck();
+
+                            if (!Grounded)
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
+                                    AcceptDash(true);
+                            }
+                            else
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                    AcceptStep(true);
+                            }
                         }
                         else
                         {
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
-                                AcceptStep(true);
+                            if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
+                                    AcceptDash(true);
+                            }
+                            else
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                    AcceptStep(true);
+                            }
                         }
                     }
                     break;
@@ -4537,15 +4555,31 @@ public class RobotController : Pausable
                         JumpAndGravity();
                         GroundedCheck();
 
-                        if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
                         {
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
-                                AcceptDash(true);
+                            if (!Grounded)
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
+                                    AcceptDash(true);
+                            }
+                            else
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                    AcceptStep(true);
+                            }
                         }
                         else
                         {
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
-                                AcceptStep(true);
+                            if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
+                                    AcceptDash(true);
+                            }
+                            else
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
+                                    AcceptStep(true);
+                            }
                         }
 
                         break;
