@@ -165,4 +165,4 @@ MonoBehaviour:
   solidemit_prefab: {fileID: 8961267772553168207, guid: 6b644f162d26702419def0547af5879e, type: 3}
   barrel_origin: {fileID: 8367825046621263946}
   firePoint: {fileID: 5554947236370868887}
-  _firing_multiplier: 1
+  _firing_multiplier: 0.85
