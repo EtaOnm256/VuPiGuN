@@ -96,6 +96,10 @@ PrefabInstance:
       propertyPath: robotParameter.rweapon_prefab
       value: 
       objectReference: {fileID: 3217626463133207502, guid: 5e4737fa8d7a9ff40ae9310c69a38e68, type: 3}
+    - target: {fileID: 5352875522354337744, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
+      propertyPath: lock_range
+      value: 150
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
