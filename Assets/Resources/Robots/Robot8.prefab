@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4154880297201170956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3410097665822728265}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3410097665822728265
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4154880297201170956}
+  m_LocalRotation: {x: -0.5545177, y: 1.9721523e-31, z: -0, w: 0.832172}
+  m_LocalPosition: {x: 0, y: 0.0079, z: -0.0175}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2300444248192990266}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: -67.355, y: 0, z: 0}
 --- !u!1001 &2655355943149934811
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -270,6 +301,14 @@ PrefabInstance:
       propertyPath: thrusters.Array.data[1]
       value: 
       objectReference: {fileID: 4129027300185337439}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: chestWeapon_anchor.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      propertyPath: chestWeapon_anchor.Array.data[0]
+      value: 
+      objectReference: {fileID: 4154880297201170956}
     m_RemovedComponents: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
@@ -278,6 +317,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       insertIndex: 8
       addedObject: {fileID: 4645718952075370662}
+    - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3410097665822728265}
   m_SourcePrefab: {fileID: 100100000, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
 --- !u!1 &803051568401146564 stripped
 GameObject:

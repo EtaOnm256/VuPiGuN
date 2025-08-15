@@ -54,8 +54,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 803051568401146564, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
       propertyPath: m_Name
-      value: Robot8 Variant
+      value: Robot8 Std
       objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.lweapon_prefab
+      value: 
+      objectReference: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.rweapon_prefab
+      value: 
+      objectReference: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.subweapon_prefab
+      value: 
+      objectReference: {fileID: 8659736691718161653, guid: 52fff7c7d08b2454fbd85d615b986e7f, type: 3}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
