@@ -234,6 +234,27 @@ ModelImporter:
   - first:
       74: 68921197410548955
     second: Collider_Weist|Fire
+  - first:
+      74: -7219444184003978607
+    second: Armature|Fire5
+  - first:
+      74: 4097481883476144871
+    second: Armature|RollingFire4_Left
+  - first:
+      74: -5354254647001781009
+    second: Armature|RollingFire4_Right
+  - first:
+      74: -7292629847126020794
+    second: Armature|SnipeFire4
+  - first:
+      74: -1626117103590831219
+    second: Armature|Stand5
+  - first:
+      74: -4233313044317032677
+    second: Armature|Sweep_Left
+  - first:
+      74: -8730400832983253376
+    second: Armature|Sweep_Right
   externalObjects: {}
   materials:
     materialImportMode: 2
