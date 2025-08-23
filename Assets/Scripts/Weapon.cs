@@ -46,6 +46,12 @@ public class Weapon : Pausable
         get { return _canHold; }
         protected set { _canHold = value; }
     }
+
+    public virtual bool forceHold
+    {
+        get { return false; }
+    }
+
     virtual public bool carrying
     {
         get { return false; }

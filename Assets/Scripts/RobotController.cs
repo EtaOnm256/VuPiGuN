@@ -2516,7 +2516,7 @@ public class RobotController : Pausable
                     {
                         fire_followthrough--;
 
-                        if (fire_dispatch && ringMenuDir == RingMenuDir.Center)
+                        if ( (fire_dispatch && ringMenuDir == RingMenuDir.Center) || rightWeapon.forceHold)
                             fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
 
                         if (rightWeapon.canHold && fire_dispatch_triggerhold > 0)
