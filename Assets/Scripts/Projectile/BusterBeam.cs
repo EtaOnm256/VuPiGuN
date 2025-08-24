@@ -18,6 +18,9 @@ public class BusterBeam : Projectile
 
     [SerializeField]int damage = 100;
 
+    int base_damage;
+    float base_speed;
+
     [SerializeField] bool pierce = true;
 
     bool _emitting = false;
@@ -42,8 +45,13 @@ public class BusterBeam : Projectile
 
                     if (chargeshot)
                     {
-                        speed *= 1.3f;
-                        damage = (int)(damage * 1.5f);
+                        speed = base_speed * 1.3f;
+                        damage = (int)(base_damage * 1.5f);
+                    }
+                    else
+                    {
+                        speed = base_speed;
+                        damage = base_damage;
                     }
 
                     //if(itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))
@@ -63,6 +71,7 @@ public class BusterBeam : Projectile
             else
             {
                 lineRenderer.enabled = false;
+                dead = true;
             }
 
             _emitting = value;
@@ -92,6 +101,12 @@ public class BusterBeam : Projectile
     [SerializeField] float hiteffect_scale = 1.0f;
 
     [SerializeField] RobotController.KnockBackType KnockBackType = RobotController.KnockBackType.Normal;
+
+    private void Awake()
+    {
+        base_damage = damage;
+        base_speed = speed;
+    }
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -140,7 +155,7 @@ public class BusterBeam : Projectile
 
                 if (rayCastHit[i].distance == 0.0f)
                 {
-                    rayCastHit[i].point = goal;
+                    rayCastHit[i].point = origin;
                 }
 
                 hitHistory[hitHistoryCount++] = rayCastHit[i].collider.gameObject;

@@ -54,6 +54,11 @@ public class BusterRifle : Weapon
 
     override public float aiming_angle_speed
     {
+        get { return 0.0f; }
+    }
+
+    override public float aiming_begin_aiming_factor
+    {
         get { return 1.0f; }
     }
 
@@ -116,13 +121,15 @@ public class BusterRifle : Weapon
         beam.team = owner.team;
         beam.owner = owner;
         beam.itemFlag = owner.robotParameter.itemFlag;
-        beam.chargeshot = chargeshot;
+      
         beam.barrel_origin = barrel_origin.transform.position;
 
         beam.emitting = false;
 
         magazine = MaxMagazine;
     }
+
+    bool prev_fire = false;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -144,17 +151,24 @@ public class BusterRifle : Weapon
             beam.direction = gameObject.transform.forward;
             beam.transform.position = firePoint.transform.position;
             beam.barrel_origin = barrel_origin.transform.position;
+            beam.chargeshot = chargeshot;
             beam.emitting = true;
             beam.target = Target_Robot;
             energy -= Reload_Time;
 
-            if (beamemit_prefab != null)
+
+            if (beamemit_prefab != null && !prev_fire)
                 GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             magazine--;
+
+            prev_fire = true;
         }
         else
+        {
             beam.emitting = false;
+            prev_fire = false;
+        }
     }
 
     public override void ResetCycle()
