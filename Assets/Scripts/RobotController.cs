@@ -2407,7 +2407,7 @@ public class RobotController : Pausable
         //float aiming_begin_aiming_factor_current = 0.0f;
         //float aiming_angle_speed_current = 0.0f;
         bool current_aiming = false;
-        bool canhold_current = false;
+        bool tracking_current = false;
 
         bool miragecloud_invalid = false;
         bool massillusion_invalid = false;
@@ -2585,7 +2585,7 @@ public class RobotController : Pausable
                     aiming_begin_aiming_factor_current = rightWeapon.aiming_begin_aiming_factor;
                     aiming_angle_speed_current = rightWeapon.aiming_angle_speed;
                     current_aiming = true;
-                    canhold_current = rightWeapon.canHold;
+                    tracking_current = rightWeapon.tracking;
                 }
                 break;
             case UpperBodyState.SUBFIRE:
@@ -2697,7 +2697,7 @@ public class RobotController : Pausable
                     aiming_begin_aiming_factor_current = shoulderWeapon.aiming_begin_aiming_factor;
                     aiming_angle_speed_current = shoulderWeapon.aiming_angle_speed;
                     current_aiming = true;
-                    canhold_current = shoulderWeapon.canHold;
+                    tracking_current = shoulderWeapon.tracking;
                 }
                 break;
             case UpperBodyState.HEAVYFIRE:
@@ -2851,7 +2851,7 @@ public class RobotController : Pausable
                     aiming_begin_aiming_factor_current = rightWeapon.aiming_begin_aiming_factor;
                     aiming_angle_speed_current = rightWeapon.aiming_angle_speed;
                     current_aiming = true;
-                    canhold_current = rightWeapon.canHold;
+                    tracking_current = rightWeapon.tracking;
                 }
                 break;
             case UpperBodyState.STAND:
@@ -3015,7 +3015,8 @@ public class RobotController : Pausable
             if(is_player)
                 uIController_Overlay.aiming = current_aiming;
 
-            if (!fire_done || canhold_current)
+           
+            if (!fire_done || tracking_current)
             {
                 if (aiming_factor < aiming_begin_aiming_factor_current || robotParameter.itemFlag.HasFlag(ItemFlag.TrackingSystem))
                 {
@@ -3168,7 +3169,7 @@ public class RobotController : Pausable
         if (aiming)
         {
 
-            if (rightWeapon == null || rightWeapon.trajectory == Weapon.Trajectory.Straight || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
+            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
             {
                 result = Quaternion.LookRotation(Target_Robot.GetTargetedPosition() - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
 
@@ -3223,7 +3224,7 @@ public class RobotController : Pausable
         if (aiming)
         {
 
-            if (rightWeapon == null || rightWeapon.trajectory == Weapon.Trajectory.Straight || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
+            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
             {
                 result = Quaternion.LookRotation(virtual_targeting_position_forBody - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
@@ -5619,6 +5620,8 @@ public class RobotController : Pausable
             {
                 if(rightWeapon.wrist_equipped)
                     animator.Play("Fire4", 1, 0.0f);
+                else if(rightWeapon.trajectory == Weapon.Trajectory.Laser)
+                    animator.Play("Fire7", 1, 0.0f);
                 else
                     animator.Play("Fire", 1, 0.0f);
             }

@@ -81,6 +81,7 @@ public class BusterBeam : Projectile
     
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
+    RaycastHit[] rayCastHit_NoOrder = new RaycastHit[8];
 
     public GameObject hitEffect_prefab;
 
@@ -129,7 +130,7 @@ public class BusterBeam : Projectile
             Vector3 origin, goal;
 
             //if (first && barrel_origin.x != Mathf.NegativeInfinity)
-                origin = barrel_origin;
+            origin = barrel_origin;
             //else
             //    origin = lineRenderer.GetPosition(lineRenderer.positionCount-1);
 
@@ -138,12 +139,17 @@ public class BusterBeam : Projectile
             if (hitsphere_width <= 0.0f)
             {
                 Ray ray = new Ray(origin, goal - origin);
-                numhit = Physics.RaycastNonAlloc(ray, rayCastHit, (goal - origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
+                numhit = Physics.RaycastNonAlloc(ray, rayCastHit_NoOrder, (goal - origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
             }
             else
             {
-                numhit = Physics.SphereCastNonAlloc(origin, hitsphere_width, (goal - origin).normalized, rayCastHit, (goal - origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
+                numhit = Physics.SphereCastNonAlloc(origin, hitsphere_width, (goal - origin).normalized, rayCastHit_NoOrder, (goal - origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
             }
+
+            bool coli = false;
+            Vector3 coli_pos = Vector3.zero;
+
+            rayCastHit = rayCastHit_NoOrder.Take(numhit).OrderBy(x => x.distance).ToArray();
 
             for (int i = 0; i < numhit; i++)
             {
@@ -166,6 +172,8 @@ public class BusterBeam : Projectile
 
                 if (robotController != owner || owner == null)
                 {
+                  
+
                     if (robotController != null)
                     {
                         if (!robotController.has_hitbox)
@@ -173,7 +181,7 @@ public class BusterBeam : Projectile
 
                         if (hitHistoryRC.Contains(robotController))
                             continue;
-                      
+
                         if (hitHistoryRCCount >= hitHistoryRC.Length)
                             break;
 
@@ -190,19 +198,35 @@ public class BusterBeam : Projectile
                     else
                     {
                         //dead = true;
+
+
+
+                        coli_pos = origin + (goal - origin).normalized * rayCastHit[i].distance;
+                        coli = true;
+
+                        
                     }
 
                     GameObject hitEffect_obj = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
                     hitEffect_obj.transform.localScale = new Vector3(hiteffect_scale, hiteffect_scale, hiteffect_scale);
+
+                    if (coli)
+                        break;
                 }
             }
 
-            float length = Vector3.Dot(lineRenderer.GetPosition(lineRenderer.positionCount - 1) - transform.position,direction .normalized);
+            if (coli)
+            {
+                position = coli_pos;
+            }
+            else
+            { 
+                float length = Vector3.Dot(lineRenderer.GetPosition(lineRenderer.positionCount - 1) - transform.position, direction.normalized);
 
-            length += speed;
+                length += speed;
 
-            position = transform.position + direction * length;
-
+                position = transform.position + direction * length;
+            }
             lineRenderer.SetPosition(lineRenderer.positionCount - 1, position);
             
             lineRenderer.SetPosition(0, transform.position);

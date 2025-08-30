@@ -8,7 +8,7 @@ public class BusterRifle : Weapon
     [SerializeField] GameObject beamemit_prefab = null;
     [SerializeField] GameObject barrel_origin;
 
-    private const int Max_Ammo = 180;
+    private const int Max_Ammo = 3;
 
     BusterBeam beam = null;
 
@@ -19,18 +19,21 @@ public class BusterRifle : Weapon
             return Max_Ammo * Reload_Time;
         }
     }
-    private const int Reload_Time = 2;
+    private const int Reload_Time = 120;
     [SerializeField] int MaxMagazine = 60;
 
     int magazine;
 
-
+    int charge = 0;
+    [SerializeField] int Charge_Max=15;
     int _energy = 0;
+
+    [SerializeField] int TrackingLimit = 5;
 
     public GameObject firePoint;
 
     [SerializeField] float _firing_multiplier = 1.3f;
-
+    [SerializeField] Effekseer.EffekseerEmitter effekseerEmitter;
     override public float firing_multiplier
     {
         get { return _firing_multiplier; }
@@ -49,17 +52,11 @@ public class BusterRifle : Weapon
 
     public override bool forceHold
     {
-        get { return true; }
+        get { return charge > 0; }
     }
-
-    override public float aiming_angle_speed
+    public override bool tracking
     {
-        get { return 0.0f; }
-    }
-
-    override public float aiming_begin_aiming_factor
-    {
-        get { return 1.0f; }
+        get { return charge <= TrackingLimit; }
     }
 
     public override int energy
@@ -131,12 +128,14 @@ public class BusterRifle : Weapon
 
     bool prev_fire = false;
 
+    bool prev_effect_play = false;
+
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if ((_energy / Reload_Time) <= 0 || magazine <= 0)
+        if ( ((_energy / Reload_Time) <= 0 && !prev_fire) || magazine <= 0)
         {
             canHold = false;
         }
@@ -146,29 +145,59 @@ public class BusterRifle : Weapon
             canHold = true;
         }
 
-        if (energy >= Reload_Time && trigger)
+        bool effect_play = false;
+
+        if (trigger)
         {
-            beam.direction = gameObject.transform.forward;
-            beam.transform.position = firePoint.transform.position;
-            beam.barrel_origin = barrel_origin.transform.position;
-            beam.chargeshot = chargeshot;
-            beam.emitting = true;
-            beam.target = Target_Robot;
-            energy -= Reload_Time;
+            if (charge < Charge_Max)
+            {
+                charge++;
+                prev_fire = false;
+                effect_play = true;
+            }
+            else
+            {
+                if (!prev_fire)
+                {
+                    if (energy >= Reload_Time)
+                    {
+                        energy -= Reload_Time;
+                        if (beamemit_prefab != null)
+                            GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
+                        prev_fire = true;
+                    }
+                }
 
-            if (beamemit_prefab != null && !prev_fire)
-                GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
+                if (prev_fire)
+                {
 
-            magazine--;
+                    beam.direction = gameObject.transform.forward;
+                    beam.transform.position = firePoint.transform.position;
+                    beam.barrel_origin = barrel_origin.transform.position;
+                    beam.chargeshot = chargeshot;
+                    beam.emitting = true;
+                    beam.target = Target_Robot;
 
-            prev_fire = true;
+                    magazine--;
+                }
+                
+            }
         }
         else
         {
             beam.emitting = false;
             prev_fire = false;
+            charge = 0;
         }
+        effekseerEmitter.speed = 4.0f;
+        if (effect_play && !prev_effect_play)
+            effekseerEmitter.Play();
+
+        //if (!effect_play && prev_effect_play)
+        //    effekseerEmitter.Stop();
+
+        prev_effect_play = effect_play;
     }
 
     public override void ResetCycle()

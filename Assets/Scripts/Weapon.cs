@@ -28,7 +28,8 @@ public class Weapon : Pausable
     public enum Trajectory
     {
         Straight,
-        Curved
+        Curved,
+        Laser
     }
 
     public Trajectory trajectory = Trajectory.Straight;
@@ -46,6 +47,11 @@ public class Weapon : Pausable
         get { return _canHold; }
         protected set { _canHold = value; }
     }
+    public virtual bool tracking
+    {
+        get { return canHold; }
+    }
+
 
     public virtual bool forceHold
     {

@@ -74,7 +74,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -159,7 +159,7 @@ MonoBehaviour:
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 15
-  damage: 3
+  damage: 4
   pierce: 1
   hitEffect_prefab: {fileID: 3835462889935592433, guid: c2edb2d5bdf96d64f8433c5232f98663, type: 3}
   chargeshot: 0
