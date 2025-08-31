@@ -360,7 +360,7 @@ public class RobotAI_Leopard : RobotAI_Base
                                     {
                                         if (robotController.shoulderWeapon != null
                                           && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy)
-                                          && robotController.shoulderWeapon.optimal_range_max > mindist)
+                                          && robotController.shoulderWeapon.limit_range_max > mindist)
                                         {
                                             subfire = true;
                                         }

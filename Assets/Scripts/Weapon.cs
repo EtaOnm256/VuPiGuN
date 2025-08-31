@@ -175,6 +175,11 @@ public class Weapon : Pausable
     }
     virtual public float optimal_range_max
     {
+        get { return limit_range_max; }
+    }
+
+    virtual public float limit_range_max
+    {
         get { return float.MaxValue; }
     }
 

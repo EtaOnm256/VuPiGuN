@@ -59,6 +59,11 @@ public class BusterRifle : Weapon
         get { return charge <= TrackingLimit; }
     }
 
+    override public float optimal_range_max
+    {
+        get { return 20.0f; }
+    }
+
     public override int energy
     {
         set

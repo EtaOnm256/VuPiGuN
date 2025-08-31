@@ -59,7 +59,7 @@ PrefabInstance:
     - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
       propertyPath: robotParameter.lweapon_prefab
       value: 
-      objectReference: {fileID: 6571210301752455124, guid: c16a81ce68bef68488db4abcd27a0fae, type: 3}
+      objectReference: {fileID: 6897827661738746273, guid: 027b208a3679c304f851507bb1598dda, type: 3}
     - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 

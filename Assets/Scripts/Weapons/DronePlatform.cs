@@ -175,6 +175,17 @@ public class DronePlatform : Weapon
             }
         }
 
+        canHold = false;
+
+        for(int i=0;i< drones.Count;i++)
+        {
+            if (drones[i].state == Drone.State.Ready)
+            {
+                if ((_energy / Reload_Time) > 0)
+                    canHold = true;
+            }
+        }
+
         if(emit_thistime)
         {
             GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, transform.position, transform.rotation);

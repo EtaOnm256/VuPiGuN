@@ -44,10 +44,22 @@ public class RobotAI_Medium : RobotAI_Base
 
     public State state = State.Ground;
 
-    public float movedirection_range = 90.0f;
+    //public float movedirection_range = 90.0f;
+
     //public float movedirection_range = 180.0f;
 
     public float lock_range = 75.0f;
+
+    float DetermineMoveDirection(float dist)
+    {
+        if (robotController.rightWeapon == null || dist > robotController.rightWeapon.optimal_range_max)
+            return 45.0f;
+
+        if (dist < robotController.rightWeapon.optimal_range_min)
+            return 135.0f;
+
+        return 90.0f;
+    }
 
     // Update is called once per frame
     protected override void OnFixedUpdate()
@@ -258,6 +270,13 @@ public class RobotAI_Medium : RobotAI_Base
                                 {
                                     if (ground_step_remain > 0)
                                     {
+                                        if(robotController.team.orderToAI != WorldManager.OrderToAI.EVADE && mindist > infight_dist &&
+                                            robotController.shoulderWeapon != null && robotController.shoulderWeapon.allrange && robotController.shoulderWeapon.canHold
+                                            )
+                                        {
+                                            subfire = true;
+                                        }
+
                                         if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
                                         {
                                             move.y = -1.0f;
@@ -265,7 +284,7 @@ public class RobotAI_Medium : RobotAI_Base
                                         }
                                         else
                                         {
-                                            if (mindist > lock_range / 2)
+                                            if (mindist > lock_range / 2 && (robotController.rightWeapon == null || mindist < robotController.rightWeapon.limit_range_max))
                                             {
                                                 move.y = 1.0f;
                                                 move.x = 0.0f;
@@ -320,6 +339,8 @@ public class RobotAI_Medium : RobotAI_Base
                                             }
                                             else
                                             {
+                                                float movedirection_range = DetermineMoveDirection(mindist);
+
                                                 if (moveDirChangeTimer <= 0)
                                                 {
                                                     move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
@@ -426,6 +447,8 @@ public class RobotAI_Medium : RobotAI_Base
                                     {
                                         if (moveDirChangeTimer <= 0)
                                         {
+                                            float movedirection_range = DetermineMoveDirection(mindist);
+
                                             move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
                                             moveDirChangeTimer = 60;
                                         }
@@ -544,7 +567,7 @@ public class RobotAI_Medium : RobotAI_Base
 
                             if (fire_wait <= 0 && allow_fire)
                             {
-                                if (mindist < lock_range)
+                                if (mindist < lock_range && (robotController.rightWeapon == null || mindist < robotController.rightWeapon.limit_range_max))
                                 {
                                     if (fire_prepare <= 0)
                                     {

@@ -37,7 +37,7 @@ public class SprayBeamCannon : Weapon
         get { return 45; }
     }
 
-    override public float optimal_range_max
+    override public float limit_range_max
     {
         get { return 40.0f; }
     }
