@@ -8,6 +8,7 @@ public class EffectSelfDelete : Pausable
     public float speed = 1.0f;
     public AudioSource audioSource = null;
     public bool ignorePause = false;
+    public Animator animator = null;
     private void Awake()
     {
         WorldManager.current_instance.pausables.Add(this);
@@ -23,7 +24,7 @@ public class EffectSelfDelete : Pausable
     // Update is called once per frame
     void Update()
     {
-        if((!effekseerEmitter || !effekseerEmitter.exists) && (!audioSource || !audioSource.isPlaying))
+        if((!effekseerEmitter || !effekseerEmitter.exists) && (!audioSource || !audioSource.isPlaying) && (!animator || animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f))
         {
             GameObject.Destroy(gameObject);
         }

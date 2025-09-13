@@ -291,7 +291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.Cost
-      value: -1
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.itemFlag

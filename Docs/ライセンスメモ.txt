@@ -189,3 +189,11 @@ https://soundeffect-lab.info/sound/battle/mp3/shotgun-firing1.mp3
 要塞外壁
 https://www.textures.com/download/sci-fi-complex-panel-pbr0349/137252
 https://www.textures.com/download/sci-fi-panel-pbr0331/137280
+
+要塞地面候補1
+https://www.textures.com/download/asteroid-rock-surface-pbr0221/133957
+候補2
+https://www.textures.com/download/3d-scanned-rock-surface-2x2-meters/133277
+
+ステージ8
+https://peritune.com/blog/2022/11/05/moonforest/

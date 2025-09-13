@@ -60,6 +60,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpaceBaseRoof Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 623b1c94013d34b45a2b4d895d5e822f, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 623b1c94013d34b45a2b4d895d5e822f, type: 3}
+--- !u!1 &708173394616174591 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 623b1c94013d34b45a2b4d895d5e822f, type: 3}
+  m_PrefabInstance: {fileID: 365502003267762862}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &9009631558657823642
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 708173394616174591}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2404112209210554168, guid: 623b1c94013d34b45a2b4d895d5e822f, type: 3}

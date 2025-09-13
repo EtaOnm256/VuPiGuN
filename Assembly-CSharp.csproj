@@ -88,6 +88,7 @@
     <Compile Include="Assets\Scripts\UIController_Overlay_anotheraim.cs" />
     <Compile Include="Assets\Scripts\Projectile\Bullet.cs" />
     <Compile Include="Assets\Scripts\Weapons\SMG.cs" />
+    <Compile Include="Assets\Scripts\Billboard.cs" />
     <Compile Include="Assets\StarterAssets\InputSystem\StarterAssetsInputs.cs" />
     <Compile Include="Assets\Scripts\AI\RobotAI_Base.cs" />
     <Compile Include="Assets\Scripts\Weapons\HandCannon.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Assets\Scripts\Loading.cs" />
     <Compile Include="Assets\Scripts\UI\DamageText.cs" />
     <Compile Include="Assets\Scripts\Weapons\MissilePod_Weist.cs" />
+    <Compile Include="Assets\Scripts\Effects\SpaceExplosionEmit.cs" />
     <Compile Include="Assets\Scripts\EnqueueAfterimage.cs" />
     <Compile Include="Assets\Scripts\Weapons\SprayBeamCannon.cs" />
     <Compile Include="Assets\IgniteCoders\Simple Water Shader\Resources\WaterReflection.cs" />
@@ -918,6 +920,9 @@
     </Reference>
     <Reference Include="Unity.Burst.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>

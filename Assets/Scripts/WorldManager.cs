@@ -321,56 +321,65 @@ public class WorldManager : MonoBehaviour
                 }
 
                 Vector3 pos;
-                
+                RaycastHit raycastHit;
 
-                if(player)
+                while (true)
                 {
-                    pos = player.GetCenter()+Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f)*Vector3.forward* distance;
 
-                    if (team == teams[0])
-                        rot = player.transform.rotation;
+                    if (player)
+                    {
+                        pos = player.GetCenter() + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+
+                        if (team == teams[0])
+                            rot = player.transform.rotation;
+                        else
+                            rot = Quaternion.LookRotation(player.GetCenter() - pos, Vector3.up);
+                    }
+                    else if (teams[0].spawnings.Find(x => x.player) != null)
+                    {
+                        var spawning = teams[0].spawnings.Find(x => x.player);
+
+                        pos = spawning.pos + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+
+                        if (team == teams[0])
+                            rot = spawning.rot;
+                        else
+                            rot = Quaternion.LookRotation(spawning.pos - pos, Vector3.up);
+                    }
                     else
-                        rot = Quaternion.LookRotation(player.GetCenter() - pos, Vector3.up);
-                }
-                else if(teams[0].spawnings.Find(x=>x.player)!=null)
-                {
-                    var spawning = teams[0].spawnings.Find(x => x.player);
+                    {
+                        pos = player_last_position + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                        rot = Quaternion.LookRotation(player_last_position - pos, Vector3.up);
+                    }
 
-                    pos = spawning.pos+ Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                    if (pos.x >= 150.0f)
+                    {
+                        pos.x -= distance * 2;
+                    }
+                    else if (pos.x <= -150.0f)
+                    {
+                        pos.x += distance * 2f;
+                    }
 
-                    if (team == teams[0])
-                        rot = spawning.rot;
-                    else
-                        rot = Quaternion.LookRotation(spawning.pos - pos, Vector3.up);
-                }
-                else
-                {
-                    pos = player_last_position + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-                    rot = Quaternion.LookRotation(player_last_position - pos, Vector3.up);
-                }
+                    if (pos.z >= 150.0f)
+                    {
+                        pos.z -= distance * 2;
+                    }
+                    else if (pos.z <= -150.0f)
+                    {
+                        pos.z += distance * 2;
+                    }
 
-                if(pos.x >= 150.0f)
-                {
-                    pos.x -= distance*2;
-                }
-                else if (pos.x <= -150.0f)
-                {
-                    pos.x += distance * 2f;
-                }
+                    Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
 
-                if (pos.z >= 150.0f)
-                {
-                    pos.z -= distance * 2;
-                }
-                else if (pos.z <= -150.0f)
-                {
-                    pos.z += distance * 2;
+                    if (raycastHit.collider.gameObject.layer != 7)
+                        break;
                 }
 
                 if (instant)
-                    SpawnNPC(spawn.variant, pos, rot, team,spawn.boss);
+                    SpawnNPC(spawn.variant, raycastHit.point, rot, team, spawn.boss);
                 else
-                    team.spawnings.Add(new Team.Spawning { player = false, pos = pos, rot = rot, variant = spawn.variant, wait = 60 ,boss = spawn.boss });
+                    team.spawnings.Add(new Team.Spawning { player = false, pos = raycastHit.point, rot = rot, variant = spawn.variant, wait = 60, boss = spawn.boss });
                 
                 sequence.spawned = true;
                 hav_progress = true;
@@ -382,10 +391,17 @@ public class WorldManager : MonoBehaviour
 
     Vector3 PlacePlayerSpawn(int wait)
     {
-        Vector3 pos = new Vector3(Random.value * 200.0f - 100.0f, 0, Random.value * 200.0f - 100.0f);
+        
         RaycastHit raycastHit;
 
-        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+        while (true)
+        {
+            Vector3 pos = new Vector3(Random.value * 200.0f - 100.0f, 0, Random.value * 200.0f - 100.0f);
+            Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+
+            if (raycastHit.collider.gameObject.layer != 7)
+                break;
+        }
         float min_dist = float.MaxValue;
         RobotController nearest_robot = null;
 
@@ -743,13 +759,7 @@ public class WorldManager : MonoBehaviour
 
     private void SpawnPlayer(Vector3 pos, Quaternion rot, Team team)
     {
-        
-
-        RaycastHit raycastHit;
-
-        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
-
-        GameObject robotObj = GameObject.Instantiate(gameState.player_variant, raycastHit.point, rot);
+        GameObject robotObj = GameObject.Instantiate(gameState.player_variant, pos, rot);
         //RobotController robot = variant.Spawn(raycastHit.point, rot,this);
 
         robotObj.tag = "Player";
@@ -779,11 +789,9 @@ public class WorldManager : MonoBehaviour
         //RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
        
 
-        RaycastHit raycastHit;
+      
 
-        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
-
-        GameObject robotObj = GameObject.Instantiate(variant_obj, raycastHit.point, rot);
+        GameObject robotObj = GameObject.Instantiate(variant_obj, pos, rot);
         //RobotController robot = variant.Spawn(raycastHit.point, rot,this);
         RobotController robot = robotObj.GetComponent<RobotController>();
 
