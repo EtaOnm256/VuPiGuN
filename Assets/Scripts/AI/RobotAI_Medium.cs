@@ -50,6 +50,14 @@ public class RobotAI_Medium : RobotAI_Base
 
     public float lock_range = 75.0f;
 
+    enum SubweaponState
+    {
+        READY,
+        FIRING,
+        CHARGING
+    }
+
+    [SerializeField]SubweaponState subweaponState = SubweaponState.READY;
     float DetermineMoveDirection(float dist)
     {
         if (robotController.rightWeapon == null || dist > robotController.rightWeapon.optimal_range_max)
@@ -272,9 +280,11 @@ public class RobotAI_Medium : RobotAI_Base
                                     {
                                         if(robotController.team.orderToAI != WorldManager.OrderToAI.EVADE && mindist > infight_dist &&
                                             robotController.shoulderWeapon != null && robotController.shoulderWeapon.allrange && robotController.shoulderWeapon.canHold
+                                            && subweaponState != SubweaponState.CHARGING
                                             )
                                         {
                                             subfire = true;
+                                            subweaponState = SubweaponState.FIRING;
                                         }
 
                                         if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
@@ -366,6 +376,23 @@ public class RobotAI_Medium : RobotAI_Base
 
                                         if (target_angle <= 90)
                                             allow_fire = true;
+
+                                        if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide))
+                                        {
+                                            Vector3 firing = robotController.virtual_targeting_position_forBody - robotController.GetCenter();
+                                            Vector3 target = current_target.GetCenter() - robotController.GetCenter();
+
+
+                                            if (
+                                                        (
+                                                        (robotController.rightWeapon != null && (!(robotController.rightWeapon.canHold && Vector3.Angle(firing, target) < 5.0f) && robotController.fire_followthrough > 0)) // 射撃キャンセル
+                                                        || (robotController.Sword != null && ((robotController.lowerBodyState == RobotController.LowerBodyState.SLASH || robotController.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH) && (current_target.mirage_time > 0 || mindist > infight_dist))) //格闘キャンセル
+                                                        )
+                                               )
+                                            {
+                                                sprint = !prev_sprint;
+                                            }
+                                        }
                                     }
                                 }
 
@@ -379,7 +406,7 @@ public class RobotAI_Medium : RobotAI_Base
 
                               
 
-                                if (floorhit.distance > 15.0f)
+                                if (floorhit.distance > 15.0f || dodge)
                                 {
                                     state = State.Dash;
                                 }
@@ -411,27 +438,24 @@ public class RobotAI_Medium : RobotAI_Base
                                 else
                                     far = mindist > lock_range;
 
-                                if (far)
+
+                                if (dodge)
                                 {
-                                    if (dodge)
+                                   
+                                  
+                                    move = stepMove;
+
+                                    Vector3 stepMove_horizon = new Vector3(stepMove.x, 0.0f, stepMove.y);
+
+                                    Vector3 rel = Quaternion.Inverse(targetQ) * transform.forward;
+
+                                    if(Vector3.Dot(stepMove_horizon,rel) < Mathf.Cos(45.0f*Mathf.Deg2Rad))
                                     {
-                                        move = stepMove;
-
-                                        Vector3 stepMove_horizon = new Vector3(stepMove.x, 0.0f, stepMove.y);
-
-                                        Vector3 rel = Quaternion.Inverse(targetQ) * transform.forward;
-
-                                        if(Vector3.Dot(stepMove_horizon,rel) < Mathf.Cos(45.0f*Mathf.Deg2Rad))
-                                        {
-                                            if (robotController.lowerBodyState == RobotController.LowerBodyState.DASH)
-                                                sprint = false;
-                                        }
+                                        if (robotController.lowerBodyState == RobotController.LowerBodyState.DASH && prev_sprint)
+                                            sprint = false;
                                     }
-                                    else
-                                    {
-                                        move.y = 1.0f;
-                                        move.x = 0.0f;
-                                    }
+                                   
+                               
                                 }
                                 else
                                 {
@@ -445,12 +469,49 @@ public class RobotAI_Medium : RobotAI_Base
                                     }
                                     else
                                     {
-                                        if (moveDirChangeTimer <= 0)
+                                        if (far)
                                         {
-                                            float movedirection_range = DetermineMoveDirection(mindist);
+                                            move.y = 1.0f;
+                                            move.x = 0.0f;
+                                        }
+                                        else
+                                        {
+                                            if (moveDirChangeTimer <= 0)
+                                            {
+                                                float movedirection_range = DetermineMoveDirection(mindist);
 
-                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
-                                            moveDirChangeTimer = 60;
+                                                move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
+                                                moveDirChangeTimer = 60;
+                                            }
+
+                                            if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                                            {
+                                                if (
+                                                    robotController.team.orderToAI != WorldManager.OrderToAI.EVADE && mindist > infight_dist &&
+                                                    robotController.shoulderWeapon != null && robotController.shoulderWeapon.allrange && robotController.shoulderWeapon.canHold
+                                                    && subweaponState != SubweaponState.CHARGING
+                                                    )
+                                                {
+                                                    subfire = true;
+                                                    subweaponState = SubweaponState.FIRING;
+                                                }
+                                                else
+                                                {
+                                                    Vector3 firing = robotController.virtual_targeting_position_forBody - robotController.GetCenter();
+                                                    Vector3 target = current_target.GetCenter() - robotController.GetCenter();
+
+
+                                                    if (
+                                                               (
+                                                        (robotController.rightWeapon != null && (!(robotController.rightWeapon.canHold && Vector3.Angle(firing, target) < 5.0f) && robotController.fire_followthrough > 0)) // 射撃キャンセル
+                                                        || (robotController.Sword != null && ((robotController.lowerBodyState == RobotController.LowerBodyState.SLASH || robotController.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH) && (current_target.mirage_time > 0 || mindist > infight_dist))) //格闘キャンセル
+                                                        )
+                                                        && prev_sprint)
+                                                    {
+                                                        sprint = false;
+                                                    }
+                                                }
+                                             }
                                         }
                                     }
                                 }
@@ -458,8 +519,12 @@ public class RobotAI_Medium : RobotAI_Base
                                 if (overheating)
                                     state = State.Decend;
 
+
                                 if (robotController.Grounded)
                                     state = State.Ground;
+
+                                if (floorhit.distance < 10.0f && !dodge)
+                                    state = State.Ascend;
 
                                 if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
                                 {
@@ -536,6 +601,17 @@ public class RobotAI_Medium : RobotAI_Base
                     if (robotController.rightWeapon == null)
                         allow_fire = false;
 
+                    if (current_target.mirage_time > 0 && (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive) || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide)))
+                        allow_infight = allow_jumpslash = false;
+
+                    if(allow_fire && (allow_infight || allow_jumpslash))
+                    {
+                        if (Random.Range(0, 2) == 0)
+                            allow_fire = false;
+                        else
+                            allow_infight = allow_jumpslash = false;
+                    }
+
                     if(robotController.Sword != null && robotController.Sword.can_jump_slash && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash)
                         && allow_jumpslash && jumpinfight_reload <= 0 && !prev_slash && robotController.boost >= 80 && !infight_now)
                     {
@@ -558,7 +634,7 @@ public class RobotAI_Medium : RobotAI_Base
                     {
                         infight_wait = 15;
 
-                        if (robotController.fire_followthrough > 0 && robotController.rightWeapon.canHold)
+                        if (robotController.rightWeapon != null && robotController.fire_followthrough > 0 && robotController.rightWeapon.canHold)
                         {
                             fire = true;
                         }
@@ -605,6 +681,17 @@ public class RobotAI_Medium : RobotAI_Base
         //slash = false;
         //subfire = false;
         //
+
+        if(subweaponState == SubweaponState.FIRING && !subfire)
+        {
+            subweaponState = SubweaponState.CHARGING;
+        }
+
+        if(subweaponState == SubweaponState.CHARGING && robotController.shoulderWeapon != null)
+        {
+            if (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy && robotController.shoulderWeapon.canHold)
+                subweaponState = SubweaponState.READY;
+        }
 
         return;
     }

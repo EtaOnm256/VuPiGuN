@@ -30,23 +30,19 @@ public class Halberd : InfightWeapon
     {
         set
         {
-            if (_emitting != value)
+            _emitting = value;
+
+            if (!_emitting)
+                _slashing = false;
+
+            if (_emitting)
+                material.SetFloat(powerID, 5.0f);
+            else
+                material.SetFloat(powerID, 0.75f);
+
+            if(autovanish)
             {
-
-                _emitting = value;
-
-                if (!_emitting)
-                    _slashing = false;
-
-                if (_emitting)
-                    material.SetFloat(powerID, 5.0f);
-                else
-                    material.SetFloat(powerID, 0.75f);
-
-                if(autovanish)
-                {
-                    meshRenderer.enabled = _emitting;
-                }
+                meshRenderer.enabled = _emitting;
             }
         }
         get { return _emitting; }

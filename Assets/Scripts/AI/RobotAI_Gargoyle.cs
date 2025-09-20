@@ -319,66 +319,73 @@ public class RobotAI_Gargoyle : RobotAI_Base
                             {
                                 bool firing_sub = false;
 
-                                if (robotController.shoulderWeapon != null)
+                                if (dodge)
                                 {
+                                    move = stepMove;
+                                    
+                                    moveDirChangeTimer = 0;
+
                                     if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                     {
-                                        if (robotController.upperBodyState == RobotController.UpperBodyState.SUBFIRE && robotController.shoulderWeapon.canHold)
-                                        {
-                                            subfire = true;
-                                            firing_sub = true;
-                                        }
-                                    }
-
-                                    if (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy)
-                                    {
-                                        firing_sub = true;
-
-                                        if (floorhit.distance > 25.0f && robotController._verticalVelocity > robotController.robotParameter.AscendingVelocity * 3 / 4)
-                                        {
-                                            subfire = true;
-                                        }
-                                    }
-
-                                }
-
-                                if (!firing_sub)
-                                {
-                                    if ((floorhit.distance > 25.0f
-                                            || robotController._verticalVelocity < -robotController.robotParameter.AscendingVelocity * 3 / 4)
-                                            && ((robotController.upperBodyState != RobotController.UpperBodyState.FIRE && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
-                                                  || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive)
-                                                  ))
-                                    {
                                         state = State.Dash;
-                                        moveDirChangeTimer = 0;
                                         jump = false;
                                     }
-                                }
-
-
-
-                                if (mindist > lock_range * 3 / 4)
-                                {
-                                    if (dodge)
-                                    {
-                                        move = stepMove;
-                                    }
-                                    else
-                                    {
-                                        move.y = 1.0f;
-                                        move.x = 0.0f;
-                                    }
-                                    //moveDirChangeTimer = 60;
                                 }
                                 else
                                 {
 
-
-                                    if (moveDirChangeTimer <= 0)
+                                    if (robotController.shoulderWeapon != null)
                                     {
-                                        move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
-                                        moveDirChangeTimer = 60;
+                                        if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                                        {
+                                            if (robotController.upperBodyState == RobotController.UpperBodyState.SUBFIRE && robotController.shoulderWeapon.canHold)
+                                            {
+                                                subfire = true;
+                                                firing_sub = true;
+                                            }
+                                        }
+
+                                        if (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy)
+                                        {
+                                            firing_sub = true;
+
+                                            if (floorhit.distance > 25.0f && robotController._verticalVelocity > robotController.robotParameter.AscendingVelocity * 3 / 4)
+                                            {
+                                                subfire = true;
+                                            }
+                                        }
+
+                                    }
+
+                                    if (!firing_sub)
+                                    {
+                                        if ((floorhit.distance > 25.0f
+                                                || robotController._verticalVelocity < -robotController.robotParameter.AscendingVelocity * 3 / 4)
+                                                && ((robotController.upperBodyState != RobotController.UpperBodyState.FIRE && robotController.upperBodyState != RobotController.UpperBodyState.SUBFIRE)
+                                                      || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive)
+                                                      ))
+                                        {
+                                            state = State.Dash;
+                                            moveDirChangeTimer = 0;
+                                            jump = false;
+                                        }
+                                    }
+
+
+                             
+                                    if (mindist > lock_range * 3 / 4)
+                                    { 
+                                 
+                                        move.y = 1.0f;
+                                        move.x = 0.0f;
+                                    }
+                                    else
+                                    {
+                                        if (moveDirChangeTimer <= 0)
+                                        {
+                                            move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
+                                            moveDirChangeTimer = 60;
+                                        }
                                     }
                                 }
 
@@ -402,39 +409,37 @@ public class RobotAI_Gargoyle : RobotAI_Base
                         case State.Dash:
                             {
                                 sprint = true;
-
-                                if (mindist > lock_range * 3 / 4)
+                                if (dodge)
                                 {
-                                    if (dodge)
+                                    move = stepMove;
+
+                                    Vector3 stepMove_horizon = new Vector3(stepMove.x, 0.0f, stepMove.y);
+
+                                    Vector3 rel = Quaternion.Inverse(targetQ) * transform.forward;
+
+                                    
+
+                                    if (Vector3.Dot(stepMove_horizon, rel) < Mathf.Cos(45.0f * Mathf.Deg2Rad))
                                     {
-                                        move = stepMove;
-
-                                        Vector3 stepMove_horizon = new Vector3(stepMove.x, 0.0f, stepMove.y);
-
-                                        Vector3 rel = Quaternion.Inverse(targetQ) * transform.forward;
-
-                                        if (Vector3.Dot(stepMove_horizon, rel) < Mathf.Cos(45.0f * Mathf.Deg2Rad))
-                                        {
-                                            if (robotController.lowerBodyState == RobotController.LowerBodyState.DASH)
-                                                sprint = false;
-                                        }
+                                        if (robotController.lowerBodyState == RobotController.LowerBodyState.DASH && prev_sprint)
+                                            sprint = false;
                                     }
-                                    else
+                                }
+                                else
+                                {
+                                    if (mindist > lock_range * 3 / 4)
                                     {
                                         move.y = 1.0f;
                                         move.x = 0.0f;
                                     }
-                                    //moveDirChangeTimer = 60;
-                                }
-                                else
-                                {
-
-
-                                    if (moveDirChangeTimer <= 0)
+                                    else
                                     {
-                                        //move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
-                                        move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) == 0 ? 90 * Mathf.Deg2Rad : -90 * Mathf.Deg2Rad);
-                                        moveDirChangeTimer = 60;
+                                        if (moveDirChangeTimer <= 0)
+                                        {
+                                            //move = VectorUtil.rotate(new Vector2(0.0f, -1.0f), Random.Range(-movedirection_range * Mathf.Deg2Rad, movedirection_range * Mathf.Deg2Rad));
+                                            move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(0, 2) == 0 ? 90 * Mathf.Deg2Rad : -90 * Mathf.Deg2Rad);
+                                            moveDirChangeTimer = 60;
+                                        }
                                     }
                                 }
 
@@ -453,6 +458,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     {
                                         if (!robotController.rightWeapon.canHold && robotController.fire_followthrough > 0 && prev_sprint)
                                         {
+                                            if(!dodge)
                                             {
                                                 move = VectorUtil.rotate(new Vector2(0.0f, 1.0f), Random.Range(-75 * Mathf.Deg2Rad, 75 * Mathf.Deg2Rad));
                                                 moveDirChangeTimer = 60;

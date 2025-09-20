@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6700148781367318493
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 2
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 803051568401146564, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_Name
+      value: Robot8 DarkKnight
+      objectReference: {fileID: 0}
+    - target: {fileID: 2622409668980254924, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: da93a8f86ea8842469833bde50261eba, type: 2}
+    - target: {fileID: 2622409668980254924, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: dbab7f7f077e5c948a1c532ba3ab7cc9, type: 2}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.Cost
+      value: 700
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.MaxHP
+      value: 1300
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.itemFlag
+      value: 2630227
+      objectReference: {fileID: 0}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.lweapon_prefab
+      value: 
+      objectReference: {fileID: 6897827661738746273, guid: 027b208a3679c304f851507bb1598dda, type: 3}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.rweapon_prefab
+      value: 
+      objectReference: {fileID: 1780285801183902076, guid: a3215e58ef185ae4d9ba02b5ac26c4b2, type: 3}
+    - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: robotParameter.subweapon_prefab
+      value: 
+      objectReference: {fileID: 8659736691718161653, guid: 5c9277cb3b3721843a74fe313180e848, type: 3}
+    m_RemovedComponents: []
+    m_AddedGameObjects: []
+  m_SourcePrefab: {fileID: 100100000, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}

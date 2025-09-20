@@ -3279,7 +3279,7 @@ public class RobotController : Pausable
     float origin = 0.0f;
     bool prev_boosting = false;
 
-    int mirage_time = 0;
+    public int mirage_time = 0;
     [SerializeField] AfterimageSample.AfterimageRenderer afterimageRenderer;
     [SerializeField] AfterimageSample.EnqueueAfterimage enqueueAfterimage;
 

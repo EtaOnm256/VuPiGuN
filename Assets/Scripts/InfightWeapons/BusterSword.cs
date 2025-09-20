@@ -30,16 +30,12 @@ public class BusterSword : InfightWeapon
     {
         set
         {
-            if (_emitting != value)
-            {
+            _emitting = value;
 
-                _emitting = value;
+            if (!_emitting)
+                _slashing = false;
 
-                if (!_emitting)
-                    _slashing = false;
-
-                meshRenderer.enabled = _emitting;
-            }
+            meshRenderer.enabled = _emitting;
         }
         get { return _emitting; }
     }
@@ -70,8 +66,10 @@ public class BusterSword : InfightWeapon
             { RobotController.SubState_Slash.AirSlash,new SlashMotionInfo(1) },
             { RobotController.SubState_Slash.LowerSlash,new SlashMotionInfo(1) },
             { RobotController.SubState_Slash.QuickSlash,new SlashMotionInfo(2) },
+            { RobotController.SubState_Slash.AirSlashSeed,new SlashMotionInfo(3) },
+            { RobotController.SubState_Slash.SlideSlashSeed,new SlashMotionInfo(2) },
             { RobotController.SubState_Slash.DashSlash,new SlashMotionInfo(1) },
-               { RobotController.SubState_Slash.JumpSlash,new SlashMotionInfo(1) },
+            { RobotController.SubState_Slash.JumpSlash,new SlashMotionInfo(1) },
             { RobotController.SubState_Slash.JumpSlash_Jump,new SlashMotionInfo(1) },
             { RobotController.SubState_Slash.JumpSlash_Ground,new SlashMotionInfo(1) },
         };
