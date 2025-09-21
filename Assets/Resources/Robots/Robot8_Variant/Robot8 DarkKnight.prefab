@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9183789355960881932, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: fire_wait_max
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -9183789355960881932, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
+      propertyPath: fire_wait_min
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 31194833144952958, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -74,7 +82,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
       propertyPath: robotParameter.itemFlag
-      value: 2630227
+      value: 2728659
       objectReference: {fileID: 0}
     - target: {fileID: 2737446823111496146, guid: 01561f26efed72f4595d9a52ce0fbea6, type: 3}
       propertyPath: robotParameter.lweapon_prefab

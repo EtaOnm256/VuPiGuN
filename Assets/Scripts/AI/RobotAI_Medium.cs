@@ -14,7 +14,8 @@ public class RobotAI_Medium : RobotAI_Base
     // Start is called before the first frame update
     void Start()
     {
-        fire_wait = Random.Range(60, 120);
+        fire_wait = Random.Range(fire_wait_min, fire_wait_max);
+        fire_prepare = fire_prepare_max;
     }
 
     bool ascending = false;
@@ -22,7 +23,12 @@ public class RobotAI_Medium : RobotAI_Base
     public int ascend_margin = 0;
 
     public int fire_wait;
+
+    [SerializeField] int fire_wait_min = 60;
+    [SerializeField] int fire_wait_max = 120;
+
     public int fire_prepare = 15;
+    [SerializeField] int fire_prepare_max = 15;
 
     public int infight_reload = 0;
     public int infight_wait = 0;
@@ -272,6 +278,12 @@ public class RobotAI_Medium : RobotAI_Base
                                     else
                                         sprint = !prev_sprint;
 
+                                    if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RollingShoot))
+                                    {
+                                        allow_fire = true;
+                                        ringMenuDir = Random.Range(0, 2) == 0 ? RobotController.RingMenuDir.Left : RobotController.RingMenuDir.Right;
+                                    }
+
                                     moveDirChangeTimer = 60;
                                 }
                                 else
@@ -377,15 +389,20 @@ public class RobotAI_Medium : RobotAI_Base
                                         if (target_angle <= 90)
                                             allow_fire = true;
 
-                                        if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide))
+                                  
+                                        if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RollingShoot) && robotController.rightWeapon != null && (!(robotController.rightWeapon.canHold && Aiming_Precise()) && robotController.fire_followthrough > 0) && !robotController.rollingfire_followthrough)
                                         {
-                                            Vector3 firing = robotController.virtual_targeting_position_forBody - robotController.GetCenter();
-                                            Vector3 target = current_target.GetCenter() - robotController.GetCenter();
+                                            allow_fire = true;
+                                            ringMenuDir = Random.Range(0, 2) == 0 ? RobotController.RingMenuDir.Left : RobotController.RingMenuDir.Right;
+                                        }
+                                        else if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide))
+                                        {
+                                           
 
 
                                             if (
                                                         (
-                                                        (robotController.rightWeapon != null && (!(robotController.rightWeapon.canHold && Vector3.Angle(firing, target) < 5.0f) && robotController.fire_followthrough > 0)) // 射撃キャンセル
+                                                        (robotController.rightWeapon != null && (!(robotController.rightWeapon.canHold && Aiming_Precise()) && robotController.fire_followthrough > 0)) // 射撃キャンセル
                                                         || (robotController.Sword != null && ((robotController.lowerBodyState == RobotController.LowerBodyState.SLASH || robotController.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH) && (current_target.mirage_time > 0 || mindist > infight_dist))) //格闘キャンセル
                                                         )
                                                )
@@ -454,8 +471,13 @@ public class RobotAI_Medium : RobotAI_Base
                                         if (robotController.lowerBodyState == RobotController.LowerBodyState.DASH && prev_sprint)
                                             sprint = false;
                                     }
-                                   
-                               
+
+                                    if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RollingShoot))
+                                    {
+                                        allow_fire = true;
+                                        ringMenuDir = Random.Range(0, 2) == 0 ? RobotController.RingMenuDir.Left : RobotController.RingMenuDir.Right;
+                                    }
+
                                 }
                                 else
                                 {
@@ -484,7 +506,12 @@ public class RobotAI_Medium : RobotAI_Base
                                                 moveDirChangeTimer = 60;
                                             }
 
-                                            if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                                            if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RollingShoot) && robotController.rightWeapon != null && (!(robotController.rightWeapon.canHold && Aiming_Precise()) && robotController.fire_followthrough > 0) && !robotController.rollingfire_followthrough)
+                                            {
+                                                allow_fire = true;
+                                                ringMenuDir = Random.Range(0, 2) == 0 ? RobotController.RingMenuDir.Left : RobotController.RingMenuDir.Right;
+                                            }
+                                            else if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                             {
                                                 if (
                                                     robotController.team.orderToAI != WorldManager.OrderToAI.EVADE && mindist > infight_dist &&
@@ -497,13 +524,12 @@ public class RobotAI_Medium : RobotAI_Base
                                                 }
                                                 else
                                                 {
-                                                    Vector3 firing = robotController.virtual_targeting_position_forBody - robotController.GetCenter();
-                                                    Vector3 target = current_target.GetCenter() - robotController.GetCenter();
+                                                 
 
+                                                    if(
 
-                                                    if (
                                                                (
-                                                        (robotController.rightWeapon != null && (!(robotController.rightWeapon.canHold && Vector3.Angle(firing, target) < 5.0f) && robotController.fire_followthrough > 0)) // 射撃キャンセル
+                                                        (robotController.rightWeapon != null && (!(robotController.rightWeapon.canHold && Aiming_Precise()) && robotController.fire_followthrough > 0)) // 射撃キャンセル
                                                         || (robotController.Sword != null && ((robotController.lowerBodyState == RobotController.LowerBodyState.SLASH || robotController.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH) && (current_target.mirage_time > 0 || mindist > infight_dist))) //格闘キャンセル
                                                         )
                                                         && prev_sprint)
@@ -604,7 +630,11 @@ public class RobotAI_Medium : RobotAI_Base
                     if (current_target.mirage_time > 0 && (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive) || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide)))
                         allow_infight = allow_jumpslash = false;
 
-                    if(allow_fire && (allow_infight || allow_jumpslash))
+                    if(allow_fire && ringMenuDir != RobotController.RingMenuDir.Center)
+                    {
+                        allow_infight = allow_jumpslash = false;
+                    }
+                    else if(allow_fire && (allow_infight || allow_jumpslash))
                     {
                         if (Random.Range(0, 2) == 0)
                             allow_fire = false;
@@ -641,15 +671,15 @@ public class RobotAI_Medium : RobotAI_Base
                         else
                         {
 
-                            if (fire_wait <= 0 && allow_fire)
+                            if ( (fire_wait <= 0 || ringMenuDir != RobotController.RingMenuDir.Center) && allow_fire)
                             {
                                 if (mindist < lock_range && (robotController.rightWeapon == null || mindist < robotController.rightWeapon.limit_range_max))
                                 {
-                                    if (fire_prepare <= 0)
+                                    if (fire_prepare <= 0 || ringMenuDir != RobotController.RingMenuDir.Center)
                                     {
                                         fire = true;
-                                        fire_wait = Random.Range(60, 120);
-                                        fire_prepare = 15;
+                                        fire_wait = Random.Range(fire_wait_min, fire_wait_max);
+                                        fire_prepare = fire_prepare_max;
                                     }
                                     else
                                     {
@@ -658,8 +688,8 @@ public class RobotAI_Medium : RobotAI_Base
                                 }
                                 else
                                 {
-                                    fire_wait = Random.Range(60, 120);
-                                    fire_prepare = 15;
+                                    fire_wait = Random.Range(fire_wait_min, fire_wait_max);
+                                    fire_prepare = fire_prepare_max;
                                 }
                             }
                         }

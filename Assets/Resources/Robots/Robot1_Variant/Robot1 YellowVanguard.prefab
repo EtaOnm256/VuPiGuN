@@ -92,6 +92,18 @@ PrefabInstance:
       propertyPath: robotParameter.rweapon_prefab
       value: 
       objectReference: {fileID: 1241669158410538615, guid: 0700da4283e98704ea40a5d3a48d01da, type: 3}
+    - target: {fileID: 5352875522354337744, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
+      propertyPath: fire_wait_max
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352875522354337744, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
+      propertyPath: fire_wait_min
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352875522354337744, guid: 307a06308a705b4449af994e8235fa6d, type: 3}
+      propertyPath: fire_prepare_max
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 307a06308a705b4449af994e8235fa6d, type: 3}

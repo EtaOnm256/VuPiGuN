@@ -167,4 +167,12 @@ public class RobotAI_Base : InputBase
         else
             return r == RobotController.StepDirection.FORWARD || r == RobotController.StepDirection.BACKWARD;
     }
+
+    protected bool Aiming_Precise()
+    {
+        Vector3 firing = (robotController.virtual_targeting_position_forBody - robotController.GetCenter()).normalized;
+        Vector3 target = current_target.GetCenter() - robotController.GetCenter();
+
+        return Vector3.Cross(firing, target).magnitude < 5.0f;
+    }
 }
