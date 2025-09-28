@@ -419,7 +419,7 @@ public class RobotController : Pausable
     bool event_subfired = false;
     bool event_heavyfired = false;
     bool event_swing = false;
-    bool event_acceptnextslash = false;
+    public bool event_acceptnextslash = false;
 
     bool backblast_processed = false;
 
@@ -4707,14 +4707,32 @@ public class RobotController : Pausable
 
                     _speed = targetSpeed = _verticalVelocity = 0.0f;
 
-                    if (event_slash)
+                    if (event_slash || (Sword.hitHistoryRCCount <= 0 && event_acceptnextslash))
                     {
                         if(Grounded)
                             TransitLowerBodyState(LowerBodyState.STAND);
                         else
                             TransitLowerBodyState(LowerBodyState.AIR);
                     }
-    
+                    /*
+                    if (Target_Robot != null)
+                    {
+                        Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
+
+                        float rotation = transform.rotation.eulerAngles.y;
+
+                        Quaternion look = Quaternion.LookRotation(target_dir, Vector3.up);
+
+                        float rotation_pitch = Mathf.Clamp(Mathf.DeltaAngle(0.0f, look.eulerAngles.x), -seedSlash_PitchLimit, seedSlash_PitchLimit);
+
+                        // rotate to face input direction relative to camera position
+                        transform.rotation = Quaternion.Euler(rotation_pitch, rotation, 0.0f);
+                    }
+                    */
+
+                    if (Sword.hitHistoryRCCount > 0)
+                        AcceptSlash();
+                    
                     if (Grounded)
                     {
                         if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
@@ -5941,7 +5959,7 @@ public class RobotController : Pausable
             ringMenu_Left_RMB_available = true;
             ringMenu_Right_RMB_available = true;
 
-            if (slash_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right))
+            if (slash_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right) && ConsumeBoost(80))
             {
                 if (Target_Robot != null)
                 {
@@ -5960,6 +5978,7 @@ public class RobotController : Pausable
                 }
 
                 event_slash = false;
+                event_acceptnextslash = false;
                 lowerBodyState = LowerBodyState.SWEEP;
                 upperBodyState = UpperBodyState.SWEEP;
 

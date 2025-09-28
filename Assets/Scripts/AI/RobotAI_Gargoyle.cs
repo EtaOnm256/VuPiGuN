@@ -172,60 +172,8 @@ public class RobotAI_Gargoyle : RobotAI_Base
                     bool allow_infight = false;
 
                     bool dodge = false;
-                    foreach (var team in WorldManager.current_instance.teams)
-                    {
-                        if (team == robotController.team)
-                            continue;
 
-                        foreach (var robot in team.robotControllers)
-                        {
-                            if (robot.dead || robot.Target_Robot != robotController)
-                                continue;
-
-                            if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
-                                continue;
-
-                            if (    robot.lowerBodyState == RobotController.LowerBodyState.SLASH
-                                || robot.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH
-                                || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
-                                || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump )
-                            {
-                                dodge = true;
-                                stepMove = ThreatPosToStepMove(robot.GetCenter(), targetQ);
-                                break;
-                            }
-                        }
-
-                        float evade_thresh;
-
-                        if (state != State.Ground)
-                            evade_thresh = 40.0f;
-                        else
-                            evade_thresh = 30.0f;
-
-                        foreach (var projectile in team.projectiles)
-                        {
-                            if (projectile.dead)
-                                continue;
-
-                            //if ( Vector3.Dot(.normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
-
-                            float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.position)).magnitude;
-
-                            float dist = (robotController.GetCenter() - projectile.position).magnitude;
-
-                            if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
-                                && (shift < 3.0f || projectile.trajectory == Weapon.Trajectory.Curved)
-                                && dist / projectile.speed < evade_thresh
-                                )
-                            {
-                                dodge = true;
-                                if (!prev_dodge)
-                                    stepMove = ThreatPosToStepMove(projectile.transform.position, targetQ);
-                                break;
-                            }
-                        }
-                    }
+                    ProcessDodge(out dodge, out stepMove, targetQ);
 
                     switch (state)
                     {

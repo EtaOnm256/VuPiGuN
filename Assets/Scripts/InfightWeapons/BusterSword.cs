@@ -53,7 +53,7 @@ public class BusterSword : InfightWeapon
     //Material material;
     //int powerID;
     MeshRenderer meshRenderer;
-
+    Vector3 org_scale;
     private void Awake()
     {
         //material = GetComponent<MeshRenderer>().materials[1];
@@ -144,6 +144,8 @@ public class BusterSword : InfightWeapon
         {
             meshRenderer.enabled = _emitting;
         }
+
+        org_scale = transform.localScale;
     }
 
     // Update is called once per frame
@@ -174,6 +176,12 @@ public class BusterSword : InfightWeapon
             points[i] = hitpoints[i].transform.position;
         }
 
+        if (sweep)
+        {
+            transform.localScale = new Vector3(org_scale.x, org_scale.y*3.0f, org_scale.z);
+        }
+        else
+            transform.localScale = new Vector3(org_scale.x, org_scale.y, org_scale.z);
 
 
         if (slashing)
@@ -219,7 +227,23 @@ public class BusterSword : InfightWeapon
 
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
-                robotController.TakeDamage(rayCastHit[idx_hit].point,dir, damage, knockBackType, owner) ;
+                Vector3 knockbackDir;
+
+                if (!sweep)
+                {
+                    knockbackDir = dir;
+                }
+                else
+                {
+                    /*if (sweepDirection == RobotController.StepMotion.LEFT)
+                        knockbackDir = Quaternion.AngleAxis(-90.0f, Vector3.up) * dir;
+                    else
+                        knockbackDir = Quaternion.AngleAxis(90.0f, Vector3.up) * dir;*/
+
+                    knockbackDir = p1 - p2;
+                }
+
+                robotController.TakeDamage(rayCastHit[idx_hit].point, knockbackDir, damage, knockBackType, owner) ;
                 if (knockBackType == RobotController.KnockBackType.Finish || knockBackType == RobotController.KnockBackType.KnockUp)
                 {
                     robotController.DoHitSlow(10);

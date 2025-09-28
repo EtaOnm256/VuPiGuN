@@ -3168,6 +3168,7 @@ MonoBehaviour:
   animator: {fileID: 487079092504606801}
   explode_prefab: {fileID: 8961267772553168207, guid: 5766ae38283932046b0126e6356397b2, type: 3}
   stompHitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
+  event_acceptnextslash: 0
   subState_Slash: 0
   stepDirection: 0
   upperBodyState: 0
@@ -3191,6 +3192,7 @@ MonoBehaviour:
   audioClip_Ground: {fileID: 8300000, guid: f0ea08abbd708c14cbeb44d7b36880d9, type: 3}
   audioClip_Step: {fileID: 8300000, guid: 069e328c403251c4cac0fdf29ed1b4ee, type: 3}
   audioClip_Swing: {fileID: 8300000, guid: aabb1c218e1358d488cf4c220d25522a, type: 3}
+  mirage_time: 0
   afterimageRenderer: {fileID: 3392992246156110328}
   enqueueAfterimage: {fileID: 5358932821865062258}
   afterimageRenderer_VoidShift: {fileID: 9048773683394458438}

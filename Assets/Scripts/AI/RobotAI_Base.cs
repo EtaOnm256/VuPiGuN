@@ -12,7 +12,7 @@ public class RobotAI_Base : InputBase
         robotController = GetComponent<RobotController>();
     }
 
-    protected Vector2 ThreatPosToStepMove(Vector3 pos, Quaternion targetQ)
+    protected Vector2 ThreatPosToStepMove_Strafe(Vector3 pos, Quaternion targetQ)
     {
         Vector2 stepMove = Vector2.zero;
         Vector3 rel = Quaternion.Inverse(targetQ) * (pos - robotController.GetCenter());
@@ -34,6 +34,29 @@ public class RobotAI_Base : InputBase
             //    stepMove.x = 1.0f;
 
             stepMove.x = Random.Range(0, 2) == 0 ? stepMove.x = 1.0f : stepMove.x = -1.0f;
+        }
+
+        return stepMove;
+    }
+
+    protected Vector2 ThreatPosToStepMove_Back(Vector3 pos, Quaternion targetQ)
+    {
+        Vector2 stepMove = Vector2.zero;
+        Vector3 rel = Quaternion.Inverse(targetQ) * (pos - robotController.GetCenter());
+
+        if (Mathf.Abs(rel.x) > Mathf.Abs(rel.z))
+        {
+            if (rel.x > 0.0f)
+                stepMove.x = -1.0f;
+            else
+                stepMove.x = 1.0f;
+        }
+        else
+        {
+            if (rel.z > 0.0f)
+                stepMove.y = -1.0f;
+            else
+                stepMove.y = 1.0f;
         }
 
         return stepMove;
@@ -174,5 +197,88 @@ public class RobotAI_Base : InputBase
         Vector3 target = current_target.GetCenter() - robotController.GetCenter();
 
         return Vector3.Cross(firing, target).magnitude < 5.0f;
+    }
+
+    protected float infight_dist = 20.0f;
+    protected float jumpslash_dist = 40.0f;
+    protected float dashslash_dist = 40.0f;
+    protected float horizon_dist = 20.0f;
+    protected bool Slash_Precise(float mindist)
+    {
+        if(robotController.subState_Slash != RobotController.SubState_Slash.DashSlash)
+            return current_target.mirage_time <= 0 && mindist < infight_dist;
+        else
+            return current_target.mirage_time <= 0 && mindist < dashslash_dist;
+    }
+
+    protected void ProcessDodge(out bool dodge,out Vector2 stepMove,Quaternion targetQ)
+    {
+        dodge = false;
+        stepMove = Vector2.zero;
+
+        float evade_thresh;
+
+        if (!robotController.Grounded)
+            evade_thresh = 40.0f;
+        else
+            evade_thresh = 30.0f;
+
+        foreach (var team in WorldManager.current_instance.teams)
+        {
+            if (team == robotController.team)
+                continue;
+
+            foreach (var projectile in team.projectiles)
+            {
+                if (projectile.dead)
+                    continue;
+
+                //if ( Vector3.Dot(.normalized,projectile.direction.normalized) > Mathf.Cos(Mathf.PI/4))
+
+                float shift = Vector3.Cross(projectile.direction.normalized, (robotController.GetCenter() - projectile.position)).magnitude;
+
+                float dist = (robotController.GetCenter() - projectile.position).magnitude;
+
+                if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
+                    && (shift < 3.0f || projectile.trajectory == Weapon.Trajectory.Curved)
+                    && dist / projectile.speed < evade_thresh
+                    )
+                {
+                    dodge = true;
+                    if (!prev_dodge)
+                        stepMove = ThreatPosToStepMove_Strafe(projectile.transform.position, targetQ);
+                    break;
+                }
+            }
+
+            foreach (var robot in team.robotControllers)
+            {
+                if (robot.dead || robot.Target_Robot != robotController || robot.event_acceptnextslash)
+                    continue;
+
+                if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 20.0f)
+                    continue;
+
+                if (robot.lowerBodyState == RobotController.LowerBodyState.SWEEP)
+                {
+                    dodge = true;
+                    stepMove = ThreatPosToStepMove_Back(robot.GetCenter(), targetQ);
+                    break;
+                }
+
+                if ((robot.GetCenter() - robotController.GetCenter()).magnitude > 10.0f)
+                    continue;
+
+                if (robot.lowerBodyState == RobotController.LowerBodyState.SLASH
+                    || robot.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH
+                    || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash
+                    || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump)
+                {
+                    dodge = true;
+                    stepMove = ThreatPosToStepMove_Strafe(robot.GetCenter(), targetQ);
+                    break;
+                }
+            }
+        }
     }
 }

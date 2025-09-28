@@ -146,7 +146,7 @@ public class BeamSaber : InfightWeapon
     {
         if(sweep)
         {
-            lineRenderer.SetPosition(1, org_end * 2);
+            lineRenderer.SetPosition(1, org_end * 3.0f);
         }
         else
             lineRenderer.SetPosition(1, org_end);
