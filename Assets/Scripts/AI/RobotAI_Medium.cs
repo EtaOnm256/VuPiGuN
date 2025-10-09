@@ -34,7 +34,7 @@ public class RobotAI_Medium : RobotAI_Base
     [SerializeField] int fire_prepare_max = 15;
 
     public int infight_reload = 0;
-    public int infight_wait = 0;
+    //public int infight_wait = 0;
     public int jumpslash_reload = 0;
     public int dashslash_reload = 0;
     public int horizon_reload = 0;
@@ -397,17 +397,20 @@ public class RobotAI_Medium : RobotAI_Base
 
                                 if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
                                 {
-                                    if (mindist < jumpslash_dist)
-                                        allow_jumpslash = true;
+                                    if (!dodge)
+                                    {
+                                        if (mindist < jumpslash_dist)
+                                            allow_jumpslash = true;
 
-                                    if (mindist < dashslash_dist)
-                                        allow_dashslash = true;
+                                        if (mindist < dashslash_dist)
+                                            allow_dashslash = true;
 
-                                    if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
-                                        allow_horizon = true;
+                                        if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
+                                            allow_horizon = true;
 
-                                    if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
-                                        allow_infight = true;
+                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
+                                            allow_infight = true;
+                                    }
                                 }
                             }
                             break;
@@ -526,17 +529,21 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (target_angle <= 90)
                                         allow_fire = true;
 
-                                    if (mindist < jumpslash_dist)
-                                        allow_jumpslash = true;
+                                    if (!dodge)
+                                    {
 
-                                    if (mindist < dashslash_dist)
-                                        allow_dashslash = true;
+                                        if (mindist < jumpslash_dist)
+                                            allow_jumpslash = true;
 
-                                    if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
-                                        allow_horizon = true;
+                                        if (mindist < dashslash_dist)
+                                            allow_dashslash = true;
 
-                                    if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
-                                        allow_infight = true;
+                                        if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
+                                            allow_horizon = true;
+
+                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
+                                            allow_infight = true;
+                                    }
                                 }
                               
                             }
@@ -554,17 +561,21 @@ public class RobotAI_Medium : RobotAI_Base
                                     if (floorhit.distance > 10.0f)
                                         allow_fire = true;
 
-                                    if (mindist < jumpslash_dist)
-                                        allow_jumpslash = true;
+                                    if (!dodge)
+                                    {
 
-                                    if (mindist < dashslash_dist)
-                                        allow_dashslash = true;
+                                        if (mindist < jumpslash_dist)
+                                            allow_jumpslash = true;
 
-                                    if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
-                                        allow_horizon = true;
+                                        if (mindist < dashslash_dist)
+                                            allow_dashslash = true;
 
-                                    if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
-                                        allow_infight = true;
+                                        if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
+                                            allow_horizon = true;
+
+                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
+                                            allow_infight = true;
+                                    }
 
                                     if (robotController.shoulderWeapon != null
                                    && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy
@@ -578,7 +589,7 @@ public class RobotAI_Medium : RobotAI_Base
                     }
 
                     bool infight_now = false;
-
+       
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.SLASH)
                     {
                         if (robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.subState_Slash].num - 1)
@@ -613,10 +624,19 @@ public class RobotAI_Medium : RobotAI_Base
                     else if (horizon_reload > 0)
                         horizon_reload--;
 
-                    if (robotController.Sword == null)
-                        allow_infight = false;
+                    if (robotController.Sword == null || infight_reload > 0)
+                        allow_infight = allow_dashslash = allow_jumpslash = allow_horizon = false;
+
                     if (robotController.rightWeapon == null)
                         allow_fire = false;
+
+                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.DashSlash) || dashslash_reload > 0 || robotController.boost < 80 || infight_now)
+                        allow_dashslash = false;
+                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash) || jumpslash_reload > 0 || robotController.boost < 80 || infight_now)
+                        allow_jumpslash = false;
+                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.HorizonSweep) || horizon_reload > 0 || robotController.boost < 80 || infight_now)
+                        allow_horizon = false;
+
 
                     if (current_target.mirage_time > 0 && (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive) || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide)))
                         allow_infight = allow_jumpslash = allow_dashslash = false;
@@ -626,25 +646,82 @@ public class RobotAI_Medium : RobotAI_Base
                         allow_fire = allow_jumpslash = allow_dashslash = allow_horizon = false;
                         allow_infight = true;
 
-                        infight_wait = infight_reload = 0;
+                        //infight_wait = 
+                        infight_reload = 0;
                     }
 
-                    if (allow_fire && ringMenuDir != RobotController.RingMenuDir.Center)
+                    if (infight_now)
                     {
-                        allow_infight = allow_jumpslash = allow_dashslash = allow_horizon = false;
+                        allow_jumpslash = allow_dashslash = allow_horizon = false;
+
+                        if(robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.QuickDraw))
+                        {
+                            if( robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.subState_Slash].num - 1
+                                && robotController.Sword.hitHistoryRCCount > 0)
+                            {
+                                allow_fire = true;
+                                allow_infight = false;
+                            }
+
+                        }
                     }
-                    else if(allow_fire && (allow_infight || allow_jumpslash || allow_dashslash || allow_horizon))
+                    else
                     {
-                        if (Random.Range(0, 2) == 0)
-                            allow_fire = false;
-                        else
+                        if (allow_fire && ringMenuDir != RobotController.RingMenuDir.Center)
+                        {
                             allow_infight = allow_jumpslash = allow_dashslash = allow_horizon = false;
+                        }
+                        else if (allow_fire && (allow_infight || allow_jumpslash || allow_dashslash || allow_horizon))
+                        {
+                            //if (Random.Range(0, 2) != 0)
+                            //    allow_fire = false;
+                            //else
+                            //    allow_infight = allow_jumpslash = allow_dashslash = allow_horizon = false;
+                        }
+
+                        //if(allow_infight && (allow_jumpslash || allow_dashslash || allow_horizon))
+                        //{
+                            //if (Random.Range(0, 2) != 0)
+                            //    allow_infight = false;
+                            //else
+                            //    allow_jumpslash = allow_dashslash = allow_horizon = false;
+                        //}
                     }
 
-                    bool can_jump_slash = robotController.Sword.can_jump_slash && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash);
-                    bool can_dash_slash = robotController.Sword.can_dash_slash && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.DashSlash);
+                    if (robotController.upperBodyState == RobotController.UpperBodyState.FIRE && (!robotController.fire_done || robotController.rightWeapon.canHold))
+                        allow_jumpslash = allow_dashslash = false;
 
-                    if (robotController.Sword != null && allow_horizon && horizon_reload <= 0 && !prev_slash && robotController.boost >= 80 && !infight_now)
+                    int size = 0;
+                    int[] cmd = new int[5];
+
+                    if (allow_fire)
+                        cmd[size++] = 0;
+                    if (allow_infight)
+                        cmd[size++] = 1;
+                    if (allow_dashslash)
+                        cmd[size++] = 2;
+                    if (allow_jumpslash)
+                        cmd[size++] = 3;
+                    if (allow_horizon)
+                        cmd[size++] = 4;
+
+                    int selected_cmd = -1;
+
+                    {
+
+                        if (size > 0)
+                        {
+                            int select_idx;
+                            select_idx = Random.Range(0, size);
+                            selected_cmd = cmd[select_idx];
+                        }
+                    }
+
+                    
+
+
+
+                    if (selected_cmd == 4 && !prev_slash)
                     {
                         if(Random.Range(0, 2) == 0)
                             ringMenuDir = RobotController.RingMenuDir.Left;
@@ -652,31 +729,40 @@ public class RobotAI_Medium : RobotAI_Base
                             ringMenuDir = RobotController.RingMenuDir.Right;
                         slash = true;
                     }
-                    else if (robotController.Sword != null && can_jump_slash && allow_jumpslash && jumpslash_reload <= 0 && !prev_slash && robotController.boost >= 80 && !infight_now)
+                    else if (selected_cmd == 3 && !prev_slash)
                     {
                        ringMenuDir = RobotController.RingMenuDir.Down;
                        slash = true;
                     }
-                    else if(robotController.Sword != null && can_dash_slash && allow_dashslash && dashslash_reload <= 0 && !prev_slash && robotController.boost >= 80 && !infight_now)
+                    else if(selected_cmd == 2 && !prev_slash)
                     {
                        ringMenuDir = RobotController.RingMenuDir.Up;
                        slash = true;
                     }
-                    else if (allow_infight)
+                    else if (selected_cmd == 1)
                     {
-                        if (infight_wait <= 0)
-                        {
-                            if (!prev_slash && infight_reload <= 0)
+                        //if (infight_wait <= 0)
+                        //{
+                            if (!prev_slash)
                             {
                                 slash = true;
+
+                                int rand = Random.Range(0, 4);
+
+                                if (rand == 0)
+                                    move = Vector2.left;
+                                else if (rand == 3)
+                                    move = Vector2.right;
+                                else
+                                    move = Vector2.zero;
                             }
-                        }
-                        else
-                            infight_wait--;
+                        //}
+                        //else
+                        //    infight_wait--;
                     }
                     else
                     {
-                        infight_wait = 15;
+                        //infight_wait = 15;
 
                         if (robotController.rightWeapon != null && robotController.fire_followthrough > 0 && robotController.rightWeapon.canHold)
                         {
@@ -711,7 +797,7 @@ public class RobotAI_Medium : RobotAI_Base
 
 
                     fire_wait--;
-                    infight_wait--;
+                    //infight_wait--;
                     moveDirChangeTimer--;
                     prev_dodge = dodge;
                 }
