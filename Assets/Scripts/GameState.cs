@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class GameState : ScriptableObject
 {
     public int stage = -1;
+    public int skyindex = 0;
     public enum LoadingDestination
     {
         Mission,

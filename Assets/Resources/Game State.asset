@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Game State
   m_EditorClassIdentifier: 
   stage: 1
+  skyindex: 0
   loadingDestination: 2
   gold: 2000
   inventryWeapons: []
@@ -22,3 +23,5 @@ MonoBehaviour:
   subWeaponType: 1
   itemFlag: 0
   player_variant: {fileID: 7622608550062222278, guid: a1824583b2b1e6f41b125baa365ae237, type: 3}
+  shopWeapons: []
+  shopParts: []

@@ -62,6 +62,7 @@
     <Compile Include="Assets\Scripts\Projectile\SprayBeam.cs" />
     <Compile Include="Assets\Scripts\InfightWeapons\BeamDagger.cs" />
     <Compile Include="Assets\Scripts\RobotController.cs" />
+    <Compile Include="Assets\Scripts\SkySwitcher.cs" />
     <Compile Include="Assets\LightProbeHelper\LightProbeGenerator.cs" />
     <Compile Include="Assets\Scripts\Weapons\Bazooka.cs" />
     <Compile Include="Assets\Scripts\MultiTapAndHoldInteraction.cs" />
