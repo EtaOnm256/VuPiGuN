@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Game State
   m_EditorClassIdentifier: 
   stage: 1
-  skyindex: 0
+  skyindex: 1
   loadingDestination: 2
-  gold: 2000
+  gold: 8925
   inventryWeapons: []
   inventryParts: []
   rightWeapon_name: 

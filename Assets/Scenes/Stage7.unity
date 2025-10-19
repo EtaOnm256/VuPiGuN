@@ -1683,9 +1683,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7622608550062222278, guid: a1824583b2b1e6f41b125baa365ae237, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: army_enemy.army
+      value: 
+      objectReference: {fileID: 11400000, guid: 09b09cefb6b1d3d44b6a9f76b567e332, type: 2}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: armypower_enemy
       value: 2650
       objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: army_friend.army
+      value: 
+      objectReference: {fileID: 11400000, guid: 56df268f50718104b99b88f217b6fd29, type: 2}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: armypower_friend
       value: 2650
@@ -1757,15 +1765,15 @@ PrefabInstance:
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[3].variant
       value: 
-      objectReference: {fileID: 1721552399784020631, guid: 5cdf1886ad160aa4da8f61a904bfdbbd, type: 3}
+      objectReference: {fileID: 6331699288866075929, guid: 088c97f64ed8b8f40838a5c1e09d8c5f, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[4].variant
       value: 
-      objectReference: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
+      objectReference: {fileID: 6331699288866075929, guid: f5836f8f32ca0c442a10e79e3c8797c1, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.data[5].variant
       value: 
-      objectReference: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
+      objectReference: {fileID: 6331699288866075929, guid: f5836f8f32ca0c442a10e79e3c8797c1, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_friend.spawns.Array.data[0].variant
       value: 

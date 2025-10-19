@@ -75,34 +75,18 @@ public class WorldManager : MonoBehaviour
     [SerializeField]GameObject spawn_prefab;
 
     [System.Serializable]
-    public class Sequence
+    public class ArmyInstance
     {
-        [System.Serializable]
-        public class OneSpawn
-        {
-            public GameObject variant;
-            //public Vector3 pos;
-            //public Quaternion rot;
-            public int squadCount;
-            public bool loop = false;
-            public bool burst = false; // 0体になるまでスポーンさせない
-            public bool boss = false;
-        }
-
-  
-
-        public List<OneSpawn> spawns;
+        public Army army;
 
         public int currentSpawn = 0;
         public int loop_index = -1;
         public bool spawned = false;
     }
 
-    public Sequence sequence_enemy;
-    public Sequence sequence_friend;
+    public ArmyInstance army_enemy;
+    public ArmyInstance army_friend;
 
-    [SerializeField] int armypower_enemy = 600;
-    [SerializeField] int armypower_friend = 600;
 
     [SerializeField] CanvasControl canvasControl;
 
@@ -159,36 +143,36 @@ public class WorldManager : MonoBehaviour
         Slider friendPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team {power = armypower_friend, powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = armypower_enemy, powerslider = enemyPowerSlider };
+        Team friend_team = new Team {power = army_friend.army.power, powerslider = friendPowerSlider };
+        Team enemy_team = new Team { power = army_enemy.army.power, powerslider = enemyPowerSlider };
 
-        friendPowerSlider.value = friendPowerSlider.maxValue = armypower_friend;
-        enemyPowerSlider.value = enemyPowerSlider.maxValue = armypower_enemy;
+        friendPowerSlider.value = friendPowerSlider.maxValue = army_friend.army.power;
+        enemyPowerSlider.value = enemyPowerSlider.maxValue = army_enemy.army.power;
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
 
         Vector3 pos = PlacePlayerSpawn(60);
 
-        while (ProcessSpawn(sequence_friend, friend_team, true)) ;
-        while (ProcessSpawn(sequence_enemy, enemy_team, true)) ;
+        while (ProcessSpawn(army_friend, friend_team, true)) ;
+        while (ProcessSpawn(army_enemy, enemy_team, true)) ;
 
         PresetCameraTransform(pos);
 
-        for (int i = 0; i < sequence_enemy.spawns.Count; i++)
+        for (int i = 0; i < army_enemy.army.spawns.Count; i++)
         {
-            if (sequence_enemy.spawns[i].loop)
+            if (army_enemy.army.spawns[i].loop)
             {
-                sequence_enemy.loop_index = i;
+                army_enemy.loop_index = i;
                 break;
             }
         }
 
-        for (int i = 0; i < sequence_friend.spawns.Count; i++)
+        for (int i = 0; i < army_friend.army.spawns.Count; i++)
         {
-            if (sequence_friend.spawns[i].loop)
+            if (army_friend.army.spawns[i].loop)
             {
-                sequence_friend.loop_index = i;
+                army_friend.loop_index = i;
                 break;
             }
         }
@@ -245,7 +229,7 @@ public class WorldManager : MonoBehaviour
 
     
 
-    bool ProcessSpawn(Sequence sequence,Team team,bool instant)
+    bool ProcessSpawn(ArmyInstance sequence,Team team,bool instant)
     {
         bool hav_progress = false;
 
@@ -271,9 +255,9 @@ public class WorldManager : MonoBehaviour
 
         if (sequence.spawned) // 今のインデックスはスポーン済み。次に進むかの判定
         {
-            if (team.robotControllers.Count+team.spawnings.Count < sequence.spawns[sequence.currentSpawn].squadCount)
+            if (team.robotControllers.Count+team.spawnings.Count < sequence.army.spawns[sequence.currentSpawn].squadCount)
             {
-                if (sequence.currentSpawn < sequence.spawns.Count - 1)
+                if (sequence.currentSpawn < sequence.army.spawns.Count - 1)
                 {
                     sequence.currentSpawn++;
                     sequence.spawned = false;
@@ -297,16 +281,16 @@ public class WorldManager : MonoBehaviour
         {
             bool do_spawn;
 
-            if (sequence.spawns[sequence.currentSpawn].burst)
+            if (sequence.army.spawns[sequence.currentSpawn].burst)
             {
                 do_spawn = team.robotControllers.Count + team.spawnings.Count == 0;
             }
             else
-                do_spawn = team.robotControllers.Count + team.spawnings.Count < sequence.spawns[sequence.currentSpawn].squadCount;
+                do_spawn = team.robotControllers.Count + team.spawnings.Count < sequence.army.spawns[sequence.currentSpawn].squadCount;
 
             if (do_spawn)
             {
-                Sequence.OneSpawn spawn = sequence.spawns[sequence.currentSpawn];
+                Army.OneSpawn spawn = sequence.army.spawns[sequence.currentSpawn];
 
                 float distance;
                 Quaternion rot;
@@ -699,8 +683,8 @@ public class WorldManager : MonoBehaviour
 
             ProcessPlayerSpawn();
 
-            ProcessSpawn(sequence_friend, teams[0], false);
-            ProcessSpawn(sequence_enemy, teams[1], false);
+            ProcessSpawn(army_friend, teams[0], false);
+            ProcessSpawn(army_enemy, teams[1], false);
         }
 
         prev_command = humanInput.command;
@@ -715,7 +699,7 @@ public class WorldManager : MonoBehaviour
         if (!testingroom)
         {
             if (robotController.robotParameter.Cost < 0)
-                robotController.team.power = System.Math.Max(0, robotController.team.power - armypower_friend / 3);
+                robotController.team.power = System.Math.Max(0, robotController.team.power - army_friend.army.power / 3);
             else
                 robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.robotParameter.Cost);
 

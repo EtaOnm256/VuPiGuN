@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c611b4e3fac10b48a151ec425008698, type: 3}
+  m_Name: Army2_enemy
+  m_EditorClassIdentifier: 
+  spawns:
+  - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
+  - variant: {fileID: 1721552399784020631, guid: cfa37cd278cf51349aa3a8bd7e02cf42, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
+  - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
+  - variant: {fileID: 1721552399784020631, guid: 5cdf1886ad160aa4da8f61a904bfdbbd, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 1
+    boss: 1
+  - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
+    squadCount: 2
+    loop: 1
+    burst: 0
+    boss: 0
+  - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
+  power: 900

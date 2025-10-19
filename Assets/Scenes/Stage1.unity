@@ -3494,6 +3494,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6538551618372168848, guid: e5b847e64d4db7744b75ecf8922a0b16, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: army_enemy.army
+      value: 
+      objectReference: {fileID: 11400000, guid: c7ee274d43db4364b97b588b9f235910, type: 2}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: army_friend.army
+      value: 
+      objectReference: {fileID: 11400000, guid: 9d85995258100cb468792d8570678768, type: 2}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: sequence_enemy.spawns.Array.size
       value: 5
       objectReference: {fileID: 0}

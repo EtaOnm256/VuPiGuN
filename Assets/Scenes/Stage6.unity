@@ -3067,9 +3067,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7622608550062222278, guid: a1824583b2b1e6f41b125baa365ae237, type: 3}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: army_enemy.army
+      value: 
+      objectReference: {fileID: 11400000, guid: b130a5749d33fa243b3c28974ecd18dd, type: 2}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: armypower_enemy
       value: 1300
       objectReference: {fileID: 0}
+    - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+      propertyPath: army_friend.army
+      value: 
+      objectReference: {fileID: 11400000, guid: 5363afa6083531c4589301fdaf959595, type: 2}
     - target: {fileID: 986497803900311150, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
       propertyPath: armypower_friend
       value: 1300
