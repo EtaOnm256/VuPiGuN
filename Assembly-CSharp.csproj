@@ -137,6 +137,7 @@
     <Compile Include="Assets\RainMaker\Demo\DemoScript2D.cs" />
     <Compile Include="Assets\Scripts\AI\RobotAI_Gargoyle.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
+    <Compile Include="Assets\Free HDR Skyboxes Pack\Example Scenes\Script\RotateCamera.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -175,6 +176,7 @@
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderCommon.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\Free HDR Skyboxes Pack\ReadMe.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\Shaders\TerrainLit_DrawBorder.shader" />
     <None Include="Assets\LightProbeHelper\Readme.txt" />

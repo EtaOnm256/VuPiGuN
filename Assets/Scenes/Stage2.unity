@@ -15,7 +15,7 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 1, g: 0.54509807, b: 0.0627451, a: 1}
+  m_FogColor: {r: 0.37254903, g: 0.30980393, b: 0.31764707, a: 1}
   m_FogMode: 1
   m_FogDensity: 0.001
   m_LinearFogStart: 400
@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.627451, g: 0.627451, b: 0.627451, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 942ca5ec3987ebd4ea9c2de38d6ba225, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: cf09bdd74268f184498d51e302193dbf, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1727,8 +1727,8 @@ MonoBehaviour:
     lights:
     - {fileID: 705507994}
     - {fileID: 862557997}
-  - skybox: {fileID: 2100000, guid: 942ca5ec3987ebd4ea9c2de38d6ba225, type: 2}
-    fogColor: {r: 1, g: 0.54509807, b: 0.0627451, a: 1}
+  - skybox: {fileID: 2100000, guid: cf09bdd74268f184498d51e302193dbf, type: 2}
+    fogColor: {r: 0.37254903, g: 0.30980393, b: 0.31764707, a: 1}
     ambientColor: {r: 0.13333334, g: 0.13333334, b: 0.13333334, a: 1}
     lights:
     - {fileID: 1537665624}
@@ -1783,7 +1783,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.74185836, b: 0.5990566, a: 1}
+  m_Color: {r: 1, g: 0.72, b: 0.6, a: 1}
   m_Intensity: 0.03
   m_Range: 10
   m_SpotAngle: 30
@@ -3429,7 +3429,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.70402366, b: 0.5613208, a: 1}
+  m_Color: {r: 1, g: 0.6950597, b: 0.56078434, a: 1}
   m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
@@ -3487,14 +3487,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1537665622}
-  m_LocalRotation: {x: 0.086824074, y: -0.8528686, z: 0.15038373, w: 0.49240384}
+  m_LocalRotation: {x: 0.033353075, y: -0.9203639, z: 0.08052145, w: 0.3812272}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 20, y: -120, z: 0}
+  m_LocalEulerAnglesHint: {x: 10, y: -135, z: 0}
 --- !u!1001 &1543392607
 PrefabInstance:
   m_ObjectHideFlags: 0

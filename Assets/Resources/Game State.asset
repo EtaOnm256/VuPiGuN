@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Game State
   m_EditorClassIdentifier: 
   stage: 1
-  skyindex: 1
+  skyindex: 0
   loadingDestination: 2
   gold: 8925
   inventryWeapons: []
