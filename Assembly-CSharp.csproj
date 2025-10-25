@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scripts\Projectile\BusterBeam.cs" />
     <Compile Include="Assets\Scripts\VectorUtil.cs" />
     <Compile Include="Assets\Scripts\Projectile\CannonBall.cs" />
+    <Compile Include="Assets\Free HDR Skyboxes Pack\Example Scenes\Script\RotateCamera.cs" />
     <Compile Include="Assets\Scripts\Projectile\SprayBeam.cs" />
     <Compile Include="Assets\Scripts\InfightWeapons\BeamDagger.cs" />
     <Compile Include="Assets\Scripts\RobotController.cs" />
@@ -137,7 +138,6 @@
     <Compile Include="Assets\RainMaker\Demo\DemoScript2D.cs" />
     <Compile Include="Assets\Scripts\AI\RobotAI_Gargoyle.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
-    <Compile Include="Assets\Free HDR Skyboxes Pack\Example Scenes\Script\RotateCamera.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -85,7 +85,7 @@ public class BeamDagger : InfightWeapon
                  { RobotController.SubState_Slash.QuickSlash,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2 ,SlashDistance=4.25f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
                  { RobotController.SubState_Slash.AirSlashSeed,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2 ,SlashDistance=4.25f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
                  { RobotController.SubState_Slash.SlideSlashSeed,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2 ,SlashDistance=4.25f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
-                 { RobotController.SubState_Slash.RollingSlash,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45/2 ,SlashDistance=4.25f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue,AlwaysForward=true,ForceProceed=true} },
+                 { RobotController.SubState_Slash.RollingSlash,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45/2 ,SlashDistance=4.25f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue,ForceProceed=true} },
                  { RobotController.SubState_Slash.DashSlash,new MotionProperty{DashSpeed = 72.0f,DashDuration = 45,SlashDistance=4.25f,RotateSpeed=0.75f,SlashDistance_Min = float.MinValue } },
                   { RobotController.SubState_Slash.JumpSlash_Jump,new MotionProperty{DashSpeed = 60.0f ,DashDuration = 20, SlashDistance=4.25f,RotateSpeed=6.0f,SlashDistance_Min = 5.0f} },
             };

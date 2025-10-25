@@ -97,7 +97,6 @@ public class InfightWeapon : Pausable
         public float SlashDistance;
         public float SlashDistance_Min;
         public float RotateSpeed;
-        public bool AlwaysForward;
         public bool ForceProceed;
     }
 

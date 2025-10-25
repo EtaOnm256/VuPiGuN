@@ -4350,7 +4350,7 @@ public class RobotController : Pausable
                             }
                             else
                             {
-                                if (!Sword.slashing || Sword.motionProperty[subState_Slash].AlwaysForward)
+                                if (!Sword.slashing || (subState_Slash == SubState_Slash.RollingSlash && slash_count < Sword.slashMotionInfo[subState_Slash].num - 1))
                                 {
                                     if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
                                     {
@@ -4529,7 +4529,7 @@ public class RobotController : Pausable
                                         else if (subState_Slash == SubState_Slash.DashSlash)
                                             Sword.knockBackType = KnockBackType.KnockUp;
                                         else if (subState_Slash == SubState_Slash.RollingSlash && robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
-                                            Sword.knockBackType = KnockBackType.Aerial;
+                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Aerial : KnockBackType.Finish;
                                         else
                                             Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
 
