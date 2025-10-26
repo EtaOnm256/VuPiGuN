@@ -14,8 +14,8 @@ public class RobotAI_Medium : RobotAI_Base
     // Start is called before the first frame update
     void Start()
     {
-        fire_wait = Random.Range(fire_wait_min, fire_wait_max);
-        fire_prepare = fire_prepare_max;
+        attack_reload = Random.Range(fire_wait_min, fire_wait_max);
+        attack_prepare = fire_prepare_max;
 
         if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.InfightBoost))
             infight_dist *= 1.5f;
@@ -25,15 +25,15 @@ public class RobotAI_Medium : RobotAI_Base
 
     public int ascend_margin = 0;
 
-    public int fire_wait;
+    public int attack_reload;
 
     [SerializeField] int fire_wait_min = 60;
     [SerializeField] int fire_wait_max = 120;
 
-    public int fire_prepare = 15;
+    public int attack_prepare = 15;
     [SerializeField] int fire_prepare_max = 15;
 
-    public int infight_reload = 0;
+    //public int infight_reload = 0;
     //public int infight_wait = 0;
     public int jumpslash_reload = 0;
     public int dashslash_reload = 0;
@@ -206,7 +206,9 @@ public class RobotAI_Medium : RobotAI_Base
                     jump = false;
 
                     bool allow_fire = false;
+                    bool force_fire = false;
                     bool allow_infight = false;
+                    bool force_infight = false;
                     bool allow_jumpslash = false;
                     bool allow_dashslash = false;
                     bool allow_horizon = false;
@@ -592,9 +594,10 @@ public class RobotAI_Medium : RobotAI_Base
        
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.SLASH)
                     {
-                        if (robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.subState_Slash].num - 1)
+                        //if (robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.subState_Slash].num - 1)
+                        if(robotController.subState_Slash != RobotController.SubState_Slash.AirSlash)
                         {
-                            infight_reload = 60;
+                            attack_reload = 60;
 
                             if (type == AI_Type.FRANK)
                             {
@@ -602,8 +605,8 @@ public class RobotAI_Medium : RobotAI_Base
                             }
                         }
                     }
-                    else if(infight_reload > 0)
-                        infight_reload--;
+                    else if(attack_reload > 0)
+                        attack_reload--;
 
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.SLASH
                      || robotController.lowerBodyState == RobotController.LowerBodyState.SLASH_DASH)
@@ -624,7 +627,7 @@ public class RobotAI_Medium : RobotAI_Base
                     else if (horizon_reload > 0)
                         horizon_reload--;
 
-                    if (robotController.Sword == null || infight_reload > 0)
+                    if (robotController.Sword == null || attack_reload > 0)
                         allow_infight = allow_dashslash = allow_jumpslash = allow_horizon = false;
 
                     if (robotController.rightWeapon == null)
@@ -644,10 +647,7 @@ public class RobotAI_Medium : RobotAI_Base
                     if (robotController.lowerBodyState == RobotController.LowerBodyState.SWEEP && robotController.Sword.hitHistoryRCCount > 0)
                     {
                         allow_fire = allow_jumpslash = allow_dashslash = allow_horizon = false;
-                        allow_infight = true;
-
-                        //infight_wait = 
-                        infight_reload = 0;
+                        allow_infight = force_infight = true;
                     }
 
                     if (infight_now)
@@ -659,11 +659,24 @@ public class RobotAI_Medium : RobotAI_Base
                             if( robotController.slash_count == robotController.Sword.slashMotionInfo[robotController.subState_Slash].num - 1
                                 && robotController.Sword.hitHistoryRCCount > 0)
                             {
-                                allow_fire = true;
-                                allow_infight = false;
+                                if (!dodge)
+                                {
+                                    allow_fire = force_fire = true;
+                                    allow_infight = false;
+                                }
                             }
 
                         }
+                 
+                        if (robotController.slash_count < robotController.Sword.slashMotionInfo[robotController.subState_Slash].num - 1)
+                        {
+                            if (!dodge)
+                            {
+                                allow_infight = true;
+                                force_infight = true;
+                            }
+                        }
+
                     }
                     else
                     {
@@ -688,8 +701,41 @@ public class RobotAI_Medium : RobotAI_Base
                         //}
                     }
 
+                    if(robotController.upperBodyState == RobotController.UpperBodyState.FIRE || 
+                        robotController.upperBodyState == RobotController.UpperBodyState.HEAVYFIRE || 
+                        robotController.upperBodyState == RobotController.UpperBodyState.ROLLINGFIRE ||
+                        robotController.upperBodyState == RobotController.UpperBodyState.ROLLINGHEAVYFIRE)
+                    {
+                        attack_reload = Random.Range(fire_wait_min, fire_wait_max);
+                        attack_prepare = fire_prepare_max;
+                    }
+
+                    if (attack_reload > 0 || mindist > robotController.rightWeapon.limit_range_max)
+                        allow_fire = false;
+
+
+                    if (allow_fire || allow_infight || allow_dashslash || allow_jumpslash || allow_horizon)
+                    {
+                        if (attack_prepare > 0)
+                        {
+                            attack_prepare--;
+                            allow_fire = allow_infight = allow_dashslash = allow_jumpslash = allow_horizon = false;
+                        }
+                    }
+                    else
+                    {
+                        attack_prepare = fire_prepare_max;
+                    }
+
+
                     if (robotController.upperBodyState == RobotController.UpperBodyState.FIRE && (!robotController.fire_done || robotController.rightWeapon.canHold))
                         allow_jumpslash = allow_dashslash = false;
+
+                    if (force_fire)
+                        allow_fire = true;
+
+                    if (force_infight)
+                        allow_infight = true;
 
                     int size = 0;
                     int[] cmd = new int[5];
@@ -770,33 +816,15 @@ public class RobotAI_Medium : RobotAI_Base
                         }
                         else
                         {
-
-                            if ( (fire_wait <= 0 || ringMenuDir != RobotController.RingMenuDir.Center) && allow_fire)
+                            if (allow_fire)
                             {
-                                if (mindist < lock_range && (robotController.rightWeapon == null || mindist < robotController.rightWeapon.limit_range_max))
-                                {
-                                    if (fire_prepare <= 0 || ringMenuDir != RobotController.RingMenuDir.Center)
-                                    {
-                                        fire = true;
-                                        fire_wait = Random.Range(fire_wait_min, fire_wait_max);
-                                        fire_prepare = fire_prepare_max;
-                                    }
-                                    else
-                                    {
-                                        fire_prepare--;
-                                    }
-                                }
-                                else
-                                {
-                                    fire_wait = Random.Range(fire_wait_min, fire_wait_max);
-                                    fire_prepare = fire_prepare_max;
-                                }
+                                fire = true;
                             }
                         }
                     }
 
 
-                    fire_wait--;
+                    attack_reload--;
                     //infight_wait--;
                     moveDirChangeTimer--;
                     prev_dodge = dodge;
