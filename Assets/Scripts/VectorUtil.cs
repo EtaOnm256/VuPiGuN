@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class VectorUtil
 {
-    public static Vector2 rotate(Vector2 v, float delta)
+    public static Vector2 rotate(Vector2 v, float deltaInRadian)
     {
         return new Vector2(
-            v.x * Mathf.Cos(delta) - v.y * Mathf.Sin(delta),
-            v.x * Mathf.Sin(delta) + v.y * Mathf.Cos(delta)
+            v.x * Mathf.Cos(deltaInRadian) - v.y * Mathf.Sin(deltaInRadian),
+            v.x * Mathf.Sin(deltaInRadian) + v.y * Mathf.Cos(deltaInRadian)
         );
     }
 

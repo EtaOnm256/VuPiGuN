@@ -12,16 +12,88 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e285c4227a62344bb4272e39a553024, type: 3}
   m_Name: Game State
   m_EditorClassIdentifier: 
-  stage: 1
+  progress: 2
   skyindex: 0
-  loadingDestination: 2
-  gold: 8925
+  chapters:
+  - name: Chapter1
+    stages:
+    - Stage1
+    - Stage2
+    bossStage: Stage3
+  - name: Chapter2
+    stages:
+    - Stage4
+    - Stage5
+    bossStage: Stage6
+  - name: Chapter3
+    stages:
+    - Stage7
+    bossStage: Stage8
+  journeyPlan:
+  - name: Chapter1
+    index_in_chapter: 0000000001000000
+  - name: Chapter2
+    index_in_chapter: 0000000001000000
+  - name: Chapter3
+    index_in_chapter: 00000000
+  destination: 4
+  loadingDestination: 0
+  gold: 3000
   inventryWeapons: []
   inventryParts: []
   rightWeapon_name: 
   shoulderWeapon_name: 
   subWeaponType: 1
   itemFlag: 0
-  player_variant: {fileID: 7622608550062222278, guid: a1824583b2b1e6f41b125baa365ae237, type: 3}
-  shopWeapons: []
-  shopParts: []
+  player_variant: {fileID: 6538551618372168848, guid: e5b847e64d4db7744b75ecf8922a0b16, type: 3}
+  shopWeapons:
+  - prefabname: BusterRifle
+    type: 0
+  - prefabname: BeamMagnum
+    type: 0
+  - prefabname: BeamMachineGun
+    type: 0
+  - prefabname: AdvancedDronePlatform
+    type: 2
+  - prefabname: BeamRifle Variant
+    type: 0
+  - prefabname: SniperRifle Variant
+    type: 0
+  - prefabname: Cluster Launcher
+    type: 0
+  - prefabname: DronePlatform Variant
+    type: 2
+  - prefabname: BeamSprayCannon
+    type: 1
+  - prefabname: GatlingCannon
+    type: 0
+  - prefabname: HandCannon Variant
+    type: 0
+  - prefabname: MissilePod Variant
+    type: 1
+  - prefabname: SolidRifle Variant
+    type: 0
+  - prefabname: SMG Variant
+    type: 0
+  - prefabname: Bazooka Variant
+    type: 0
+  shopParts:
+  - itemFlag: 2
+  - itemFlag: 1048576
+  - itemFlag: 1
+  - itemFlag: 8388608
+  - itemFlag: 128
+  - itemFlag: 262144
+  - itemFlag: 65536
+  - itemFlag: 2048
+  - itemFlag: 4
+  - itemFlag: 256
+  - itemFlag: 4194304
+  - itemFlag: 4096
+  - itemFlag: 16
+  - itemFlag: 1024
+  - itemFlag: 32
+  - itemFlag: 32768
+  - itemFlag: 512
+  - itemFlag: 8
+  - itemFlag: 16384

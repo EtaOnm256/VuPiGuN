@@ -5,6 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class Loading : MonoBehaviour
 {
+	public enum Destination
+	{
+		Mission,
+		TestingRoom,
+		//Intermission, //重くなったら追加するかも
+		//Intermission_Garage, //重くなったら追加するかも
+		//WorldMap, //重くなったら追加するかも
+		//Title //重くなったら追加するかも
+	}
+
 	//　非同期動作で使用するAsyncOperation
 	private AsyncOperation async;
 	//　シーンロード中に表示するUI画面
@@ -27,16 +37,16 @@ public class Loading : MonoBehaviour
 
 	IEnumerator LoadData()
 	{
-		if (gameState.stage <= 7)
-		{
+		//if (gameState.progress <= gameState.GetMaxProgress())
+		//{
 			switch(gameState.loadingDestination)
             {
-				case GameState.LoadingDestination.Intermission:
-				case GameState.LoadingDestination.Intermission_Garage:
-					async = SceneManager.LoadSceneAsync($"Intermission");
-					break;
-				case GameState.LoadingDestination.Mission:
-				case GameState.LoadingDestination.TestingRoom:
+				//case Destination.Intermission:
+				//case Destination.Intermission_Garage:
+				//	async = SceneManager.LoadSceneAsync($"Intermission");
+				//	break;
+				case Destination.Mission:
+				case Destination.TestingRoom:
 					if (gameState.shoulderWeapon_name != null && gameState.shoulderWeapon_name != "")
 					{
 						if (gameState.subWeaponType == IntermissionButton.ShopItemWeapon.Type.Shoulder)
@@ -61,20 +71,23 @@ public class Loading : MonoBehaviour
 
 					robotParameter.itemFlag = gameState.itemFlag;
 
-					if (gameState.loadingDestination == GameState.LoadingDestination.TestingRoom)
+					if (gameState.loadingDestination == Destination.TestingRoom)
 						async = SceneManager.LoadSceneAsync($"TestingRoom");
 					else
-						async = SceneManager.LoadSceneAsync($"Stage{gameState.stage}");
+						async = SceneManager.LoadSceneAsync(gameState.GetNextStage_UpdateSkyIndex().Item2);
 					break;
-				case GameState.LoadingDestination.Title:
-					async = SceneManager.LoadSceneAsync("Title");
-					break;
+				//case GameState.LoadingDestination.Title:
+				//	async = SceneManager.LoadSceneAsync("Title");
+				//	break;
+				//case GameState.LoadingDestination.WorldMap:
+				//	async = SceneManager.LoadSceneAsync("WorldMap");
+				//	break;
 			}
-		}
-		else
-		{
-			async = SceneManager.LoadSceneAsync("Ending");
-		}
+		//}
+		//else
+		//{
+		//	async = SceneManager.LoadSceneAsync("Ending");
+		//}
 
 		//　読み込みが終わるまで進捗状況をスライダーの値に反映させる
 		while (!async.isDone)

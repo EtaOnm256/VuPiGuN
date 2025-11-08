@@ -71,12 +71,14 @@ public class PauseMenu : MonoBehaviour
 
         if (!testingroom)
         {
-            gameState.stage = -1;
-            gameState.loadingDestination = GameState.LoadingDestination.Title;
+            gameState.progress = -1;
+            SceneManager.LoadScene("Title");
         }
         else
-            gameState.loadingDestination = GameState.LoadingDestination.Intermission_Garage;
-
-        SceneManager.LoadScene("Loading");
+        {
+            gameState.destination = GameState.Destination.Intermission_Garage;
+            SceneManager.LoadScene("Intermission");
+        }
+         
     }
 }

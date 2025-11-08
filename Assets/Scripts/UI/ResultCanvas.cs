@@ -82,14 +82,14 @@ public class ResultCanvas : MonoBehaviour
 
         if (victory)
         {
-            gameState.loadingDestination = GameState.LoadingDestination.Intermission;
-            gameState.stage++;
+            //gameState.loadingDestination = GameState.LoadingDestination.WorldMap;
+            gameState.progress++;
             StartCoroutine("Blackout");
         }
         else
         {
-            gameState.loadingDestination = GameState.LoadingDestination.Title;
-            gameState.stage = -1;
+            //gameState.loadingDestination = GameState.LoadingDestination.Title;
+            gameState.progress = -1;
             StartCoroutine("Blackout");
         }
 
@@ -101,7 +101,7 @@ public class ResultCanvas : MonoBehaviour
         if (finished)
             return;
 
-        gameState.loadingDestination = GameState.LoadingDestination.Intermission;
+        gameState.destination = GameState.Destination.Intermission;
         StartCoroutine("Blackout");
   
         finished = true;
@@ -124,7 +124,14 @@ public class ResultCanvas : MonoBehaviour
 
         }
 
-
-        SceneManager.LoadScene("Loading");
+        if (victory)
+        {
+            if(gameState.progress <= gameState.GetMaxProgress())
+                SceneManager.LoadScene("WorldMap");
+            else
+                SceneManager.LoadScene("Ending");
+        }
+        else
+            SceneManager.LoadScene("Title");
     }
 }

@@ -384,7 +384,7 @@ public class IntermissionButton : MonoBehaviour
     {
         StartCoroutine("Blackin");
 
-        if(gameState.loadingDestination==GameState.LoadingDestination.Intermission_Garage)
+        if(gameState.destination==GameState.Destination.Intermission_Garage)
         {
            
         }
@@ -394,7 +394,7 @@ public class IntermissionButton : MonoBehaviour
             gameState.shopParts.Clear();
             for (int tier = 3; tier > 0; tier--)
             {
-                int count_ThisTier = System.Math.Max(0, 3-( (tier-1) * 3)+(gameState.stage-1));
+                int count_ThisTier = System.Math.Max(0, 3-( (tier-1) * 3)+(gameState.progress-1));
 
                 LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier, gameState.inventryWeapons);
                 LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier, gameState.inventryParts);
@@ -406,7 +406,7 @@ public class IntermissionButton : MonoBehaviour
         DrawShop();
         SwitchToShop();
 
-        if(gameState.loadingDestination==GameState.LoadingDestination.Intermission_Garage)
+        if(gameState.destination==GameState.Destination.Intermission_Garage)
         {
             OnClickProceedToGarage();
         }
@@ -547,9 +547,9 @@ public class IntermissionButton : MonoBehaviour
 
         }
 
-        gameState.loadingDestination = GameState.LoadingDestination.Mission;
+        gameState.progress++;
 
-        SceneManager.LoadScene("Loading");
+        SceneManager.LoadScene("WorldMap");
     }
 
     IEnumerator Blackout_TestingRoom()
@@ -569,8 +569,7 @@ public class IntermissionButton : MonoBehaviour
 
         }
 
-        gameState.loadingDestination = GameState.LoadingDestination.TestingRoom;
-
+        gameState.loadingDestination = Loading.Destination.TestingRoom;
         SceneManager.LoadScene("Loading");
     }
 

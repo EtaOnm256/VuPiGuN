@@ -710,7 +710,7 @@ public class RobotAI_Medium : RobotAI_Base
                         attack_prepare = fire_prepare_max;
                     }
 
-                    if (attack_reload > 0 || mindist > robotController.rightWeapon.limit_range_max)
+                    if (robotController.rightWeapon == null || attack_reload > 0 || mindist > robotController.rightWeapon.limit_range_max)
                         allow_fire = false;
 
 

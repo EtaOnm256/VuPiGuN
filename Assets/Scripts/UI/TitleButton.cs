@@ -30,7 +30,7 @@ public class TitleButton : MonoBehaviour
         if (finished)
             return;
 
-        gameState.stage = 1;
+        gameState.progress = 1;
 
         audioSource.PlayOneShot(audioClip_Start);
 
@@ -55,6 +55,6 @@ public class TitleButton : MonoBehaviour
         }
 
         gameState.Reset();
-        SceneManager.LoadScene("Loading");
+        SceneManager.LoadScene("WorldMap");
     }
 }
