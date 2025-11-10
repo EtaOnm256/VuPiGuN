@@ -587,7 +587,8 @@ public class WorldManager : MonoBehaviour
                         canvasControl.resultCanvas.power_gold = teams[0].power*4;
                         canvasControl.resultCanvas.dealeddamage_gold = player_dealeddamage;
 
-                        gameState.gold += canvasControl.resultCanvas.result_gold+canvasControl.resultCanvas.power_gold + canvasControl.resultCanvas.dealeddamage_gold;
+                        if(victory)
+                            gameState.gold += canvasControl.resultCanvas.result_gold+canvasControl.resultCanvas.power_gold + canvasControl.resultCanvas.dealeddamage_gold;
 
                         canvasControl.resultCanvas.currentgold = gameState.gold;
 

@@ -13,11 +13,18 @@ public class GameState : ScriptableObject
         Mission,
         TestingRoom,
         Intermission,
-        Intermission_Garage,
+        Garage,
         WorldMap,
         Title
     }
 
+    public enum SubDestination_Intermission
+    {
+        FromWorldMap,
+        FromTestRoom
+    }
+
+  
 
     [System.Serializable]
     public class Chapter
@@ -40,6 +47,7 @@ public class GameState : ScriptableObject
 
     public Destination destination = Destination.WorldMap;
     public Loading.Destination loadingDestination;
+    public SubDestination_Intermission subDestination_Intermission = SubDestination_Intermission.FromWorldMap;
 
     public int gold = 2000;
     public List<IntermissionButton.ShopItemWeapon> inventryWeapons = new List<IntermissionButton.ShopItemWeapon>();
@@ -55,8 +63,9 @@ public class GameState : ScriptableObject
     public List<IntermissionButton.ShopItemParts> shopParts = new List<IntermissionButton.ShopItemParts>();
     public void Reset()
     {
-        progress = 1;
-        destination = Destination.WorldMap;
+        progress = 0;
+        destination = Destination.Intermission;
+        subDestination_Intermission = GameState.SubDestination_Intermission.FromWorldMap;
         gold = 3000;
         inventryWeapons.Clear();
         inventryParts.Clear();
@@ -113,7 +122,7 @@ public class GameState : ScriptableObject
                 foreach (var idx in journeyPlan.Find(x => x.name == chapter.name).index_in_chapter)
                 {
                     if (progress_seek == progress)
-                        return (Destination.Mission,chapter.stages[idx]);
+                        return (Destination.Garage,chapter.stages[idx]);
 
                     skyindex++;
 
@@ -126,7 +135,7 @@ public class GameState : ScriptableObject
             skyindex = 0;
 
             if (progress_seek == progress)
-                return (Destination.Mission, chapter.bossStage);
+                return (Destination.Garage, chapter.bossStage);
 
             progress_seek++;
 

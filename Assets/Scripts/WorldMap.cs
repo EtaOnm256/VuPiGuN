@@ -30,7 +30,7 @@ public class WorldMap : MonoBehaviour
 
         var next = gameState.GetNextStage_UpdateSkyIndex();
 
-        if (next.Item1 == GameState.Destination.Mission)
+        if (next.Item1 == GameState.Destination.Garage)
         {
             scenePanel_Image.sprite = Resources.Load<Sprite>($"WorldMap/{next.Item2}_{gameState.skyindex}");
         }
@@ -60,12 +60,19 @@ public class WorldMap : MonoBehaviour
             if (chapter.stages.Length > 0)
             {
                 int spacing_y = 0;
-                if(chapter.stages.Length > 1)
+                int current_y = center_y - height / 2;
+
+                if (chapter.stages.Length > 1)
+                {
                     spacing_y = height / (chapter.stages.Length - 1);
+                    current_y = center_y - height / 2;
+                }
+                else
+                    current_y = center_y;
 
-                int current_y = center_y-height/2;
 
-                foreach(var stage in chapter.stages)
+
+                foreach (var stage in chapter.stages)
                 {
                     GameObject node_obj = GameObject.Instantiate(node_prefab, Vector3.back,Quaternion.identity);
 
@@ -134,7 +141,14 @@ public class WorldMap : MonoBehaviour
             }
         }
 
- 
+        float destination_X = RectTransformUtility.WorldToScreenPoint(Camera.main, destinationNode.Pos).x;
+
+        float offset = destination_X - Screen.width * 3 / 4;
+
+        if (offset > 0.0f)
+        {
+            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x+offset, Camera.main.transform.position.y, Camera.main.transform.position.z);
+        }
 
         scenePanel_rectTransform.gameObject.SetActive(false);
     }
@@ -325,16 +339,7 @@ public class WorldMap : MonoBehaviour
         }
 
         gameState.destination = gameState.GetNextStage_UpdateSkyIndex().Item1;
-
-        switch (gameState.destination)
-        {
-            case GameState.Destination.Mission:
-                gameState.loadingDestination = Loading.Destination.Mission;
-                SceneManager.LoadScene("Loading");
-                break;
-            case GameState.Destination.Intermission:
-                SceneManager.LoadScene("Intermission");
-                break;
-        }
+        gameState.subDestination_Intermission = GameState.SubDestination_Intermission.FromWorldMap;
+        SceneManager.LoadScene("Intermission");
     }
 }

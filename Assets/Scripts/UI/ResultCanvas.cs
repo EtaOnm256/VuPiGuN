@@ -9,16 +9,18 @@ public class ResultCanvas : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI resultText;
     [SerializeField] TextMeshProUGUI bigResultText;
-    [SerializeField]TextMeshProUGUI summaryLabel;
+    [SerializeField] TextMeshProUGUI summaryLabel;
+    [SerializeField] RectTransform summaryLabelRectTm;
     [SerializeField] TextMeshProUGUI summaryValue;
     [SerializeField] TextMeshProUGUI summaryGold;
+    [SerializeField] RectTransform summaryGoldRectTm;
     [SerializeField] Image background;
     [SerializeField] GameState gameState;
     [SerializeField] Image blackout;
     [SerializeField] GameObject proceedButton;
     [SerializeField] GameObject retryButton;
     [SerializeField] GameObject endButton;
-
+    [SerializeField] GameObject sumLineObject;
     public bool victory;
 
     public int power;
@@ -40,22 +42,33 @@ public class ResultCanvas : MonoBehaviour
 
     private void OnEnable()
     {
-        summaryValue.text = "\n"+power.ToString()+"\n"+ dealeddamage.ToString()+ "\n \n \n ";
-        summaryGold.text = "$" + result_gold.ToString() + "\n"+"$" +power_gold.ToString() + "\n" + "$" + dealeddamage_gold.ToString() + "\n" + "$" + (result_gold+power_gold+ dealeddamage_gold).ToString()+  "\n" + "\n " + "$" +currentgold;
+        
 
         if (victory)
         {
+            summaryLabel.text = "çÏêÌåãâ " + "\n" + "écêÌóÕ" + "\n" + "ó^É_ÉÅÅ[ÉW" + "\n" + "älìæéëã‡" + "\n \n" + "çáåvéëã‡";
+            summaryValue.text = "èüóò"+"\n" + power.ToString() + "\n" + dealeddamage.ToString() + "\n \n \n ";
+            summaryGold.text = "$" + result_gold.ToString() + "\n" + "$" + power_gold.ToString() + "\n" + "$" + dealeddamage_gold.ToString() + "\n" + "$" + (result_gold + power_gold + dealeddamage_gold).ToString() + "\n" + "\n " + "$" + currentgold;
 
             bigResultText.text = resultText.text = "çÏêÌê¨å˜";
             background.color = new Color(1.0f, 1.0f, 1.0f, 0.125f);
+            sumLineObject.SetActive(true);
             proceedButton.SetActive(true);
             retryButton.SetActive(false);
             endButton.SetActive(false);
         }
         else
         {
+            summaryLabel.text = "çÏêÌåãâ " + "\n" + "écêÌóÕ" + "\n" + "ó^É_ÉÅÅ[ÉW" + "\n";
+            summaryValue.text = "";
+            summaryGold.text = "îsñk" + "\n" + power.ToString() + "\n" + dealeddamage.ToString();
+
+            summaryLabelRectTm.sizeDelta = new Vector2(400, summaryLabelRectTm.sizeDelta.y);
+            summaryGoldRectTm.sizeDelta = new Vector2(400, summaryLabelRectTm.sizeDelta.y);
+
             bigResultText.text = resultText.text = "çÏêÌé∏îs";
             background.color = new Color(0.0f, 0.0f, 0.0f, 0.5f);
+            sumLineObject.SetActive(false);
             proceedButton.SetActive(false);
             retryButton.SetActive(true);
             endButton.SetActive(true);
@@ -82,13 +95,13 @@ public class ResultCanvas : MonoBehaviour
 
         if (victory)
         {
-            //gameState.loadingDestination = GameState.LoadingDestination.WorldMap;
+            gameState.destination = GameState.Destination.WorldMap;
             gameState.progress++;
             StartCoroutine("Blackout");
         }
         else
         {
-            //gameState.loadingDestination = GameState.LoadingDestination.Title;
+            gameState.destination = GameState.Destination.Title;
             gameState.progress = -1;
             StartCoroutine("Blackout");
         }
@@ -101,7 +114,7 @@ public class ResultCanvas : MonoBehaviour
         if (finished)
             return;
 
-        gameState.destination = GameState.Destination.Intermission;
+        gameState.destination = GameState.Destination.Garage;
         StartCoroutine("Blackout");
   
         finished = true;
@@ -124,14 +137,20 @@ public class ResultCanvas : MonoBehaviour
 
         }
 
-        if (victory)
+        switch(gameState.destination)
         {
-            if(gameState.progress <= gameState.GetMaxProgress())
+            case GameState.Destination.WorldMap:
+            if (gameState.progress <= gameState.GetMaxProgress())
                 SceneManager.LoadScene("WorldMap");
             else
                 SceneManager.LoadScene("Ending");
+                break;
+            case GameState.Destination.Garage:
+                SceneManager.LoadScene("Intermission");
+                break;
+            case GameState.Destination.Title:
+                SceneManager.LoadScene("Title");
+                break;
         }
-        else
-            SceneManager.LoadScene("Title");
     }
 }

@@ -76,7 +76,7 @@ public class PauseMenu : MonoBehaviour
         }
         else
         {
-            gameState.destination = GameState.Destination.Intermission_Garage;
+            gameState.subDestination_Intermission = GameState.SubDestination_Intermission.FromTestRoom;
             SceneManager.LoadScene("Intermission");
         }
          

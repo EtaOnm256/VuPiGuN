@@ -19,6 +19,8 @@ public class IntermissionButton : MonoBehaviour
 
     TextMeshProUGUI descriptionText;
     GameObject buyOrEquippedButtonObj;
+    [SerializeField] GameObject backToShopButton;
+    [SerializeField] TextMeshProUGUI departureText;
 
     public interface ShopItem
     {
@@ -384,29 +386,39 @@ public class IntermissionButton : MonoBehaviour
     {
         StartCoroutine("Blackin");
 
-        if(gameState.destination==GameState.Destination.Intermission_Garage)
+        if(gameState.destination==GameState.Destination.Garage)
         {
-           
+            departureText.text = "èoåÇ";
         }
         else
         {
-            gameState.shopWeapons.Clear();
-            gameState.shopParts.Clear();
-            for (int tier = 3; tier > 0; tier--)
-            {
-                int count_ThisTier = System.Math.Max(0, 3-( (tier-1) * 3)+(gameState.progress-1));
+            departureText.text = "èoî≠";
 
-                LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier, gameState.inventryWeapons);
-                LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier, gameState.inventryParts);
+            if (gameState.subDestination_Intermission == GameState.SubDestination_Intermission.FromWorldMap)
+            {
+
+                gameState.shopWeapons.Clear();
+                gameState.shopParts.Clear();
+                for (int tier = 3; tier > 0; tier--)
+                {
+                    int count_ThisTier = System.Math.Max(0, 3 - ((tier - 1) * 3) + (gameState.progress - 1));
+
+                    LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier, gameState.inventryWeapons);
+                    LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier, gameState.inventryParts);
+                }
             }
-            
             
         }
 
         DrawShop();
         SwitchToShop();
 
-        if(gameState.destination==GameState.Destination.Intermission_Garage)
+        if(gameState.destination==GameState.Destination.Garage)
+        {
+            OnClickProceedToGarage();
+            backToShopButton.SetActive(false);
+        }
+        else if(gameState.subDestination_Intermission == GameState.SubDestination_Intermission.FromTestRoom)
         {
             OnClickProceedToGarage();
         }
@@ -487,14 +499,14 @@ public class IntermissionButton : MonoBehaviour
     {
 
     }
-    public void OnClickMissionStart()
+    public void OnClickDeparture()
     {
         if (finished)
             return;
 
         audioSource.PlayOneShot(audioClip_Start);
 
-        StartCoroutine("Blackout_MissionStart");
+        StartCoroutine("Blackout_Departure");
 
         finished = true;
     }
@@ -531,7 +543,7 @@ public class IntermissionButton : MonoBehaviour
         SwitchToGarage();
     }
 
-    IEnumerator Blackout_MissionStart()
+    IEnumerator Blackout_Departure()
     {
 
         var wait = new WaitForSeconds(Time.fixedDeltaTime);
@@ -547,9 +559,17 @@ public class IntermissionButton : MonoBehaviour
 
         }
 
-        gameState.progress++;
-
-        SceneManager.LoadScene("WorldMap");
+        switch (gameState.destination)
+        {
+            case GameState.Destination.Garage:
+                gameState.loadingDestination = Loading.Destination.Mission;
+                SceneManager.LoadScene("Loading");
+                break;
+            case GameState.Destination.Intermission:
+                gameState.progress++;
+                SceneManager.LoadScene("WorldMap");
+                break;
+        }
     }
 
     IEnumerator Blackout_TestingRoom()

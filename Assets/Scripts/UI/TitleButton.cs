@@ -55,6 +55,6 @@ public class TitleButton : MonoBehaviour
         }
 
         gameState.Reset();
-        SceneManager.LoadScene("WorldMap");
+        SceneManager.LoadScene("Intermission");
     }
 }
