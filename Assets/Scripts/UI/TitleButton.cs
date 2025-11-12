@@ -30,8 +30,6 @@ public class TitleButton : MonoBehaviour
         if (finished)
             return;
 
-        gameState.progress = 1;
-
         audioSource.PlayOneShot(audioClip_Start);
 
         StartCoroutine("Blackout");

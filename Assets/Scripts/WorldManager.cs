@@ -84,8 +84,8 @@ public class WorldManager : MonoBehaviour
         public bool spawned = false;
     }
 
-    public ArmyInstance army_enemy;
-    public ArmyInstance army_friend;
+    ArmyInstance armyInstance_enemy = new ArmyInstance();
+    ArmyInstance armyInstance_friend = new ArmyInstance();
 
 
     [SerializeField] CanvasControl canvasControl;
@@ -136,6 +136,9 @@ public class WorldManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        armyInstance_friend.army = gameState.army_friend;
+        armyInstance_enemy.army = gameState.army_enemy;
+
         CinemachineCameraTarget = GameObject.Find("Main Camera");
 
         uIController_Overlay = canvasControl.HUDCanvas.GetComponent<UIController_Overlay>();
@@ -143,36 +146,36 @@ public class WorldManager : MonoBehaviour
         Slider friendPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team {power = army_friend.army.power, powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = army_enemy.army.power, powerslider = enemyPowerSlider };
+        Team friend_team = new Team {power = armyInstance_friend.army.power, powerslider = friendPowerSlider };
+        Team enemy_team = new Team { power = armyInstance_enemy.army.power, powerslider = enemyPowerSlider };
 
-        friendPowerSlider.value = friendPowerSlider.maxValue = army_friend.army.power;
-        enemyPowerSlider.value = enemyPowerSlider.maxValue = army_enemy.army.power;
+        friendPowerSlider.value = friendPowerSlider.maxValue = armyInstance_friend.army.power;
+        enemyPowerSlider.value = enemyPowerSlider.maxValue = armyInstance_enemy.army.power;
 
         teams.Add(friend_team);
         teams.Add(enemy_team);
 
         Vector3 pos = PlacePlayerSpawn(60);
 
-        while (ProcessSpawn(army_friend, friend_team, true)) ;
-        while (ProcessSpawn(army_enemy, enemy_team, true)) ;
+        while (ProcessSpawn(armyInstance_friend, friend_team, true)) ;
+        while (ProcessSpawn(armyInstance_enemy, enemy_team, true)) ;
 
         PresetCameraTransform(pos);
 
-        for (int i = 0; i < army_enemy.army.spawns.Count; i++)
+        for (int i = 0; i < armyInstance_enemy.army.spawns.Count; i++)
         {
-            if (army_enemy.army.spawns[i].loop)
+            if (armyInstance_enemy.army.spawns[i].loop)
             {
-                army_enemy.loop_index = i;
+                armyInstance_enemy.loop_index = i;
                 break;
             }
         }
 
-        for (int i = 0; i < army_friend.army.spawns.Count; i++)
+        for (int i = 0; i < armyInstance_friend.army.spawns.Count; i++)
         {
-            if (army_friend.army.spawns[i].loop)
+            if (armyInstance_friend.army.spawns[i].loop)
             {
-                army_friend.loop_index = i;
+                armyInstance_friend.loop_index = i;
                 break;
             }
         }
@@ -583,7 +586,7 @@ public class WorldManager : MonoBehaviour
                     {
                         canvasControl.resultCanvas.power = teams[0].power;
                         canvasControl.resultCanvas.dealeddamage = player_dealeddamage;
-                        canvasControl.resultCanvas.result_gold = victory ? (gameState.progress+1) * 1500 : 0;
+                        canvasControl.resultCanvas.result_gold = victory ? (gameState.progressStage+1) * 1500 : 0;
                         canvasControl.resultCanvas.power_gold = teams[0].power*4;
                         canvasControl.resultCanvas.dealeddamage_gold = player_dealeddamage;
 
@@ -684,8 +687,8 @@ public class WorldManager : MonoBehaviour
 
             ProcessPlayerSpawn();
 
-            ProcessSpawn(army_friend, teams[0], false);
-            ProcessSpawn(army_enemy, teams[1], false);
+            ProcessSpawn(armyInstance_friend, teams[0], false);
+            ProcessSpawn(armyInstance_enemy, teams[1], false);
         }
 
         prev_command = humanInput.command;
@@ -700,7 +703,7 @@ public class WorldManager : MonoBehaviour
         if (!testingroom)
         {
             if (robotController.robotParameter.Cost < 0)
-                robotController.team.power = System.Math.Max(0, robotController.team.power - army_friend.army.power / 3);
+                robotController.team.power = System.Math.Max(0, robotController.team.power - armyInstance_friend.army.power / 3);
             else
                 robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.robotParameter.Cost);
 

@@ -401,7 +401,7 @@ public class IntermissionButton : MonoBehaviour
                 gameState.shopParts.Clear();
                 for (int tier = 3; tier > 0; tier--)
                 {
-                    int count_ThisTier = System.Math.Max(0, 3 - ((tier - 1) * 3) + (gameState.progress - 1));
+                    int count_ThisTier = System.Math.Max(0, 3 - ((tier - 1) * 3) + (gameState.progressStage - 1));
 
                     LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier, gameState.inventryWeapons);
                     LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier, gameState.inventryParts);
@@ -504,7 +504,8 @@ public class IntermissionButton : MonoBehaviour
         if (finished)
             return;
 
-        audioSource.PlayOneShot(audioClip_Start);
+        if (gameState.destination == GameState.Destination.Garage)
+            audioSource.PlayOneShot(audioClip_Start);
 
         StartCoroutine("Blackout_Departure");
 
@@ -545,16 +546,22 @@ public class IntermissionButton : MonoBehaviour
 
     IEnumerator Blackout_Departure()
     {
+        float k;
+
+        if (gameState.destination == GameState.Destination.Garage)
+            k = 1.0f;
+        else
+            k = 0.5f;
 
         var wait = new WaitForSeconds(Time.fixedDeltaTime);
 
         float start = Time.time;
-        while (Time.time - start < 1.0f || audioSource.isPlaying)
+        while (Time.time - start < k || audioSource.isPlaying)
         {
             yield return wait;
             float fade = Mathf.Max(0.0f, Time.time - start);
 
-            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / 1.0f);
+            blackout.color = new Color(0.0f, 0.0f, 0.0f, ((float)fade) / k);
 
 
         }

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e285c4227a62344bb4272e39a553024, type: 3}
   m_Name: Game State
   m_EditorClassIdentifier: 
-  progress: 0
+  progress: 5
+  progressStage: 4
   skyindex: 0
   chapters:
   - name: Chapter1
@@ -31,12 +32,12 @@ MonoBehaviour:
     bossStage: Stage8
   journeyPlan:
   - name: Chapter1
-    index_in_chapter: 0100000000000000
+    index_in_chapter: 0000000001000000
   - name: Chapter2
     index_in_chapter: 0100000000000000
   - name: Chapter3
     index_in_chapter: 00000000
-  destination: 2
+  destination: 3
   loadingDestination: 0
   subDestination_Intermission: 0
   gold: 3000
@@ -48,10 +49,12 @@ MonoBehaviour:
   itemFlag: 0
   player_variant: {fileID: 6538551618372168848, guid: e5b847e64d4db7744b75ecf8922a0b16, type: 3}
   shopWeapons:
-  - prefabname: HandCannon Variant
+  - prefabname: SolidRifle Variant
     type: 0
   - prefabname: SMG Variant
     type: 0
   shopParts:
-  - itemFlag: 32768
-  - itemFlag: 16
+  - itemFlag: 8192
+  - itemFlag: 4096
+  army_enemy: {fileID: 11400000, guid: 87024d50ac0af3b42aa81ad61b76e8eb, type: 2}
+  army_friend: {fileID: 11400000, guid: 09320830078902e4c997b01bd8f28bd5, type: 2}

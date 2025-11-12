@@ -97,12 +97,14 @@ public class ResultCanvas : MonoBehaviour
         {
             gameState.destination = GameState.Destination.WorldMap;
             gameState.progress++;
+            gameState.progressStage++;
             StartCoroutine("Blackout");
         }
         else
         {
             gameState.destination = GameState.Destination.Title;
             gameState.progress = -1;
+            gameState.progressStage = -1;
             StartCoroutine("Blackout");
         }
 

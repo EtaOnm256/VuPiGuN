@@ -6,6 +6,8 @@ using UnityEditor;
 public class GameState : ScriptableObject
 {
     public int progress = -1;
+    public int progressStage = -1;
+
     public int skyindex = 0;
 
     public enum Destination
@@ -61,9 +63,14 @@ public class GameState : ScriptableObject
     public GameObject player_variant;
     public List<IntermissionButton.ShopItemWeapon> shopWeapons = new List<IntermissionButton.ShopItemWeapon>();
     public List<IntermissionButton.ShopItemParts> shopParts = new List<IntermissionButton.ShopItemParts>();
+
+    public Army army_enemy;
+    public Army army_friend;
+
     public void Reset()
     {
-        progress = 0;
+        progress =  0;
+        progressStage = 1;
         destination = Destination.Intermission;
         subDestination_Intermission = GameState.SubDestination_Intermission.FromWorldMap;
         gold = 3000;

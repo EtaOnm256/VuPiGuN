@@ -71,7 +71,7 @@ public class PauseMenu : MonoBehaviour
 
         if (!testingroom)
         {
-            gameState.progress = -1;
+            gameState.progress = gameState.progressStage = -1;
             SceneManager.LoadScene("Title");
         }
         else
