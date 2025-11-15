@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e285c4227a62344bb4272e39a553024, type: 3}
   m_Name: Game State
   m_EditorClassIdentifier: 
-  progress: 5
-  progressStage: 4
+  progress: -1
+  progressStage: -1
   skyindex: 0
   chapters:
   - name: Chapter1
@@ -21,40 +21,55 @@ MonoBehaviour:
     - Stage1
     - Stage2
     bossStage: Stage3
+    hasShop: 1
   - name: Chapter2
     stages:
     - Stage4
     - Stage5
     bossStage: Stage6
+    hasShop: 1
   - name: Chapter3
     stages:
     - Stage7
     bossStage: Stage8
+    hasShop: 0
   journeyPlan:
   - name: Chapter1
     index_in_chapter: 0000000001000000
   - name: Chapter2
-    index_in_chapter: 0100000000000000
+    index_in_chapter: 0000000001000000
   - name: Chapter3
     index_in_chapter: 00000000
-  destination: 3
+  destination: 4
   loadingDestination: 0
   subDestination_Intermission: 0
-  gold: 3000
-  inventryWeapons: []
-  inventryParts: []
-  rightWeapon_name: 
+  gold: 24750
+  inventryWeapons:
+  - prefabname: HandCannon Variant
+    type: 0
+  inventryParts:
+  - itemFlag: 128
+  rightWeapon_name: HandCannon Variant
   shoulderWeapon_name: 
   subWeaponType: 1
-  itemFlag: 0
+  itemFlag: 128
   player_variant: {fileID: 6538551618372168848, guid: e5b847e64d4db7744b75ecf8922a0b16, type: 3}
   shopWeapons:
-  - prefabname: SolidRifle Variant
+  - prefabname: DronePlatform Variant
+    type: 2
+  - prefabname: HandCannon Variant
     type: 0
   - prefabname: SMG Variant
     type: 0
+  - prefabname: Bazooka Variant
+    type: 0
+  - prefabname: SolidRifle Variant
+    type: 0
   shopParts:
-  - itemFlag: 8192
+  - itemFlag: 2048
+  - itemFlag: 8
+  - itemFlag: 16
   - itemFlag: 4096
-  army_enemy: {fileID: 11400000, guid: 87024d50ac0af3b42aa81ad61b76e8eb, type: 2}
-  army_friend: {fileID: 11400000, guid: 09320830078902e4c997b01bd8f28bd5, type: 2}
+  - itemFlag: 32768
+  army_enemy: {fileID: 11400000, guid: 66632e67a80af7541a4258f6c593375a, type: 2}
+  army_friend: {fileID: 11400000, guid: 99d8ebc76917a6a4b8701e7d261f8cc6, type: 2}

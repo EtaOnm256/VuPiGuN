@@ -373,7 +373,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 603
+      value: 726.80347
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -771,7 +771,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 603
+      value: 726.80347
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1290,7 +1290,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 603
+      value: 726.80347
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1707,7 +1707,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 603
+      value: 726.80347
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.y
@@ -1968,7 +1968,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 603
+      value: 726.80347
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.y
@@ -2134,7 +2134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 603
+      value: 726.80347
       objectReference: {fileID: 0}
     - target: {fileID: 7804461834896283985, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
       propertyPath: m_SizeDelta.y
@@ -3526,6 +3526,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1697852392}
   m_CullTransparentMesh: 1
+--- !u!114 &1718130792 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2580185442536269373, guid: ddee5033546dd1a4389340d8df3c41b5, type: 3}
+  m_PrefabInstance: {fileID: 2580185443188963370}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1731549587 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2580185441594253753, guid: ddee5033546dd1a4389340d8df3c41b5, type: 3}
@@ -4584,6 +4595,15 @@ MonoBehaviour:
   item_prefab: {fileID: 7804461834896283984, guid: f696c6a6b3f9b354a8b3d27d929af9d9, type: 3}
   backToShopButton: {fileID: 1772174191}
   departureText: {fileID: 1834833499}
+  departureButton_Garage: {fileID: 1476158908}
+  departureButton_Shop: {fileID: 1736476300}
+  testButton: {fileID: 877649281}
+  garageText: {fileID: 1697852394}
+  toGarageText: {fileID: 348240906}
+  shopText: {fileID: 333097113}
+  toShopText: {fileID: 730999995}
+  buyOrEquippedButtonText_Shop: {fileID: 1718130792}
+  goldLabel: {fileID: 1872074742}
   goldText: {fileID: 147181993}
 --- !u!224 &2122528706 stripped
 RectTransform:

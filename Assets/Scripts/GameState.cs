@@ -16,6 +16,7 @@ public class GameState : ScriptableObject
         TestingRoom,
         Intermission,
         Garage,
+        Reward,
         WorldMap,
         Title
     }
@@ -34,6 +35,7 @@ public class GameState : ScriptableObject
         public string name;
         public string[] stages;
         public string bossStage;
+        public bool hasShop;
     }
 
     public Chapter[] chapters;
@@ -104,14 +106,18 @@ public class GameState : ScriptableObject
 
     public int GetMaxProgress()
     {
-        int chapterInterval = chapters.Length - 1;
-        int stageCount = 0;
+        int progressCount = 0;
         foreach(var chapter in chapters)
         {
-            stageCount += chapter.stages.Length;
-            stageCount += 1; //boss;
+            progressCount += chapter.stages.Length;
+            progressCount += 1; //boss;
+
+            if(chapter.hasShop)
+            {
+                progressCount += 1;
+            }
         }
-        return chapterInterval+ stageCount;
+        return progressCount;
     }
 
 

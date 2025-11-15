@@ -111,15 +111,18 @@ public class WorldMap : MonoBehaviour
             list_node.Add(node_boss);
             current_x += spacing_x_short;
 
-            GameObject node_obj_base = GameObject.Instantiate(node_prefab, Vector3.back, Quaternion.identity);
+            if (chapter.hasShop)
+            {
+                GameObject node_obj_base = GameObject.Instantiate(node_prefab, Vector3.back, Quaternion.identity);
 
-            WorldMapNode node_base = node_obj_base.GetComponent<WorldMapNode>();
+                WorldMapNode node_base = node_obj_base.GetComponent<WorldMapNode>();
 
-            node_base.Pos = new Vector3(current_x, center_y);
-            node_base.Radius *= 1.0f;
-            node_base.InnerColor = new Color(0.5f, 1.0f, 0.5f);
-            list_node.Add(node_base);
-            current_x += spacing_x;
+                node_base.Pos = new Vector3(current_x, center_y);
+                node_base.Radius *= 1.0f;
+                node_base.InnerColor = new Color(0.5f, 1.0f, 0.5f);
+                list_node.Add(node_base);
+                current_x += spacing_x;
+            }
         }
 
         destinationNode = list_node[gameState.progress-1];

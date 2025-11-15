@@ -18,10 +18,21 @@ public class IntermissionButton : MonoBehaviour
     [SerializeField] GameObject item_prefab;
 
     TextMeshProUGUI descriptionText;
-    GameObject buyOrEquippedButtonObj;
+    GameObject buyOrEquippedButtonObj_Garage;
+
+   
     [SerializeField] GameObject backToShopButton;
     [SerializeField] TextMeshProUGUI departureText;
 
+    [SerializeField] Button departureButton_Garage;
+    [SerializeField] Button departureButton_Shop;
+    [SerializeField] Button testButton;
+    [SerializeField] TextMeshProUGUI garageText;
+    [SerializeField] TextMeshProUGUI toGarageText;
+    [SerializeField] TextMeshProUGUI shopText;
+    [SerializeField] TextMeshProUGUI toShopText;
+    [SerializeField] TextMeshProUGUI buyOrEquippedButtonText_Shop;
+    [SerializeField] TextMeshProUGUI goldLabel;
     public interface ShopItem
     {
         public string name { get; set; }
@@ -198,7 +209,11 @@ public class IntermissionButton : MonoBehaviour
         itemPanel.GetComponent<Button>().onClick.AddListener(()=> { SetSelect_Shop(item, itemPanel); });
 
         itemPanel.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = item.name;
-        itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "$"+item.price.ToString();
+
+        if (gameState.destination == GameState.Destination.Reward)
+            itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "";
+        else
+            itemPanel.transform.Find("PriceOrEquipped").GetComponent<TextMeshProUGUI>().text = "$"+item.price.ToString();
 
         shopItemPanel.Add((itemPanel, item)); 
     }
@@ -253,9 +268,9 @@ public class IntermissionButton : MonoBehaviour
             {
                 image.color = new Color(0.627451f, 0.627451f, 0.0f, 0.75f);
                 descriptionText.text = selectedItem.description;
-                buyOrEquippedButtonObj.SetActive(true);
-                buyOrEquippedButtonObj.GetComponent<Button>().onClick.RemoveAllListeners();
-                buyOrEquippedButtonObj.GetComponent<Button>().onClick.AddListener(() => { BuyItem(selectedItem, selectedItemPanel); });
+                buyOrEquippedButtonObj_Garage.SetActive(true);
+                buyOrEquippedButtonObj_Garage.GetComponent<Button>().onClick.RemoveAllListeners();
+                buyOrEquippedButtonObj_Garage.GetComponent<Button>().onClick.AddListener(() => { BuyItem(selectedItem, selectedItemPanel); });
             }
             else
                 image.color = new Color(0.0f, 0.0f, 0.0f, 0.75f);
@@ -264,7 +279,7 @@ public class IntermissionButton : MonoBehaviour
        if(selectedItem==null)
         {
             descriptionText.text = "";
-            buyOrEquippedButtonObj.SetActive(false);
+            buyOrEquippedButtonObj_Garage.SetActive(false);
         }
     }
 
@@ -278,15 +293,15 @@ public class IntermissionButton : MonoBehaviour
             {
                 image.color = new Color(0.627451f, 0.627451f, 0.0f, 0.75f);
                 descriptionText.text = selectedItem.description;
-                buyOrEquippedButtonObj.SetActive(true);
+                buyOrEquippedButtonObj_Garage.SetActive(true);
 
                 if (IsEquipped(itemPair.Item2))
-                    buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "外す";
+                    buyOrEquippedButtonObj_Garage.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "外す";
                 else
-                    buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "装備";
+                    buyOrEquippedButtonObj_Garage.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "装備";
 
-                buyOrEquippedButtonObj.GetComponent<Button>().onClick.RemoveAllListeners();
-                buyOrEquippedButtonObj.GetComponent<Button>().onClick.AddListener(() => { EquipItem(selectedItem, selectedItemPanel); });
+                buyOrEquippedButtonObj_Garage.GetComponent<Button>().onClick.RemoveAllListeners();
+                buyOrEquippedButtonObj_Garage.GetComponent<Button>().onClick.AddListener(() => { EquipItem(selectedItem, selectedItemPanel); });
             }
             else
                 image.color = new Color(0.0f, 0.0f, 0.0f, 0.75f);
@@ -295,21 +310,15 @@ public class IntermissionButton : MonoBehaviour
         if (selectedItem == null)
         {
             descriptionText.text = "";
-            buyOrEquippedButtonObj.SetActive(false);
+            buyOrEquippedButtonObj_Garage.SetActive(false);
         }
     }
 
 
     void BuyItem<T>(T selectedItem, GameObject selectedItemPanel) where T : ShopItem
     {
-        if (gameState.gold >= selectedItem.price)
+        if (gameState.destination == GameState.Destination.Reward)
         {
-            shopItemPanel.Remove((selectedItemPanel, selectedItem));
-            GameObject.Destroy(selectedItemPanel);
-
-            gameState.gold -= selectedItem.price;
-            goldText.text = $"${gameState.gold.ToString()}";
-
             if (selectedItem is ShopItemWeapon)
                 gameState.inventryWeapons.Add(selectedItem as ShopItemWeapon);
             else
@@ -318,6 +327,30 @@ public class IntermissionButton : MonoBehaviour
 
                 gameState.itemFlag |= selectedParts.itemFlag;
                 gameState.inventryParts.Add(selectedParts);
+            }
+
+            OnClickDeparture();
+        }
+        else
+        {
+            if (gameState.gold >= selectedItem.price)
+            {
+                shopItemPanel.Remove((selectedItemPanel, selectedItem));
+                GameObject.Destroy(selectedItemPanel);
+
+                gameState.gold -= selectedItem.price;
+
+                goldText.text = $"${gameState.gold.ToString()}";
+
+                if (selectedItem is ShopItemWeapon)
+                    gameState.inventryWeapons.Add(selectedItem as ShopItemWeapon);
+                else
+                {
+                    ShopItemParts selectedParts = selectedItem as ShopItemParts;
+
+                    gameState.itemFlag |= selectedParts.itemFlag;
+                    gameState.inventryParts.Add(selectedParts);
+                }
             }
         }
     }
@@ -333,12 +366,12 @@ public class IntermissionButton : MonoBehaviour
             if (IsEquipped(selectedweapon))
             {
                 value = null;
-                buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "装備";
+                buyOrEquippedButtonObj_Garage.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "装備";
             }
             else
             {
                 value = selectedweapon.prefabname;
-                buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "外す";
+                buyOrEquippedButtonObj_Garage.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "外す";
             }
 
             if (selectedweapon.type == ShopItemWeapon.Type.Main)
@@ -358,12 +391,12 @@ public class IntermissionButton : MonoBehaviour
             if (IsEquipped(selectedparts))
             {
                 gameState.itemFlag &= ~selectedparts.itemFlag;
-                buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "装備";
+                buyOrEquippedButtonObj_Garage.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "装備";
             }
             else
             {
                 gameState.itemFlag |= selectedparts.itemFlag;
-                buyOrEquippedButtonObj.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "外す";
+                buyOrEquippedButtonObj_Garage.transform.Find("Text (TMP)").GetComponent<TextMeshProUGUI>().text = "外す";
             }
         }
 
@@ -389,6 +422,28 @@ public class IntermissionButton : MonoBehaviour
         if(gameState.destination==GameState.Destination.Garage)
         {
             departureText.text = "出撃";
+        }
+        else if(gameState.destination == GameState.Destination.Reward)
+        {
+            departureButton_Garage.gameObject.SetActive(false);
+            departureButton_Shop.gameObject.SetActive(false);
+            testButton.gameObject.SetActive(false);
+            garageText.text = "所持品";
+            toGarageText.text = "所持品";
+            shopText.text = "戦利品獲得";
+            toShopText.text = "戻る";
+            buyOrEquippedButtonText_Shop.text = "確定";
+            goldLabel.enabled = false;
+
+            gameState.shopWeapons.Clear();
+            gameState.shopParts.Clear();
+            for (int tier = 3; tier > 0; tier--)
+            {
+                int count_ThisTier = System.Math.Max(0, 3 - ((tier - 1) * 3) + (gameState.progressStage - 1));
+
+                LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier, gameState.inventryWeapons);
+                LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier, gameState.inventryParts);
+            }
         }
         else
         {
@@ -418,6 +473,10 @@ public class IntermissionButton : MonoBehaviour
             OnClickProceedToGarage();
             backToShopButton.SetActive(false);
         }
+        else if (gameState.destination == GameState.Destination.Reward)
+        {
+            
+        }
         else if(gameState.subDestination_Intermission == GameState.SubDestination_Intermission.FromTestRoom)
         {
             OnClickProceedToGarage();
@@ -444,7 +503,10 @@ public class IntermissionButton : MonoBehaviour
                 AddItemToShopPanel(partsListPanel, gameState.shopParts[i]);
         }
 
-        goldText.text = $"${gameState.gold.ToString()}";
+        if(gameState.destination == GameState.Destination.Reward)
+            goldText.text = "";
+        else
+            goldText.text = $"${gameState.gold.ToString()}";
     }
        
     void SwitchToShop()
@@ -453,7 +515,7 @@ public class IntermissionButton : MonoBehaviour
         GameObject partsListPanel = ShopPanel.transform.Find("UpgradePartsListPanel").Find("Viewport").Find("Content").gameObject;
 
         descriptionText = ShopPanel.transform.Find("SelectedItemPanel").Find("Description").GetComponent<TextMeshProUGUI>();
-        buyOrEquippedButtonObj = ShopPanel.transform.Find("SelectedItemPanel").Find("BuyOrEquipButton").gameObject;
+        buyOrEquippedButtonObj_Garage = ShopPanel.transform.Find("SelectedItemPanel").Find("BuyOrEquipButton").gameObject;
 
         SetSelect_Shop<ShopItemWeapon>(null, weaponListPanel);
         SetSelect_Shop<ShopItemParts>(null, partsListPanel);
@@ -488,7 +550,7 @@ public class IntermissionButton : MonoBehaviour
         }
 
         descriptionText = GaragePanel.transform.Find("SelectedItemPanel").Find("Description").GetComponent<TextMeshProUGUI>();
-        buyOrEquippedButtonObj = GaragePanel.transform.Find("SelectedItemPanel").Find("BuyOrEquipButton").gameObject;
+        buyOrEquippedButtonObj_Garage = GaragePanel.transform.Find("SelectedItemPanel").Find("BuyOrEquipButton").gameObject;
 
         SetSelect_Garage<ShopItemWeapon>(null, weaponListPanel);
         SetSelect_Garage<ShopItemParts>(null, partsListPanel);
@@ -573,6 +635,7 @@ public class IntermissionButton : MonoBehaviour
                 SceneManager.LoadScene("Loading");
                 break;
             case GameState.Destination.Intermission:
+            case GameState.Destination.Reward:
                 gameState.progress++;
                 SceneManager.LoadScene("WorldMap");
                 break;

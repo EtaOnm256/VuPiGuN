@@ -95,8 +95,7 @@ public class ResultCanvas : MonoBehaviour
 
         if (victory)
         {
-            gameState.destination = GameState.Destination.WorldMap;
-            gameState.progress++;
+            gameState.destination = GameState.Destination.Reward;
             gameState.progressStage++;
             StartCoroutine("Blackout");
         }
@@ -141,9 +140,9 @@ public class ResultCanvas : MonoBehaviour
 
         switch(gameState.destination)
         {
-            case GameState.Destination.WorldMap:
-            if (gameState.progress <= gameState.GetMaxProgress())
-                SceneManager.LoadScene("WorldMap");
+            case GameState.Destination.Reward:
+            if (gameState.progress < gameState.GetMaxProgress())
+                SceneManager.LoadScene("Intermission");
             else
                 SceneManager.LoadScene("Ending");
                 break;
