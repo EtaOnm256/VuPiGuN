@@ -59,16 +59,16 @@ public class ResultCanvas : MonoBehaviour
         }
         else
         {
-            summaryLabel.text = "ìíŒ‹‰Ê" + "\n" + "cí—Í" + "\n" + "—^ƒ_ƒ[ƒW" + "\n";
-            summaryValue.text = "";
-            summaryGold.text = "”s–k" + "\n" + power.ToString() + "\n" + dealeddamage.ToString();
+            summaryLabel.text = "ìíŒ‹‰Ê" + "\n" + "cí—Í" + "\n" + "—^ƒ_ƒ[ƒW" + "\n" + "Šl“¾‘‹à" + "\n \n" + "‡Œv‘‹à";
+            summaryValue.text = "”s–k" + "\n" + power.ToString() + "\n" + dealeddamage.ToString() + "\n \n \n ";
+            summaryGold.text = "$" + result_gold.ToString() + "\n" + "$" + power_gold.ToString() + "\n" + "$" + dealeddamage_gold.ToString() + "\n" + "$" + (result_gold + power_gold + dealeddamage_gold).ToString() + "\n" + "\n " + "$" + currentgold;
 
             summaryLabelRectTm.sizeDelta = new Vector2(400, summaryLabelRectTm.sizeDelta.y);
             summaryGoldRectTm.sizeDelta = new Vector2(400, summaryLabelRectTm.sizeDelta.y);
 
             bigResultText.text = resultText.text = "ìí¸”s";
             background.color = new Color(0.0f, 0.0f, 0.0f, 0.5f);
-            sumLineObject.SetActive(false);
+            sumLineObject.SetActive(true);
             proceedButton.SetActive(false);
             retryButton.SetActive(true);
             endButton.SetActive(true);
@@ -115,7 +115,7 @@ public class ResultCanvas : MonoBehaviour
         if (finished)
             return;
 
-        gameState.destination = GameState.Destination.Garage;
+        gameState.destination = GameState.Destination.Intermission;
         StartCoroutine("Blackout");
   
         finished = true;
@@ -140,6 +140,10 @@ public class ResultCanvas : MonoBehaviour
 
         switch(gameState.destination)
         {
+            case GameState.Destination.Intermission:
+                gameState.progress--;
+                SceneManager.LoadScene("Intermission");
+                break;
             case GameState.Destination.Reward:
             if (gameState.progress < gameState.GetMaxProgress())
                 SceneManager.LoadScene("Intermission");

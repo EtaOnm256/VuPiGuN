@@ -437,12 +437,43 @@ public class IntermissionButton : MonoBehaviour
 
             gameState.shopWeapons.Clear();
             gameState.shopParts.Clear();
+
+            int[] count_TierMap_weapon;
+            int[] count_TierMap_parts;
+
+            if (gameState.progressStage < 4) // ステージ1終了時に2、3終了時に4
+            {
+                count_TierMap_weapon = new int[3] { 1, 0, 0 };
+                count_TierMap_parts = new int[3] { 3, 0, 0 };
+            }
+            else if(gameState.progressStage == 4)
+            {
+                count_TierMap_weapon = new int[3] { 0, 1, 0 };
+                count_TierMap_parts = new int[3] { 0, 2, 0 };
+            }
+            else if(gameState.progressStage < 7)
+            {
+                count_TierMap_weapon = new int[3] { 1, 1, 0 };
+                count_TierMap_parts = new int[3] { 3, 2, 0 };
+            }
+            else if (gameState.progressStage == 7)
+            {
+                count_TierMap_weapon = new int[3] { 0, 0, 1 };
+                count_TierMap_parts = new int[3] { 0, 0, 1 };
+            }
+            else
+            {
+                count_TierMap_weapon = new int[3] { 1, 1, 1 };
+                count_TierMap_parts = new int[3] { 3, 2, 1 };
+            }
+
             for (int tier = 3; tier > 0; tier--)
             {
-                int count_ThisTier = System.Math.Max(0, 3 - ((tier - 1) * 3) + (gameState.progressStage - 1));
+                int count_ThisTier_weapon = count_TierMap_weapon[tier-1];
+                int count_ThisTier_parts = count_TierMap_parts[tier - 1];
 
-                LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier, gameState.inventryWeapons);
-                LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier, gameState.inventryParts);
+                LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier_weapon, gameState.inventryWeapons);
+                LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier_parts, gameState.inventryParts);
             }
         }
         else
