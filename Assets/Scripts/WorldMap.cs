@@ -23,8 +23,8 @@ public class WorldMap : MonoBehaviour
     WorldMapNode destinationNode = null;
     WorldMapEdge destinationEdge = null;
 
-    
-    
+    Coroutine fadeinCoroutine = null;
+    Coroutine fadeoutCoroutine = null;
     private void Awake()
     {
 
@@ -41,7 +41,7 @@ public class WorldMap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine("Blackin");
+        fadeinCoroutine = StartCoroutine("Blackin");
 
         int current_x=160;
 
@@ -289,7 +289,7 @@ public class WorldMap : MonoBehaviour
                     if (time > 1.0f)
                     {
                         state = State.FADEOUT;
-                        StartCoroutine("Blackout");
+                        fadeoutCoroutine = StartCoroutine("Blackout");
                         time = 0.0f;
                     }
                     break;
@@ -303,6 +303,16 @@ public class WorldMap : MonoBehaviour
 
             
         }
+    }
+
+    public void OnPointerClick()
+    {
+        if (fadeinCoroutine != null)
+            StopCoroutine(fadeinCoroutine);
+        if (fadeoutCoroutine != null)
+            StopCoroutine(fadeoutCoroutine);
+
+        ProceedNextScene();
     }
 
     IEnumerator Blackin()
@@ -341,6 +351,11 @@ public class WorldMap : MonoBehaviour
 
         }
 
+        ProceedNextScene();
+    }
+
+    void ProceedNextScene()
+    {
         gameState.destination = gameState.GetNextStage_UpdateSkyIndex().Item1;
         gameState.subDestination_Intermission = GameState.SubDestination_Intermission.FromWorldMap;
         SceneManager.LoadScene("Intermission");
