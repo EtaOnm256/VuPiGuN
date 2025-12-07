@@ -112,7 +112,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemParts{tier=2,name = "リープストライク",description="格闘+下フリックでジャンプ斬りができるようになる。ブーストを大きく消費する。射撃またはダッシュスラッシュからキャンセル可能。",price=4000,itemFlag=RobotController.ItemFlag.JumpSlash},
         new ShopItemParts{tier=2,name = "ミラージュクラウド",description="一定時間ごとに強力な残像を発生させる。攻撃中、よろけ・ダウン中は無効。\n\n※残像…ステップなどの行動時に発生し、攻撃の追尾を振り切る効果がある。",price=5000,itemFlag=RobotController.ItemFlag.MirageCloud },
         new ShopItemParts{tier=2,name = "シードオブアーツ",description="格闘アクションが方向入力無しと、左右方向入力しながらの格闘に置き換わる。",price=3500,itemFlag=RobotController.ItemFlag.SeedOfArts },
-        new ShopItemParts{tier=2,name = "ホライゾンスイープ",description="格闘+左右フリックでサーベルを延長しての薙ぎ払い攻撃を行う。",price=3000,itemFlag=RobotController.ItemFlag.HorizonSweep},
+        new ShopItemParts{tier=2,name = "ホライゾンスイープ",description="格闘+左右フリックでサーベルを延長しての薙ぎ払い攻撃を行う。ヒット時、格闘へキャンセル可能。",price=3000,itemFlag=RobotController.ItemFlag.HorizonSweep},
         new ShopItemParts{tier=3,name = "ヴォイドシフト",description="遠距離から格闘を発動すると、無敵状態で急速接近する。",price=7500,itemFlag=RobotController.ItemFlag.VoidShift },
         new ShopItemParts{tier=3,name = "ネクストドライブ",description="全ての行動を空中ダッシュでキャンセルできるようになる。キャンセルはブーストを大きく消費する。また、空中ダッシュ前の旋回時間がなくなり、ブースト容量が2倍になる。",price=9000,itemFlag=RobotController.ItemFlag.NextDrive },
         new ShopItemParts{tier=3,name = "エクストリームスライド",description="全ての行動をステップでキャンセルできるようになる。キャンセルはブーストを大きく消費する。",price=10000,itemFlag=RobotController.ItemFlag.ExtremeSlide },
