@@ -48,4 +48,9 @@ MonoBehaviour:
     loop: 0
     burst: 0
     boss: 1
-  power: 2650
+  - variant: {fileID: 6331699288866075929, guid: 296274a67ed28c846b28bd9de522b837, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 1
+  power: 3350
