@@ -74,11 +74,11 @@ public class Loading : MonoBehaviour
 					if (gameState.loadingDestination == Destination.TestingRoom)
 						async = SceneManager.LoadSceneAsync($"TestingRoom");
 					else
-						async = SceneManager.LoadSceneAsync(gameState.GetNextStage_UpdateSkyIndex().Item2);
+						async = SceneManager.LoadSceneAsync($"Stage{gameState.GetNextStage_UpdateSkyIndex().Item2}");
 
 					if (gameState.loadingDestination == Destination.Mission)
 					{
-						gameState.army_enemy = Resources.Load<Army>($"Armys/Army{gameState.progressStage}_enemy");
+						gameState.army_enemy = Resources.Load<Army>($"Armys/Army{gameState.GetNextStage_UpdateSkyIndex().Item2}_{gameState.skyindex}_enemy");
 						gameState.army_friend = Resources.Load<Army>($"Armys/Army{gameState.progressStage}_friend");
 					}
 

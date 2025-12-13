@@ -10,25 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c611b4e3fac10b48a151ec425008698, type: 3}
-  m_Name: Army5_enemy
+  m_Name: Army6_0_enemy
   m_EditorClassIdentifier: 
   spawns:
-  - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
+  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
     boss: 0
-  - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
+  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
     boss: 0
-  - variant: {fileID: 2102338208687523016, guid: d74d527be600e594da089655448f9ffb, type: 3}
+  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
+  - variant: {fileID: 5169161122506380955, guid: 3f1bfddb612ba1842a3222075ce586e2, type: 3}
     squadCount: 2
     loop: 0
     burst: 1
     boss: 1
-  - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
+  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
     squadCount: 2
     loop: 1
     burst: 0

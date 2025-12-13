@@ -195,7 +195,7 @@ public class RobotAI_Leopard : RobotAI_Base
 
                                     if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.ExtremeSlide) && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RollingShoot))
                                     {
-                                        if (robotController.lowerBodyState == RobotController.LowerBodyState.HEAVYFIRE)
+                                        if (robotController.upperBodyState == RobotController.UpperBodyState.HEAVYFIRE || robotController.upperBodyState == RobotController.UpperBodyState.FIRE)
                                         {
                                             allow_fire = true;
                                             ringMenuDir = Random.Range(0, 2) == 0 ? RobotController.RingMenuDir.Left : RobotController.RingMenuDir.Right;
@@ -219,9 +219,17 @@ public class RobotAI_Leopard : RobotAI_Base
                                     if (stepDirChangeTimer > 0)
                                         stepDirChangeTimer--;
 
-                                    if (ground_step_remain > 0 &&
+                                    if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RollingShoot)
+                                       && (robotController.upperBodyState == RobotController.UpperBodyState.HEAVYFIRE || robotController.upperBodyState == RobotController.UpperBodyState.FIRE)
+                                       && robotController.fire_done)
+                                    {
+                                        allow_fire = true;
+                                        ringMenuDir = Random.Range(0, 2) == 0 ? RobotController.RingMenuDir.Left : RobotController.RingMenuDir.Right;
+                                    }
+                                    else if (ground_step_remain > 0 &&
                                         (
-                                        robotController.lowerBodyState == RobotController.LowerBodyState.WALK
+                                        robotController.lowerBodyState == RobotController.LowerBodyState.STAND
+                                        || robotController.lowerBodyState == RobotController.LowerBodyState.WALK
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.STEP
                                         || robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND
                                         )                                        
@@ -259,11 +267,6 @@ public class RobotAI_Leopard : RobotAI_Base
                                             ground_step_remain = 2;
                                         }
                                     }
-                                    else if(robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RollingShoot) && robotController.lowerBodyState == RobotController.LowerBodyState.HEAVYFIRE && robotController.fire_done)
-                                    {
-                                        allow_fire = true;
-                                        ringMenuDir = Random.Range(0,2) == 0 ? RobotController.RingMenuDir.Left : RobotController.RingMenuDir.Right;
-                                    }
                                     else
                                     {
                                         if (mindist > lock_range)
@@ -286,7 +289,10 @@ public class RobotAI_Leopard : RobotAI_Base
                                     if (current_target.Grounded && mindist < 20.0f)
                                         allow_infight = true;
 
-
+                                    if(robotController.fire_followthrough > 0 && robotController.rightWeapon.canHold)
+                                    {
+                                        allow_fire = true;
+                                    }
                                     //if (robotController.boost >= robotController.Boost_Max / 2)
                                     if(robotController.lowerBodyState == RobotController.LowerBodyState.STEPGROUND)
                                     {
@@ -451,7 +457,7 @@ public class RobotAI_Leopard : RobotAI_Base
                                     fire_prepare--;
                                 }*/
 
-                                move = Vector2.zero;
+                                //move = Vector2.zero;
                                 moveDirChangeTimer = 0;
                             }
                             /*else

@@ -33,8 +33,8 @@ public class GameState : ScriptableObject
     public class Chapter
     {
         public string name;
-        public string[] stages;
-        public string bossStage;
+        public int[] stages;
+        public int bossStage;
         public bool hasShop;
     }
 
@@ -122,7 +122,7 @@ public class GameState : ScriptableObject
 
 
 
-    public (Destination, string) GetNextStage_UpdateSkyIndex()
+    public (Destination, int) GetNextStage_UpdateSkyIndex()
     {
         int progress_seek = 1;
 
@@ -153,11 +153,11 @@ public class GameState : ScriptableObject
             progress_seek++;
 
             if (progress_seek == progress)
-                return (Destination.Intermission, "Intermission");
+                return (Destination.Intermission, 0);
 
             progress_seek++;
         }
 
-        return (Destination.Title,"");
+        return (Destination.Title,0);
     }
 }

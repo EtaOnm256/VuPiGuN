@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c611b4e3fac10b48a151ec425008698, type: 3}
-  m_Name: Army3_enemy
+  m_Name: Army3_0_enemy
   m_EditorClassIdentifier: 
   spawns:
   - variant: {fileID: 6959348128572115217, guid: d25a48c4cd6059140b71a69e00a90250, type: 3}
