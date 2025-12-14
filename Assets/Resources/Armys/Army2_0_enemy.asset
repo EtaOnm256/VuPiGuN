@@ -13,13 +13,28 @@ MonoBehaviour:
   m_Name: Army2_0_enemy
   m_EditorClassIdentifier: 
   spawns:
-  - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
-    squadCount: 1
-    loop: 1
+  - variant: {fileID: 2025982511747938697, guid: 28aca36aafd6e3341bb5072edb571f60, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
+  - variant: {fileID: 2025982511747938697, guid: 28aca36aafd6e3341bb5072edb571f60, type: 3}
+    squadCount: 2
+    loop: 0
     burst: 0
     boss: 0
   - variant: {fileID: 1721552399784020631, guid: cfa37cd278cf51349aa3a8bd7e02cf42, type: 3}
     squadCount: 1
+    loop: 0
+    burst: 0
+    boss: 0
+  - variant: {fileID: 2025982511747938697, guid: 28aca36aafd6e3341bb5072edb571f60, type: 3}
+    squadCount: 2
+    loop: 1
+    burst: 0
+    boss: 0
+  - variant: {fileID: 2025982511747938697, guid: 28aca36aafd6e3341bb5072edb571f60, type: 3}
+    squadCount: 2
     loop: 0
     burst: 0
     boss: 0

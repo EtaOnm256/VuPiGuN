@@ -23,7 +23,7 @@ MonoBehaviour:
     loop: 0
     burst: 0
     boss: 0
-  - variant: {fileID: 2025982511747938697, guid: 28aca36aafd6e3341bb5072edb571f60, type: 3}
+  - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
     squadCount: 3
     loop: 0
     burst: 0
