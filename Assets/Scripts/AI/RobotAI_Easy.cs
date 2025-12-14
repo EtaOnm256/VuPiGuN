@@ -17,7 +17,7 @@ public class RobotAI_Easy : RobotAI_Base
     // Start is called before the first frame update
     void Start()
     {
-        fire_wait = Random.Range(60, 120);
+        fire_wait = Random.Range(30, 60);
     }
 
     bool boosting = false;
@@ -158,7 +158,7 @@ public class RobotAI_Easy : RobotAI_Base
                             if (fire_prepare <= 0)
                             {
                                 fire = true;
-                                fire_wait = Random.Range(60, 120);
+                                fire_wait = Random.Range(30, 60);
                                 fire_prepare = 15;
                             }
                             else
@@ -171,7 +171,7 @@ public class RobotAI_Easy : RobotAI_Base
                         }
                         else
                         {
-                            fire_wait = Random.Range(60, 120);
+                            fire_wait = Random.Range(30, 60);
                             fire_prepare = 15;
                         }
                     }
