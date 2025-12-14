@@ -24,13 +24,13 @@ MonoBehaviour:
     burst: 0
     boss: 0
   - variant: {fileID: 2102338208687523016, guid: d74d527be600e594da089655448f9ffb, type: 3}
-    squadCount: 3
+    squadCount: 2
     loop: 0
     burst: 1
     boss: 1
   - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
-    squadCount: 3
+    squadCount: 2
     loop: 1
     burst: 0
     boss: 0
-  power: 1300
+  power: 1200
