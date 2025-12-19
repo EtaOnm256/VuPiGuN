@@ -18,7 +18,7 @@ MonoBehaviour:
     loop: 0
     burst: 0
     boss: 0
-  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
+  - variant: {fileID: 3234803710502351383, guid: a99d7ce550f40384997a4abe7e9cc359, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
     loop: 0
     burst: 1
     boss: 1
-  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
+  - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
     squadCount: 2
     loop: 1
     burst: 0
