@@ -35,13 +35,17 @@ PrefabInstance:
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: robotParameter.rweapon_prefab
       value: 
-      objectReference: {fileID: 1780285801183902076, guid: 5f3206100b7ee4c47a436b3eeaf91afa, type: 3}
+      objectReference: {fileID: 2228379834804670635, guid: c83e64943593df948955f89a711cb0da, type: 3}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: robotParameter.subweapon_prefab
       value: 
       objectReference: {fileID: 3801535860100975786, guid: bfb56cbb3957a474193ab57c8b8d3674, type: 3}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: robotParameter.weapon_chest_paired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
+      propertyPath: robotParameter.dualwield_lightweapon
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1830739307550966316, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
