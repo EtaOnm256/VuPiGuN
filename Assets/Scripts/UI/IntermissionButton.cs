@@ -487,7 +487,7 @@ public class IntermissionButton : MonoBehaviour
                 gameState.shopParts.Clear();
                 for (int tier = 3; tier > 0; tier--)
                 {
-                    int count_ThisTier = System.Math.Max(0, 3 - ((tier - 1) * 3) + (gameState.progressStage - 1));
+                    int count_ThisTier = System.Math.Max(0, 3 - (tier * 3) + gameState.progressStage+2);
 
                     LotteryItem_OneGroup<ShopItemWeapon>(shopItemWeapons, gameState.shopWeapons, tier, count_ThisTier, gameState.inventryWeapons);
                     LotteryItem_OneGroup<ShopItemParts>(shopItemParts, gameState.shopParts, tier, count_ThisTier, gameState.inventryParts);
