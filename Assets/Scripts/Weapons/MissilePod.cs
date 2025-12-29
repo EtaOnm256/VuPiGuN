@@ -92,7 +92,7 @@ public class MissilePod : Weapon
                 GameObject beam_obj = GameObject.Instantiate(missile_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
 
                 Missile beam = beam_obj.GetComponent<Missile>();
-                Vector3 dir_rel = Quaternion.Euler(Random.value * 30.0f-15.0f, Random.value * 30.0f - 15.0f, 0.0f) * Vector3.forward;
+                Vector3 dir_rel = Quaternion.Euler(Random.value * 20.0f-10.0f, Random.value * 20.0f - 10.0f, 0.0f) * Vector3.forward;
                 
 
                 beam.direction = firePoints[0].transform.rotation * dir_rel;

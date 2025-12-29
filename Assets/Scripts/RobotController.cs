@@ -536,7 +536,7 @@ public class RobotController : Pausable
 
     public StepDirection stepDirection; //AIから参照するので
     StepMotion stepMotion;
-
+    bool ground_boost_now = false;
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
     public LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
 
@@ -665,7 +665,7 @@ public class RobotController : Pausable
         NextDrive = 1 << 0,
         ExtremeSlide = 1 << 1,
         GroundBoost = 1 << 2,
-        DropAssault = 1 << 3,
+        SoftLanding = 1 << 3,
         QuickIgniter = 1 << 4,
         Hovercraft = 1 << 5,
         FlightUnit = 1 << 6,
@@ -1942,7 +1942,7 @@ public class RobotController : Pausable
                             fire_followthrough = 0;
                         }
 
-                        if (robotParameter.itemFlag.HasFlag(ItemFlag.DropAssault))
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.SoftLanding))
                             TransitLowerBodyState(LowerBodyState.STAND);
                         else
                             TransitLowerBodyState(LowerBodyState.GROUND);
@@ -1955,7 +1955,7 @@ public class RobotController : Pausable
 
                 if (Grounded)
                 {
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.DropAssault))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SoftLanding))
                     {
                         TransitLowerBodyState(LowerBodyState.STAND);
                         if (fire_done)
@@ -1968,7 +1968,7 @@ public class RobotController : Pausable
             case LowerBodyState.AIRSUBFIRE:
                 if (Grounded)
                 {
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.DropAssault))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SoftLanding))
                     {
                         TransitLowerBodyState(LowerBodyState.STAND);
                         if (fire_done)
@@ -1981,7 +1981,7 @@ public class RobotController : Pausable
             case LowerBodyState.AIRHEAVYFIRE:
                 if (Grounded)
                 {
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.DropAssault))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SoftLanding))
                     {
                         TransitLowerBodyState(LowerBodyState.STAND);
                         if (fire_done)
@@ -2504,7 +2504,12 @@ public class RobotController : Pausable
                             {
                                 upperBodyState = UpperBodyState.FIRE;
                                 if (lowerBodyState == LowerBodyState.ROLLINGFIRE)
-                                    TransitLowerBodyState(LowerBodyState.STAND);
+                                {
+                                    if(ground_boost_now)
+                                        TransitLowerBodyState(LowerBodyState.FIRE);
+                                    else
+                                        TransitLowerBodyState(LowerBodyState.STAND);
+                                }
                                 else
                                     TransitLowerBodyState(LowerBodyState.AIR);
 
@@ -2542,6 +2547,10 @@ public class RobotController : Pausable
                             }
                             else if (lowerBodyState == LowerBodyState.GROUND_FIRE)
                                 TransitLowerBodyState(LowerBodyState.GROUND);
+                            else if(lowerBodyState == LowerBodyState.FIRE && ground_boost_now)
+                            {
+                                TransitLowerBodyState(LowerBodyState.STEPGROUND);
+                            }
                             else if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.ROLLINGFIRE)
                             {
                                 TransitLowerBodyState(LowerBodyState.STAND);
@@ -2638,6 +2647,8 @@ public class RobotController : Pausable
                             }
                             else if (lowerBodyState == LowerBodyState.GROUND_SUBFIRE)
                                 TransitLowerBodyState(LowerBodyState.GROUND);
+                            else if (lowerBodyState == LowerBodyState.SUBFIRE && ground_boost_now)
+                                TransitLowerBodyState(LowerBodyState.STEPGROUND);
                             else
                                 TransitLowerBodyState(LowerBodyState.STAND);
 
@@ -2783,6 +2794,8 @@ public class RobotController : Pausable
                             }
                             else if (lowerBodyState == LowerBodyState.GROUND_HEAVYFIRE)
                                 TransitLowerBodyState(LowerBodyState.GROUND);
+                            else if (lowerBodyState == LowerBodyState.HEAVYFIRE && ground_boost_now)
+                                TransitLowerBodyState(LowerBodyState.STEPGROUND);
                             else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
                                 TransitLowerBodyState(LowerBodyState.STAND);
 
@@ -3294,7 +3307,7 @@ public class RobotController : Pausable
     {
         float targetSpeed = 0.0f;
         bool boosting = false;
-        bool ground_boost_now = false;
+
         bool regen_boost_now = false;
 
         if (hitstop_timer <= 0)
@@ -3562,7 +3575,7 @@ public class RobotController : Pausable
 
                         // 滑り撃ちのときは、LowerBodyMove()末尾の別個処理でやってる
                         if (!backblast_processed &&
-                            !(robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) && (lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)))
+                            !( (robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) || ground_boost_now) && (lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)))
                         {
                             if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE
                                 || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)
@@ -3666,7 +3679,8 @@ public class RobotController : Pausable
                         if (lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE
                             || lowerBodyState == LowerBodyState.ROLLINGFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)
                         {
-                            regen_boost_now = true;
+                            if(!ground_boost_now)
+                                regen_boost_now = true;
                         }
 
                         if (lowerBodyState == LowerBodyState.AIRFIRE || lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSUBFIRE
@@ -3984,6 +3998,7 @@ public class RobotController : Pausable
                                     if (robotParameter.itemFlag.HasFlag(ItemFlag.GroundBoost) && ConsumeBoost(4))
                                     {
                                         ground_boost_now = true;
+                                        boosting = true;
                                     }
                                     else
                                         stop = true;
@@ -3997,7 +4012,7 @@ public class RobotController : Pausable
                                 if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide) && !prev_sprint)
                                     AcceptStep(true);
 
-                                if (robotParameter.itemFlag.HasFlag(ItemFlag.GroundBoost))
+                                if (ground_boost_now)
                                 {
                                     // normalise input direction
                                     Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
@@ -4008,7 +4023,7 @@ public class RobotController : Pausable
 
                                         stepDirection = determineStepDirection(inputDirection);
 
-                                        if (stepDirection != stepDirection_old && ConsumeBoost(40))
+                                        if (stepDirection != stepDirection_old)
                                         {
                                             float steptargetdegree = degreeFromStepDirection(stepDirection) + _cinemachineTargetYaw;
                                             float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
@@ -4023,8 +4038,8 @@ public class RobotController : Pausable
                                                 stepMotion = StepMotion.BACKWARD;
 
 
-                                            event_stepbegin = false;
-                                            event_stepped = false;
+                                            //event_stepbegin = false;
+                                            //event_stepped = false;
 
                                             switch (stepMotion)
                                             {
@@ -4961,18 +4976,23 @@ public class RobotController : Pausable
                 MoveAccordingTerrain(targetDirection * (_speed * Time.deltaTime) +
                                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
             }
-            else if (robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) &&
+            else if (
+                (robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) &&
                 (lowerBodyState == LowerBodyState.STEPGROUND || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.FIRE
                 || lowerBodyState == LowerBodyState.HEAVYFIRE))
+                ||
+                (ground_boost_now && (lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.HEAVYFIRE))
+                )
             {
 
                 float speedOffset = 0.1f;
 
                 targetSpeed = 0.0f;
 
-                //float brakefactor = 0.25f;
                 float brakefactor = 0.10f;
 
+                if (ground_boost_now)
+                    brakefactor = 0.05f;
 
                 // a reference to the players current horizontal velocity
                 float currentHorizontalSpeed_X = _controller.velocity.x;
@@ -5014,7 +5034,7 @@ public class RobotController : Pausable
                     currentHorizontalSpeed_Z = targetSpeed;
                 }
 
-                if (lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)
+                if ((lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE) && !ground_boost_now)
                 {
                     if (!backblast_processed)
                     {
@@ -5318,6 +5338,7 @@ public class RobotController : Pausable
         event_stepped = false;
         event_stepbegin = false;
         lowerBodyState = LowerBodyState.STEP;
+        ground_boost_now = false;
 
         // normalise input direction
         Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
@@ -5415,8 +5436,11 @@ public class RobotController : Pausable
 
     private void OnStepBegin()
     {
-        event_stepbegin = true;
-        audioSource.PlayOneShot(audioClip_Step);
+        if (!event_stepbegin)
+        {
+            event_stepbegin = true;
+            audioSource.PlayOneShot(audioClip_Step);
+        }
     }
     private void OnDashed()
     {
@@ -5611,6 +5635,9 @@ public class RobotController : Pausable
 
             //_input.subfire = false;
 
+            if (lowerBodyState != LowerBodyState.STEP)
+                ground_boost_now = false; // ステップから他の状態遷移でクリアしてないので、滑り撃ち処理の判定のためにここでクリア
+
             if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
             {
                 lowerBodyState = LowerBodyState.AIRHEAVYFIRE;
@@ -5625,12 +5652,13 @@ public class RobotController : Pausable
             _animator.CrossFadeInFixedTime(_animIDHeavyFire, 0.25f, 0);
             intend_animator_speed = 1.0f;
             backblast_processed = true;
-
         }
         else
         {
             upperBodyState = UpperBodyState.FIRE;
 
+            if (lowerBodyState != LowerBodyState.STEP)
+                ground_boost_now = false; // ステップから他の状態遷移でクリアしてないので、滑り撃ち処理の判定のためにここでクリア
 
             if (dualwielding)
                 animator.Play(gatling ? "Fire5" : (carrying_weapon ? "Fire3" : "Fire2"), 2, 0.0f);
@@ -5646,7 +5674,7 @@ public class RobotController : Pausable
 
 
 
-            if (angle > rightWeapon.firing_angle)
+            if (angle > rightWeapon.firing_angle || (lowerBodyState == LowerBodyState.STEP && ground_boost_now))
             {
                 if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                 {
@@ -5708,6 +5736,9 @@ public class RobotController : Pausable
             if (_input.subfire)
             {
                 //_input.subfire = false;
+
+                if (lowerBodyState != LowerBodyState.STEP)
+                    ground_boost_now = false; // ステップから他の状態遷移でクリアしてないので、滑り撃ち処理の判定のためにここでクリア
 
                 if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                 {
@@ -6025,6 +6056,9 @@ public class RobotController : Pausable
                 {
                     if (rightWeapon.heavy)
                     {
+                        if (lowerBodyState != LowerBodyState.STEP && lowerBodyState != LowerBodyState.HEAVYFIRE)
+                            ground_boost_now = false; // ステップから他の状態遷移でクリアしてないので、滑り撃ち処理の判定のためにここでクリア
+
                         if (!Grounded)
                         {
                             lowerBodyState = LowerBodyState.AIRROLLINGHEAVYFIRE;
@@ -6067,6 +6101,8 @@ public class RobotController : Pausable
                     }
                     else
                     {
+                        if (lowerBodyState != LowerBodyState.STEP && lowerBodyState != LowerBodyState.FIRE)
+                            ground_boost_now = false; // ステップから他の状態遷移でクリアしてないので、滑り撃ち処理の判定のためにここでクリア
 
                         if (!Grounded)
                         {
