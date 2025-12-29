@@ -546,6 +546,13 @@ public class RobotAI_Medium : RobotAI_Base
                                         if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
                                             allow_infight = true;
                                     }
+
+                                    if ( robotController.shoulderWeapon != null && !robotController.shoulderWeapon.allrange
+                                  && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy
+                                  || (robotController.upperBodyState == RobotController.UpperBodyState.SUBFIRE && robotController.fire_followthrough > 0 && robotController.shoulderWeapon.canHold)))
+                                    {
+                                        subfire = true;
+                                    }
                                 }
                               
                             }
@@ -561,7 +568,15 @@ public class RobotAI_Medium : RobotAI_Base
                                 if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
                                 {
                                     if (floorhit.distance > 10.0f)
+                                    {
+                                        if (robotController.shoulderWeapon != null
+                                        && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy
+                                        || (/*robotController.upperBodyState == RobotController.UpperBodyState.SUBFIRE && */robotController.fire_followthrough > 0 && robotController.shoulderWeapon.canHold)))
+                                        {
+                                            subfire = true;
+                                        }
                                         allow_fire = true;
+                                    }
 
                                     if (!dodge)
                                     {
@@ -579,12 +594,7 @@ public class RobotAI_Medium : RobotAI_Base
                                             allow_infight = true;
                                     }
 
-                                    if (robotController.shoulderWeapon != null
-                                   && (robotController.shoulderWeapon.energy == robotController.shoulderWeapon.MaxEnergy
-                                   || robotController.fire_followthrough > 0 && robotController.shoulderWeapon.canHold))
-                                    {
-                                        subfire = true;
-                                    }
+                                   
                                 }
                             }
                             break;
