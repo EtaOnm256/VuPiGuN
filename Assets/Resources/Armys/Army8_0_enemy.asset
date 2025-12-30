@@ -13,44 +13,74 @@ MonoBehaviour:
   m_Name: Army8_0_enemy
   m_EditorClassIdentifier: 
   spawns:
-  - variant: {fileID: 3234803710502351383, guid: a99d7ce550f40384997a4abe7e9cc359, type: 3}
+  - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
     boss: 0
-  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
+  - variant: {fileID: 6331699288866075929, guid: f5836f8f32ca0c442a10e79e3c8797c1, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
     boss: 0
   - variant: {fileID: 1721552399784020631, guid: 76683839b5dcbb448b4608ccb5785ed6, type: 3}
     squadCount: 2
-    loop: 1
-    burst: 1
+    loop: 0
+    burst: 0
     boss: 1
+  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
   - variant: {fileID: 6959348128572115217, guid: d3d2bd314d55ac74ebedcd641201f0b1, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
     boss: 1
-  - variant: {fileID: 2102338208687523016, guid: bd3c9e4344d5b5b4ba29e4fdeb7049f3, type: 3}
+  - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
-    boss: 1
+    boss: 0
   - variant: {fileID: 3234803710502351383, guid: c1ce337137e3c9140a8066da0d6733ec, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
     boss: 1
+  - variant: {fileID: 6331699288866075929, guid: f5836f8f32ca0c442a10e79e3c8797c1, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
+  - variant: {fileID: 2102338208687523016, guid: bd3c9e4344d5b5b4ba29e4fdeb7049f3, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 1
+  - variant: {fileID: 5169161122506380955, guid: 510e72e69cbdcbd47aecea915eefa9e0, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
   - variant: {fileID: 5169161122506380955, guid: 4f3f779ac2563354da6defd937b3819d, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
     boss: 1
+  - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
+    squadCount: 2
+    loop: 0
+    burst: 0
+    boss: 0
   - variant: {fileID: 6331699288866075929, guid: 296274a67ed28c846b28bd9de522b837, type: 3}
     squadCount: 2
     loop: 0
     burst: 0
     boss: 1
-  power: 3350
+  - variant: {fileID: 6331699288866075929, guid: f5836f8f32ca0c442a10e79e3c8797c1, type: 3}
+    squadCount: 2
+    loop: 1
+    burst: 0
+    boss: 0
+  power: 5000
