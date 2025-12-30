@@ -4028,15 +4028,14 @@ public class RobotController : Pausable
                                             float steptargetdegree = degreeFromStepDirection(stepDirection) + _cinemachineTargetYaw;
                                             float stepmotiondegree = Mathf.Repeat(steptargetdegree - transform.eulerAngles.y + 180.0f, 360.0f) - 180.0f;
 
-                                            if (stepmotiondegree <= 45.0f && stepmotiondegree >= -45.0f)
+                                            if (stepmotiondegree <= 46.0f && stepmotiondegree >= -46.0f)
                                                 stepMotion = StepMotion.FORWARD;
-                                            else if (stepmotiondegree > -135.0f && stepmotiondegree < -45.0f)
+                                            else if (stepmotiondegree > -134.0f && stepmotiondegree < -46.0f)
                                                 stepMotion = StepMotion.LEFT;
-                                            else if (stepmotiondegree < 135.0f && stepmotiondegree > 45.0f)
+                                            else if (stepmotiondegree < 134.0f && stepmotiondegree > 46.0f)
                                                 stepMotion = StepMotion.RIGHT;
                                             else// if (stepmotiondegree >= 135.0f || stepmotiondegree <= -135.0f)
                                                 stepMotion = StepMotion.BACKWARD;
-
 
                                             //event_stepbegin = false;
                                             //event_stepped = false;
@@ -4061,6 +4060,8 @@ public class RobotController : Pausable
                                                     steptargetrotation = steptargetdegree;
                                                     break;
                                             }
+
+                                            //transform.rotation = Quaternion.Euler(0.0f, steptargetrotation, 0.0f); ;
                                         }
                                     }
                                 }
