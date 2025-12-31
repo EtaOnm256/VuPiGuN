@@ -88,10 +88,6 @@ PrefabInstance:
       value: Robot6 Back
       objectReference: {fileID: 0}
     - target: {fileID: 2737446823111496146, guid: 28f1e335b9e121c4db4372d220082a56, type: 3}
-      propertyPath: robotParameter.itemFlag
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2737446823111496146, guid: 28f1e335b9e121c4db4372d220082a56, type: 3}
       propertyPath: chestWeapon_anchor.Array.size
       value: 1
       objectReference: {fileID: 0}
