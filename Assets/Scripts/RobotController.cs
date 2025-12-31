@@ -678,7 +678,7 @@ public class RobotController : Pausable
         QuickDraw = 1 << 13,
         RunningTakeOff = 1 << 14,
         CounterMeasure = 1 << 15,
-        AeroMirage = 1 << 16,
+        AeroJammer = 1 << 16,
         TrackingSystem = 1 << 17,
         MirageCloud = 1 << 18,
         InfightBoost = 1 << 19,
@@ -3942,7 +3942,7 @@ public class RobotController : Pausable
                             {
                                 _speed = robotParameter.AirDashSpeed * 2;
                             }
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroMirage))
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroJammer))
                             {
                                 StartMirage(10);
                             }
@@ -5823,7 +5823,7 @@ public class RobotController : Pausable
                     {
                         _speed = robotParameter.AirDashSpeed * 2;
                     }
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroMirage))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroJammer))
                     {
                         StartMirage(10);
                     }
