@@ -70,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8788691653540996990, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: robotParameter.MaxHP
-      value: 1400
+      value: 1050
       objectReference: {fileID: 0}
     - target: {fileID: 8788691653540996990, guid: 21ca014bbcbd62d4b9e1ffa6343c5d66, type: 3}
       propertyPath: robotParameter.itemFlag
@@ -105,15 +105,19 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
+  sprint_once: 0
   fire: 0
+  fire_forcedispatch: 0
   down: 0
   slash: 0
+  slash_forcedispatch: 0
   subfire: 0
   lockswitch: 0
   ringMenuDir: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
+  type: 0
   ascend_margin: 0
   fire_wait: 0
   fire_prepare: 15
