@@ -85,7 +85,7 @@ public class RobotAI_Medium : RobotAI_Base
         //return;
         float mindist = float.MaxValue;
         float mindist_y = float.MaxValue;
-
+        Vector2 stepMove;
         DetermineTarget();
 
         if (current_target != null && current_target)

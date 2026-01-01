@@ -1003,6 +1003,8 @@ public class RobotController : Pausable
         //HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
         if (is_player)
         {
+            robotParameter.MaxHP += (WorldManager.current_instance.gameState.progressStage - 1) * 25;
+
             boostSlider = HUDCanvas.gameObject.transform.Find("BoostSlider").GetComponent<Slider>();
 
             GameObject RobotInfo = HUDCanvas.gameObject.transform.Find("RobotInfo").gameObject;

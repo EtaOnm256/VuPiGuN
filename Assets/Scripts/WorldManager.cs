@@ -105,7 +105,7 @@ public class WorldManager : MonoBehaviour
     int attention_timer = 0;
     RobotController attention_target;
 
-    [SerializeField] GameState gameState;
+    [SerializeField] public GameState gameState;
 
     [SerializeField] UnityEngine.InputSystem.InputActionAsset inputActions;
 

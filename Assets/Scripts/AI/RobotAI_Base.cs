@@ -6,7 +6,8 @@ public class RobotAI_Base : InputBase
 {
     protected RobotController robotController = null;
     protected bool prev_dodge = false;
-    protected Vector2 stepMove = Vector2.zero;
+    protected Vector2 prev_stepMove = Vector2.zero;
+
     void Awake()
     {
         robotController = GetComponent<RobotController>();
@@ -245,8 +246,12 @@ public class RobotAI_Base : InputBase
                     )
                 {
                     dodge = true;
+
                     if (!prev_dodge)
-                        stepMove = ThreatPosToStepMove_Strafe(projectile.transform.position, targetQ);
+                        prev_stepMove = ThreatPosToStepMove_Strafe(projectile.transform.position, targetQ);
+                    
+                    stepMove = prev_stepMove;
+
                     break;
                 }
             }
@@ -262,7 +267,12 @@ public class RobotAI_Base : InputBase
                 if (robot.lowerBodyState == RobotController.LowerBodyState.SWEEP)
                 {
                     dodge = true;
-                    stepMove = ThreatPosToStepMove_Back(robot.GetCenter(), targetQ);
+
+                    if (!prev_dodge)
+                        prev_stepMove = ThreatPosToStepMove_Back(robot.GetCenter(), targetQ);
+
+                    stepMove = prev_stepMove;
+
                     break;
                 }
 
@@ -275,7 +285,11 @@ public class RobotAI_Base : InputBase
                     || robot.lowerBodyState == RobotController.LowerBodyState.JumpSlash_Jump)
                 {
                     dodge = true;
-                    stepMove = ThreatPosToStepMove_Strafe(robot.GetCenter(), targetQ);
+
+                    if (!prev_dodge)
+                        prev_stepMove = ThreatPosToStepMove_Strafe(robot.GetCenter(), targetQ);
+
+                    stepMove = prev_stepMove;
                     break;
                 }
             }

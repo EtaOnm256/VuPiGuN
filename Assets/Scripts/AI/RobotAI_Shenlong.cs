@@ -62,7 +62,7 @@ public class RobotAI_Shenlong : RobotAI_Base
         //return;
 
         float mindist = float.MaxValue;
-
+        Vector2 stepMove;
         DetermineTarget();
 
         if (current_target != null && current_target)
