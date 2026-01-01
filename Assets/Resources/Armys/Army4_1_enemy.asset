@@ -13,11 +13,6 @@ MonoBehaviour:
   m_Name: Army4_1_enemy
   m_EditorClassIdentifier: 
   spawns:
-  - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
-    squadCount: 2
-    loop: 0
-    burst: 0
-    boss: 0
   - variant: {fileID: 3234803710502351383, guid: a99d7ce550f40384997a4abe7e9cc359, type: 3}
     squadCount: 2
     loop: 0
