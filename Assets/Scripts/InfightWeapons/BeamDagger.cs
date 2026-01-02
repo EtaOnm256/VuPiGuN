@@ -60,6 +60,12 @@ public class BeamDagger : InfightWeapon
     {
         get { return true; }
     }
+
+    override public bool haslowerslash
+    {
+        get { return false; }
+    }
+
     private void Awake()
     {
        _slashMotionInfo = new Dictionary<RobotController.SubState_Slash, SlashMotionInfo>

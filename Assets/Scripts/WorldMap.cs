@@ -32,7 +32,7 @@ public class WorldMap : MonoBehaviour
 
         if (next.Item1 == GameState.Destination.Garage)
         {
-            scenePanel_Image.sprite = Resources.Load<Sprite>($"WorldMap/{next.Item2}_{gameState.skyindex}");
+            scenePanel_Image.sprite = Resources.Load<Sprite>($"WorldMap/Stage{next.Item2}_{gameState.skyindex}");
         }
         else
             scenePanel_Image.sprite = null;

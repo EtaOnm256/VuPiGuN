@@ -100,8 +100,10 @@ public class GameState : ScriptableObject
     [ContextMenu("Save")]
     private void Save()
     {
+#if UNITY_EDITOR
         EditorUtility.SetDirty(this);
         AssetDatabase.SaveAssets();
+#endif
     }
 
     public int GetMaxProgress()

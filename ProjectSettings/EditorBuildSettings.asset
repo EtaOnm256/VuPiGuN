@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TestingRoom.unity
     guid: 60a2d8f926ffc7c4ab95955239f5230d
   - enabled: 1
+    path: Assets/Scenes/WorldMap.unity
+    guid: 9785dfc862db1124d9af426add2c5363
+  - enabled: 1
     path: Assets/Scenes/Stage1.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
@@ -35,6 +38,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Stage6.unity
     guid: b3081868587575f4aae055aeed61e0c8
+  - enabled: 1
+    path: Assets/Scenes/Stage7.unity
+    guid: b47e36125faf0b842af0a1dd7dfe8c8f
   - enabled: 1
     path: Assets/Scenes/Stage8.unity
     guid: 8f89675c6c7ad6a4dbd9a1e031b05f38

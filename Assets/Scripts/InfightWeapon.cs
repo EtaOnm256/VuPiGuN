@@ -90,6 +90,11 @@ public class InfightWeapon : Pausable
         get { return false; }
     }
 
+    virtual public bool haslowerslash
+    {
+        get { return true; }
+    }
+
     public struct MotionProperty
     { 
         public float DashSpeed;
