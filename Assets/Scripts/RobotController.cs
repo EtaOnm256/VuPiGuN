@@ -2186,6 +2186,8 @@ public class RobotController : Pausable
         return Quaternion.Euler(vtarget);
     }
 
+    int prev_cam_type = 0;
+
     private void CameraAndLockon()
     {
         int cam_norm0_infight1_seed2 = 0;
@@ -2254,7 +2256,11 @@ public class RobotController : Pausable
 
             cameraPosition = lookat + slash_camera_offset;
 
+            //cameraPosition = Vector3.Lerp(cameraPosition, lookat + slash_camera_offset, 0.2f);
+
             cameraRotation = Quaternion.LookRotation(-slash_camera_offset);
+
+            //cameraRotation = Quaternion.Lerp(cameraRotation, Quaternion.LookRotation(-slash_camera_offset), 0.2f);
 
             Quaternion q = GetTargetQuaternionForView(Target_Robot);
 
@@ -2358,15 +2364,24 @@ public class RobotController : Pausable
 
             _cinemachineTargetPitch = Mathf.Clamp(_cinemachineTargetPitch, TopClamp, BottomClamp);
 
-
             // Cinemachine will follow this target
-            cameraRotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-                _cinemachineTargetYaw, 0.0f);
-
-            cameraPosition = transform.position + cameraRotation * offset * transform.lossyScale.x;
+            if (prev_cam_type != 0)
+            {
+                cameraRotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+                    _cinemachineTargetYaw, 0.0f);
+                cameraPosition = transform.position + cameraRotation * offset * transform.lossyScale.x;
+            }
+            else
+            {
+                cameraRotation = Quaternion.Lerp(cameraRotation, Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+                    _cinemachineTargetYaw, 0.0f), 0.2f);
+                cameraPosition = Vector3.Lerp(cameraPosition, transform.position + cameraRotation * offset * transform.lossyScale.x, 0.2f);
+            }
 
 
         }
+
+        prev_cam_type = cam_norm0_infight1_seed2;
 
         if (Target_Robot != null)
         {
