@@ -72,7 +72,7 @@ public class RobotController : Pausable
 
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
-
+    int prev_cam_type = -1;
     public int _HP = 500;
 
     public int HP
@@ -2186,7 +2186,7 @@ public class RobotController : Pausable
         return Quaternion.Euler(vtarget);
     }
 
-    int prev_cam_type = 0;
+
 
     private void CameraAndLockon()
     {
