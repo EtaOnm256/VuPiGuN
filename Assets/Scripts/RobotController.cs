@@ -73,6 +73,8 @@ public class RobotController : Pausable
     public Vector3 cameraPosition;
     public Quaternion cameraRotation;
     int prev_cam_type = -1;
+    const float cameraPosition_smooth = 0.3f;
+    const float cameraRotation_smooth = 0.3f;
     public int _HP = 500;
 
     public int HP
@@ -2256,11 +2258,11 @@ public class RobotController : Pausable
 
             cameraPosition = lookat + slash_camera_offset;
 
-            //cameraPosition = Vector3.Lerp(cameraPosition, lookat + slash_camera_offset, 0.2f);
+            //cameraPosition = Vector3.Lerp(cameraPosition, lookat + slash_camera_offset, cameraPosition_smooth);
 
             cameraRotation = Quaternion.LookRotation(-slash_camera_offset);
 
-            //cameraRotation = Quaternion.Lerp(cameraRotation, Quaternion.LookRotation(-slash_camera_offset), 0.2f);
+            //cameraRotation = Quaternion.Lerp(cameraRotation, Quaternion.LookRotation(-slash_camera_offset), cameraRotation_smooth);
 
             Quaternion q = GetTargetQuaternionForView(Target_Robot);
 
@@ -2374,8 +2376,8 @@ public class RobotController : Pausable
             else
             {
                 cameraRotation = Quaternion.Lerp(cameraRotation, Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-                    _cinemachineTargetYaw, 0.0f), 0.2f);
-                cameraPosition = Vector3.Lerp(cameraPosition, transform.position + cameraRotation * offset * transform.lossyScale.x, 0.2f);
+                    _cinemachineTargetYaw, 0.0f), cameraRotation_smooth);
+                cameraPosition = Vector3.Lerp(cameraPosition, transform.position + cameraRotation * offset * transform.lossyScale.x, cameraPosition_smooth);
             }
 
 
