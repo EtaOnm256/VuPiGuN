@@ -225,6 +225,9 @@ public class RobotController : Pausable
     int hitstop_timer = 0;
     float intend_animator_speed = 1.0f;
 
+    int knockback_accum = 0;
+    int knockback_accum_reset_timer = 0;
+
     private Animator _animator;
     private CharacterController _controller;
     private Vector3 hitNormal;
@@ -722,6 +725,23 @@ public class RobotController : Pausable
         if (lowerBodyState == LowerBodyState.VOIDSHIFT)
             return;*/
 
+        if (knockBackType == KnockBackType.Weak)
+        {
+            if (lowerBodyState != LowerBodyState.DOWN && lowerBodyState != LowerBodyState.KNOCKBACK)
+            {
+                knockback_accum += 35;
+                knockback_accum_reset_timer = 60;
+            }
+
+            if (knockback_accum < 100)
+                knockBackType = KnockBackType.None;
+            else
+            {
+                knockBackType = KnockBackType.Normal;
+                knockback_accum = 0;
+            }
+        }
+
         _input.OnTakeDamage(pos, dir, damage, knockBackType, dealer);
 
         HP = Math.Max(0, HP - damage);
@@ -842,22 +862,20 @@ public class RobotController : Pausable
                         intend_animator_speed = 4.0f;
 
                     }
-                    else if (knockBackType == KnockBackType.Weak)
-                    {
-                        if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
-                            _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
-                        else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
-                            _animator.Play(_animIDKnockback_Strong_Back, 0, 0);
-                        else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
-                            _animator.Play(_animIDKnockback_Strong_Left, 0, 0);
-                        else
-                            _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
-
-                        _speed = robotParameter.KnockbackSpeed;
-
-                        intend_animator_speed = 4.0f;
-
-                    }
+                    // マシンガンのよろけは蓄積式にしたので使われていない
+                    //else if (knockBackType == KnockBackType.Weak)
+                    //{
+                    //    if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
+                    //        _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
+                    //    else if (stepmotiondegree >= 135.0f || stepmotiondegree < -135.0f)
+                    //        _animator.Play(_animIDKnockback_Strong_Back, 0, 0);
+                    //    else if (stepmotiondegree >= -135.0f && stepmotiondegree < -45.0f)
+                    //        _animator.Play(_animIDKnockback_Strong_Left, 0, 0);
+                    //    else
+                    //        _animator.Play(_animIDKnockback_Strong_Front, 0, 0);
+                    //    _speed = robotParameter.KnockbackSpeed;
+                    //    intend_animator_speed = 4.0f;
+                    //}
                     else //if (knockBackType == KnockBackType.Normal)
                     {
 
@@ -4868,6 +4886,13 @@ public class RobotController : Pausable
 
             hitstop_now = true;
         }
+
+        if (knockback_accum_reset_timer > 0)
+        {
+            knockback_accum_reset_timer--;
+        }
+        else
+            knockback_accum = 0;
 
         if (!hitslow_now && !hitstop_now)
         {

@@ -162,13 +162,16 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
-  speed: 1.2
+  speed: 1.4
   dead: 0
   owner: {fileID: 0}
   trajectory: 0
+  itemFlag: 0
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 5
   chargeshot: 0
-  damage: 75
+  damage: 85
   hitEffect_prefab: {fileID: 8961267772553168207, guid: dd9185f747bc62846a93612a8c883ff3, type: 3}
+  homing_strength: 0.75
+  homing_limit: 7.5

@@ -306,7 +306,10 @@ public class RobotAI_Easy : RobotAI_Base
     public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType knockBackType, RobotController dealer)
     {
         if (dummy)
-            dodge_ready = true;
+        {
+            if(knockBackType != RobotController.KnockBackType.None)
+                dodge_ready = true;
+        }
 
         base.OnTakeDamage(pos, dir, damage, knockBackType, dealer);
     }
