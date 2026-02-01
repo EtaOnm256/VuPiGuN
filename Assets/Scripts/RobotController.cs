@@ -361,11 +361,11 @@ public class RobotController : Pausable
 
     public List<RobotController> lockingEnemys = new List<RobotController>(); // 自分をロックオンしてる敵
 
-    private float _headaimwait = 0.0f;
+    private float _headaimweight = 0.0f;
 
-    private float _chestaimwait = 0.0f;
+    private float _chestaimweight = 0.0f;
 
-    private float _rarmaimwait = 0.0f;
+    private float _rarmaimweight = 0.0f;
 
     public Vector3 virtual_targeting_position_forBody;
     public Vector3 virtual_targeting_position_forUI;
@@ -375,7 +375,7 @@ public class RobotController : Pausable
     public bool rollingfire_followthrough = false;
     public bool quickdraw_followthrough = false;
 
-    private float _barmlayerwait = 0.0f;
+    private float _barmlayerweight = 0.0f;
 
     private int death_timer = 0;
     private int death_timer_max = 30;
@@ -1184,13 +1184,13 @@ public class RobotController : Pausable
         if (_input == null)
             _input = GetComponent<InputBase>();
 
-        _rarmaimwait = 0.0f;
-        _chestaimwait = 0.0f;
+        _rarmaimweight = 0.0f;
+        _chestaimweight = 0.0f;
 
         if (dualwielding)
-            _barmlayerwait = 1.0f;
+            _barmlayerweight = 1.0f;
         else
-            _barmlayerwait = 0.0f;
+            _barmlayerweight = 0.0f;
 
         UpperBodyMove();
 
@@ -1722,16 +1722,16 @@ public class RobotController : Pausable
                 case UpperBodyState.KNOCKBACK:
                 case UpperBodyState.DOWN:
                 case UpperBodyState.GETUP:
-                    _chestaimwait = 0.0f;
-                    _headaimwait = 0.0f;
-                    _rarmaimwait = 0.0f;
-                    _barmlayerwait = 0.0f;
+                    _chestaimweight = 0.0f;
+                    _headaimweight = 0.0f;
+                    _rarmaimweight = 0.0f;
+                    _barmlayerweight = 0.0f;
                     lockonState = LockonState.FREE;
                     break;
             }
 
 
-            headmultiAimConstraint.weight = _headaimwait;
+            headmultiAimConstraint.weight = _headaimweight;
 
             //headmultiAimConstraint.weight = 1.0f;
 
@@ -1760,17 +1760,17 @@ public class RobotController : Pausable
 
             AimHelper_Chest.transform.position = Chest.transform.position + chestAim_Dir;
 
-            chestmultiAimConstraint.weight = _chestaimwait;
+            chestmultiAimConstraint.weight = _chestaimweight;
 
             AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
             rhandmultiAimConstraint.weight = aiming_factor;
 
-            overrideTransform.weight = _rarmaimwait;
+            overrideTransform.weight = _rarmaimweight;
 
-            animator.SetLayerWeight(2, _barmlayerwait);
+            animator.SetLayerWeight(2, _barmlayerweight);
 
             if (!dualwielding)
-                animator.SetLayerWeight(1, _rarmaimwait);
+                animator.SetLayerWeight(1, _rarmaimweight);
 
             float targetSpeed = 0.0f;
 
@@ -2015,6 +2015,14 @@ public class RobotController : Pausable
                         TransitLowerBodyState(LowerBodyState.GROUND_HEAVYFIRE);
                 }
                 break;
+            case LowerBodyState.AIRSNIPEHEAVYFIRE:
+                if (Grounded)
+                {
+                    TransitLowerBodyState(LowerBodyState.GROUND);
+                    upperBodyState = UpperBodyState.STAND;
+                }
+                break;
+
             case LowerBodyState.STAND:
             case LowerBodyState.WALK:
             case LowerBodyState.STEP:
@@ -2436,7 +2444,7 @@ public class RobotController : Pausable
         bool head_no_aim_smooth = false;
         bool chest_no_aim_smooth = false;
 
-        float rhandaimwait_thisframe = 0.0f;
+        float rhandaimweight_thisframe = 0.0f;
 
         bool chest_pitch_aim = false;
 
@@ -2461,30 +2469,30 @@ public class RobotController : Pausable
 
                     if (upperBodyState == UpperBodyState.FIRE)
                     {
-                        _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f * firing_multiplier);
-                        _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f * firing_multiplier);
-                        _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f * firing_multiplier);
+                        _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.10f * firing_multiplier);
+                        _rarmaimweight = Mathf.Min(1.0f, _rarmaimweight + 0.04f * firing_multiplier);
+                        _chestaimweight = Mathf.Min(1.0f, _chestaimweight + 0.04f * firing_multiplier);
 
                         if (dualwielding)
                         {
                             aiming_factor = animator.GetCurrentAnimatorStateInfo(2).normalizedTime;
-                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.70f) * 4, 0.0f, 1.0f);
-                            _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f * firing_multiplier);
+                            rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.70f) * 4, 0.0f, 1.0f);
+                            _barmlayerweight = Mathf.Min(1.0f, _barmlayerweight + 0.08f * firing_multiplier);
                         }
                         else
                         {
                             aiming_factor = animator.GetCurrentAnimatorStateInfo(1).normalizedTime;
-                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.70f) * 4, 0.0f, 1.0f);
+                            rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.70f) * 4, 0.0f, 1.0f);
                         }
                     }
                     else
                     {
-                        _headaimwait = 0.0f;
-                        _rarmaimwait = 0.0f;
-                        _chestaimwait = 0.0f;
-                        _barmlayerwait = 0.0f;
+                        _headaimweight = 0.0f;
+                        _rarmaimweight = 0.0f;
+                        _chestaimweight = 0.0f;
+                        _barmlayerweight = 0.0f;
                         aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                        rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.75f) * 4.0f, 0.0f, 1.0f);
+                        rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.75f) * 4.0f, 0.0f, 1.0f);
                     }
 
 
@@ -2696,13 +2704,13 @@ public class RobotController : Pausable
 
                     if (shoulderWeapon.allrange)
                     {
-                        _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
-                        _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
+                        _rarmaimweight = Mathf.Max(0.0f, _rarmaimweight - 0.04f);
+                        _chestaimweight = Mathf.Max(0.0f, _chestaimweight - 0.04f);
 
                         //if (dualwielding)
-                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                        _barmlayerweight = Mathf.Min(1.0f, _barmlayerweight + 0.08f);
                         //else
-                        //    _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+                        //    _barmlayerweight = Mathf.Max(0.0f, _barmlayerweight - 0.08f);
 
                         chest_no_aim_smooth = true;
 
@@ -2716,25 +2724,25 @@ public class RobotController : Pausable
 
                             if (angle > 60)
                             {
-                                _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.1f);
+                                _headaimweight = Mathf.Max(0.0f, _headaimweight - 0.1f);
                                 head_no_aim_smooth = true;
                             }
                             else
-                                _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.1f);
+                                _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.1f);
                         }
                         else
                         {
-                            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.1f);
+                            _headaimweight = Mathf.Max(0.0f, _headaimweight - 0.1f);
                             head_no_aim_smooth = true;
                         }
                     }
                     else
                     {
-                        _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.08f);
+                        _chestaimweight = Mathf.Min(1.0f, _chestaimweight + 0.08f);
                         chest_pitch_aim = true;
-                        _headaimwait = 0.0f;
-                        _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.16f);
-                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                        _headaimweight = 0.0f;
+                        _rarmaimweight = Mathf.Max(0.0f, _rarmaimweight - 0.16f);
+                        _barmlayerweight = Mathf.Min(1.0f, _barmlayerweight + 0.08f);
                     }
 
                     if (!AcceptDashSlash())
@@ -2786,17 +2794,17 @@ public class RobotController : Pausable
                         if (upperBodyState == UpperBodyState.ROLLINGHEAVYFIRE)
                         {
                             aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.25f) * 4.0f, 0.0f, 1.0f);
+                            rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.25f) * 4.0f, 0.0f, 1.0f);
                         }
                         else if (upperBodyState == UpperBodyState.SNIPEHEAVYFIRE)
                         {
                             aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.33f) * 4.0f, 0.0f, 1.0f);
+                            rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.0f) * 4.0f, 0.0f, 1.0f);
                         }
                         else
                         {
                             aiming_factor = animator.GetCurrentAnimatorStateInfo(2).normalizedTime;
-                            rhandaimwait_thisframe = Mathf.Clamp((aiming_factor - 0.0f) * 4, 0.0f, 1.0f);
+                            rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.0f) * 4, 0.0f, 1.0f);
                         }
                     }
                     else
@@ -2853,30 +2861,30 @@ public class RobotController : Pausable
                             }
                         }
 
-                        aiming_factor = rhandaimwait_thisframe = 1.0f;
+                        aiming_factor = rhandaimweight_thisframe = 1.0f;
 
                     }
 
                     if (upperBodyState == UpperBodyState.HEAVYFIRE)
                     {
-                        _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
-                        _rarmaimwait = Mathf.Min(1.0f, _rarmaimwait + 0.04f);
-                        _chestaimwait = Mathf.Min(1.0f, _chestaimwait + 0.04f);
-                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                        _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.10f);
+                        _rarmaimweight = Mathf.Min(1.0f, _rarmaimweight + 0.04f);
+                        _chestaimweight = Mathf.Min(1.0f, _chestaimweight + 0.04f);
+                        _barmlayerweight = Mathf.Min(1.0f, _barmlayerweight + 0.08f);
                     }
                     else if (upperBodyState == UpperBodyState.SNIPEHEAVYFIRE)
                     {
-                        _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.10f);
-                        _rarmaimwait = 0.0f;
-                        _chestaimwait = 0.0f;
-                        _barmlayerwait = 0.0f;
+                        _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.10f);
+                        _rarmaimweight = 0.0f;
+                        _chestaimweight = 0.0f;
+                        _barmlayerweight = 0.0f;
                     }
                     else
                     {
-                        _headaimwait = 0.0f;
-                        _rarmaimwait = 0.0f;
-                        _chestaimwait = 0.0f;
-                        _barmlayerwait = 0.0f;
+                        _headaimweight = 0.0f;
+                        _rarmaimweight = 0.0f;
+                        _chestaimweight = 0.0f;
+                        _barmlayerweight = 0.0f;
                     }
 
                     chest_pitch_aim = true;
@@ -2921,15 +2929,15 @@ public class RobotController : Pausable
 
                         if (angle > 60)
                         {
-                            _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.1f);
+                            _headaimweight = Mathf.Max(0.0f, _headaimweight - 0.1f);
                             head_no_aim_smooth = true;
                         }
                         else
-                            _headaimwait = Mathf.Min(1.0f, _headaimwait + 0.1f);
+                            _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.1f);
                     }
                     else
                     {
-                        _headaimwait = Mathf.Max(0.0f, _headaimwait - 0.1f);
+                        _headaimweight = Mathf.Max(0.0f, _headaimweight - 0.1f);
                         head_no_aim_smooth = true;
                     }
 
@@ -2963,13 +2971,13 @@ public class RobotController : Pausable
 
                     AcceptSubFire();
 
-                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.04f);
-                    _chestaimwait = Mathf.Max(0.0f, _chestaimwait - 0.04f);
+                    _rarmaimweight = Mathf.Max(0.0f, _rarmaimweight - 0.04f);
+                    _chestaimweight = Mathf.Max(0.0f, _chestaimweight - 0.04f);
 
                     if (dualwielding)
-                        _barmlayerwait = Mathf.Min(1.0f, _barmlayerwait + 0.08f);
+                        _barmlayerweight = Mathf.Min(1.0f, _barmlayerweight + 0.08f);
                     else
-                        _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+                        _barmlayerweight = Mathf.Max(0.0f, _barmlayerweight - 0.08f);
 
                     chest_no_aim_smooth = true;
                 }
@@ -2979,10 +2987,10 @@ public class RobotController : Pausable
             case UpperBodyState.GETUP:
                 miragecloud_invalid = true;
                 massillusion_invalid = true;
-                _chestaimwait = 0.0f;
-                _headaimwait = 0.0f;
-                _rarmaimwait = 0.0f;
-                _barmlayerwait = 0.0f;
+                _chestaimweight = 0.0f;
+                _headaimweight = 0.0f;
+                _rarmaimweight = 0.0f;
+                _barmlayerweight = 0.0f;
                 if (!lockonmode)
                     lockonState = LockonState.FREE;
                 break;
@@ -2999,17 +3007,17 @@ public class RobotController : Pausable
 
                 if (subState_Slash == SubState_Slash.LowerSlash)
                 {
-                    _chestaimwait = 0.0f;
-                    _headaimwait = 1.0f;
-                    _rarmaimwait = 0.0f;
-                    _barmlayerwait = 0.0f;
+                    _chestaimweight = 0.0f;
+                    _headaimweight = 1.0f;
+                    _rarmaimweight = 0.0f;
+                    _barmlayerweight = 0.0f;
                 }
                 else
                 {
-                    _chestaimwait = 0.0f;
-                    _headaimwait = 0.0f;
-                    _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
-                    _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+                    _chestaimweight = 0.0f;
+                    _headaimweight = 0.0f;
+                    _rarmaimweight = Mathf.Max(0.0f, _rarmaimweight - 0.08f);
+                    _barmlayerweight = Mathf.Max(0.0f, _barmlayerweight - 0.08f);
                 }
 
                 current_aiming = true;
@@ -3020,10 +3028,10 @@ public class RobotController : Pausable
 
                 miragecloud_invalid = true;
 
-                _chestaimwait = 0.0f;
-                _headaimwait = 0.0f;
-                _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
-                _barmlayerwait = 0.0f;
+                _chestaimweight = 0.0f;
+                _headaimweight = 0.0f;
+                _rarmaimweight = Mathf.Max(0.0f, _rarmaimweight - 0.08f);
+                _barmlayerweight = 0.0f;
                 AcceptSnipeShoot();
                 current_aiming = true;
                 aiming_begin_aiming_factor_current = float.MaxValue;
@@ -3033,25 +3041,25 @@ public class RobotController : Pausable
             case UpperBodyState.SWEEP:
                 miragecloud_invalid = true;
 
-                _chestaimwait = 0.0f;
-                _headaimwait = 0.0f;
-                _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
-                _barmlayerwait = 0.0f;
+                _chestaimweight = 0.0f;
+                _headaimweight = 0.0f;
+                _rarmaimweight = Mathf.Max(0.0f, _rarmaimweight - 0.08f);
+                _barmlayerweight = 0.0f;
                 AcceptSnipeShoot();
                 current_aiming = true;
                 aiming_begin_aiming_factor_current = float.MaxValue;
                 break;
             default:
-                _chestaimwait = 0.0f;
-                _headaimwait = 0.0f;
-                _rarmaimwait = Mathf.Max(0.0f, _rarmaimwait - 0.08f);
-                _barmlayerwait = Mathf.Max(0.0f, _barmlayerwait - 0.08f);
+                _chestaimweight = 0.0f;
+                _headaimweight = 0.0f;
+                _rarmaimweight = Mathf.Max(0.0f, _rarmaimweight - 0.08f);
+                _barmlayerweight = Mathf.Max(0.0f, _barmlayerweight - 0.08f);
                 if (!lockonmode)
                     lockonState = LockonState.FREE;
                 break;
         }
 
-        headmultiAimConstraint.weight = _headaimwait;
+        headmultiAimConstraint.weight = _headaimweight;
 
         //headmultiAimConstraint.weight = 1.0f;
 
@@ -3151,19 +3159,19 @@ public class RobotController : Pausable
 
         AimHelper_Chest.transform.position = Chest.transform.position + chestAim_Dir;
 
-        chestmultiAimConstraint.weight = _chestaimwait;
+        chestmultiAimConstraint.weight = _chestaimweight;
 
         AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 10.0f;
 
-        rhandmultiAimConstraint.weight = rhandaimwait_thisframe;
+        rhandmultiAimConstraint.weight = rhandaimweight_thisframe;
 
-        overrideTransform.weight = _rarmaimwait;
+        overrideTransform.weight = _rarmaimweight;
 
 
-        animator.SetLayerWeight(2, _barmlayerwait);
+        animator.SetLayerWeight(2, _barmlayerweight);
 
         if (!dualwielding)
-            animator.SetLayerWeight(1, _rarmaimwait);
+            animator.SetLayerWeight(1, _rarmaimweight);
 
         if (rightWeapon != null)
             rightWeapon.trigger = rightWeapon_trigger_thisframe;
@@ -3224,11 +3232,6 @@ public class RobotController : Pausable
             if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
             {
                 result = Quaternion.LookRotation(Target_Robot.GetTargetedPosition() - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
-
-                if(gatling)
-                {
-                    result = result * Quaternion.Euler(0.0f, 20.0f, 0.0f);
-                }
             }
             else
             {
@@ -3254,10 +3257,15 @@ public class RobotController : Pausable
 
 
                 result = Quaternion.LookRotation(relative, new Vector3(0.0f, 1.0f, 0.0f));
+            }
 
-
-
-
+            if (gatling)
+            {
+                result = result * Quaternion.Euler(0.0f, 20.0f, 0.0f);
+            }
+            else if (upperBodyState == UpperBodyState.HEAVYFIRE || upperBodyState == UpperBodyState.ROLLINGHEAVYFIRE)
+            {
+                result = result * Quaternion.Euler(0.0f, 30.0f, 0.0f);
             }
         }
         else
@@ -3312,6 +3320,17 @@ public class RobotController : Pausable
                 Quaternion q_aim_global = Quaternion.LookRotation(-relative, new Vector3(0.0f, 1.0f, 0.0f));
                 overrideTransform.data.position = shoulder_hint.transform.position;
                 overrideTransform.data.rotation = (q_aim_global * Quaternion.Euler(-90.0f, 0.0f, 0.0f)).eulerAngles;
+            }
+
+            Quaternion oTR_q = Quaternion.Euler(overrideTransform.data.rotation);
+
+            if (gatling)
+            {
+                overrideTransform.data.rotation = (oTR_q * Quaternion.Euler(0.0f, 0.0f, 20.0f)).eulerAngles;
+            }
+            else if (upperBodyState == UpperBodyState.HEAVYFIRE || upperBodyState == UpperBodyState.ROLLINGHEAVYFIRE)
+            {
+                overrideTransform.data.rotation = (oTR_q * Quaternion.Euler(0.0f, 0.0f, 30.0f)).eulerAngles;
             }
         }
         else
@@ -3614,10 +3633,12 @@ public class RobotController : Pausable
 
                         // 滑り撃ちのときは、LowerBodyMove()末尾の別個処理でやってる
                         if (!backblast_processed &&
-                            !( (robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) || ground_boost_now) && (lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)))
+                            !( (robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) || ground_boost_now) && (lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE
+                            || lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE)))
                         {
                             if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE
-                                || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE)
+                                || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE
+                                || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE || lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE)
                             {
                                 Vector3 backBlastDir = -(rightWeapon.gameObject.transform.rotation * (Vector3.forward));
 
@@ -3625,7 +3646,7 @@ public class RobotController : Pausable
 
                                 currentHorizontalSpeed += 50.0f * backBlackDir_Horizontal.magnitude;
 
-                                if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
+                                if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE)
                                 {
                                     _verticalVelocity += 50.0f * backBlastDir.y;
                                 }
@@ -3649,15 +3670,15 @@ public class RobotController : Pausable
                         else
                         {
                             float brakefactor = 1.0f;
-                            if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE)
+                            if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE)
                             {
                                 brakefactor = 0.25f;
                             }
-                            else if (lowerBodyState == LowerBodyState.HEAVYFIRE)
+                            else if (lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE)
                             {
                                 brakefactor = 0.5f;
                             }
-
+                          
                             // accelerate or decelerate to target speed
                             if (currentHorizontalSpeed < targetSpeed - speedOffset ||
                                 currentHorizontalSpeed > targetSpeed + speedOffset)
@@ -5080,7 +5101,7 @@ public class RobotController : Pausable
             else if (
                 (robotParameter.itemFlag.HasFlag(ItemFlag.Hovercraft) &&
                 (lowerBodyState == LowerBodyState.STEPGROUND || lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.FIRE
-                || lowerBodyState == LowerBodyState.HEAVYFIRE))
+                || lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE))
                 ||
                 (ground_boost_now && (lowerBodyState == LowerBodyState.SUBFIRE || lowerBodyState == LowerBodyState.FIRE || lowerBodyState == LowerBodyState.HEAVYFIRE))
                 )
@@ -5135,7 +5156,7 @@ public class RobotController : Pausable
                     currentHorizontalSpeed_Z = targetSpeed;
                 }
 
-                if ((lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE) && !ground_boost_now)
+                if ((lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE || lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE) && !ground_boost_now)
                 {
                     if (!backblast_processed)
                     {
@@ -5156,7 +5177,7 @@ public class RobotController : Pausable
             }
             else
             {
-                if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE)
+                if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.AIRSNIPEHEAVYFIRE || lowerBodyState == LowerBodyState.SNIPEHEAVYFIRE)
                 {
                     Vector3 targetDirection = transform.rotation * Vector3.back;
 
