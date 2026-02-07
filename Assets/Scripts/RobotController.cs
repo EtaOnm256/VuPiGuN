@@ -1609,22 +1609,22 @@ public class RobotController : Pausable
                         break;
                 }
 
-                if (ringMenuAccum.x > 1.0f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Right_LMB_available)
+                if (ringMenuAccum.x > 0.75f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Right_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Right_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Right;
                 }
-                else if (ringMenuAccum.x < -1.0f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Left_LMB_available)
+                else if (ringMenuAccum.x < -0.75f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Left_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Left_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Left;
                 }
-                else if (ringMenuAccum.y > 1.0f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Down_LMB_available)
+                else if (ringMenuAccum.y > 0.75f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Down_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Down_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Down;
                 }
-                else if (ringMenuAccum.y < -1.0f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Up_LMB_available)
+                else if (ringMenuAccum.y < -0.75f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Up_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Up_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Up;
@@ -2467,17 +2467,18 @@ public class RobotController : Pausable
                 {
                     miragecloud_invalid = true;
 
-                    if (upperBodyState == UpperBodyState.FIRE)
+                    if (upperBodyState == UpperBodyState.FIRE || upperBodyState == UpperBodyState.SNIPEFIRE)
                     {
                         _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.10f * firing_multiplier);
                         _rarmaimweight = Mathf.Min(1.0f, _rarmaimweight + 0.04f * firing_multiplier);
                         _chestaimweight = Mathf.Min(1.0f, _chestaimweight + 0.04f * firing_multiplier);
-
-                        if (dualwielding)
+                       
+                        if (dualwielding || upperBodyState == UpperBodyState.SNIPEFIRE)
                         {
                             aiming_factor = animator.GetCurrentAnimatorStateInfo(2).normalizedTime;
                             rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.70f) * 4, 0.0f, 1.0f);
                             _barmlayerweight = Mathf.Min(1.0f, _barmlayerweight + 0.08f * firing_multiplier);
+                            chest_pitch_aim = true;
                         }
                         else
                         {
@@ -2868,7 +2869,7 @@ public class RobotController : Pausable
                     if (upperBodyState == UpperBodyState.HEAVYFIRE)
                     {
                         _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.10f);
-                        _rarmaimweight = Mathf.Min(1.0f, _rarmaimweight + 0.04f);
+                        _rarmaimweight = 0.0f;
                         _chestaimweight = Mathf.Min(1.0f, _chestaimweight + 0.04f);
                         _barmlayerweight = Mathf.Min(1.0f, _barmlayerweight + 0.08f);
                     }
@@ -2876,7 +2877,7 @@ public class RobotController : Pausable
                     {
                         _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.10f);
                         _rarmaimweight = 0.0f;
-                        _chestaimweight = 0.0f;
+                        _chestaimweight = Mathf.Min(1.0f, _chestaimweight + 0.04f);
                         _barmlayerweight = 0.0f;
                     }
                     else
@@ -3229,7 +3230,7 @@ public class RobotController : Pausable
         if (aiming)
         {
 
-            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
+            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE && upperBodyState != UpperBodyState.SNIPEHEAVYFIRE))
             {
                 result = Quaternion.LookRotation(Target_Robot.GetTargetedPosition() - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
             }
@@ -3242,6 +3243,10 @@ public class RobotController : Pausable
                 relative.y = 0.0f;
 
                 float v = rightWeapon.projectile_speed;
+
+                if (upperBodyState == UpperBodyState.SNIPEHEAVYFIRE)
+                    v *= 1.3f;
+
                 float g = rightWeapon.projectile_gravity;
                 float L = relative.magnitude;
 
@@ -3284,7 +3289,7 @@ public class RobotController : Pausable
         if (aiming)
         {
 
-            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE))
+            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE && upperBodyState != UpperBodyState.SNIPEHEAVYFIRE))
             {
                 result = Quaternion.LookRotation(virtual_targeting_position_forBody - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 
@@ -3301,6 +3306,10 @@ public class RobotController : Pausable
                 relative.y = 0.0f;
 
                 float v = rightWeapon.projectile_speed;
+
+                if (upperBodyState == UpperBodyState.SNIPEHEAVYFIRE)
+                    v *= 1.3f;
+
                 float g = rightWeapon.projectile_gravity;
                 float L = relative.magnitude;
 
@@ -6364,7 +6373,10 @@ public class RobotController : Pausable
                             animator.Play("Fire5", 2, 0.0f);
                         }
                         else
+                        {
                             animator.Play(_animIDSnipeFire, 0, 0.0f);
+                            animator.Play(_animIDSnipeFire, 2, 0.0f);
+                        }
 
                         //_animator.CrossFadeInFixedTime(_animIDRollingFire_Left, 0.25f, 0);
                         intend_animator_speed = 1.0f;
