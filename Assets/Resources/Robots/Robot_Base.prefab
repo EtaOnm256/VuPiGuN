@@ -3178,6 +3178,8 @@ MonoBehaviour:
   damageText_player_prefab: {fileID: 6989266500122269803, guid: 7d21b07b96c8db04594519fbbd010e5f, type: 3}
   _boost: 0
   dead: 0
+  shoot_skill_PanelItem_prefab: {fileID: 7804461834896283984, guid: 6af4ae7e882cf894b860122f200953ef, type: 3}
+  slash_skill_PanelItem_prefab: {fileID: 7804461834896283984, guid: 6af4ae7e882cf894b860122f200953ef, type: 3}
   Rhand: {fileID: 9119824526815872400}
   rightWeapon: {fileID: 0}
   shoulderWeapon: {fileID: 0}
