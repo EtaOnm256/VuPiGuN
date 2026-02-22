@@ -559,27 +559,19 @@ public class RobotController : Pausable
     Image alertImage_right;
 
     GameObject ringMenu;
-    RectTransform ringMenu_Center_Outline_rectTfm;
-    RectTransform ringMenu_Up_Outline_rectTfm;
-    RectTransform ringMenu_Down_Outline_rectTfm;
-    RectTransform ringMenu_Left_Outline_rectTfm;
-    RectTransform ringMenu_Right_Outline_rectTfm;
 
-    Image ringMenu_Center_LMB;
-    Image ringMenu_Center_RMB;
-    Image ringMenu_Up_LMB;
-    Image ringMenu_Up_RMB;
-    Image ringMenu_Down_LMB;
-    Image ringMenu_Down_RMB;
-    Image ringMenu_Left_LMB;
-    Image ringMenu_Left_RMB;
-    Image ringMenu_Right_LMB;
-    Image ringMenu_Right_RMB;
+    Image ringMenu_Up_Cursor;
+    Image ringMenu_Down_Cursor;
+    Image ringMenu_Left_Cursor;
+    Image ringMenu_Right_Cursor;
+    Image ringMenu_Up_Cursor_Big;
+    Image ringMenu_Down_Cursor_Big;
+    Image ringMenu_Left_Cursor_Big;
+    Image ringMenu_Right_Cursor_Big;
 
-    RectTransform ringMenu_Cursor_rectTfm;
-
-    bool ringMenu_Center_LMB_available;
-    bool ringMenu_Center_RMB_available;
+  
+    //bool ringMenu_Center_LMB_available;
+    //bool ringMenu_Center_RMB_available;
     bool ringMenu_Up_LMB_available;
     bool ringMenu_Up_RMB_available;
     bool ringMenu_Down_LMB_available;
@@ -635,6 +627,22 @@ public class RobotController : Pausable
 
     int boost_regen_time = 0;
 
+    int shoot_skill_energy;
+    int slash_skill_energy;
+
+    int shoot_skill_energy_max;
+    int slash_skill_energy_max;
+
+    int shoot_skill_Reload_Time;
+    int slash_skill_Reload_Time;
+
+    GameObject shoot_skill_PanelItemObj = null;
+    [SerializeField] GameObject shoot_skill_PanelItem_prefab = null;
+    WeaponPanelItem shoot_skill_PanelItem = null;
+
+    GameObject slash_skill_PanelItemObj = null;
+    [SerializeField] GameObject slash_skill_PanelItem_prefab = null;
+    WeaponPanelItem slash_skill_PanelItem = null;
 
     public GameObject Rhand;
 
@@ -1023,6 +1031,7 @@ public class RobotController : Pausable
         //is_player = GetComponent<HumanInput>() != null; 作成直後に判定して代入させるようにした
 
         //HUDCanvas = GameObject.Find("HUDCanvas").GetComponent<Canvas>();
+
         if (is_player)
         {
             robotParameter.MaxHP += (WorldManager.current_instance.gameState.progressStage - 1) * 25;
@@ -1054,51 +1063,68 @@ public class RobotController : Pausable
                 uIController_Overlay.AddWeapon(shoulderWeapon);
 
             ringMenu = HUDCanvas.gameObject.transform.Find("RingMenu").gameObject;
-            ringMenu_Center_Outline_rectTfm = ringMenu.transform.Find("Center_Outline").gameObject.GetComponent<RectTransform>();
-            ringMenu_Center_LMB = ringMenu.transform.Find("Center_LMB").gameObject.GetComponent<Image>();
-            ringMenu_Center_RMB = ringMenu.transform.Find("Center_RMB").gameObject.GetComponent<Image>();
-            ringMenu_Up_Outline_rectTfm = ringMenu.transform.Find("Up_Outline").gameObject.GetComponent<RectTransform>();
-            ringMenu_Up_LMB = ringMenu.transform.Find("Up_LMB").gameObject.GetComponent<Image>();
-            ringMenu_Up_RMB = ringMenu.transform.Find("Up_RMB").gameObject.GetComponent<Image>();
-            ringMenu_Down_Outline_rectTfm = ringMenu.transform.Find("Down_Outline").gameObject.GetComponent<RectTransform>();
-            ringMenu_Down_LMB = ringMenu.transform.Find("Down_LMB").gameObject.GetComponent<Image>();
-            ringMenu_Down_RMB = ringMenu.transform.Find("Down_RMB").gameObject.GetComponent<Image>();
-            ringMenu_Left_Outline_rectTfm = ringMenu.transform.Find("Left_Outline").gameObject.GetComponent<RectTransform>();
-            ringMenu_Left_LMB = ringMenu.transform.Find("Left_LMB").gameObject.GetComponent<Image>();
-            ringMenu_Left_RMB = ringMenu.transform.Find("Left_RMB").gameObject.GetComponent<Image>();
-            ringMenu_Right_Outline_rectTfm = ringMenu.transform.Find("Right_Outline").gameObject.GetComponent<RectTransform>();
-            ringMenu_Right_LMB = ringMenu.transform.Find("Right_LMB").gameObject.GetComponent<Image>();
-            ringMenu_Right_RMB = ringMenu.transform.Find("Right_RMB").gameObject.GetComponent<Image>();
+     
+            ringMenu_Up_Cursor = ringMenu.transform.Find("Up_Cursor").gameObject.GetComponent<Image>();
+            ringMenu_Up_Cursor_Big = ringMenu.transform.Find("Up_Cursor_Big").gameObject.GetComponent<Image>();
+      
+            ringMenu_Down_Cursor = ringMenu.transform.Find("Down_Cursor").gameObject.GetComponent<Image>();
+            ringMenu_Down_Cursor_Big = ringMenu.transform.Find("Down_Cursor_Big").gameObject.GetComponent<Image>();
+     
+            ringMenu_Left_Cursor = ringMenu.transform.Find("Left_Cursor").gameObject.GetComponent<Image>();
+            ringMenu_Left_Cursor_Big = ringMenu.transform.Find("Left_Cursor_Big").gameObject.GetComponent<Image>();
+      
+            ringMenu_Right_Cursor = ringMenu.transform.Find("Right_Cursor").gameObject.GetComponent<Image>();
+            ringMenu_Right_Cursor_Big = ringMenu.transform.Find("Right_Cursor_Big").gameObject.GetComponent<Image>();
+        }
 
-            ringMenu_Cursor_rectTfm = ringMenu.transform.Find("Cursor").GetComponent<RectTransform>();
+        int shoot_skill_num = 0;
+        int slash_skill_num = 0;
 
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot))
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot))
+        {
+            if (is_player)
             {
-                ringMenu_Left_LMB.gameObject.SetActive(true);
-                ringMenu_Right_LMB.gameObject.SetActive(true);
-            }
-
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash))
-            {
-                ringMenu_Up_RMB.gameObject.SetActive(true);
-            }
-
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.JumpSlash))
-            {
-                ringMenu_Down_RMB.gameObject.SetActive(true);
-            }
-
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.SnipeShoot))
-            {
-                ringMenu_Down_LMB.gameObject.SetActive(true);
-            }
-
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.HorizonSweep))
-            {
-                ringMenu_Left_RMB.gameObject.SetActive(true);
-                ringMenu_Right_RMB.gameObject.SetActive(true);
+             
+                shoot_skill_num++;
             }
         }
+
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash))
+        {
+            if (is_player)
+            {
+                slash_skill_num++;
+            }
+        }
+
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.JumpSlash))
+        {
+            if (is_player)
+            {
+                slash_skill_num++;
+            }
+        }
+
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.SnipeShoot))
+        {
+            if (is_player)
+            {
+                shoot_skill_num++;
+            }
+        }
+
+        if (robotParameter.itemFlag.HasFlag(ItemFlag.HorizonSweep))
+        {
+            if (is_player)
+            {
+                slash_skill_num++;
+            }
+        }
+
+        shoot_skill_Reload_Time = 270 - shoot_skill_num * 30;
+        shoot_skill_energy = shoot_skill_energy_max = shoot_skill_num * shoot_skill_Reload_Time;
+        slash_skill_Reload_Time = 270 - slash_skill_num * 30;
+        slash_skill_energy = slash_skill_energy_max = slash_skill_num * slash_skill_Reload_Time;
 
         if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
             robotParameter.Boost_Max = robotParameter.Boost_Max * 2;
@@ -1107,6 +1133,34 @@ public class RobotController : Pausable
         {
             robotParameter.AirMoveSpeed = robotParameter.AirMoveSpeed * 2;
             robotParameter.AscendingAccelerate = robotParameter.AscendingAccelerate * 1.5f;
+        }
+
+        if(is_player)
+        {
+            if (shoot_skill_num > 0)
+            {
+                shoot_skill_PanelItemObj = Instantiate(shoot_skill_PanelItem_prefab);
+                shoot_skill_PanelItem = shoot_skill_PanelItemObj.GetComponent<WeaponPanelItem>();
+                shoot_skill_PanelItem.ammoSlider.maxValue = shoot_skill_energy_max;
+                shoot_skill_PanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/ShootSkill");
+                shoot_skill_PanelItemObj.SetActive(true);
+
+                shoot_skill_PanelItemObj.transform.parent = uIController_Overlay.weaponPanel.transform;
+                shoot_skill_PanelItemObj.transform.localScale = Vector3.one;
+            }
+
+            if (slash_skill_num > 0)
+            {
+                slash_skill_PanelItemObj = Instantiate(shoot_skill_PanelItem_prefab);
+                slash_skill_PanelItem = slash_skill_PanelItemObj.GetComponent<WeaponPanelItem>();
+                slash_skill_PanelItem.ammoSlider.maxValue = slash_skill_energy_max;
+                slash_skill_PanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/SlashSkill");
+
+                slash_skill_PanelItemObj.SetActive(true);
+
+                slash_skill_PanelItemObj.transform.parent = uIController_Overlay.weaponPanel.transform;
+                slash_skill_PanelItemObj.transform.localScale = Vector3.one;
+            }
         }
 
         if (shoulderWeapon != null)
@@ -1215,6 +1269,32 @@ public class RobotController : Pausable
         }
     }
 
+    private bool ConsumeSlash()
+    {
+        if (slash_skill_energy >= slash_skill_Reload_Time)
+        {
+            slash_skill_energy -= slash_skill_Reload_Time;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool ConsumeShoot()
+    {
+        if (shoot_skill_energy >= shoot_skill_Reload_Time)
+        {
+            shoot_skill_energy -= shoot_skill_Reload_Time;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private void RegenBoost()
     {
         if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
@@ -1271,10 +1351,10 @@ public class RobotController : Pausable
     }
 
     static Color ringMenu_enableColor_LMB = new Color(0.0f, 0.5f, 1.0f, 1.0f);
-    static Color ringMenu_disableColor_LMB = new Color(0.0f, 0.5f, 1.0f, 0.25f);
+    static Color ringMenu_disableColor_LMB = new Color(0.0f, 0.5f, 1.0f, 1.0f);
 
     static Color ringMenu_enableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 1.0f);
-    static Color ringMenu_disableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 0.25f);
+    static Color ringMenu_disableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 1.0f);
 
     static Color getRingMenuColor(bool enable, bool LMB)
     {
@@ -1306,8 +1386,8 @@ public class RobotController : Pausable
 
             if (hitstop_timer <= 0)
             {
-                ringMenu_Center_LMB_available = false;
-                ringMenu_Center_RMB_available = false;
+                //ringMenu_Center_LMB_available = false;
+                //ringMenu_Center_RMB_available = false;
                 ringMenu_Up_LMB_available = false;
                 ringMenu_Up_RMB_available = false;
                 ringMenu_Down_LMB_available = false;
@@ -1563,6 +1643,18 @@ public class RobotController : Pausable
                         }
                     }
                 }
+
+                if (shoot_skill_PanelItem != null)
+                {
+                    shoot_skill_PanelItem.ammoText.text = (shoot_skill_energy / shoot_skill_Reload_Time).ToString();
+                    shoot_skill_PanelItem.ammoSlider.value = shoot_skill_energy;
+                }
+
+                if (slash_skill_PanelItem != null)
+                {
+                    slash_skill_PanelItem.ammoText.text = (slash_skill_energy / slash_skill_Reload_Time).ToString();
+                    slash_skill_PanelItem.ammoSlider.value = slash_skill_energy;
+                }
             }
             else
             {
@@ -1590,41 +1682,121 @@ public class RobotController : Pausable
             {
                 bool stay = false;
 
+                ringMenu_Left_Cursor.enabled = true;
+                ringMenu_Right_Cursor.enabled = true;
+                ringMenu_Up_Cursor.enabled = true;
+                ringMenu_Down_Cursor.enabled = true;
+
+                ringMenu_Left_Cursor_Big.enabled = false;
+                ringMenu_Right_Cursor_Big.enabled = false;
+                ringMenu_Up_Cursor_Big.enabled = false;
+                ringMenu_Down_Cursor_Big.enabled = false;
+
+                if (ringMenuState == RingMenuState.Shoot)
+                {
+                    ringMenu_Left_Cursor.enabled = ringMenu_Left_LMB_available;
+                    ringMenu_Right_Cursor.enabled = ringMenu_Right_LMB_available;
+                    ringMenu_Up_Cursor.enabled = ringMenu_Up_LMB_available;
+                    ringMenu_Down_Cursor.enabled = ringMenu_Down_LMB_available;
+
+                    if (shoot_skill_energy >= shoot_skill_Reload_Time)
+                    {
+
+                        ringMenu_Left_Cursor.color =
+                        ringMenu_Right_Cursor.color =
+                        ringMenu_Up_Cursor.color =
+                        ringMenu_Down_Cursor.color =
+
+                        ringMenu_Left_Cursor_Big.color =
+                        ringMenu_Right_Cursor_Big.color =
+                        ringMenu_Up_Cursor_Big.color =
+                        ringMenu_Down_Cursor_Big.color = getRingMenuColor(true, true);
+                    }
+                    else
+                    {
+                        ringMenu_Left_Cursor.color =
+                     ringMenu_Right_Cursor.color =
+                     ringMenu_Up_Cursor.color =
+                     ringMenu_Down_Cursor.color =
+
+                     ringMenu_Left_Cursor_Big.color =
+                     ringMenu_Right_Cursor_Big.color =
+                     ringMenu_Up_Cursor_Big.color =
+                     ringMenu_Down_Cursor_Big.color = //Color.red;
+                     new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                    }
+                }
+                else
+                {
+                 
+                    ringMenu_Left_Cursor.enabled = ringMenu_Left_RMB_available;
+                    ringMenu_Right_Cursor.enabled = ringMenu_Right_RMB_available;
+                    ringMenu_Up_Cursor.enabled = ringMenu_Up_RMB_available;
+                    ringMenu_Down_Cursor.enabled = ringMenu_Down_RMB_available;
+
+                    if (slash_skill_energy >= slash_skill_Reload_Time)
+                    {
+
+                        ringMenu_Left_Cursor.color =
+                        ringMenu_Right_Cursor.color =
+                        ringMenu_Up_Cursor.color =
+                        ringMenu_Down_Cursor.color =
+
+                        ringMenu_Left_Cursor_Big.color =
+                        ringMenu_Right_Cursor_Big.color =
+                        ringMenu_Up_Cursor_Big.color =
+                        ringMenu_Down_Cursor_Big.color = getRingMenuColor(true, false);
+                    }
+                    else
+                    {
+                        ringMenu_Left_Cursor.color =
+                     ringMenu_Right_Cursor.color =
+                     ringMenu_Up_Cursor.color =
+                     ringMenu_Down_Cursor.color =
+
+                     ringMenu_Left_Cursor_Big.color =
+                     ringMenu_Right_Cursor_Big.color =
+                     ringMenu_Up_Cursor_Big.color =
+                     ringMenu_Down_Cursor_Big.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                    }
+                }
+
                 switch (ringMenuDir)
                 {
-                    case RingMenuDir.Center:
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Center_Outline_rectTfm.anchoredPosition;
-                        break;
                     case RingMenuDir.Left:
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Left_Outline_rectTfm.anchoredPosition;
+                        ringMenu_Left_Cursor_Big.enabled = true;
+                        ringMenu_Left_Cursor.enabled = false;
                         break;
                     case RingMenuDir.Right:
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Right_Outline_rectTfm.anchoredPosition;
+                        ringMenu_Right_Cursor_Big.enabled = true;
+                        ringMenu_Right_Cursor.enabled = false;
                         break;
                     case RingMenuDir.Up:
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Up_Outline_rectTfm.anchoredPosition;
+                        ringMenu_Up_Cursor_Big.enabled = true;
+                        ringMenu_Up_Cursor.enabled = false;
                         break;
                     case RingMenuDir.Down:
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Down_Outline_rectTfm.anchoredPosition;
+                        ringMenu_Down_Cursor_Big.enabled = true;
+                        ringMenu_Down_Cursor.enabled = false;
                         break;
                 }
 
-                if (ringMenuAccum.x > 0.75f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Right_LMB_available)
+                if (ringMenuAccum.x > 0.5f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Right_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Right_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Right;
                 }
-                else if (ringMenuAccum.x < -0.75f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Left_LMB_available)
+                else if (ringMenuAccum.x < -0.5f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Left_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Left_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Left;
                 }
-                else if (ringMenuAccum.y > 0.75f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Down_LMB_available)
+                else if (ringMenuAccum.y > 0.5f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Down_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Down_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Down;
                 }
-                else if (ringMenuAccum.y < -0.75f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Up_LMB_available)
+                else if (ringMenuAccum.y < -0.5f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Up_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Up_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Up;
@@ -1639,16 +1811,7 @@ public class RobotController : Pausable
                 else
                     ringMenuAccum += _input.look;
 
-                ringMenu_Center_LMB.color = getRingMenuColor(ringMenu_Center_LMB_available, true);
-                ringMenu_Center_RMB.color = getRingMenuColor(ringMenu_Center_RMB_available, false);
-                ringMenu_Up_LMB.color = getRingMenuColor(ringMenu_Up_LMB_available, true);
-                ringMenu_Up_RMB.color = getRingMenuColor(ringMenu_Up_RMB_available, false);
-                ringMenu_Down_LMB.color = getRingMenuColor(ringMenu_Down_LMB_available, true);
-                ringMenu_Down_RMB.color = getRingMenuColor(ringMenu_Down_RMB_available, false);
-                ringMenu_Left_LMB.color = getRingMenuColor(ringMenu_Left_LMB_available, true);
-                ringMenu_Left_RMB.color = getRingMenuColor(ringMenu_Left_RMB_available, false);
-                ringMenu_Right_LMB.color = getRingMenuColor(ringMenu_Right_LMB_available, true);
-                ringMenu_Right_RMB.color = getRingMenuColor(ringMenu_Right_RMB_available, false);
+             
             }
         }
         else
@@ -1676,6 +1839,16 @@ public class RobotController : Pausable
                 {
                     uIController_Overlay.RemoveWeapon(shoulderWeapon);
                     shoulderWeapon.Destroy_Called_By_Unit();
+                }
+
+                if(shoot_skill_PanelItem != null)
+                {
+                    GameObject.Destroy(shoot_skill_PanelItemObj);
+                }
+
+                if(slash_skill_PanelItemObj != null)
+                {
+                    GameObject.Destroy(slash_skill_PanelItemObj);
                 }
 
                 WorldManager.current_instance.HandleRemoveUnit(this, finish_dealer, finish_dir);
@@ -2472,7 +2645,7 @@ public class RobotController : Pausable
                         _headaimweight = Mathf.Min(1.0f, _headaimweight + 0.10f * firing_multiplier);
                         _rarmaimweight = Mathf.Min(1.0f, _rarmaimweight + 0.04f * firing_multiplier);
                         _chestaimweight = Mathf.Min(1.0f, _chestaimweight + 0.04f * firing_multiplier);
-                       
+
                         if (dualwielding || upperBodyState == UpperBodyState.SNIPEFIRE)
                         {
                             aiming_factor = animator.GetCurrentAnimatorStateInfo(2).normalizedTime;
@@ -2553,7 +2726,7 @@ public class RobotController : Pausable
                                 upperBodyState = UpperBodyState.FIRE;
                                 if (lowerBodyState == LowerBodyState.ROLLINGFIRE)
                                 {
-                                    if(ground_boost_now)
+                                    if (ground_boost_now)
                                         TransitLowerBodyState(LowerBodyState.FIRE);
                                     else
                                         TransitLowerBodyState(LowerBodyState.STAND);
@@ -2569,7 +2742,7 @@ public class RobotController : Pausable
                     {
                         fire_followthrough--;
 
-                        if ( (fire_dispatch && ringMenuDir == RingMenuDir.Center) || rightWeapon.forceHold)
+                        if ((fire_dispatch && ringMenuDir == RingMenuDir.Center) || rightWeapon.forceHold)
                             fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
 
                         if (rightWeapon.canHold && fire_dispatch_triggerhold > 0)
@@ -2595,7 +2768,7 @@ public class RobotController : Pausable
                             }
                             else if (lowerBodyState == LowerBodyState.GROUND_FIRE)
                                 TransitLowerBodyState(LowerBodyState.GROUND);
-                            else if(lowerBodyState == LowerBodyState.FIRE && ground_boost_now)
+                            else if (lowerBodyState == LowerBodyState.FIRE && ground_boost_now)
                             {
                                 TransitLowerBodyState(LowerBodyState.STEPGROUND);
                             }
@@ -2959,9 +3132,9 @@ public class RobotController : Pausable
                         }
                         else if (AcceptJumpSlash())
                         {
-                            
+
                         }
-                        else if(AcceptSweep())
+                        else if (AcceptSweep())
                         {
 
                         }
@@ -3001,7 +3174,7 @@ public class RobotController : Pausable
 
                 miragecloud_invalid = true;
 
-				if (subState_Slash == SubState_Slash.DashSlash)
+                if (subState_Slash == SubState_Slash.DashSlash)
                     AcceptJumpSlash();
 
                 AcceptSnipeShoot();
@@ -3073,10 +3246,10 @@ public class RobotController : Pausable
             // キャラの処理順で狙いが1フレームずれる（公平性はともかく、ロックオンカーソルがずれる）
             // 問題の対処のため、一旦LateFixedUpdate()との二重処理にする
 
-            if(is_player)
+            if (is_player)
                 uIController_Overlay.aiming = current_aiming;
 
-           
+
             if (!fire_done || tracking_current)
             {
                 if (aiming_factor < aiming_begin_aiming_factor_current || robotParameter.itemFlag.HasFlag(ItemFlag.TrackingSystem))
@@ -3187,7 +3360,7 @@ public class RobotController : Pausable
             (!miragecloud_invalid && robotParameter.itemFlag.HasFlag(ItemFlag.MirageCloud))
             || (!massillusion_invalid && robotParameter.itemFlag.HasFlag(ItemFlag.MassIllusion))
             ;
-        
+
         if (passivemirage_thistime)
         {
             if (passiveMirage_interval <= 0)
@@ -3203,9 +3376,41 @@ public class RobotController : Pausable
 
         if (passiveMirage_interval > 0)
             passiveMirage_interval--;
-        
-    }
 
+        if (shoot_skill_energy < shoot_skill_energy_max)
+            shoot_skill_energy++;
+
+        if (shoot_skill_PanelItem != null)
+        {
+            if ((shoot_skill_energy / shoot_skill_Reload_Time) <= 0)
+            {
+                shoot_skill_PanelItem.ammoText.color = Color.red;
+                shoot_skill_PanelItem.iconImage.color = Color.red;
+            }
+            else
+            {
+                shoot_skill_PanelItem.ammoText.color = Color.white;
+                shoot_skill_PanelItem.iconImage.color = Color.white;
+            }
+        }
+
+        if (slash_skill_energy < slash_skill_energy_max)
+            slash_skill_energy++;
+
+        if (slash_skill_PanelItem != null)
+        {
+            if ((slash_skill_energy / slash_skill_Reload_Time) <= 0)
+            {
+                slash_skill_PanelItem.ammoText.color = Color.red;
+                slash_skill_PanelItem.iconImage.color = Color.red;
+            }
+            else
+            {
+                slash_skill_PanelItem.ammoText.color = Color.white;
+                slash_skill_PanelItem.iconImage.color = Color.white;
+            }
+        }
+    }
     Quaternion Process_Aiming_Head(bool aiming)
     {
         Quaternion result;
@@ -6065,7 +6270,7 @@ public class RobotController : Pausable
         {
             ringMenu_Up_RMB_available = true;
 
-            if (slash_dispatch && ringMenuDir == RingMenuDir.Up && ConsumeBoost(80))
+            if (slash_dispatch && ringMenuDir == RingMenuDir.Up && ConsumeSlash())
             {
                 DoDashSlash(false);
 
@@ -6082,7 +6287,7 @@ public class RobotController : Pausable
         {
             ringMenu_Down_RMB_available = true;
 
-            if (slash_dispatch && ringMenuDir == RingMenuDir.Down && ConsumeBoost(80))
+            if (slash_dispatch && ringMenuDir == RingMenuDir.Down && ConsumeSlash())
             {
                 if (Target_Robot != null)
                 {
@@ -6122,7 +6327,7 @@ public class RobotController : Pausable
             ringMenu_Left_RMB_available = true;
             ringMenu_Right_RMB_available = true;
 
-            if (slash_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right) && ConsumeBoost(80))
+            if (slash_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right) && ConsumeSlash())
             {
                 if (Target_Robot != null)
                 {
@@ -6184,7 +6389,7 @@ public class RobotController : Pausable
                 ringMenu_Left_LMB_available = true;
                 ringMenu_Right_LMB_available = true;
 
-                if (fire_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right) && ConsumeBoost(40))
+                if (fire_dispatch && (ringMenuDir == RingMenuDir.Left || ringMenuDir == RingMenuDir.Right) && ConsumeShoot())
                 {
                     if (rightWeapon.heavy)
                     {
@@ -6315,7 +6520,7 @@ public class RobotController : Pausable
             {
                 ringMenu_Down_LMB_available = true;
 
-                if (fire_dispatch && (ringMenuDir == RingMenuDir.Down))
+                if (fire_dispatch && (ringMenuDir == RingMenuDir.Down) && ConsumeShoot())
                 {
                     if (rightWeapon.heavy)
                     {
