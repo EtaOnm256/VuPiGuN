@@ -2673,8 +2673,6 @@ public class RobotController : Pausable
                         rhandaimweight_thisframe = 0.0f;
                     }
 
-
-
                     if (!fire_done)
                     {
                         bool shoot = false;
@@ -2712,7 +2710,7 @@ public class RobotController : Pausable
                                     rightWeapon.shotModifier = Weapon.ShotModifier.CHARGED;
                                     break;
                                 case UpperBodyState.ROLLINGFIRE:
-                                    rightWeapon.shotModifier = Weapon.ShotModifier.WEAK;
+                                    rightWeapon.shotModifier = Weapon.ShotModifier.RAPID;
                                     break;
                                 default:
                                     rightWeapon.shotModifier = Weapon.ShotModifier.NORMAL;
@@ -2723,7 +2721,8 @@ public class RobotController : Pausable
 
                             if (upperBodyState != UpperBodyState.SNIPEFIRE)
                             {
-                                fire_followthrough = rightWeapon.fire_followthrough;
+                                if(!(upperBodyState == UpperBodyState.ROLLINGFIRE && rightWeapon.rapid))
+                                    fire_followthrough = rightWeapon.fire_followthrough;
                             }
                             else
                             {
@@ -2732,7 +2731,8 @@ public class RobotController : Pausable
 
                             if (upperBodyState == UpperBodyState.ROLLINGFIRE)
                             {
-                                event_rollingfired = false;
+                                if(!rightWeapon.rapid)
+                                    event_rollingfired = false;
 
                                 if (event_fired)
                                 {
@@ -2978,7 +2978,7 @@ public class RobotController : Pausable
                                     rightWeapon.shotModifier = Weapon.ShotModifier.CHARGED;
                                     break;
                                 case UpperBodyState.ROLLINGHEAVYFIRE:
-                                    rightWeapon.shotModifier = Weapon.ShotModifier.WEAK;
+                                    rightWeapon.shotModifier = Weapon.ShotModifier.RAPID;
                                     break;
                                 default:
                                     rightWeapon.shotModifier = Weapon.ShotModifier.NORMAL;

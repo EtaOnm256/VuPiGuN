@@ -73,6 +73,10 @@ public class Weapon : Pausable
         get { return false; }
     }
 
+    virtual public bool rapid
+    {
+        get { return false; }
+    }
     virtual public float firing_multiplier
     {
         get { return 1.0f; }
@@ -173,7 +177,7 @@ public class Weapon : Pausable
     {
         NORMAL,
         CHARGED,
-        WEAK
+        RAPID
     }
 
     ShotModifier _shotModifier;

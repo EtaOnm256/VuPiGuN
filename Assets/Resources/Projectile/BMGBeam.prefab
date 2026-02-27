@@ -161,8 +161,9 @@ MonoBehaviour:
   MaxLength: 5
   damage: 25
   pierce: 1
+  rapid: 1
   hitEffect_prefab: {fileID: 3835462889935592433, guid: be10f4fbea4a3654bb6b1828f2ef7640, type: 3}
-  chargeshot: 0
+  shotModifier: 0
   homing_strength: 0.75
   homing_limit: 7.5
   hitsphere_width: -1

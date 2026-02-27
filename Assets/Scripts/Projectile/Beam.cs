@@ -20,6 +20,8 @@ public class Beam : Projectile
 
     [SerializeField] bool pierce = true;
 
+    [SerializeField] bool rapid = false;
+
     // Start is called before the first frame update
     protected override void OnStart()
     {
@@ -38,10 +40,19 @@ public class Beam : Projectile
                 speed *= 1.3f;
                 damage = (int)(damage * 1.5f);
                 break;
-            case Weapon.ShotModifier.WEAK:
-                damage = (int)(damage * 0.5f);
-                homing_strength *= 0.5f;
-                homing_limit *= 0.5f;
+            case Weapon.ShotModifier.RAPID:
+
+                if (!rapid)
+                {
+                    damage = (int)(damage * 0.5f);
+                    homing_strength *= 0.5f;
+                    homing_limit *= 0.5f;
+                }
+                else
+                {
+                    homing_strength *= 2.0f;
+                    homing_limit *= 2.0f;
+                }
                 break;
         }
 

@@ -86,7 +86,7 @@ public class SolidRifle : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if ((shotModifier == ShotModifier.WEAK || energy >= Reload_Time) && trigger)
+        if ((shotModifier == ShotModifier.RAPID || energy >= Reload_Time) && trigger)
         {
 
             GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -105,7 +105,7 @@ public class SolidRifle : Weapon
 
             solidemit_obj.transform.localScale = Vector3.one;
 
-            if(shotModifier!=ShotModifier.WEAK)
+            if(shotModifier!=ShotModifier.RAPID)
                 energy -= Reload_Time;
         }
     }

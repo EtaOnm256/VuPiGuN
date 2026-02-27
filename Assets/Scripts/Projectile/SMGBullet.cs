@@ -36,10 +36,9 @@ public class SMGBullet : Projectile
                 speed *= 1.3f;
                 damage = (int)(damage * 1.5f);
                 break;
-            case Weapon.ShotModifier.WEAK:
-                damage = (int)(damage * 0.5f);
-                homing_strength *= 0.5f;
-                homing_limit *= 0.5f;
+            case Weapon.ShotModifier.RAPID:
+                homing_strength *= 2.0f;
+                homing_limit *= 2.0f;
                 break;
         }
 
