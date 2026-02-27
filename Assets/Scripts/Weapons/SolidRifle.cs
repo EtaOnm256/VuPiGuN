@@ -86,7 +86,7 @@ public class SolidRifle : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if (energy >= Reload_Time && trigger)
+        if ((shotModifier == ShotModifier.WEAK || energy >= Reload_Time) && trigger)
         {
 
             GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -99,13 +99,14 @@ public class SolidRifle : Weapon
             //bullet.worldManager = owner.worldManager;
             bullet.owner = owner;
             bullet.itemFlag = owner.robotParameter.itemFlag;
-            bullet.chargeshot = chargeshot;
+            bullet.shotModifier = shotModifier;
             bullet.barrel_origin = barrel_origin.transform.position;
             GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
             solidemit_obj.transform.localScale = Vector3.one;
 
-            energy -= Reload_Time;
+            if(shotModifier!=ShotModifier.WEAK)
+                energy -= Reload_Time;
         }
     }
 

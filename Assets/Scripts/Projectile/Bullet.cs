@@ -15,7 +15,7 @@ public class Bullet : Projectile
 
     const int positionCount = 4;
 
-    public bool chargeshot = false;
+    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
 
     [SerializeField]int damage;
 
@@ -33,10 +33,17 @@ public class Bullet : Projectile
 
         initial_direction = Quaternion.LookRotation(direction);
 
-        if (chargeshot)
+        switch (shotModifier)
         {
-            speed *= 1.3f;
-            damage = (int)(damage * 1.5f);
+            case Weapon.ShotModifier.CHARGED:
+                speed *= 1.3f;
+                damage = (int)(damage * 1.5f);
+                break;
+            case Weapon.ShotModifier.WEAK:
+                damage = (int)(damage * 0.5f);
+                homing_strength *= 0.5f;
+                homing_limit *= 0.5f;
+                break;
         }
 
         //if (itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))

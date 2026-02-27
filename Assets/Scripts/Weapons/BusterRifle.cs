@@ -140,7 +140,7 @@ public class BusterRifle : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if ( ((_energy / Reload_Time) <= 0 && !prev_fire) || magazine <= 0)
+        if ( ((shotModifier == ShotModifier.WEAK || (_energy / Reload_Time) <= 0) && !prev_fire) || magazine <= 0)
         {
             canHold = false;
         }
@@ -164,9 +164,10 @@ public class BusterRifle : Weapon
             {
                 if (!prev_fire)
                 {
-                    if (energy >= Reload_Time)
+                    if (shotModifier == ShotModifier.WEAK && energy >= Reload_Time)
                     {
-                        energy -= Reload_Time;
+                        if(shotModifier != ShotModifier.WEAK)
+                            energy -= Reload_Time;
                         if (beamemit_prefab != null)
                             GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
@@ -180,7 +181,7 @@ public class BusterRifle : Weapon
                     beam.direction = gameObject.transform.forward;
                     beam.transform.position = firePoint.transform.position;
                     beam.barrel_origin = barrel_origin.transform.position;
-                    beam.chargeshot = chargeshot;
+                    beam.shotModifier = shotModifier;
                     beam.emitting = true;
                     beam.target = Target_Robot;
 

@@ -96,7 +96,7 @@ public class BeamRifle : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if (energy >= Reload_Time && trigger)
+        if ((shotModifier == ShotModifier.WEAK || energy >= Reload_Time) && trigger)
         {
 
             GameObject beam_obj = GameObject.Instantiate(beam_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -108,13 +108,14 @@ public class BeamRifle : Weapon
             beam.team = owner.team;
             beam.owner = owner;
             beam.itemFlag = owner.robotParameter.itemFlag;
-            beam.chargeshot = chargeshot;
+            beam.shotModifier = shotModifier;
             beam.barrel_origin = barrel_origin.transform.position;
 
             if(beamemit_prefab!=null)
                 GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
-            energy -= Reload_Time;
+            if(shotModifier != ShotModifier.WEAK)
+                energy -= Reload_Time;
         }
     }
 

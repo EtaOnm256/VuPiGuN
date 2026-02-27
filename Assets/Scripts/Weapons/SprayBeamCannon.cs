@@ -114,7 +114,7 @@ public class SprayBeamCannon : Weapon
                 beam.team = owner.team;
                 beam.owner = owner;
                 beam.itemFlag = owner.robotParameter.itemFlag;
-                beam.chargeshot = chargeshot;
+                beam.shotModifier = shotModifier;
             }
 
 

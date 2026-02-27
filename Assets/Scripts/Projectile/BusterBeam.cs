@@ -43,15 +43,22 @@ public class BusterBeam : Projectile
 
                     initial_direction = Quaternion.LookRotation(direction);
 
-                    if (chargeshot)
+                    switch (shotModifier)
                     {
-                        speed = base_speed * 1.3f;
-                        damage = (int)(base_damage * 1.5f);
-                    }
-                    else
-                    {
-                        speed = base_speed;
-                        damage = base_damage;
+                        case Weapon.ShotModifier.CHARGED:
+                            speed = base_speed*1.3f;
+                            damage = (int)(base_damage * 1.5f);
+                            break;
+                        case Weapon.ShotModifier.WEAK:
+                            damage = (int)(base_damage * 0.5f);
+                            speed = base_speed;
+                            //homing_strength *= 0.5f;
+                            //homing_limit *= 0.5f;
+                            break;
+                        default:
+                            speed = base_speed;
+                            damage = base_damage;
+                            break;
                     }
 
                     //if(itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))
@@ -91,9 +98,9 @@ public class BusterBeam : Projectile
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
 
-	//int time = 120;
+    //int time = 120;
 
-    public bool chargeshot = false;
+    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
 
     [SerializeField] float homing_strength = 1.0f;
     [SerializeField] float homing_limit = 10.0f;

@@ -21,10 +21,17 @@ public class CannonBall : Projectile
 
         speed = Speed;
 
-        if (chargeshot)
+        switch (shotModifier)
         {
-            speed *= 1.3f;
-            damage = (int)(damage * 1.5f);
+            case Weapon.ShotModifier.CHARGED:
+                speed *= 1.3f;
+                damage = (int)(damage * 1.5f);
+                break;
+            case Weapon.ShotModifier.WEAK:
+                damage = (int)(damage * 0.5f);
+                //homing_strength *= 0.5f;
+                //homing_limit *= 0.5f;
+                break;
         }
     }
 
@@ -45,7 +52,7 @@ public class CannonBall : Projectile
     public MeshRenderer meshRenderer;
 
     int damage = 100;
-    public bool chargeshot = false;
+    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {

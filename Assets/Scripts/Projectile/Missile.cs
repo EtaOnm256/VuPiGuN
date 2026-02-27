@@ -19,10 +19,17 @@ public class Missile : Projectile
 
         initial_direction = Quaternion.LookRotation(direction);
 
-        if (chargeshot)
+        switch(shotModifier)
         {
-            speed *= 1.3f;
-            damage = (int)(damage * 1.5f);
+            case Weapon.ShotModifier.CHARGED:
+                speed *= 1.3f;
+                damage = (int)(damage * 1.5f);
+                break;
+            case Weapon.ShotModifier.WEAK:
+                damage = (int)(damage * 0.5f);
+                homing_strength *= 0.5f;
+                homing_limit *= 0.5f;
+                break;
         }
 
         //if (itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))
@@ -51,7 +58,7 @@ public class Missile : Projectile
     public MeshRenderer meshRenderer;
     public Effekseer.EffekseerEmitter boostEmitter;
 
-    public bool chargeshot = false;
+    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
     [SerializeField]int damage = 100;
     [SerializeField] bool cluster = false;
     [SerializeField] GameObject cluster_prefab = null;
@@ -100,7 +107,7 @@ public class Missile : Projectile
                                 beam.target = null;
                                 beam.team = owner.team;
                                 beam.owner = owner;
-                                beam.chargeshot = chargeshot;
+                                beam.shotModifier = shotModifier;
                             }
                             dead = true;
                         }

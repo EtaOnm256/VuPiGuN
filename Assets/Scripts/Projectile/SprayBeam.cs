@@ -31,10 +31,17 @@ public class SprayBeam : Projectile
         speed = 1.6f;
 
 
-        if (chargeshot)
+        switch (shotModifier)
         {
-            speed *= 1.3f;
-            damage = (int)(damage * 1.5f);
+            case Weapon.ShotModifier.CHARGED:
+                speed *= 1.3f;
+                damage = (int)(damage * 1.5f);
+                break;
+            case Weapon.ShotModifier.WEAK:
+                damage = (int)(damage * 0.5f);
+                //homing_strength *= 0.5f;
+                //homing_limit *= 0.5f;
+                break;
         }
     }
 
@@ -49,7 +56,7 @@ public class SprayBeam : Projectile
     int hitHistoryRCCount = 0;
 
 	int time = 23;
-    public bool chargeshot = false;
+    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
     int damage = 10;
     // Update is called once per frame
     protected override void OnFixedUpdate()

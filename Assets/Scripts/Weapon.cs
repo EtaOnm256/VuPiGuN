@@ -155,7 +155,7 @@ public class Weapon : Pausable
         }
     }
 
-    public bool _chargeshot;
+    /*public bool _chargeshot;
 
     virtual public bool chargeshot
     {
@@ -166,6 +166,27 @@ public class Weapon : Pausable
         get
         {
             return _chargeshot;
+        }
+    }*/
+
+    public enum ShotModifier
+    {
+        NORMAL,
+        CHARGED,
+        WEAK
+    }
+
+    ShotModifier _shotModifier;
+
+    virtual public ShotModifier shotModifier
+    {
+        set
+        {
+            _shotModifier = value;
+        }
+        get
+        {
+            return _shotModifier;
         }
     }
 

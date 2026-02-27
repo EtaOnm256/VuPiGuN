@@ -148,7 +148,7 @@ public class SMG : Weapon
             rotary_barrel.transform.RotateAround(rotary_barrel.transform.TransformPoint(rotary_center), rotary_barrel.transform.TransformDirection(Vector3.forward), rotary_current_angle);
         }
 
-        if (energy >= Reload_Time && trigger && Duration_Time <= 30- fire_interval)
+        if ((shotModifier == ShotModifier.WEAK || energy >= Reload_Time) && trigger && Duration_Time <= 30- fire_interval)
         {
 
             GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -163,7 +163,7 @@ public class SMG : Weapon
                 //bullet.worldManager = owner.worldManager;
                 bullet.owner = owner;
                 bullet.itemFlag = owner.robotParameter.itemFlag;
-                bullet.chargeshot = chargeshot;
+                bullet.shotModifier = shotModifier;
                 bullet.barrel_origin = barrel_origin.transform.position;
                 GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
@@ -179,13 +179,13 @@ public class SMG : Weapon
                 //bullet.worldManager = owner.worldManager;
                 bullet.owner = owner;
                 bullet.itemFlag = owner.robotParameter.itemFlag;
-                bullet.chargeshot = chargeshot;
+                bullet.shotModifier = shotModifier;
                 bullet.barrel_origin = barrel_origin.transform.position;
                 GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
             }
           
-
-            energy -= Reload_Time;
+            if(shotModifier != ShotModifier.WEAK)
+                energy -= Reload_Time;
 
             Duration_Time = 30;
 

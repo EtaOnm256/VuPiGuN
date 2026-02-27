@@ -88,7 +88,7 @@ public class HandCannon : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if (energy >= Reload_Time && trigger)
+        if ((shotModifier == ShotModifier.WEAK || energy >= Reload_Time) && trigger)
         {
             
             GameObject beam_obj = GameObject.Instantiate(cannonball_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -103,7 +103,7 @@ public class HandCannon : Weapon
                 beam.team = owner.team;
                 beam.owner = owner;
                 beam.itemFlag = owner.robotParameter.itemFlag;
-                beam.chargeshot = chargeshot;
+                beam.shotModifier = shotModifier;
                 beam.barrel_origin = barrel_origin.transform.position;
 
                 if (beamemit_prefab)
@@ -118,13 +118,15 @@ public class HandCannon : Weapon
                 beam.target = Target_Robot;
                 beam.team = owner.team;
                 beam.owner = owner;
-                beam.chargeshot = chargeshot;
+                beam.shotModifier = shotModifier;
                 beam.barrel_origin = barrel_origin.transform.position;
 
                 if (beamemit_prefab)
                     GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
             }
-            energy -= Reload_Time;
+
+            if(shotModifier != ShotModifier.WEAK)
+                energy -= Reload_Time;
         }
        }
 
