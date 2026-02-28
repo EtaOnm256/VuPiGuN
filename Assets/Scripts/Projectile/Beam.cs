@@ -54,6 +54,11 @@ public class Beam : Projectile
                     homing_limit *= 2.0f;
                 }
                 break;
+            case Weapon.ShotModifier.BURST2:
+                damage = (int)(damage * 0.75f);
+                homing_strength *= 0.5f;
+                homing_limit *= 0.5f;
+                break;
         }
 
         //if(itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))
