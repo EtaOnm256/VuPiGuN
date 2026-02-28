@@ -2663,14 +2663,32 @@ public class RobotController : Pausable
                     else // upperBodyState == UpperBodyState.ROLLINGFIRE
                     {
                         _headaimweight = 0.0f;
-                        _rarmaimweight = 0.0f;
-                        _chestaimweight = 0.0f;
-                        _barmlayerweight = 0.0f;
-                        //aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                        //rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.75f) * 4.0f, 0.0f, 1.0f);
 
-                        aiming_factor = 1.0f;
-                        rhandaimweight_thisframe = 0.0f;
+                        if (!rightWeapon.carrying)
+                        {
+                            _rarmaimweight = 0.0f;
+                            _chestaimweight = 0.0f;
+                            rhandaimweight_thisframe = 0.0f;
+                        }
+                        else
+                        {
+                            float time = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                            float shooting_1st = Mathf.Abs(time - 0.48f);
+                            float shooting_2nd = Mathf.Abs(time - 1.00f);
+
+                            float shooting = Mathf.Min(shooting_1st, shooting_2nd);
+
+                            float f = Mathf.Clamp( (1.0f - shooting*8.0f), 0.0f, 1.0f);
+
+                            _rarmaimweight = f;
+                            _chestaimweight = f;
+                            rhandaimweight_thisframe = f;
+                            chest_pitch_aim = true;
+                        }
+
+                        chest_no_aim_smooth = true;
+                        _barmlayerweight = 0.0f;
+                        aiming_factor = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
                     }
 
                     if (!fire_done)
@@ -2710,7 +2728,10 @@ public class RobotController : Pausable
                                     rightWeapon.shotModifier = Weapon.ShotModifier.CHARGED;
                                     break;
                                 case UpperBodyState.ROLLINGFIRE:
-                                    rightWeapon.shotModifier = Weapon.ShotModifier.RAPID;
+                                    if (rightWeapon.carrying)
+                                        rightWeapon.shotModifier = Weapon.ShotModifier.BURST2;
+                                    else
+                                        rightWeapon.shotModifier = Weapon.ShotModifier.RAPID;
                                     break;
                                 default:
                                     rightWeapon.shotModifier = Weapon.ShotModifier.NORMAL;
@@ -3902,7 +3923,18 @@ public class RobotController : Pausable
                         {
                             _verticalVelocity = 0.0f;
                             //if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickDraw))
-                            _speed = robotParameter.StepSpeed * 3.0f * (1.0f - animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+
+                            if (rightWeapon.carrying)
+                            {
+                                float f = Mathf.Repeat(animator.GetCurrentAnimatorStateInfo(0).normalizedTime * 2.0f, 1.0f);
+
+                                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                                    f = 1.0f;
+
+                                _speed = robotParameter.StepSpeed * 3.0f * (1.0f - f);
+                            }
+                            else
+                                _speed = robotParameter.StepSpeed * 3.0f * (1.0f - animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
                             //else
                             //    _speed = robotParameter.StepSpeed;
                         }

@@ -30,6 +30,11 @@ public class Missile : Projectile
                 homing_strength *= 0.5f;
                 homing_limit *= 0.5f;
                 break;
+            case Weapon.ShotModifier.BURST2:
+                damage = (int)(damage * 0.75f);
+                homing_strength *= 0.5f;
+                homing_limit *= 0.5f;
+                break;
         }
 
         //if (itemFlag.HasFlag(RobotController.ItemFlag.TrackingSystem))

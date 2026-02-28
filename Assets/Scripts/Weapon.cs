@@ -177,7 +177,8 @@ public class Weapon : Pausable
     {
         NORMAL,
         CHARGED,
-        RAPID
+        RAPID,
+        BURST2
     }
 
     ShotModifier _shotModifier;
