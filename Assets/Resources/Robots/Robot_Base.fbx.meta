@@ -2464,7 +2464,7 @@ ModelImporter:
       takeName: Armature|RollingFire3_Left
       internalID: 0
       firstFrame: 0
-      lastFrame: 44
+      lastFrame: 64
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2484,8 +2484,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.45809004
+      - time: 0.63536274
         functionName: OnHeavyFire
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.30999997
+        functionName: OnRollingFire
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -2500,7 +2507,7 @@ ModelImporter:
       takeName: Armature|RollingFire3_Right
       internalID: 0
       firstFrame: 0
-      lastFrame: 43
+      lastFrame: 64
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -2520,7 +2527,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.48529682
+      - time: 0.31704545
+        functionName: OnRollingFire
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.6307514
         functionName: OnHeavyFire
         data: 
         objectReferenceParameter: {instanceID: 0}

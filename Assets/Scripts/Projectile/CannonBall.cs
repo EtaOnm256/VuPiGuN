@@ -27,8 +27,8 @@ public class CannonBall : Projectile
                 speed *= 1.3f;
                 damage = (int)(damage * 1.5f);
                 break;
-            case Weapon.ShotModifier.RAPID:
-                damage = (int)(damage * 0.5f);
+            case Weapon.ShotModifier.BURST2:
+                damage = (int)(damage * 0.75f);
                 //homing_strength *= 0.5f;
                 //homing_limit *= 0.5f;
                 break;
@@ -83,12 +83,20 @@ public class CannonBall : Projectile
 
                 float hp = v*t+g * t * t / 2;
 
-                if(hp < h)
+                if (hp < h)
                 {
-                    Gravity_thisFrame = 0.0f;
+                    if (shotModifier == Weapon.ShotModifier.BURST2)
+                        Gravity_thisFrame = Gravity * 0.5f;
+                    else
+                        Gravity_thisFrame = 0.0f;
                 }
                 else
-                    Gravity_thisFrame = Gravity*2;
+                {
+                    if (shotModifier == Weapon.ShotModifier.BURST2)
+                        Gravity_thisFrame = Gravity * 1.5f;
+                    else
+                        Gravity_thisFrame = Gravity * 2;
+                }
 
                 Quaternion qDirection = Quaternion.LookRotation(velocity_h, Vector3.up);
 
@@ -96,7 +104,7 @@ public class CannonBall : Projectile
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {
-                    Quaternion qDirection_toward = Quaternion.RotateTowards(qDirection, qTarget, 0.5f);
+                    Quaternion qDirection_toward = Quaternion.RotateTowards(qDirection, qTarget, shotModifier == Weapon.ShotModifier.BURST2 ? 0.25f : 0.5f);
                     Quaternion qDirection_fix = Quaternion.Inverse(qDirection)* qDirection_toward;
 
                     direction = qDirection_fix * direction;
