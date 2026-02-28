@@ -2722,15 +2722,22 @@ public class RobotController : Pausable
                                     break;
                             }
 
-                            rightWeapon_trigger_thisframe = true;
-
                             if (upperBodyState != UpperBodyState.SNIPEFIRE)
                             {
-                                if(!(upperBodyState == UpperBodyState.ROLLINGFIRE && rightWeapon.rapid))
+                                if (!(upperBodyState == UpperBodyState.ROLLINGFIRE && rightWeapon.rapid))
+                                {
+                                    rightWeapon_trigger_thisframe = true;
                                     fire_followthrough = rightWeapon.fire_followthrough;
+                                }
+                                else
+                                {
+                                    rightWeapon_trigger_thisframe = event_rollingfired;
+                                    fire_followthrough = fire_dispatch_triggerhold = 0;
+                                }
                             }
                             else
                             {
+                                rightWeapon_trigger_thisframe = true;
                                 fire_followthrough = 30;
                             }
 
