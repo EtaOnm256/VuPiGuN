@@ -1083,43 +1083,27 @@ public class RobotController : Pausable
 
         if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingShoot))
         {
-            if (is_player)
-            {
-             
-                shoot_skill_num++;
-            }
+            shoot_skill_num++;
         }
 
         if (robotParameter.itemFlag.HasFlag(ItemFlag.DashSlash))
         {
-            if (is_player)
-            {
-                slash_skill_num++;
-            }
+            slash_skill_num++;
         }
 
         if (robotParameter.itemFlag.HasFlag(ItemFlag.JumpSlash))
         {
-            if (is_player)
-            {
-                slash_skill_num++;
-            }
+            slash_skill_num++;
         }
 
         if (robotParameter.itemFlag.HasFlag(ItemFlag.SnipeShoot))
         {
-            if (is_player)
-            {
-                shoot_skill_num++;
-            }
+            shoot_skill_num++;
         }
 
         if (robotParameter.itemFlag.HasFlag(ItemFlag.HorizonSweep))
         {
-            if (is_player)
-            {
-                slash_skill_num++;
-            }
+            slash_skill_num++;
         }
 
         shoot_skill_Reload_Time = 270 - shoot_skill_num * 30;
