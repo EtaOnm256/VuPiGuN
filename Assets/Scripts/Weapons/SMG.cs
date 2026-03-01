@@ -11,9 +11,9 @@ public class SMG : Weapon
 
     [SerializeField] int Max_Ammo = 30;
 
-    override public bool rapid
+    override public ShotType shottype
     {
-        get { return true; }
+        get { return ShotType.RAPID; }
     }
 
     override public int MaxEnergy
@@ -153,7 +153,7 @@ public class SMG : Weapon
             rotary_barrel.transform.RotateAround(rotary_barrel.transform.TransformPoint(rotary_center), rotary_barrel.transform.TransformDirection(Vector3.forward), rotary_current_angle);
         }
 
-        if ((shotModifier == ShotModifier.RAPID || energy >= Reload_Time) && trigger && Duration_Time <= 30- fire_interval)
+        if ((shotModifier == ShotModifier.BURST3 || energy >= Reload_Time) && trigger && Duration_Time <= 30- fire_interval)
         {
 
             GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
@@ -189,7 +189,7 @@ public class SMG : Weapon
                 GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
             }
           
-            if(shotModifier != ShotModifier.RAPID)
+            if(shotModifier != ShotModifier.BURST3)
                 energy -= Reload_Time;
 
             Duration_Time = 30;

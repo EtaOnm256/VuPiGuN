@@ -28,8 +28,7 @@ public class Weapon : Pausable
     public enum Trajectory
     {
         Straight,
-        Curved,
-        Laser
+        Curved
     }
 
     public Trajectory trajectory = Trajectory.Straight;
@@ -73,10 +72,23 @@ public class Weapon : Pausable
         get { return false; }
     }
 
-    virtual public bool rapid
+    //virtual public bool rapid
+    //{
+    //    get { return false; }
+    //}
+
+    public enum ShotType
     {
-        get { return false; }
+        SINGLE,
+        RAPID,
+        LASER
     }
+
+    virtual public ShotType shottype
+    {
+        get { return ShotType.SINGLE; }
+    }
+
     virtual public float firing_multiplier
     {
         get { return 1.0f; }
@@ -177,7 +189,7 @@ public class Weapon : Pausable
     {
         NORMAL,
         CHARGED,
-        RAPID,
+        BURST3,
         BURST2
     }
 

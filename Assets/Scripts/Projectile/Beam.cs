@@ -40,7 +40,7 @@ public class Beam : Projectile
                 speed *= 1.3f;
                 damage = (int)(damage * 1.5f);
                 break;
-            case Weapon.ShotModifier.RAPID:
+            case Weapon.ShotModifier.BURST3:
 
                 if (!rapid)
                 {

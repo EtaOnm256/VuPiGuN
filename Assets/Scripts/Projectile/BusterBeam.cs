@@ -49,12 +49,6 @@ public class BusterBeam : Projectile
                             speed = base_speed*1.3f;
                             damage = (int)(base_damage * 1.5f);
                             break;
-                        case Weapon.ShotModifier.RAPID:
-                            damage = (int)(base_damage * 0.5f);
-                            speed = base_speed;
-                            //homing_strength *= 0.5f;
-                            //homing_limit *= 0.5f;
-                            break;
                         default:
                             speed = base_speed;
                             damage = base_damage;
@@ -123,6 +117,8 @@ public class BusterBeam : Projectile
 
         if (!dead && lineRenderer.enabled)
         {
+            damage = base_damage;
+
             hitHistoryCount = 0;
             hitHistoryRCCount = 0;
 

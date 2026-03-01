@@ -39,7 +39,7 @@ public class Bullet : Projectile
                 speed *= 1.3f;
                 damage = (int)(damage * 1.5f);
                 break;
-            case Weapon.ShotModifier.RAPID:
+            case Weapon.ShotModifier.BURST3:
                 damage = (int)(damage * 0.5f);
                 homing_strength *= 0.5f;
                 homing_limit *= 0.5f;

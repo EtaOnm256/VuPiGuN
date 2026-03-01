@@ -49,10 +49,13 @@ public class BusterRifle : Weapon
     {
         get { return _fire_followthrough; }
     }
-
+    override public ShotType shottype
+    {
+        get { return ShotType.LASER; }
+    }
     public override bool forceHold
     {
-        get { return charge > 0; }
+        get { return charge > 0 && shotModifier != ShotModifier.BURST3; }
     }
     public override bool tracking
     {
@@ -140,7 +143,7 @@ public class BusterRifle : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if ( ((shotModifier == ShotModifier.RAPID || (_energy / Reload_Time) <= 0) && !prev_fire) || magazine <= 0)
+        if ( ((_energy / Reload_Time) <= 0 && !prev_fire) || magazine <= 0 && shotModifier == ShotModifier.NORMAL)
         {
             canHold = false;
         }
@@ -154,7 +157,11 @@ public class BusterRifle : Weapon
 
         if (trigger)
         {
-            if (charge < Charge_Max)
+            int Charge_Max_Now;
+
+            Charge_Max_Now = Charge_Max;
+
+            if (charge < Charge_Max_Now)
             {
                 charge++;
                 prev_fire = false;
@@ -164,10 +171,11 @@ public class BusterRifle : Weapon
             {
                 if (!prev_fire)
                 {
-                    if (shotModifier == ShotModifier.RAPID && energy >= Reload_Time)
+                    if (energy >= Reload_Time || shotModifier != ShotModifier.NORMAL)
                     {
-                        if(shotModifier != ShotModifier.RAPID)
+                        if(shotModifier == ShotModifier.NORMAL)
                             energy -= Reload_Time;
+
                         if (beamemit_prefab != null)
                             GameObject.Instantiate(beamemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
 

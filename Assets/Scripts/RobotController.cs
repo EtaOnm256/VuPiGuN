@@ -2715,7 +2715,7 @@ public class RobotController : Pausable
                                     if (rightWeapon.carrying)
                                         rightWeapon.shotModifier = Weapon.ShotModifier.BURST2;
                                     else
-                                        rightWeapon.shotModifier = Weapon.ShotModifier.RAPID;
+                                        rightWeapon.shotModifier = Weapon.ShotModifier.BURST3;
                                     break;
                                 default:
                                     rightWeapon.shotModifier = Weapon.ShotModifier.NORMAL;
@@ -2724,7 +2724,7 @@ public class RobotController : Pausable
 
                             if (upperBodyState != UpperBodyState.SNIPEFIRE)
                             {
-                                if (!(upperBodyState == UpperBodyState.ROLLINGFIRE && rightWeapon.rapid))
+                                if (!(upperBodyState == UpperBodyState.ROLLINGFIRE && rightWeapon.shottype != Weapon.ShotType.SINGLE))
                                 {
                                     rightWeapon_trigger_thisframe = true;
                                     fire_followthrough = rightWeapon.fire_followthrough;
@@ -2743,7 +2743,7 @@ public class RobotController : Pausable
 
                             if (upperBodyState == UpperBodyState.ROLLINGFIRE)
                             {
-                                if(!rightWeapon.rapid)
+                                if(rightWeapon.shottype == Weapon.ShotType.SINGLE)
                                     event_rollingfired = false;
 
                                 if (event_fired)
@@ -6126,7 +6126,7 @@ public class RobotController : Pausable
             {
                 if(rightWeapon.wrist_equipped)
                     animator.Play("Fire4", 1, 0.0f);
-                else if(rightWeapon.trajectory == Weapon.Trajectory.Laser)
+                else if(rightWeapon.shottype == Weapon.ShotType.LASER)
                     animator.Play("Fire7", 1, 0.0f);
                 else
                     animator.Play("Fire", 1, 0.0f);
@@ -6612,7 +6612,10 @@ public class RobotController : Pausable
                         //_animator.CrossFadeInFixedTime(_animIDRollingFire_Left, 0.25f, 0);
                         intend_animator_speed = 1.0f;
 
-                        animator.SetFloat("FiringSpeed", 1.0f);
+                        if(rightWeapon.shottype == Weapon.ShotType.LASER)
+                            animator.SetFloat("FiringSpeed", 0.5f);
+                        else
+                            animator.SetFloat("FiringSpeed", 1.0f);
 
                         StartSeeking();
                         event_fired = false;
