@@ -4092,7 +4092,11 @@ public class RobotController : Pausable
                                 AcceptStep(true);
                         }
 
-                        if (lowerBodyState != LowerBodyState.AIRROLLINGFIRE && lowerBodyState != LowerBodyState.AIRROLLINGHEAVYFIRE)
+                        if( lowerBodyState == LowerBodyState.AIRHEAVYFIRE && !fire_done)
+                        {
+                            _verticalVelocity = 0.0f;
+                        }
+                        else if (lowerBodyState != LowerBodyState.AIRROLLINGFIRE && lowerBodyState != LowerBodyState.AIRROLLINGHEAVYFIRE)
                         {
                             JumpAndGravity();
                             GroundedCheck();
