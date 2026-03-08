@@ -6,11 +6,12 @@ public class BusterBeam : Projectile
 {
 
 
-    public LineRenderer lineRenderer;
+    [SerializeField] LineRenderer lineRenderer;
+    [SerializeField] BusterBeamRenderer busterBeamRenderer;
 
     public Quaternion initial_direction;
 
-
+    bool enabled = false;
 
     public float MaxLength = 15.0f;
 
@@ -20,6 +21,7 @@ public class BusterBeam : Projectile
 
     int base_damage;
     float base_speed;
+    float base_width;
 
     [SerializeField] bool pierce = true;
 
@@ -39,6 +41,7 @@ public class BusterBeam : Projectile
                     for (int i = 0; i < lineRenderer.positionCount; i++)
                     {
                         lineRenderer.SetPosition(i, start_pos);
+                        busterBeamRenderer.SetPosition(i, start_pos);
                     }
 
                     initial_direction = Quaternion.LookRotation(direction);
@@ -47,7 +50,7 @@ public class BusterBeam : Projectile
                     {
                         case Weapon.ShotModifier.CHARGED:
                             speed = base_speed*1.3f;
-                            damage = (int)(base_damage * 1.5f);
+                            damage = (int)(base_damage * 2.0f);
                             break;
                         default:
                             speed = base_speed;
@@ -61,7 +64,10 @@ public class BusterBeam : Projectile
                     //    homing_strength *= 1.5f;
                     //}
 
-                    lineRenderer.enabled = true;
+
+                    enabled = busterBeamRenderer.enabled = true;
+
+                    lineRenderer.enabled = false;
 
                     dead = false;
                     //time = 120;
@@ -71,7 +77,7 @@ public class BusterBeam : Projectile
             }
             else
             {
-                lineRenderer.enabled = false;
+                enabled = busterBeamRenderer.enabled = lineRenderer.enabled = false;
                 dead = true;
             }
 
@@ -81,13 +87,13 @@ public class BusterBeam : Projectile
 
     
 
-    RaycastHit[] rayCastHit = new RaycastHit[8];
-    RaycastHit[] rayCastHit_NoOrder = new RaycastHit[8];
+    RaycastHit[] rayCastHit = new RaycastHit[32];
+    RaycastHit[] rayCastHit_NoOrder = new RaycastHit[32];
 
     public GameObject hitEffect_prefab;
 
-    GameObject[] hitHistory = new GameObject[8];
-    RobotController[] hitHistoryRC = new RobotController[8];
+    GameObject[] hitHistory = new GameObject[32];
+    RobotController[] hitHistoryRC = new RobotController[32];
 
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
@@ -104,10 +110,13 @@ public class BusterBeam : Projectile
 
     [SerializeField] RobotController.KnockBackType KnockBackType = RobotController.KnockBackType.Normal;
 
+    int wave_timer = 0;
+
     private void Awake()
     {
         base_damage = damage;
         base_speed = speed;
+        base_width = busterBeamRenderer.widthMultiplier;
     }
 
     // Update is called once per frame
@@ -115,14 +124,12 @@ public class BusterBeam : Projectile
     {
 
 
-        if (!dead && lineRenderer.enabled)
+        if (!dead && enabled)
         {
-            damage = base_damage;
-
             hitHistoryCount = 0;
             hitHistoryRCCount = 0;
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < hitHistory.Length; i++)
             {
                 hitHistory[i] = null;
                 hitHistoryRC[i] = null;
@@ -132,12 +139,18 @@ public class BusterBeam : Projectile
 
             Vector3 origin, goal;
 
-            //if (first && barrel_origin.x != Mathf.NegativeInfinity)
             origin = barrel_origin;
-            //else
-            //    origin = lineRenderer.GetPosition(lineRenderer.positionCount-1);
 
-            goal = lineRenderer.GetPosition(lineRenderer.positionCount - 1) + direction.normalized * speed;
+            //goal = lineRenderer.GetPosition(lineRenderer.positionCount - 1) + direction.normalized * speed;
+            goal = busterBeamRenderer.GetPosition(1) + direction.normalized * speed;
+
+
+            float hitsphere_width_now;
+
+            if (shotModifier == Weapon.ShotModifier.CHARGED)
+                hitsphere_width_now = hitsphere_width * 2.0f;
+            else
+                hitsphere_width_now = hitsphere_width;
 
             if (hitsphere_width <= 0.0f)
             {
@@ -146,7 +159,7 @@ public class BusterBeam : Projectile
             }
             else
             {
-                numhit = Physics.SphereCastNonAlloc(origin, hitsphere_width, (goal - origin).normalized, rayCastHit_NoOrder, (goal - origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
+                numhit = Physics.SphereCastNonAlloc(origin, hitsphere_width_now, (goal - origin).normalized, rayCastHit_NoOrder, (goal - origin).magnitude, 1 << 6 | WorldManager.layerPattern_Building);
             }
 
             bool coli = false;
@@ -224,26 +237,33 @@ public class BusterBeam : Projectile
             }
             else
             { 
-                float length = Vector3.Dot(lineRenderer.GetPosition(lineRenderer.positionCount - 1) - transform.position, direction.normalized);
+                //float length = Vector3.Dot(lineRenderer.GetPosition(lineRenderer.positionCount - 1) - transform.position, direction.normalized);
+                float length = Vector3.Dot(busterBeamRenderer.GetPosition(1) - transform.position, direction.normalized);
 
                 length += speed;
 
                 position = transform.position + direction * length;
             }
-            lineRenderer.SetPosition(lineRenderer.positionCount - 1, position);
-            
-            lineRenderer.SetPosition(0, transform.position);
-
-            //for(int i=1;i< lineRenderer.positionCount - 1;i++)
-            //{
-            //    lineRenderer.SetPosition(i, Vector3.Lerp(lineRenderer.GetPosition(0), lineRenderer.GetPosition(lineRenderer.positionCount - 1), ((float)i) / (lineRenderer.positionCount-1)));
-            //}
+            //lineRenderer.SetPosition(lineRenderer.positionCount - 1, position);
+            busterBeamRenderer.SetPosition(1, position);
 
 
-            //if (time-- <= 0)
-            //{
-            //    dead = true;
-            //}
+            //lineRenderer.SetPosition(0, transform.position);
+            busterBeamRenderer.SetPosition(0, transform.position);
+
+            if (wave_timer > 3)
+                wave_timer = 0;
+            else
+                wave_timer++;
+
+            float f = Mathf.Abs(wave_timer - 2) * 0.1f+1.0f;
+
+            if (shotModifier == Weapon.ShotModifier.CHARGED)
+                //lineRenderer.widthMultiplier = base_width * 2.0f* f;
+                busterBeamRenderer.widthMultiplier = base_width * 2.0f * f;
+            else
+                //lineRenderer.widthMultiplier = base_width* f;
+                busterBeamRenderer.widthMultiplier = base_width * f;
         }
      
         first = false;

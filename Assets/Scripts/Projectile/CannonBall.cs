@@ -25,7 +25,7 @@ public class CannonBall : Projectile
         {
             case Weapon.ShotModifier.CHARGED:
                 speed *= 1.3f;
-                damage = (int)(damage * 1.5f);
+                damage = (int)(damage * 2.0f);
                 break;
             case Weapon.ShotModifier.BURST2:
                 damage = (int)(damage * 0.75f);

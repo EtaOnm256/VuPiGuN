@@ -143,7 +143,7 @@ public class BusterRifle : Weapon
     {
         energy = Mathf.Min(MaxEnergy, energy + 1);
 
-        if ( ((_energy / Reload_Time) <= 0 && !prev_fire) || magazine <= 0 && shotModifier == ShotModifier.NORMAL)
+        if ( ((_energy / Reload_Time) <= 0 && !prev_fire) || magazine <= 0 && shotModifier != ShotModifier.BURST3)
         {
             canHold = false;
         }

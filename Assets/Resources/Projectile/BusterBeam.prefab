@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6034131333242272753}
   - component: {fileID: -3320835075645777373}
   - component: {fileID: 4814763497659280974}
+  - component: {fileID: 8571920383902742128}
   m_Layer: 0
   m_Name: BusterBeam
   m_TagString: Untagged
@@ -80,7 +81,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1.9767007
+    widthMultiplier: 3
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -126,7 +127,7 @@ LineRenderer:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
-    numCapVertices: 2
+    numCapVertices: 8
     alignment: 0
     textureMode: 0
     textureScale: {x: 1, y: 1}
@@ -157,14 +158,30 @@ MonoBehaviour:
   trajectory: 0
   itemFlag: 0
   lineRenderer: {fileID: -3320835075645777373}
+  busterBeamRenderer: {fileID: 8571920383902742128}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 15
   damage: 4
   pierce: 1
   hitEffect_prefab: {fileID: 3835462889935592433, guid: c2edb2d5bdf96d64f8433c5232f98663, type: 3}
-  chargeshot: 0
+  shotModifier: 0
   homing_strength: 1
   homing_limit: 10
-  hitsphere_width: 1
+  hitsphere_width: 1.5
   hiteffect_scale: 1.5
   KnockBackType: 1
+--- !u!114 &8571920383902742128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6571210301752455124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3ceb4970ae2b3846adc59a7e67e1580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cylinder_prefab: {fileID: 2935394208025693794, guid: acfce6e421b3914498c0078c1a099e0b, type: 3}
+  cap_prefab: {fileID: 823853982253730161, guid: f19eddedba0f8e445be0e07289bc0700, type: 3}
+  widthMultiplier: 150
