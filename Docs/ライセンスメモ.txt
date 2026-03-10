@@ -197,3 +197,6 @@ https://www.textures.com/download/3d-scanned-rock-surface-2x2-meters/133277
 
 ステージ8
 https://peritune.com/blog/2022/11/05/moonforest/
+
+シールドエフェクト
+https://assetstore.unity.com/packages/vfx/shaders/shield-shader-free-349218

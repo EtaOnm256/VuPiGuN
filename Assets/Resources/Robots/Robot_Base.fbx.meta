@@ -3444,8 +3444,8 @@ ModelImporter:
       name: Armature|Sweep_Left
       takeName: Armature|Sweep_Left
       internalID: 0
-      firstFrame: 0
-      lastFrame: 80
+      firstFrame: 20
+      lastFrame: 60
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3465,14 +3465,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.264013
+      - time: 0.14072531
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.7531486
+      - time: 0.7554317
         functionName: OnAcceptNextSlash
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -3494,8 +3494,8 @@ ModelImporter:
       name: Armature|Sweep_Right
       takeName: Armature|Sweep_Right
       internalID: 0
-      firstFrame: 0
-      lastFrame: 80
+      firstFrame: 20
+      lastFrame: 60
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -3515,14 +3515,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.25985473
+      - time: 0.14798258
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.7506297
+      - time: 0.76661146
         functionName: OnAcceptNextSlash
         data: 
         objectReferenceParameter: {instanceID: 0}

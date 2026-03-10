@@ -76,6 +76,9 @@ public class RobotController : Pausable
     const float cameraPosition_smooth = 0.3f;
     const float cameraRotation_smooth = 0.3f;
     public int _HP = 500;
+    public bool invulnerable = false;
+
+    [SerializeField] GameObject shieldeffect;
 
     public int HP
     {
@@ -733,6 +736,9 @@ public class RobotController : Pausable
 
         if (lowerBodyState == LowerBodyState.VOIDSHIFT)
             return;*/
+
+        if (invulnerable)
+            return;
 
         if (knockBackType == KnockBackType.Weak)
         {
@@ -3667,6 +3673,8 @@ public class RobotController : Pausable
 
         bool regen_boost_now = false;
 
+        invulnerable = false;
+
         if (hitstop_timer <= 0)
         {
 
@@ -5613,6 +5621,8 @@ public class RobotController : Pausable
 
         if (!hitslow_now && !hitstop_now)
             speed_overrideby_knockback = false;
+
+        shieldeffect.SetActive(invulnerable);
     }
 
 

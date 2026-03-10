@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\InfightWeapons\BeamDagger.cs" />
     <Compile Include="Assets\Scripts\RobotController.cs" />
     <Compile Include="Assets\Scripts\SkySwitcher.cs" />
+    <Compile Include="Assets\Scripts\BusterBeamRenderer.cs" />
     <Compile Include="Assets\LightProbeHelper\LightProbeGenerator.cs" />
     <Compile Include="Assets\Scripts\Weapons\Bazooka.cs" />
     <Compile Include="Assets\Scripts\MultiTapAndHoldInteraction.cs" />
@@ -142,9 +143,9 @@
     <Compile Include="Assets\RainMaker\Demo\DemoScript2D.cs" />
     <Compile Include="Assets\Scripts\AI\RobotAI_Gargoyle.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
-    <Compile Include="Assets\Scripts\BusterBeamRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Shield Shader FREE\Pink Material Issue.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Effekseer\Materials\GrabDepthShader.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
@@ -205,6 +206,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\Shaders\Afterimage.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\Shield Shader FREE\Documentation(Shield hologram shader FREE).txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
