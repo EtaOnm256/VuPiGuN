@@ -11,7 +11,14 @@ public class BusterSword : InfightWeapon
             _slashing = value;
 
             if (_slashing)
+            {
                 _emitting = true;
+
+                for (int idx_point = 0; idx_point < hitpoints.Length; idx_point++)
+                {
+                    prev_points[idx_point] = hitpoints[idx_point].transform.position;
+                }
+            }
 
             if (!_slashing)
             {
@@ -132,6 +139,8 @@ public class BusterSword : InfightWeapon
                 }
             }
         }
+
+        prev_points = new Vector3[hitpoints.Length];
     }
 
     // Start is called before the first frame update
@@ -154,13 +163,10 @@ public class BusterSword : InfightWeapon
 
     }
 
-    const int num_points = 3;
-
-    Vector3[] prev_points = new Vector3[num_points];
-    Vector3[] points = new Vector3[num_points];
+    Vector3[] prev_points;
 
     //public GameObject hitpoint;
-    public GameObject[] hitpoints;
+    [SerializeField] GameObject[] hitpoints;
 
     RaycastHit[] rayCastHit = new RaycastHit[8];
 
@@ -169,13 +175,6 @@ public class BusterSword : InfightWeapon
 
     protected override void OnFixedUpdate()
     {
-
-        for (int i = 0; i < num_points; i++)
-        {
-            //points[i] = hitpoint.transform.position;
-            points[i] = hitpoints[i].transform.position;
-        }
-
         if (sweep)
         {
             transform.localScale = new Vector3(org_scale.x, org_scale.y*3.0f, org_scale.z);
@@ -184,15 +183,15 @@ public class BusterSword : InfightWeapon
             transform.localScale = new Vector3(org_scale.x, org_scale.y, org_scale.z);
 
 
-        if (slashing)
+        for (int idx_point = 0; idx_point < hitpoints.Length; idx_point++)
         {
-            for (int idx_point = 0; idx_point < num_points; idx_point++)
+            if (slashing)
             {
-                EvalHit(points[idx_point], prev_points[idx_point]);
+                 EvalHit(hitpoints[idx_point].transform.position, prev_points[idx_point]);
             }
-        }
 
-        points.CopyTo(prev_points, 0);
+            prev_points[idx_point] = hitpoints[idx_point].transform.position;
+        }
     }
 
     private void EvalHit(Vector3 p1, Vector3 p2)
