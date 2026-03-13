@@ -548,6 +548,7 @@ public class RobotController : Pausable
     public StepDirection stepDirection; //AIから参照するので
     StepMotion stepMotion;
     bool ground_boost_now = false;
+    bool extreme_slide_now = false;
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
     public LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
 
@@ -4389,7 +4390,14 @@ public class RobotController : Pausable
                         float speedOffset = 0.1f;
                         float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
-                        targetSpeed = robotParameter.StepSpeed;
+                        if (extreme_slide_now && !ground_boost_now)
+                        {
+                            targetSpeed = robotParameter.StepSpeed*stepremain/robotParameter.StepLimit;
+                        }
+                        else
+                        {
+                            targetSpeed = robotParameter.StepSpeed;
+                        }
 
                         // accelerate or decelerate to target speed
                         if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -4421,7 +4429,7 @@ public class RobotController : Pausable
 
                             bool stop = false;
 
-                            if (!_input.sprint && !_input.sprint_once/*_input.move == Vector2.zero*/)
+                            if (!_input.sprint && !_input.sprint_once && !(extreme_slide_now && !ground_boost_now))
                                 stop = true;
                             else
                             {
@@ -6362,25 +6370,41 @@ public class RobotController : Pausable
         }
 
         if (
-            (_input.sprint || (_input.sprint_once && !sprint_once_consumed)) &&  (!canceling || ConsumeBoost(80))
+            (_input.sprint || (_input.sprint_once && !sprint_once_consumed))
             ) 
         {
-            sprint_once_consumed = true;
+            bool step_accepted = false;
 
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide))
+            if(!canceling)
             {
-                upperBodyState = UpperBodyState.STAND;
-                fire_followthrough = 0;
+                step_accepted = true;
+                extreme_slide_now = false;
+            }
+            else if(ConsumeBoost(80))
+            {
+                step_accepted = true;
+                extreme_slide_now = true;
             }
 
-            StartStep();
-
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
+            if (step_accepted)
             {
-                _speed = robotParameter.StepSpeed * 2;
+                sprint_once_consumed = true;
+
+                if (robotParameter.itemFlag.HasFlag(ItemFlag.ExtremeSlide))
+                {
+                    upperBodyState = UpperBodyState.STAND;
+                    fire_followthrough = 0;
+                }
+
+                StartStep();
+
+                if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                {
+                    _speed = robotParameter.StepSpeed * 2;
+                }
+                else
+                    _speed = robotParameter.StepSpeed;
             }
-            else
-                _speed = robotParameter.StepSpeed;
         }
     }
 
