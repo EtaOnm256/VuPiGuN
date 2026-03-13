@@ -643,11 +643,11 @@ public class RobotAI_Medium : RobotAI_Base
                     if (robotController.rightWeapon == null)
                         allow_fire = false;
 
-                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.DashSlash) || dashslash_reload > 0 || robotController.boost < 80 || infight_now)
+                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.DashSlash) || dashslash_reload > 0 || !robotController.HasPowerSlash())
                         allow_dashslash = false;
-                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash) || jumpslash_reload > 0 || robotController.boost < 80 || infight_now)
+                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash) || jumpslash_reload > 0 || !robotController.HasPowerSlash())
                         allow_jumpslash = false;
-                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.HorizonSweep) || horizon_reload > 0 || robotController.boost < 80 || infight_now)
+                    if (!robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.HorizonSweep) || horizon_reload > 0 || !robotController.HasPowerSlash())
                         allow_horizon = false;
 
 
@@ -694,21 +694,10 @@ public class RobotAI_Medium : RobotAI_Base
                         {
                             allow_infight = allow_jumpslash = allow_dashslash = allow_horizon = false;
                         }
-                        else if (allow_fire && (allow_infight || allow_jumpslash || allow_dashslash || allow_horizon))
+                        else if (allow_horizon)
                         {
-                            //if (Random.Range(0, 2) != 0)
-                            //    allow_fire = false;
-                            //else
-                            //    allow_infight = allow_jumpslash = allow_dashslash = allow_horizon = false;
+                            allow_infight = allow_jumpslash = allow_dashslash = allow_fire = false;
                         }
-
-                        //if(allow_infight && (allow_jumpslash || allow_dashslash || allow_horizon))
-                        //{
-                            //if (Random.Range(0, 2) != 0)
-                            //    allow_infight = false;
-                            //else
-                            //    allow_jumpslash = allow_dashslash = allow_horizon = false;
-                        //}
                     }
 
                     if(robotController.upperBodyState == RobotController.UpperBodyState.FIRE || 

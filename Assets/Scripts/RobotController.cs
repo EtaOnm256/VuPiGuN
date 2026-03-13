@@ -1112,7 +1112,7 @@ public class RobotController : Pausable
             slash_skill_num++;
         }
 
-        shoot_skill_Reload_Time = 270 - shoot_skill_num * 30;
+        shoot_skill_Reload_Time = 300 - shoot_skill_num * 60;
         shoot_skill_energy = shoot_skill_energy_max = shoot_skill_num * shoot_skill_Reload_Time;
         slash_skill_Reload_Time = 270 - slash_skill_num * 30;
         slash_skill_energy = slash_skill_energy_max = slash_skill_num * slash_skill_Reload_Time;
@@ -1259,10 +1259,14 @@ public class RobotController : Pausable
             return false;
         }
     }
+    public bool HasPowerSlash()
+    {
+        return slash_skill_energy >= slash_skill_Reload_Time;
+    }
 
     private bool ConsumeSlash()
     {
-        if (slash_skill_energy >= slash_skill_Reload_Time)
+        if (HasPowerSlash())
         {
             slash_skill_energy -= slash_skill_Reload_Time;
             return true;
@@ -1273,9 +1277,14 @@ public class RobotController : Pausable
         }
     }
 
+    public bool HasPowerShoot()
+    {
+        return shoot_skill_energy >= shoot_skill_Reload_Time;
+    }
+
     private bool ConsumeShoot()
     {
-        if (shoot_skill_energy >= shoot_skill_Reload_Time)
+        if (HasPowerShoot())
         {
             shoot_skill_energy -= shoot_skill_Reload_Time;
             return true;

@@ -410,7 +410,7 @@ public class RobotAI_Shenlong : RobotAI_Base
 
 
                     if (robotController.Sword != null && robotController.Sword.can_jump_slash && robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.JumpSlash)
-                        && allow_jumpslash && jumpinfight_reload <= 0 && !prev_slash && robotController.boost >= 80 && !infight_now)
+                        && allow_jumpslash && jumpinfight_reload <= 0 && !prev_slash && robotController.HasPowerSlash() && !infight_now)
                     {
                         ringMenuDir = RobotController.RingMenuDir.Down;
                         slash = true;
@@ -422,6 +422,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                             if (!prev_slash && infight_reload <= 0)
                             {
                                 slash = true;
+                                move = Vector2.zero;
                             }
                         }
                         else
