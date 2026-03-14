@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: robotParameter.itemFlag
-      value: 16961
+      value: 25153
       objectReference: {fileID: 0}
     - target: {fileID: 1797465536160906034, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: robotParameter.rweapon_prefab
@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 490a158f4901ce74bb7cb482e4c0db57, type: 2}
     - target: {fileID: 3902860722008967204, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: m_Name
-      value: Robot2 CrimsonDuke
+      value: Robot2 ScarletHunter
       objectReference: {fileID: 0}
     - target: {fileID: 4423220419937112734, guid: d2a79054f8566214fafe59f9179657dc, type: 3}
       propertyPath: m_RootOrder

@@ -4392,7 +4392,7 @@ public class RobotController : Pausable
 
                         if (extreme_slide_now && !ground_boost_now)
                         {
-                            targetSpeed = robotParameter.StepSpeed*stepremain/robotParameter.StepLimit;
+                            targetSpeed = Mathf.Lerp(robotParameter.StepSpeed*0.5f, robotParameter.StepSpeed, ((float)stepremain) / robotParameter.StepLimit);
                         }
                         else
                         {
