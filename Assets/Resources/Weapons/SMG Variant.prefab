@@ -160,7 +160,6 @@ MonoBehaviour:
   trajectory: 0
   projectile_gravity: 0
   projectile_speed: 0
-  _chargeshot: 0
   bullet_prefab: {fileID: 6571210301752455124, guid: b45ac389190c8704c8c8c3a5cd3a7786, type: 3}
   beam: 0
   solidemit_prefab: {fileID: 8961267772553168207, guid: a9188262140e6d748bca1106490714a3, type: 3}
@@ -168,7 +167,10 @@ MonoBehaviour:
   Reload_Time: 12
   firePoint: {fileID: 8217520916323313477}
   MaxMagazine: 5
-  fire_interval: 5
+  fire_interval: 4
   _fire_followthrough: 30
   barrel_origin: {fileID: 1191585114736190082}
+  rotary: 0
+  rotary_barrel: {fileID: 0}
+  _gatling: 0
   _firing_multiplier: 2
