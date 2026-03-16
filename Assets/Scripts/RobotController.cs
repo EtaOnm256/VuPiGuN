@@ -686,8 +686,8 @@ public class RobotController : Pausable
         NextDrive = 1 << 0,
         ExtremeSlide = 1 << 1,
         GroundBoost = 1 << 2,
-        SoftLanding = 1 << 3,
-        QuickIgniter = 1 << 4,
+        SkilledLanding = 1 << 3,
+        AgileBooster = 1 << 4,
         Hovercraft = 1 << 5,
         FlightUnit = 1 << 6,
         RollingShoot = 1 << 7,
@@ -705,7 +705,7 @@ public class RobotController : Pausable
         InfightBoost = 1 << 19,
         MassIllusion = 1 << 20,
         SeedOfArts = 1 << 21,
-        RollingSlash = 1 << 22,
+        SpinningSlash = 1 << 22,
         VoidShift = 1 << 23,
         HorizonSweep = 1 << 24
     }
@@ -2144,7 +2144,7 @@ public class RobotController : Pausable
                             fire_followthrough = 0;
                         }
 
-                        if (robotParameter.itemFlag.HasFlag(ItemFlag.SoftLanding))
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.SkilledLanding))
                             TransitLowerBodyState(LowerBodyState.STAND);
                         else
                             TransitLowerBodyState(LowerBodyState.GROUND);
@@ -2157,7 +2157,7 @@ public class RobotController : Pausable
 
                 if (Grounded)
                 {
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SoftLanding))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SkilledLanding))
                     {
                         TransitLowerBodyState(LowerBodyState.STAND);
                         if (fire_done)
@@ -2170,7 +2170,7 @@ public class RobotController : Pausable
             case LowerBodyState.AIRSUBFIRE:
                 if (Grounded)
                 {
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SoftLanding))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SkilledLanding))
                     {
                         TransitLowerBodyState(LowerBodyState.STAND);
                         if (fire_done)
@@ -2183,7 +2183,7 @@ public class RobotController : Pausable
             case LowerBodyState.AIRHEAVYFIRE:
                 if (Grounded)
                 {
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SoftLanding))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.SkilledLanding))
                     {
                         TransitLowerBodyState(LowerBodyState.STAND);
                         if (fire_done)
@@ -4375,7 +4375,7 @@ public class RobotController : Pausable
                             _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
                             event_dashed = false;
 
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
                             {
                                 _speed = robotParameter.AirDashSpeed * 2;
                             }
@@ -4935,7 +4935,7 @@ public class RobotController : Pausable
                             {
                                 combo_reserved = true;
 
-                                if (robotParameter.itemFlag.HasFlag(ItemFlag.RollingSlash) &&  _input.move.y < 0.0f && subState_Slash != SubState_Slash.RollingSlash)
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.SpinningSlash) &&  _input.move.y < 0.0f && subState_Slash != SubState_Slash.RollingSlash)
                                 {
                                     comboType = ComboType.ROLLINGSLASH;
                                 }
@@ -6332,7 +6332,7 @@ public class RobotController : Pausable
                     _animator.CrossFadeInFixedTime(_animIDDash, 0.25f, 0);
                     event_dashed = false;
 
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                    if (robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
                     {
                         _speed = robotParameter.AirDashSpeed * 2;
                     }
@@ -6402,7 +6402,7 @@ public class RobotController : Pausable
 
                 StartStep();
 
-                if (robotParameter.itemFlag.HasFlag(ItemFlag.QuickIgniter))
+                if (robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
                 {
                     _speed = robotParameter.StepSpeed * 2;
                 }
