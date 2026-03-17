@@ -61,7 +61,7 @@ public class IntermissionButton : MonoBehaviour
     ShopItemWeapon[] shopItemWeapons =
     {
         new ShopItemWeapon{tier=1,name = "バズーカ",description="大口径のロケットランチャー。",price=1500,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
-        new ShopItemWeapon{tier=1,name = "ミサイルポッド",description="サブ武器。固定式のミサイル発射装置。ボタン押し続けで連射可能。",price=2000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
+        new ShopItemWeapon{tier=1,name = "ミサイルポッド",description="サブ武器。固定式のミサイル発射装置。ボタン押し続けで連射可能。",price=1000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
         new ShopItemWeapon{tier=1,name = "サブマシンガン",description="小型の機関銃。追加入力で連射可能。",price=1500,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=1,name = "ソリッドライフル",description="コストの安い実弾兵器。",price=1000,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=1,name = "ハンドキャノン",description="手持ち式の榴弾砲。反動が大きい。",price=2000,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
