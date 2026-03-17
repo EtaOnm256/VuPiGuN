@@ -166,12 +166,13 @@ MonoBehaviour:
   dead: 0
   owner: {fileID: 0}
   trajectory: 0
+  itemFlag: 0
   lineRenderer: {fileID: -3320835075645777373}
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   MaxLength: 3
-  chargeshot: 0
+  shotModifier: 0
   damage: 10
   hitEffect_prefab: {fileID: 8961267772553168207, guid: 80c20339338365c4595d643272ed4cef, type: 3}
   homing_strength: 0.3
   homing_limit: 3
-  knockBackType: 1
+  knockBackType: 8

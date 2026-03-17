@@ -675,9 +675,10 @@ public class RobotController : Pausable
         Down,
         Finish,
         KnockUp,
-        Weak,
+        Weak_MachineGun,
         Aerial,
-        Weak_Modern
+        Weak_MachineGun_Modern,
+        Weak_ShotGun
     }
 
     [Flags]
@@ -742,12 +743,12 @@ public class RobotController : Pausable
         if (invulnerable)
             return;
 
-        if (knockBackType == KnockBackType.Weak || knockBackType == KnockBackType.Weak_Modern)
+        if (knockBackType == KnockBackType.Weak_MachineGun || knockBackType == KnockBackType.Weak_MachineGun_Modern || knockBackType == KnockBackType.Weak_ShotGun)
         {
-            if(knockBackType == KnockBackType.Weak_Modern)
+            if(knockBackType == KnockBackType.Weak_MachineGun_Modern)
                 DoHitStop(2);
 
-            if (lowerBodyState != LowerBodyState.DOWN && lowerBodyState != LowerBodyState.KNOCKBACK)
+            if ( (lowerBodyState != LowerBodyState.DOWN && lowerBodyState != LowerBodyState.KNOCKBACK) || knockBackType == KnockBackType.Weak_ShotGun)
             {
                 knockback_accum += 35;
                 knockback_accum_reset_timer = 60;
