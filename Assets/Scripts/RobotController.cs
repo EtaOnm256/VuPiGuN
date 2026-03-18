@@ -232,7 +232,7 @@ public class RobotController : Pausable
     int knockback_accum_reset_timer = 0;
 
     private Animator _animator;
-    private CharacterController _controller;
+    [SerializeField] private CharacterController _controller;
     private Vector3 hitNormal;
 
     private float org_controller_height;
@@ -1169,7 +1169,6 @@ public class RobotController : Pausable
         }
 
         _hasAnimator = TryGetComponent(out _animator);
-        _controller = GetComponent<CharacterController>();
 
         _animator.SetFloat("JumpSpeed", robotParameter.JumpSpeed);
 
@@ -2122,8 +2121,7 @@ public class RobotController : Pausable
             spherePosition = new Vector3(transform.position.x, transform.position.y + 3.4f,
                 transform.position.z);
         else
-            spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
-                transform.position.z);
+            spherePosition = transform.TransformPoint(_controller.center) + new Vector3(0.0f, GroundedOffset, 0.0f);
 
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
             QueryTriggerInteraction.Ignore);
@@ -5258,8 +5256,6 @@ public class RobotController : Pausable
                         if (robotParameter.itemFlag.HasFlag(ItemFlag.NextDrive))
                             AcceptDash(true);
                     }
-
-                    GroundedCheck();
                     break;
             }
         }
@@ -5674,9 +5670,13 @@ public class RobotController : Pausable
         }
             
         if(
+            (
             (lowerBodyState == LowerBodyState.SLASH || lowerBodyState == LowerBodyState.SLASH_DASH)
             && (newState != LowerBodyState.SLASH && newState != LowerBodyState.SLASH_DASH)
             && (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+            )
+            ||
+            lowerBodyState == LowerBodyState.SWEEP
             )
         {
             transform.rotation = Quaternion.Euler(0.0f, transform.eulerAngles.y, 0.0f);
@@ -6018,7 +6018,7 @@ public class RobotController : Pausable
         else
             // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
             Gizmos.DrawSphere(
-                new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
+                transform.TransformPoint(_controller.center) + new Vector3(0.0f, GroundedOffset, 0.0f),
                 GroundedRadius);
     }
 

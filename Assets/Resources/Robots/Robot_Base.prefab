@@ -3115,7 +3115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Grounded: 1
-  GroundedOffset: -1.8
+  GroundedOffset: -1.45
   GroundedRadius: 2
   GroundLayers:
     serializedVersion: 2
@@ -3140,6 +3140,7 @@ MonoBehaviour:
   _cinemachineTargetPitch: 0
   _verticalVelocity: 0
   slash_count: 0
+  _controller: {fileID: 6750347067213451800}
   _input: {fileID: 0}
   headmultiAimConstraint: {fileID: 8240275247160239941}
   chestmultiAimConstraint: {fileID: 4152913449269264376}
