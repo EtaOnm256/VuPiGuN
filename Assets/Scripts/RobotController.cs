@@ -527,7 +527,7 @@ public class RobotController : Pausable
         {SubState_Slash.DashSlash,SubState_SlashType.AIR},
         {SubState_Slash.AirSlashSeed,SubState_SlashType.AIR },
         {SubState_Slash.SlideSlashSeed,SubState_SlashType.AIR },
-        {SubState_Slash.RollingSlash,SubState_SlashType.AIR }
+        {SubState_Slash.RollingSlash,SubState_SlashType.GROUND }
     };
 
     public SubState_Slash subState_Slash;
@@ -889,7 +889,8 @@ public class RobotController : Pausable
 
                         _speed = robotParameter.KnockbackSpeed * 4;
 
-                        intend_animator_speed = 4.0f;
+                        //intend_animator_speed = 4.0f;
+                        intend_animator_speed = 2.0f; // 強ノックバック用のステートはフレーム数が2倍にしてあるのを合わせるため
 
                     }
                     // マシンガンのよろけは蓄積式にしたので使われていない
@@ -4889,7 +4890,8 @@ public class RobotController : Pausable
                             {
                                 if (!Sword.slashing || (subState_Slash == SubState_Slash.RollingSlash && slash_count < Sword.slashMotionInfo[subState_Slash].num - 1))
                                 {
-                                    if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
+                                    if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed
+                                        || (robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts) && subState_Slash == SubState_Slash.RollingSlash))
                                     {
                                         Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
 
@@ -4921,19 +4923,25 @@ public class RobotController : Pausable
 
                                     if ((Target_Robot.GetTargetedPosition() - GetCenter()).magnitude > Sword.motionProperty[subState_Slash].SlashDistance * transform.lossyScale.x)
                                     {
-                                        //if (lowerBodyState == LowerBodyState.DashSlash)// !Sword.dashslash_cutthroughのとき
+                                        if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed
+                                            || (robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts) && subState_Slash == SubState_Slash.RollingSlash))
+                                        {
+                                            Vector3 target_dir = Target_Robot.GetTargetedPosition() - GetCenter();
+
+                                            target_dir = target_dir.normalized;
+
+                                            _verticalVelocity = robotParameter.InfightCorrectSpeed * target_dir.y;
+
+                                            target_dir.y = 0.0f;
+
+                                            _speed = targetSpeed = robotParameter.InfightCorrectSpeed*target_dir.magnitude;
+                                        }
+                                        else
                                         {
                                             _speed = targetSpeed = robotParameter.InfightCorrectSpeed;
                                         }
-                                        /*else
-                                        {
-                                            _speed = targetSpeed = robotParameter.MoveSpeed;
-                                        }*/
+                                      
                                     }
-                                    //else if ((Target_Robot.GetTargetPosition() - GetCenter()).magnitude < Sword.motionProperty[motionProperty_key].SlashDistance_Min * transform.lossyScale.x)
-                                    //{
-                                    //_speed = targetSpeed = /*event_stepbegin ? */-robotParameter.SprintSpeed/* : 0.0f*/;
-                                    //}
                                 }
                             }
                         }

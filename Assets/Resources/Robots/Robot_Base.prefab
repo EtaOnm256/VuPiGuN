@@ -3127,7 +3127,7 @@ MonoBehaviour:
   LockCameraPosition: 0
   RotateSpeed_BeforeSlash: 3
   InitialVerticalSpeed_JumpSlash: 90
-  seedSlash_PitchLimit: 30
+  seedSlash_PitchLimit: 45
   cameraPosition: {x: 0, y: 0, z: 0}
   cameraRotation: {x: 0, y: 0, z: 0, w: 0}
   _HP: 500
