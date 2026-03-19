@@ -194,6 +194,7 @@ public class RobotController : Pausable
 
     public int slash_count = 0;
     bool combo_reserved = false;
+    public int slash_followthrough = -1;
 
     enum ComboType
     {
@@ -552,6 +553,8 @@ public class RobotController : Pausable
     public UpperBodyState upperBodyState = RobotController.UpperBodyState.STAND;
     public LowerBodyState lowerBodyState = RobotController.LowerBodyState.STAND;
 
+    KnockBackType_Taken knockBackType_Taken;
+
     float steptargetrotation;
 
     public GameObject HUDCanvas;
@@ -668,7 +671,7 @@ public class RobotController : Pausable
     Quaternion AimTargetRotation_Head;
     Quaternion AimTargetRotation_Chest;
 
-    public enum KnockBackType
+    public enum KnockBackType_Deal
     {
         None,
         Normal,
@@ -679,6 +682,12 @@ public class RobotController : Pausable
         Aerial,
         Weak_MachineGun_Modern,
         Weak_ShotGun
+    }
+    public enum KnockBackType_Taken
+    {
+        None,
+        Normal,
+        Aerial
     }
 
     [Flags]
@@ -729,7 +738,7 @@ public class RobotController : Pausable
         }
     }
 
-    public void TakeDamage(Vector3 pos, Vector3 dir, int damage, KnockBackType knockBackType, RobotController dealer)
+    public void TakeDamage(Vector3 pos, Vector3 dir, int damage, KnockBackType_Deal knockBackType, RobotController dealer)
     {
         /*if (!spawn_completed)
             return;
@@ -743,22 +752,22 @@ public class RobotController : Pausable
         if (invulnerable)
             return;
 
-        if (knockBackType == KnockBackType.Weak_MachineGun || knockBackType == KnockBackType.Weak_MachineGun_Modern || knockBackType == KnockBackType.Weak_ShotGun)
+        if (knockBackType == KnockBackType_Deal.Weak_MachineGun || knockBackType == KnockBackType_Deal.Weak_MachineGun_Modern || knockBackType == KnockBackType_Deal.Weak_ShotGun)
         {
-            if(knockBackType == KnockBackType.Weak_MachineGun_Modern)
+            if(knockBackType == KnockBackType_Deal.Weak_MachineGun_Modern)
                 DoHitStop(2);
 
-            if ( (lowerBodyState != LowerBodyState.DOWN && lowerBodyState != LowerBodyState.KNOCKBACK) || knockBackType == KnockBackType.Weak_ShotGun)
+            if ( (lowerBodyState != LowerBodyState.DOWN && lowerBodyState != LowerBodyState.KNOCKBACK) || knockBackType == KnockBackType_Deal.Weak_ShotGun)
             {
                 knockback_accum += 35;
                 knockback_accum_reset_timer = 60;
             }
 
             if (knockback_accum < 100)
-                knockBackType = KnockBackType.None;
+                knockBackType = KnockBackType_Deal.None;
             else
             {
-                knockBackType = KnockBackType.Normal;
+                knockBackType = KnockBackType_Deal.Normal;
                 knockback_accum = 0;
             }
         }
@@ -796,15 +805,15 @@ public class RobotController : Pausable
         if (dealer && dealer.is_player)
             WorldManager.current_instance.player_dealeddamage += damage;
 
-        if (knockBackType != KnockBackType.None || dead)
+        if (knockBackType != KnockBackType_Deal.None || dead)
         {
             //if (lowerBodyState != LowerBodyState.DOWN || !Grounded)
             {
-                if ((!Grounded && knockBackType!=KnockBackType.Aerial) || knockBackType == KnockBackType.Down || knockBackType == KnockBackType.KnockUp)
+                if ((!Grounded && knockBackType!=KnockBackType_Deal.Aerial) || knockBackType == KnockBackType_Deal.Down || knockBackType == KnockBackType_Deal.KnockUp)
                 {
 
 
-                    if (knockBackType == KnockBackType.KnockUp && lowerBodyState != LowerBodyState.DOWN)
+                    if (knockBackType == KnockBackType_Deal.KnockUp && lowerBodyState != LowerBodyState.DOWN)
                     {
                         knockbackdir = Vector3.zero;
                         knockbackdir.y = 1.0f;
@@ -818,7 +827,7 @@ public class RobotController : Pausable
                         knockbackdir.y = 0.0f;
 
 
-                        if (knockBackType == KnockBackType.Finish)
+                        if (knockBackType == KnockBackType_Deal.Finish)
                         {
                             _speed = robotParameter.KnockbackSpeed;
                             _verticalVelocity = 0;
@@ -867,7 +876,7 @@ public class RobotController : Pausable
 
                         intend_animator_speed = 1.0f;
                     }
-                    else if (knockBackType == KnockBackType.Finish)
+                    else if (knockBackType == KnockBackType_Deal.Finish)
                     {
                         if (stepmotiondegree >= 45.0f && stepmotiondegree < 135.0f)
                             _animator.Play(_animIDKnockback_Strong_Right, 0, 0);
@@ -930,6 +939,8 @@ public class RobotController : Pausable
                     _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
                 }
             }
+
+            knockBackType_Taken = knockBackType == KnockBackType_Deal.Aerial ? KnockBackType_Taken.Aerial : KnockBackType_Taken.Normal;
 
             if (rightWeapon != null)
                 rightWeapon.OnKnockback();
@@ -2251,7 +2262,7 @@ public class RobotController : Pausable
 
                             diff.y = 0.0f;
 
-                            robotController.TakeDamage(point0 + Vector3.down * _controller.radius, diff.normalized, Sword.damage, KnockBackType.Finish, this);
+                            robotController.TakeDamage(point0 + Vector3.down * _controller.radius, diff.normalized, Sword.damage, KnockBackType_Deal.Finish, this);
 
                             GameObject.Instantiate(stompHitEffect_prefab, point0 + Vector3.down * _controller.radius, Quaternion.identity);
                         }
@@ -4261,9 +4272,10 @@ public class RobotController : Pausable
                                         event_acceptnextslash = false;
                                         combo_reserved = false;
                                         Sword.slashing = false;
+                                        slash_followthrough = -1;
                                         slash_count = 0;
                                         Sword.damage = Sword.slashMotionInfo[SubState_Slash.JumpSlash].damage[slash_count];
-                                        Sword.knockBackType = KnockBackType.Finish;
+                                        Sword.knockBackType = KnockBackType_Deal.Finish;
                                         //stepremain = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashLength;
 
                                         //_animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
@@ -4684,12 +4696,13 @@ public class RobotController : Pausable
                                 jumpslash_end_forward = false;
                                 jumpslash_as_lowerslash = true;
                                 Sword.slashing = false;
+                                slash_followthrough = -1;
                                 Sword.emitting = true;
                                 Sword.sweep = false;
                                 StartSeeking();
                                 slash_count = 0;
                                 Sword.damage = Sword.slashMotionInfo[SubState_Slash.LowerSlash].damage[slash_count];
-                                Sword.knockBackType = KnockBackType.Finish;
+                                Sword.knockBackType = KnockBackType_Deal.Finish;
                                 //stepremain = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashLength;
 
                                 //_animator.CrossFadeInFixedTime(_animIDAir, 0.5f, 0);
@@ -4731,18 +4744,19 @@ public class RobotController : Pausable
                             combo_reserved = false;
                             if (subState_Slash != SubState_Slash.DashSlash)
                                 Sword.slashing = false;
+                            slash_followthrough = -1;
                             slash_count = 0;
 
                             Sword.damage = Sword.slashMotionInfo[subState_Slash].damage[slash_count];
  
                             if (subState_Slash == SubState_Slash.AirSlash)
-                                Sword.knockBackType = KnockBackType.Normal;
+                                Sword.knockBackType = KnockBackType_Deal.Normal;
                             else if(subState_Slash == SubState_Slash.DashSlash)
-                                Sword.knockBackType = KnockBackType.KnockUp;
+                                Sword.knockBackType = KnockBackType_Deal.KnockUp;
                             else if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
-                                Sword.knockBackType = KnockBackType.Aerial;
+                                Sword.knockBackType = KnockBackType_Deal.Aerial;
                             else
-                                Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
+                                Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType_Deal.Normal : KnockBackType_Deal.Finish;
 
                             if(subState_Slash != SubState_Slash.DashSlash)
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[slash_count], 0.0f, 0);
@@ -4820,20 +4834,33 @@ public class RobotController : Pausable
                         }
 
 
+                        if(knockBackType_Taken != KnockBackType_Taken.Aerial)
+                            JumpAndGravity();
 
-                        JumpAndGravity();
                         GroundedCheck();
                         regen_boost_now = true;
                     }
                     break;
                 case LowerBodyState.SLASH:
                     {
-
-
                         _animationBlend = 0.0f;
 
                         _speed = 0.0f;
-                    
+
+                        if (slash_followthrough >= 0)
+                        {
+                            slash_followthrough--;
+
+                            if(slash_followthrough <= 0)
+                            {
+                                Sword.emitting = false;
+
+                                if (dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
+                                    TransitLowerBodyState(LowerBodyState.AIR);
+                                else
+                                    TransitLowerBodyState(LowerBodyState.STAND);
+                            }
+                        }
 
                         if (Target_Robot != null)
                         {
@@ -4970,12 +4997,9 @@ public class RobotController : Pausable
                             slash_count++;
                             if (!combo_accepted)
                             {
-                                Sword.emitting = false;
 
-                                if(dicSubStateSlashType[subState_Slash] == SubState_SlashType.AIR)
-                                    TransitLowerBodyState(LowerBodyState.AIR);
-                                else
-                                    TransitLowerBodyState(LowerBodyState.STAND);
+                                if(slash_followthrough <= 0)
+                                    slash_followthrough = 15;
                             }
                             else
                             {
@@ -5030,18 +5054,19 @@ public class RobotController : Pausable
                                         event_acceptnextslash = false;
                                         combo_reserved = false;
                                         Sword.slashing = false;
+                                        slash_followthrough = -1;
                                         _verticalVelocity = 0.0f;
           
                                         Sword.damage = Sword.slashMotionInfo[subState_Slash].damage[slash_count];
 
                                         if (subState_Slash == SubState_Slash.AirSlashSeed || subState_Slash == SubState_Slash.SlideSlashSeed)
-                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Aerial : KnockBackType.Finish;
+                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType_Deal.Aerial : KnockBackType_Deal.Finish;
                                         else if (subState_Slash == SubState_Slash.DashSlash)
-                                            Sword.knockBackType = KnockBackType.KnockUp;
+                                            Sword.knockBackType = KnockBackType_Deal.KnockUp;
                                         else if (subState_Slash == SubState_Slash.RollingSlash && robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
-                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Aerial : KnockBackType.Finish;
+                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType_Deal.Aerial : KnockBackType_Deal.Finish;
                                         else
-                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType.Normal : KnockBackType.Finish;
+                                            Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType_Deal.Normal : KnockBackType_Deal.Finish;
 
                                         _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[slash_count], 0.0f, 0);
                                         audioSource.PlayOneShot(audioClip_Swing);
@@ -5062,8 +5087,9 @@ public class RobotController : Pausable
                             }
                         }
 
+                        if (!robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
+                            JumpAndGravity();
 
-                        JumpAndGravity();
                         GroundedCheck();
 
                         if (robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
@@ -5983,7 +6009,7 @@ public class RobotController : Pausable
 
     private void OnDropFromAir()
     {
-        _verticalVelocity = -robotParameter.TerminalVelocity;
+        _verticalVelocity = -robotParameter.TerminalVelocity/2.0f;
     }
 
     private void OnSwingBegin()
@@ -6429,13 +6455,14 @@ public class RobotController : Pausable
         stepremain = Sword.motionProperty[subState_Slash].DashDuration;
         combo_reserved = false;
         Sword.slashing = false;
+        slash_followthrough = -1;
         Sword.emitting = true;
         Sword.sweep = false;
         event_swing = false;
 
         // DashSlashに遷移する前にslashingがtrueになることがあるので
         Sword.damage = Sword.slashMotionInfo[SubState_Slash.DashSlash].damage[0];
-        Sword.knockBackType = KnockBackType.KnockUp;
+        Sword.knockBackType = KnockBackType_Deal.KnockUp;
 
         StartSeeking();
         if (Target_Robot != null)
@@ -6559,9 +6586,9 @@ public class RobotController : Pausable
                 Sword.damage = 100;
 
                 if(robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))
-                    Sword.knockBackType = KnockBackType.Aerial;
+                    Sword.knockBackType = KnockBackType_Deal.Aerial;
                 else
-                    Sword.knockBackType = KnockBackType.Normal;
+                    Sword.knockBackType = KnockBackType_Deal.Normal;
                 
                 StartSeeking();
 

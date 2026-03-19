@@ -303,11 +303,11 @@ public class RobotAI_Easy : RobotAI_Base
             robotController.cameraRotation = robotController.GetTargetQuaternionForView(robotController.Target_Robot);*/
     }
 
-    public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType knockBackType, RobotController dealer)
+    public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType_Deal knockBackType, RobotController dealer)
     {
         if (dummy)
         {
-            if(knockBackType != RobotController.KnockBackType.None)
+            if(knockBackType != RobotController.KnockBackType_Deal.None)
                 dodge_ready = true;
         }
 

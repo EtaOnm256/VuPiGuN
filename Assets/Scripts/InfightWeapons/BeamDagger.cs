@@ -197,7 +197,7 @@ public class BeamDagger : InfightWeapon
                     another.hitHistoryRC[another.hitHistoryRCCount++] = robotController;
 
                     robotController.TakeDamage(rayCastHit[idx_hit].point, another.dir, another.damage, another.knockBackType, another.owner);
-                    if (another.knockBackType == RobotController.KnockBackType.Finish || another.knockBackType == RobotController.KnockBackType.KnockUp)
+                    if (another.knockBackType == RobotController.KnockBackType_Deal.Finish || another.knockBackType == RobotController.KnockBackType_Deal.KnockUp)
                     {
                         robotController.DoHitSlow(10);
                         another.owner.DoHitSlow(10);
@@ -234,7 +234,7 @@ public class BeamDagger : InfightWeapon
                     hitHistoryRC[hitHistoryRCCount++] = robotController;
 
                     robotController.TakeDamage(rayCastHit[idx_hit].point, dir, damage, knockBackType, owner);
-                    if (knockBackType == RobotController.KnockBackType.Finish || knockBackType == RobotController.KnockBackType.KnockUp)
+                    if (knockBackType == RobotController.KnockBackType_Deal.Finish || knockBackType == RobotController.KnockBackType_Deal.KnockUp)
                     {
                         robotController.DoHitSlow(10);
                         owner.DoHitSlow(10);

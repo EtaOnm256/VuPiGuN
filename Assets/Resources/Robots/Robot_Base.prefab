@@ -3140,6 +3140,7 @@ MonoBehaviour:
   _cinemachineTargetPitch: 0
   _verticalVelocity: 0
   slash_count: 0
+  slash_followthrough: -1
   _controller: {fileID: 6750347067213451800}
   _input: {fileID: 0}
   headmultiAimConstraint: {fileID: 8240275247160239941}

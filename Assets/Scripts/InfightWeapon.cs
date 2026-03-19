@@ -31,7 +31,7 @@ public class InfightWeapon : Pausable
     protected bool _emitting = false;
     protected bool _slashing = false;
     public Vector3 dir;
-    public RobotController.KnockBackType knockBackType;
+    public RobotController.KnockBackType_Deal knockBackType;
     public int damage = 250;
     public bool autovanish = false;
     public int hitHistoryCount = 0;

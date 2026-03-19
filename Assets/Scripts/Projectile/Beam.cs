@@ -88,7 +88,7 @@ public class Beam : Projectile
     [SerializeField] float hitsphere_width = -1.0f;
     [SerializeField] float hiteffect_scale = 1.0f;
 
-    [SerializeField] RobotController.KnockBackType KnockBackType = RobotController.KnockBackType.Normal;
+    [SerializeField] RobotController.KnockBackType_Deal KnockBackType = RobotController.KnockBackType_Deal.Normal;
 
     // Update is called once per frame
     protected override void OnFixedUpdate()

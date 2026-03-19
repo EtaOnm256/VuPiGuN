@@ -187,7 +187,7 @@ public class HeatAxe : InfightWeapon
                 hitHistoryRC[hitHistoryRCCount++] = robotController;
 
                 robotController.TakeDamage(rayCastHit[idx_hit].point,dir, damage, knockBackType, owner) ;
-                if (knockBackType == RobotController.KnockBackType.Finish || knockBackType == RobotController.KnockBackType.KnockUp)
+                if (knockBackType == RobotController.KnockBackType_Deal.Finish || knockBackType == RobotController.KnockBackType_Deal.KnockUp)
                 {
                     robotController.DoHitSlow(10);
                     owner.DoHitSlow(10);

@@ -121,7 +121,7 @@ public class RobotAI_Base : InputBase
                 break;
         }
     }
-    public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType knockBackType, RobotController dealer)
+    public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType_Deal knockBackType, RobotController dealer)
     {
         if (robotController.team.orderToAI == WorldManager.OrderToAI.NORMAL)
         {
