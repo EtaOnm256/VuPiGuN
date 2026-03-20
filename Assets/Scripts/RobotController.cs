@@ -4713,7 +4713,7 @@ public class RobotController : Pausable
                                 _animator.SetFloat("SlashSpeed", 0.0f);
                                 audioSource.PlayOneShot(audioClip_Swing);
 
-                                _verticalVelocity = InitialVerticalSpeed_JumpSlash*0.75f;
+                                _verticalVelocity = InitialVerticalSpeed_JumpSlash*0.5f;
                                 //_verticalVelocity = Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed;
 
                                 //if (robotParameter.itemFlag.HasFlag(ItemFlag.InfightBoost))
