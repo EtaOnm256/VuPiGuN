@@ -286,7 +286,8 @@ ModelImporter:
     animationImportWarnings: Event OnStepped has a time (0.792789) outside the clip's
       valid range (0.000000..0.791667). It will never be firedEvent OnStepped has
       a time (0.792789) outside the clip's valid range (0.000000..0.791667). It will
-      never be fired
+      never be firedEvent OnSlashEnd has a time (8.375000) outside the clip's valid
+      range (0.000000..5.208333). It will never be fired
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -1833,7 +1834,7 @@ ModelImporter:
       takeName: Armature|GroundSlash3_1
       internalID: 0
       firstFrame: 0
-      lastFrame: 200
+      lastFrame: 140
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1853,7 +1854,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.34039968
+      - time: 0.4934246
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -1876,7 +1877,7 @@ ModelImporter:
       takeName: Armature|GroundSlash3_2
       internalID: 0
       firstFrame: 0
-      lastFrame: 150
+      lastFrame: 125
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -1896,7 +1897,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.40859786
+      - time: 0.5029039
         functionName: OnSlashBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
