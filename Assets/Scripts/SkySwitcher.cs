@@ -12,6 +12,8 @@ public class SkySwitcher : MonoBehaviour
         public Color ambientColor;
 
         public List<Light> lights;
+
+        public List<GameObject> objects;
     }
 
     [SerializeField] List<Variant> variants;
@@ -21,14 +23,24 @@ public class SkySwitcher : MonoBehaviour
     {
         int idx = gameState.skyindex;
 
-        RenderSettings.skybox = variants[idx].skybox;
-        RenderSettings.fogColor = variants[idx].fogColor;
-        RenderSettings.ambientLight = variants[idx].ambientColor;
-
-        foreach(var variant in variants)
-        foreach(var light in variant.lights)
+        if (variants[idx].skybox)
         {
-            light.enabled = variant == variants[idx];
+            RenderSettings.skybox = variants[idx].skybox;
+            RenderSettings.fogColor = variants[idx].fogColor;
+            RenderSettings.ambientLight = variants[idx].ambientColor;
+        }
+
+        foreach (var variant in variants)
+        {
+            foreach (var light in variant.lights)
+            {
+                light.enabled = variant == variants[idx];
+            }
+
+            foreach (var obj in variant.objects)
+            {
+                obj.SetActive(variant == variants[idx]);
+            }
         }
     }
  

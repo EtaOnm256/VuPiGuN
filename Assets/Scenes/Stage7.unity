@@ -1303,6 +1303,51 @@ PrefabInstance:
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f2345fd9d0d62b459aa9797313e3dff, type: 3}
+--- !u!1 &727476092
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 727476094}
+  - component: {fileID: 727476093}
+  m_Layer: 0
+  m_Name: SpaceExplosionEmit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &727476093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727476092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a49f2e2ab2a1054aa83b4e127310122, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spaceExplosion_prefab: {fileID: 7765296250273657063, guid: 7bd48e8e14f348a4fb0fce8dfef498bd, type: 3}
+--- !u!4 &727476094
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727476092}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 25
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &778312754
 GameObject:
   m_ObjectHideFlags: 0
@@ -1479,7 +1524,6 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
-  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1587,19 +1631,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!114 &963194230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a49f2e2ab2a1054aa83b4e127310122, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spaceExplosion_prefab: {fileID: 7765296250273657063, guid: 7bd48e8e14f348a4fb0fce8dfef498bd, type: 3}
 --- !u!1 &965204224
 GameObject:
   m_ObjectHideFlags: 0
@@ -2405,6 +2436,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1901554411 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 986497803900311138, guid: b23a4dc6267b9e64988bad9784ac53cc, type: 3}
+  m_PrefabInstance: {fileID: 1229286858}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1901554419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901554411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09de176b030062146935d34a14203645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  variants:
+  - skybox: {fileID: 0}
+    fogColor: {r: 0, g: 0, b: 1, a: 1}
+    ambientColor: {r: 0, g: 0, b: 1, a: 1}
+    lights: []
+    objects: []
+  - skybox: {fileID: 0}
+    fogColor: {r: 1, g: 0, b: 0, a: 1}
+    ambientColor: {r: 1, g: 0, b: 0, a: 1}
+    lights: []
+    objects:
+    - {fileID: 727476092}
+  gameState: {fileID: 11400000, guid: c86ac7e4de34aea4aa0c382ffee862c3, type: 2}
 --- !u!1 &2118298625
 GameObject:
   m_ObjectHideFlags: 0
