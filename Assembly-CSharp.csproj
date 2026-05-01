@@ -147,12 +147,13 @@
   <ItemGroup>
     <None Include="Assets\Shield Shader FREE\Pink Material Issue.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Assets\Shaders\TerrainLitAdd_SharpEdge_Night.shader" />
     <None Include="Assets\Effekseer\Materials\GrabDepthShader.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderDistortionPS.cginc" />
     <None Include="Assets\Shaders\TerrainLitAdd_SharpEdge.shader" />
     <None Include="Assets\Effekseer\Plugins\x86\EffekseerUnity.dll" />
-    <None Include="Assets\Shaders\TerrainLit_DrawBorder_SharpEdge.shader" />
+    <None Include="Assets\Shaders\TerrainLit_DrawBorder_SharpEdge_Night.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
@@ -187,6 +188,7 @@
     <None Include="Assets\Shaders\TerrainLit_DrawBorder.shader" />
     <None Include="Assets\LightProbeHelper\Readme.txt" />
     <None Include="Assets\BrokenVector\LowPolyTreePack\README.txt" />
+    <None Include="Assets\Shaders\TerrainLit_DrawBorder_SharpEdge.shader" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderSoftParticlePS.cginc" />
     <None Include="Assets\Effekseer\Materials\EffekseerShaderVS.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />

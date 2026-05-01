@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TerrainLit_DrawBorder_SharpEdge
-  m_Shader: {fileID: 4800000, guid: 7a3676caca0e30941849a530c9c4c160, type: 3}
+  m_Name: TerrainLit_DrawBorder_SharpEdge_Night
+  m_Shader: {fileID: 4800000, guid: 02fbe37148be9fa48a62e6605b7d109c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:

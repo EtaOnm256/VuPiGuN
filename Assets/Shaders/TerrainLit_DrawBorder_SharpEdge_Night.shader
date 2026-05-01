@@ -1,4 +1,4 @@
-Shader "Custom/TerrainLit_DrawBorder_SharpEdge"
+Shader "Custom/TerrainLit_DrawBorder_SharpEdge_Night"
 {
     Properties
     {
@@ -98,6 +98,7 @@ Shader "Custom/TerrainLit_DrawBorder_SharpEdge"
             #pragma shader_feature_local _TERRAIN_INSTANCED_PERPIXEL_NORMAL
 
 #define SHARP_EDGE
+#define FAKE_LIGHTMAP
             #include "Assets/Shaders/TerrainLitInput_DrawBorder.hlsl"
             #include "Assets/Shaders/TerrainLitPasses_DrawBorder.hlsl"
             ENDHLSL
@@ -270,7 +271,7 @@ Shader "Custom/TerrainLit_DrawBorder_SharpEdge"
             
         UsePass "Hidden/Nature/Terrain/Utilities/PICKING"
     }
-    Dependency "AddPassShader" = "Custom/TerrainLitAdd_SharpEdge"
+    Dependency "AddPassShader" = "Custom/TerrainLitAdd_SharpEdge_Night"
     Dependency "BaseMapShader" = "Hidden/Universal Render Pipeline/Terrain/Lit (Base Pass)"
     Dependency "BaseMapGenShader" = "Hidden/Universal Render Pipeline/Terrain/Lit (Basemap Gen)"
 

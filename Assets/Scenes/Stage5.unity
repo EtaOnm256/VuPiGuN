@@ -1538,7 +1538,7 @@ Terrain:
   m_DrawTreesAndFoliage: 1
   m_StaticShadowCaster: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 2100000, guid: 05aff5654b711d34bbe0f9546c5166d0, type: 2}
+  m_MaterialTemplate: {fileID: 2100000, guid: 58a534817e7f788458c6df34cc4c87d5, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
@@ -3184,12 +3184,14 @@ MonoBehaviour:
     lights:
     - {fileID: 705507994}
     - {fileID: 862557997}
+    objects: []
   - skybox: {fileID: 2100000, guid: 7416536dbe0334cfd888dd1beb75a9fb, type: 2}
     fogColor: {r: 0.28627452, g: 0.32941177, b: 0.47058824, a: 1}
     ambientColor: {r: 0.23137255, g: 0.23137255, b: 0.23137255, a: 1}
     lights:
     - {fileID: 771215109}
     - {fileID: 1127625418}
+    objects: []
   gameState: {fileID: 11400000, guid: c86ac7e4de34aea4aa0c382ffee862c3, type: 2}
 --- !u!1001 &1543392607
 PrefabInstance:
