@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   progress: -1
   progressStage: -1
-  skyindex: 0
+  skyindex: 1
   chapters:
   - name: Chapter1
     stages: 0100000002000000

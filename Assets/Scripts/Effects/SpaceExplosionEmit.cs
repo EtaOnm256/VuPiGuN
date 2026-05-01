@@ -5,6 +5,7 @@ using UnityEngine;
 public class SpaceExplosionEmit : MonoBehaviour
 {
     [SerializeField]GameObject spaceExplosion_prefab = null;
+    [SerializeField] float distance = 500.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +21,7 @@ public class SpaceExplosionEmit : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 pos = Quaternion.Euler(Random.Range(-90.0f, 30.0f), Random.Range(0, 360.0f),0.0f)*Vector3.forward * 500;
+        Vector3 pos = Quaternion.Euler(Random.Range(-90.0f, 30.0f), Random.Range(0, 360.0f),0.0f)*Vector3.forward * distance;
         float scale = Random.Range(2.0f, 10.0f);
         float angle = Random.Range(0.0f, 360.0f);
 

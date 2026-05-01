@@ -190,13 +190,23 @@ https://soundeffect-lab.info/sound/battle/mp3/shotgun-firing1.mp3
 https://www.textures.com/download/sci-fi-complex-panel-pbr0349/137252
 https://www.textures.com/download/sci-fi-panel-pbr0331/137280
 
-要塞地面候補1
-https://www.textures.com/download/asteroid-rock-surface-pbr0221/133957
-候補2
+宇宙要塞外部
 https://www.textures.com/download/3d-scanned-rock-surface-2x2-meters/133277
+
+月面基地外部
+https://www.textures.com/download/asteroid-rock-surface-pbr0221/133957
+月面基地建物壁
+https://www.textures.com/download/sci-fi-industrial-wall-panel-6-pbr0340/137250
+建物天井
+https://www.textures.com/download/sci-fi-floor-pbr0342/137274
+月面基地床
+https://www.textures.com/download/sci-fi-industrial-floor-3-pbr0344/137272
+床2
+https://www.textures.com/download/sci-fi-industrial-floor-4-pbr0345/137273
 
 ステージ8
 https://peritune.com/blog/2022/11/05/moonforest/
 
 シールドエフェクト
 https://assetstore.unity.com/packages/vfx/shaders/shield-shader-free-349218
+
