@@ -204,8 +204,11 @@ https://www.textures.com/download/sci-fi-industrial-floor-3-pbr0344/137272
 床2
 https://www.textures.com/download/sci-fi-industrial-floor-4-pbr0345/137273
 
-ステージ8
+ステージ7
 https://peritune.com/blog/2022/11/05/moonforest/
+
+ステージ8
+https://peritune.com/blog/2017/05/14/battlefield3/
 
 シールドエフェクト
 https://assetstore.unity.com/packages/vfx/shaders/shield-shader-free-349218
