@@ -38,7 +38,7 @@ MonoBehaviour:
   destination: 6
   loadingDestination: 0
   subDestination_Intermission: 0
-  gold: -171
+  gold: -984
   inventryWeapons:
   - prefabname: SMG Variant
     type: 0

@@ -87,10 +87,10 @@ public class EraseObject : MonoBehaviour
 	private void OnBecameVisible()
 	{
 		isVisible = true;
-		foreach (var material in materials)
+		/*foreach (var material in materials)
 		{
 			material.SetFloat("_Alpha", 1f);
-		}
+		}*/
 	}
 	private void OnBecameInvisible()
 	{

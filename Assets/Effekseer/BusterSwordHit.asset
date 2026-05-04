@@ -21,7 +21,7 @@ MonoBehaviour:
   soundResources: []
   modelResources:
   - path: Sample/Mat_01_01/Models/Sphare.asset
-    asset: {fileID: 11400000, guid: 9c941d1999c4e254ea36267f5f0d4209, type: 2}
+    asset: {fileID: 0}
   materialResources: []
   curveResources: []
   Scale: 1
