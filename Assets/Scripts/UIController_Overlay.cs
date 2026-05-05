@@ -24,8 +24,6 @@ public class UIController_Overlay : MonoBehaviour
 
     public GameObject weaponPanel;
 
-    public float distance = 1000.0f;
-
     public RobotController.LockonState lockonState;
 
     [SerializeField] GameObject reticle_prefab;
@@ -69,6 +67,10 @@ public class UIController_Overlay : MonoBehaviour
     public LineRenderer guideline_lineRenderer_r;
 
     [SerializeField] TextMeshProUGUI orderText;
+
+    static Color color_lockon = new Color(1.0f, 0.0f, 0.0f, 0.75f);
+    static Color color_focus = new Color(1.0f, 1.0f, 0.0f, 0.5f);
+    static Color color_free = new Color(0.0f, 1.0f, 0.0f, 0.5f);
 
     public void AddRobot(RobotController robotController)
     {
@@ -186,6 +188,7 @@ public class UIController_Overlay : MonoBehaviour
         if (!origin)
             return;
 
+        float distance = float.MaxValue;
 
         foreach(var reticle in robotReticle)
         {
@@ -238,7 +241,7 @@ public class UIController_Overlay : MonoBehaviour
 
                 reticle.Value.guideline.lineRenderer.positionCount = 2;
 
-                float length = relative.magnitude;
+                float length = relative.z;
 
                 Quaternion relative_q = Quaternion.FromToRotation(Vector3.forward, relative);
 
@@ -282,16 +285,18 @@ public class UIController_Overlay : MonoBehaviour
 
                 if (target == reticle.Key)
                 {
+
+                    distance = relative.z;
                     reticle.Value.reticle.outer.SetActive(lockonmode);
 
                     switch (lockonState)
                     {
                         case RobotController.LockonState.FREE:
-                            reticle.Value.reticle.image.color = reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.yellow;
+                            reticle.Value.reticle.image.color = reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = color_focus;
 
                             foreach(var image in reticle.Value.reticle.outer_image)
                             {
-                                image.color = Color.yellow;
+                                image.color = color_focus;
                             }
                             break;
                         case RobotController.LockonState.SEEKING:
@@ -301,10 +306,13 @@ public class UIController_Overlay : MonoBehaviour
 #endif
                         case RobotController.LockonState.LOCKON:
                             reticle.Value.reticle.image.color = 
-                                reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.red;
+                                reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = color_lockon;
+
+                            reticle.Value.guideline.lineRenderer.enabled = false;
+
                             foreach (var image in reticle.Value.reticle.outer_image)
                             {
-                                image.color = Color.red;
+                                image.color = color_lockon;
                             }
                             break;
                     }
@@ -314,8 +322,9 @@ public class UIController_Overlay : MonoBehaviour
                 else
                 {
                     reticle.Value.reticle.image.color =
-                        reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = Color.green;
+                        reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = color_free;
 
+                    reticle.Value.guideline.lineRenderer.enabled = false;
                     reticle.Value.reticle.outer.SetActive(false);
 
                 }
@@ -351,7 +360,7 @@ public class UIController_Overlay : MonoBehaviour
                 reticle.Value.reticle.radaricon_image.color = Color.green;
         }
 
-        if (!lockonmode && !infight)
+        if (lockonState == RobotController.LockonState.FREE)
         {
             Vector3 relative_f = Vector3.forward * distance;
             relative_f = Quaternion.AngleAxis(-10.0f, Vector3.right) * relative_f;
@@ -359,16 +368,18 @@ public class UIController_Overlay : MonoBehaviour
             Vector3 relative_f_far = Vector3.forward * 10000.0f;
             relative_f_far = Quaternion.AngleAxis(-10.0f, Vector3.right) * relative_f_far;
 
-            Vector3 relative_l = -Vector3.right * 0.5f;
+            //Vector3 relative_l = -Vector3.right * 0.5f;
+            Vector3 relative_l = Vector3.zero;
 
             SetGuideLinePosition(guideline_lineRenderer_l, relative_l, relative_f, relative_f_far);
+            //SetGuideLinePosition(guideline_lineRenderer_l, relative_l, relative_f, relative_f_far);
 
-            Vector3 relative_r = Vector3.right * 0.5f;
+            //Vector3 relative_r = Vector3.right * 0.5f;
 
-            SetGuideLinePosition(guideline_lineRenderer_r, relative_r, relative_f, relative_f_far);
+            //SetGuideLinePosition(guideline_lineRenderer_r, relative_r, relative_f, relative_f_far);
 
             guideline_lineRenderer_l.enabled = true;
-            guideline_lineRenderer_r.enabled = true;
+            //guideline_lineRenderer_r.enabled = true;
         }
         else
         {

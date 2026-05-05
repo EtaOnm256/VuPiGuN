@@ -1499,14 +1499,6 @@ public class RobotController : Pausable
                     }
 
                 }
-                if (blocked)
-                {
-                    uIController_Overlay.distance = mindist;
-
-                }
-                else
-                    uIController_Overlay.distance = 1000.0f;
-
             }
 
             if (nearest_robot == null)

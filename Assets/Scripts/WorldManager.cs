@@ -8,6 +8,14 @@ public class WorldManager : MonoBehaviour
     static public WorldManager current_instance = null;
 
     static public int layerPattern_Building = 1 << 3 | 1 << 7;
+
+    public enum SpawnType
+    {
+        NORMAL,
+        LARGESCALE
+    }
+
+    [SerializeField] SpawnType spawnType = SpawnType.NORMAL;
     public class Team
     {
         public List<RobotController> robotControllers = new List<RobotController>();
@@ -293,80 +301,124 @@ public class WorldManager : MonoBehaviour
 
             if (do_spawn)
             {
-                Army.OneSpawn spawn = sequence.army.spawns[sequence.currentSpawn];
+                Vector3 spawn_position;
+                Quaternion spawn_rotation;
 
-                float distance;
-                Quaternion rot;
-
-                if (team == teams[0])
+                if (spawnType == SpawnType.LARGESCALE)
                 {
-                    distance = 25.0f;
+                    while (true)
+                    {
+                        Vector3 pos;
+                        
+
+                        /*pos.y = 0.0f;
+                        pos.x = Random.value * 100.0f - 50.0f;
+                        if (team == teams[0])
+                        {
+                            pos.z = -Random.value * 50.0f-100.0f;
+                            spawn_rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+                        }
+                        else
+                        {
+                            pos.z = Random.value * 50.0f+100.0f;
+                            spawn_rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+                        }*/
+
+                        
+                        pos.y = 0.0f;
+                        pos.x = Random.value * 300.0f - 150.0f;
+                        pos.z = Random.value * 300.0f - 150.0f;
+
+                        spawn_rotation = Quaternion.LookRotation(-pos, Vector3.up);
+
+                        RaycastHit raycastHit;
+                        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+
+                        if (raycastHit.collider.gameObject.layer != 7)
+                        {
+                            spawn_position = raycastHit.point;
+                            break;
+                        }
+                    }
                 }
                 else
                 {
-                    distance = 100.0f;
-                }
+                    float distance;
 
-                Vector3 pos;
-                RaycastHit raycastHit;
-
-                while (true)
-                {
-
-                    if (player)
+                    if (team == teams[0])
                     {
-                        pos = player.GetCenter() + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-
-                        if (team == teams[0])
-                            rot = player.transform.rotation;
-                        else
-                            rot = Quaternion.LookRotation(player.GetCenter() - pos, Vector3.up);
-                    }
-                    else if (teams[0].spawnings.Find(x => x.player) != null)
-                    {
-                        var spawning = teams[0].spawnings.Find(x => x.player);
-
-                        pos = spawning.pos + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-
-                        if (team == teams[0])
-                            rot = spawning.rot;
-                        else
-                            rot = Quaternion.LookRotation(spawning.pos - pos, Vector3.up);
+                        distance = 25.0f;
                     }
                     else
                     {
-                        pos = player_last_position + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-                        rot = Quaternion.LookRotation(player_last_position - pos, Vector3.up);
+                        distance = 100.0f;
                     }
 
-                    if (pos.x >= 150.0f)
+                    while (true)
                     {
-                        pos.x -= distance * 2;
-                    }
-                    else if (pos.x <= -150.0f)
-                    {
-                        pos.x += distance * 2f;
-                    }
+                        Vector3 pos;
 
-                    if (pos.z >= 150.0f)
-                    {
-                        pos.z -= distance * 2;
-                    }
-                    else if (pos.z <= -150.0f)
-                    {
-                        pos.z += distance * 2;
-                    }
+                        RaycastHit raycastHit;
+                        if (player)
+                        {
+                            pos = player.GetCenter() + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
 
-                    Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+                            if (team == teams[0])
+                                spawn_rotation = player.transform.rotation;
+                            else
+                                spawn_rotation = Quaternion.LookRotation(player.GetCenter() - pos, Vector3.up);
+                        }
+                        else if (teams[0].spawnings.Find(x => x.player) != null)
+                        {
+                            var spawning = teams[0].spawnings.Find(x => x.player);
 
-                    if (raycastHit.collider.gameObject.layer != 7)
-                        break;
+                            pos = spawning.pos + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+
+                            if (team == teams[0])
+                                spawn_rotation = spawning.rot;
+                            else
+                                spawn_rotation = Quaternion.LookRotation(spawning.pos - pos, Vector3.up);
+                        }
+                        else
+                        {
+                            pos = player_last_position + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                            spawn_rotation = Quaternion.LookRotation(player_last_position - pos, Vector3.up);
+                        }
+
+                        if (pos.x >= 150.0f)
+                        {
+                            pos.x -= distance * 2;
+                        }
+                        else if (pos.x <= -150.0f)
+                        {
+                            pos.x += distance * 2f;
+                        }
+
+                        if (pos.z >= 150.0f)
+                        {
+                            pos.z -= distance * 2;
+                        }
+                        else if (pos.z <= -150.0f)
+                        {
+                            pos.z += distance * 2;
+                        }
+
+                        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+
+                        if (raycastHit.collider.gameObject.layer != 7)
+                        {
+                            spawn_position = raycastHit.point;
+                            break;
+                        }
+                    }
                 }
 
+                Army.OneSpawn spawn = sequence.army.spawns[sequence.currentSpawn];
+
                 if (instant)
-                    SpawnNPC(spawn.variant, raycastHit.point, rot, team, spawn.boss);
+                    SpawnNPC(spawn.variant, spawn_position, spawn_rotation, team, spawn.boss);
                 else
-                    team.spawnings.Add(new Team.Spawning { player = false, pos = raycastHit.point, rot = rot, variant = spawn.variant, wait = 60, boss = spawn.boss });
+                    team.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = spawn.variant, wait = 60, boss = spawn.boss });
                 
                 sequence.spawned = true;
                 hav_progress = true;
