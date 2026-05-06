@@ -25,8 +25,8 @@ MonoBehaviour:
     bossStage: 6
     hasShop: 1
   - name: Chapter3
-    stages: 07000000
-    bossStage: 8
+    stages: 0700000008000000
+    bossStage: 9
     hasShop: 0
   journeyPlan:
   - name: Chapter1
