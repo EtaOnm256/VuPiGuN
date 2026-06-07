@@ -62,5 +62,5 @@ MonoBehaviour:
     type: 1
   shopParts:
   - itemFlag: 256
-  army_enemy: {fileID: 11400000, guid: b130a5749d33fa243b3c28974ecd18dd, type: 2}
-  army_friend: {fileID: 11400000, guid: 5363afa6083531c4589301fdaf959595, type: 2}
+  army_enemy: {fileID: 11400000, guid: 147f45dfbc9b8a143a3d7d51c28bae3f, type: 2}
+  army_friend: {fileID: 11400000, guid: c779cdfa5d3ab0e4880dc45be62967c7, type: 2}

@@ -1,8 +1,10 @@
 #define ACCURATE_SEEK
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using TMPro;
+using static UIController_Overlay;
 public class UIController_Overlay : MonoBehaviour
 {
     public RobotController origin;
@@ -72,6 +74,10 @@ public class UIController_Overlay : MonoBehaviour
     static Color color_focus = new Color(1.0f, 1.0f, 0.0f, 0.5f);
     static Color color_free = new Color(0.0f, 1.0f, 0.0f, 0.5f);
 
+    //[SerializeField] LineRenderer[] radarLine_LineRenderer;
+    [SerializeField] UnityEngine.UI.Extensions.UILineRenderer radarLine_LineRenderer;
+    // ‚Æ‚è‚ ‚¦‚¸ŒÅ’è’l
+    static readonly Vector3[] cornerPoint = new Vector3[4] { new Vector3(160.0f, 0.0f, 160.0f), new Vector3(-160.0f, 0.0f, 160.0f), new Vector3(-160.0f, 0.0f, -160.0f), new Vector3(160.0f, 0.0f, -160.0f) };
     public void AddRobot(RobotController robotController)
     {
         if (robotReticle.ContainsKey(robotController))
@@ -190,7 +196,7 @@ public class UIController_Overlay : MonoBehaviour
 
         float distance = float.MaxValue;
 
-        foreach(var reticle in robotReticle)
+        foreach (var reticle in robotReticle)
         {
             Vector3 relative = AbsToRel(reticle.Key.GetCenter(), origin.GetCenter(), Camera.main.transform.rotation);
 
@@ -214,14 +220,14 @@ public class UIController_Overlay : MonoBehaviour
                     reticle.Value.reticle.gameObject.SetActive(true);
                 }
 
-                if(target == reticle.Key && lockonState != RobotController.LockonState.FREE && aiming && origin && !origin.dead)
+                if (target == reticle.Key && lockonState != RobotController.LockonState.FREE && aiming && origin && !origin.dead)
                 {
                     Vector2 screenPoint_inner;
-                    
+
                     //if(aim_fixed)
                     //    screenPoint_inner = RectTransformUtility.WorldToScreenPoint(Camera.main, reticle.Key.GetTargetedPosition());
                     //else
-                        screenPoint_inner = RectTransformUtility.WorldToScreenPoint(Camera.main, origin.virtual_targeting_position_forUI);
+                    screenPoint_inner = RectTransformUtility.WorldToScreenPoint(Camera.main, origin.virtual_targeting_position_forUI);
 
                     Vector2 uiPoint;
 
@@ -294,7 +300,7 @@ public class UIController_Overlay : MonoBehaviour
                         case RobotController.LockonState.FREE:
                             reticle.Value.reticle.image.color = reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = color_focus;
 
-                            foreach(var image in reticle.Value.reticle.outer_image)
+                            foreach (var image in reticle.Value.reticle.outer_image)
                             {
                                 image.color = color_focus;
                             }
@@ -305,7 +311,7 @@ public class UIController_Overlay : MonoBehaviour
                             break;
 #endif
                         case RobotController.LockonState.LOCKON:
-                            reticle.Value.reticle.image.color = 
+                            reticle.Value.reticle.image.color =
                                 reticle.Value.guideline.lineRenderer.startColor = reticle.Value.guideline.lineRenderer.endColor = color_lockon;
 
                             reticle.Value.guideline.lineRenderer.enabled = false;
@@ -329,11 +335,11 @@ public class UIController_Overlay : MonoBehaviour
 
                 }
 
-                    //reticle.Value.reticle.HPslider.enabled = true;
-                    reticle.Value.reticle.HPslider.value = reticle.Key.HP;
+                //reticle.Value.reticle.HPslider.enabled = true;
+                reticle.Value.reticle.HPslider.value = reticle.Key.HP;
                 reticle.Value.reticle.HPslider.maxValue = reticle.Key.robotParameter.MaxHP;
 
-                reticle.Value.reticle.HPrectTransform.anchoredPosition = new Vector3(0.0f, Mathf.Max(47.0f,2500.0f/z), 0.0f);
+                reticle.Value.reticle.HPrectTransform.anchoredPosition = new Vector3(0.0f, Mathf.Max(47.0f, 2500.0f / z), 0.0f);
 
             }
             else
@@ -386,6 +392,24 @@ public class UIController_Overlay : MonoBehaviour
             guideline_lineRenderer_l.enabled = false;
             guideline_lineRenderer_r.enabled = false;
         }
+
+        
+        Vector3[] relative_radar = new Vector3[4];
+
+        for (int i = 0; i < 4; i++)
+        {
+            relative_radar[i] = AbsToRel(cornerPoint[i], origin.GetCenter(), Camera.main.transform.rotation);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            int idx = i == 4 ? 0 : i;
+
+            radarLine_LineRenderer.Points[i].x = relative_radar[idx].x;
+            radarLine_LineRenderer.Points[i].y = relative_radar[idx].z;
+        }
+
+        radarLine_LineRenderer.SetAllDirty();
     }
 
     public void OnChangeOrderToAI(WorldManager.OrderToAI orderToAI)

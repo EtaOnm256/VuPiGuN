@@ -10,10 +10,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{21481208-6D79-1713-AC7F-3B79AB3CFEA5}</ProjectGuid>
+    <ProjectGuid>{EAFBDD99-61CC-16F3-ACEB-BFDAA249D9F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Effekseer.URP</AssemblyName>
+    <AssemblyName>UnityUIExtensions</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -23,11 +23,11 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>UNITY_2022_3_62;UNITY_2022_3;UNITY_2022;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_INCLUDE_TESTS;ENABLE_AUDIO;ENABLE_CLOTH;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_ENGINE_CODE_STRIPPING;ENABLE_ONSCREEN_KEYBOARD;ENABLE_MANAGED_UNITYTLS;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;ENABLE_NAVIGATION_PACKAGE_DEBUG_VISUALIZATION;ENABLE_NAVIGATION_HEIGHTMESH_RUNTIME_SUPPORT;ENABLE_NAVIGATION_UI_REQUIRES_PACKAGE;PLATFORM_WEBGL;TEXTCORE_1_0_OR_NEWER;UNITY_WEBGL;UNITY_WEBGL_API;UNITY_DISABLE_WEB_VERIFICATION;UNITY_GFX_USE_PLATFORM_VSYNC;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_SPATIALTRACKING;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;ENABLE_LEGACY_INPUT_MANAGER;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;UNITY_POST_PROCESSING_STACK_V2;EFFEKSEER_URP_SUPPORT;EFFEKSEER_URP_DEPTHTARGET_FIX;EFFEKSEER_URP_XRRENDERING;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>UNITY_2022_3_62;UNITY_2022_3;UNITY_2022;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_4_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_2019_3_OR_NEWER;UNITY_2019_4_OR_NEWER;UNITY_2020_1_OR_NEWER;UNITY_2020_2_OR_NEWER;UNITY_2020_3_OR_NEWER;UNITY_2021_1_OR_NEWER;UNITY_2021_2_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_1_OR_NEWER;UNITY_2022_2_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_INCLUDE_TESTS;ENABLE_AUDIO;ENABLE_CLOTH;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_UNITYWEBREQUEST;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_EDITOR_GAME_SERVICES;ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;ENABLE_ENGINE_CODE_STRIPPING;ENABLE_ONSCREEN_KEYBOARD;ENABLE_MANAGED_UNITYTLS;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;ENABLE_ACCELERATOR_CLIENT_DEBUGGING;ENABLE_NAVIGATION_PACKAGE_DEBUG_VISUALIZATION;ENABLE_NAVIGATION_HEIGHTMESH_RUNTIME_SUPPORT;ENABLE_NAVIGATION_UI_REQUIRES_PACKAGE;PLATFORM_WEBGL;TEXTCORE_1_0_OR_NEWER;UNITY_WEBGL;UNITY_WEBGL_API;UNITY_DISABLE_WEB_VERIFICATION;UNITY_GFX_USE_PLATFORM_VSYNC;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_SPATIALTRACKING;ENABLE_MONO;NET_STANDARD_2_0;NET_STANDARD;NET_STANDARD_2_1;NETSTANDARD;NETSTANDARD2_1;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;ENABLE_INPUT_SYSTEM;ENABLE_LEGACY_INPUT_MANAGER;TEXTCORE_FONT_ENGINE_1_5_OR_NEWER;UNITY_POST_PROCESSING_STACK_V2;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169;USG0001</NoWarn>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,7 +36,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169;USG0001</NoWarn>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <NoConfig>true</NoConfig>
@@ -60,10 +60,572 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Effekseer\External\URP\EffekseerURPRenderPassFeature.cs" />
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorValues.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorValues.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\CooldownButton.cs">
+      <Link>Runtime\Scripts\Controls\CooldownButton.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\ToolTips\BoundTooltip\BoundTooltipItem.cs">
+      <Link>Runtime\Scripts\ToolTips\BoundTooltip\BoundTooltipItem.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\ScrollSnapScrollbarHelper.cs">
+      <Link>Runtime\Scripts\Layout\ScrollSnapScrollbarHelper.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorImage.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorImage.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\CurlyUI\CUIText.cs">
+      <Link>Runtime\Scripts\Effects\CurlyUI\CUIText.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\ShineEffector.cs">
+      <Link>Runtime\Scripts\Effects\ShineEffector.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\ScrollRect\FancyScrollRect.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\ScrollRect\FancyScrollRect.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ExtensionMethods.cs">
+      <Link>Runtime\Scripts\Utilities\ExtensionMethods.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\UIVerticalScroller.cs">
+      <Link>Runtime\Scripts\Layout\UIVerticalScroller.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\UIHorizontalScroller.cs">
+      <Link>Runtime\Scripts\Layout\UIHorizontalScroller.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\CurlyUI\CUIGraphic.cs">
+      <Link>Runtime\Scripts\Effects\CurlyUI\CUIGraphic.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\RescalingPanels\ResizePanel.cs">
+      <Link>Runtime\Scripts\Controls\RescalingPanels\ResizePanel.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UIExtensionsInputManager.cs">
+      <Link>Runtime\Scripts\Utilities\UIExtensionsInputManager.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\ShaderEffects\UILinearDodgeEffect.cs">
+      <Link>Runtime\Scripts\Effects\ShaderEffects\UILinearDodgeEffect.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ReorderableList\ReorderableListDebug.cs">
+      <Link>Runtime\Scripts\Controls\ReorderableList\ReorderableListDebug.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Sliders\MinMaxSlider.cs">
+      <Link>Runtime\Scripts\Controls\Sliders\MinMaxSlider.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UILineConnector.cs">
+      <Link>Runtime\Scripts\Utilities\UILineConnector.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\RadialLayout.cs">
+      <Link>Runtime\Scripts\Layout\RadialLayout.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ScrollRectLinker.cs">
+      <Link>Runtime\Scripts\Utilities\ScrollRectLinker.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\ContentScrollSnapHorizontal.cs">
+      <Link>Runtime\Scripts\Layout\ContentScrollSnapHorizontal.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ReorderableList\ReorderableListContent.cs">
+      <Link>Runtime\Scripts\Controls\ReorderableList\ReorderableListContent.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\CurvedLayout.cs">
+      <Link>Runtime\Scripts\Layout\CurvedLayout.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorPickerControl.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorPickerControl.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\PPIViewer.cs">
+      <Link>Runtime\Scripts\Utilities\PPIViewer.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\UI_Knob.cs">
+      <Link>Runtime\Scripts\Controls\UI_Knob.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Accordion\Tweening\ITweenValue.cs">
+      <Link>Runtime\Scripts\Controls\Accordion\Tweening\ITweenValue.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\ScrollPositionController.cs">
+      <Link>Runtime\Scripts\Layout\ScrollPositionController.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\CableCurve.cs">
+      <Link>Runtime\Scripts\Utilities\CableCurve.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\SoftMaskScript.cs">
+      <Link>Runtime\Scripts\Effects\SoftMaskScript.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UI_ScrollRectOcclusion.cs">
+      <Link>Runtime\Scripts\Utilities\UI_ScrollRectOcclusion.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\NonDrawingGraphic.cs">
+      <Link>Runtime\Scripts\Utilities\NonDrawingGraphic.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Sliders\StepperSide.cs">
+      <Link>Runtime\Scripts\Controls\Sliders\StepperSide.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\MonoSpacing.cs">
+      <Link>Runtime\Scripts\Effects\MonoSpacing.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorSlider.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorSlider.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UILineRenderer.cs">
+      <Link>Runtime\Scripts\Primitives\UILineRenderer.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\SVBoxSlider.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\SVBoxSlider.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\TextPic.cs">
+      <Link>Runtime\Scripts\Controls\TextPic.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UIGridRenderer.cs">
+      <Link>Runtime\Scripts\Primitives\UIGridRenderer.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\SetPropertyUtility.cs">
+      <Link>Runtime\Scripts\Utilities\SetPropertyUtility.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Segment.cs">
+      <Link>Runtime\Scripts\Controls\Segment.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\Scroller\MovementType.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\Scroller\MovementType.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UIScrollToSelection.cs">
+      <Link>Runtime\Scripts\Utilities\UIScrollToSelection.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ScrollRectEx.cs">
+      <Link>Runtime\Scripts\Utilities\ScrollRectEx.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UISquircle.cs">
+      <Link>Runtime\Scripts\Primitives\UISquircle.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Sliders\BoxSlider.cs">
+      <Link>Runtime\Scripts\Controls\Sliders\BoxSlider.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ShaderLibrary.cs">
+      <Link>Runtime\Scripts\Utilities\ShaderLibrary.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\ToolTips\HoverTooltip.cs">
+      <Link>Runtime\Scripts\ToolTips\HoverTooltip.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\ShaderEffects\UISoftAdditiveEffect.cs">
+      <Link>Runtime\Scripts\Effects\ShaderEffects\UISoftAdditiveEffect.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\SelectionBox\IBoxSelectable.cs">
+      <Link>Runtime\Scripts\Controls\SelectionBox\IBoxSelectable.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\CardUI\2D Cards\CardStack2D.cs">
+      <Link>Runtime\Scripts\Layout\CardUI\2D Cards\CardStack2D.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\Circle.cs">
+      <Link>Runtime\Scripts\Utilities\Circle.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Accordion\AccordionElement.cs">
+      <Link>Runtime\Scripts\Controls\Accordion\AccordionElement.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UISelectableExtension.cs">
+      <Link>Runtime\Scripts\Utilities\UISelectableExtension.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\RescalingPanels\RescaleDragPanel.cs">
+      <Link>Runtime\Scripts\Controls\RescalingPanels\RescaleDragPanel.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ExtensionsToggle.cs">
+      <Link>Runtime\Scripts\Utilities\ExtensionsToggle.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\GridView\IFancyCellGroupContext.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\GridView\IFancyCellGroupContext.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\Events\ColorChangedEvent.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\Events\ColorChangedEvent.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\switchToRectTransform.cs">
+      <Link>Runtime\Scripts\Utilities\switchToRectTransform.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\BestFitOutline.cs">
+      <Link>Runtime\Scripts\Effects\BestFitOutline.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\CylinderText.cs">
+      <Link>Runtime\Scripts\Effects\CylinderText.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\UIFlippable.cs">
+      <Link>Runtime\Scripts\Effects\UIFlippable.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\VerticalScrollSnap.cs">
+      <Link>Runtime\Scripts\Layout\VerticalScrollSnap.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\SegmentedControl.cs">
+      <Link>Runtime\Scripts\Controls\SegmentedControl.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\GridView\FancyGridViewContext.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\GridView\FancyGridViewContext.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ResetSelectableHighlight.cs">
+      <Link>Runtime\Scripts\Utilities\ResetSelectableHighlight.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorLabel.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorLabel.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\HorizontalScrollSnap.cs">
+      <Link>Runtime\Scripts\Layout\HorizontalScrollSnap.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\Gradient2.cs">
+      <Link>Runtime\Scripts\Effects\Gradient2.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\TestCompression.cs">
+      <Link>Runtime\Scripts\Utilities\TestCompression.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\ShaderEffects\UIImageCrop.cs">
+      <Link>Runtime\Scripts\Effects\ShaderEffects\UIImageCrop.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\GridView\FancyGridView.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\GridView\FancyGridView.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\DiamondGraph.cs">
+      <Link>Runtime\Scripts\Primitives\DiamondGraph.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\MenuSystem\MenuManager.cs">
+      <Link>Runtime\Scripts\MenuSystem\MenuManager.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\BezierPath.cs">
+      <Link>Runtime\Scripts\Utilities\BezierPath.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\GridView\FancyGridViewCell.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\GridView\FancyGridViewCell.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UI_InfiniteScroll.cs">
+      <Link>Runtime\Scripts\Utilities\UI_InfiniteScroll.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ComboBox\DropDownListItem.cs">
+      <Link>Runtime\Scripts\Controls\ComboBox\DropDownListItem.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\TableLayoutGroup.cs">
+      <Link>Runtime\Scripts\Layout\TableLayoutGroup.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\ToolTips\TooltipTrigger.cs">
+      <Link>Runtime\Scripts\ToolTips\TooltipTrigger.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UIScrollToSelectionXY.cs">
+      <Link>Runtime\Scripts\Utilities\UIScrollToSelectionXY.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ComboBox\DropDownList.cs">
+      <Link>Runtime\Scripts\Controls\ComboBox\DropDownList.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Accordion\Tweening\FloatTween.cs">
+      <Link>Runtime\Scripts\Controls\Accordion\Tweening\FloatTween.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\Scroller\MovementDirection.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\Scroller\MovementDirection.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\ScrollRect\FancyScrollRectContext.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\ScrollRect\FancyScrollRectContext.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\Core\FancyScrollView.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\Core\FancyScrollView.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\CardUI\Superellipse Creation\MeshCreator.cs">
+      <Link>Runtime\Scripts\Layout\CardUI\Superellipse Creation\MeshCreator.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorPickerPresets.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorPickerPresets.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\LetterSpacing.cs">
+      <Link>Runtime\Scripts\Effects\LetterSpacing.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UIExtensionMethods.cs">
+      <Link>Runtime\Scripts\Utilities\UIExtensionMethods.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorPickerTester.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorPickerTester.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ReorderableList\ReorderableList.cs">
+      <Link>Runtime\Scripts\Controls\ReorderableList\ReorderableList.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\TabNavigationHelper.cs">
+      <Link>Runtime\Scripts\TabNavigationHelper.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\PaginationManager.cs">
+      <Link>Runtime\Scripts\Utilities\PaginationManager.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ScrollConflictManager.cs">
+      <Link>Runtime\Scripts\Utilities\ScrollConflictManager.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorSliderImage.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorSliderImage.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ScrollRectExtensions.cs">
+      <Link>Runtime\Scripts\Utilities\ScrollRectExtensions.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\CurvedText.cs">
+      <Link>Runtime\Scripts\Effects\CurvedText.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UIHighlightable.cs">
+      <Link>Runtime\Scripts\Utilities\UIHighlightable.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ScrollRectTweener.cs">
+      <Link>Runtime\Scripts\Utilities\ScrollRectTweener.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\UIParticleSystem.cs">
+      <Link>Runtime\Scripts\Effects\UIParticleSystem.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\MinMaxValues.cs">
+      <Link>Runtime\Scripts\Utilities\MinMaxValues.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\ScrollRect\IFancyScrollRectContext.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\ScrollRect\IFancyScrollRectContext.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Sliders\Stepper.cs">
+      <Link>Runtime\Scripts\Controls\Sliders\Stepper.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\GridView\FancyCellGroup.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\GridView\FancyCellGroup.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\NicerOutline.cs">
+      <Link>Runtime\Scripts\Effects\NicerOutline.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ComboBox\DropDownListButton.cs">
+      <Link>Runtime\Scripts\Controls\ComboBox\DropDownListButton.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\MenuSystem\Menu.cs">
+      <Link>Runtime\Scripts\MenuSystem\Menu.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UI_MagneticInfiniteScroll.cs">
+      <Link>Runtime\Scripts\Utilities\UI_MagneticInfiniteScroll.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\ShineEffect.cs">
+      <Link>Runtime\Scripts\Effects\ShineEffect.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\CardUI\Superellipse Creation\SuperellipsePoints.cs">
+      <Link>Runtime\Scripts\Layout\CardUI\Superellipse Creation\SuperellipsePoints.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\UI_TweenScale.cs">
+      <Link>Runtime\Scripts\Utilities\UI_TweenScale.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\IScrollSnap.cs">
+      <Link>Runtime\Scripts\Layout\IScrollSnap.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\TileSizeFitter.cs">
+      <Link>Runtime\Scripts\Layout\TileSizeFitter.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\ShaderEffects\UIMultiplyEffect.cs">
+      <Link>Runtime\Scripts\Effects\ShaderEffects\UIMultiplyEffect.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\CardUI\2D Cards\CardPopup2D.cs">
+      <Link>Runtime\Scripts\Layout\CardUI\2D Cards\CardPopup2D.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ReadOnlyAttribute.cs">
+      <Link>Runtime\Scripts\Utilities\ReadOnlyAttribute.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\MultiTouchScrollRect.cs">
+      <Link>Runtime\Scripts\Controls\MultiTouchScrollRect.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\ToolTips\ToolTip.cs">
+      <Link>Runtime\Scripts\ToolTips\ToolTip.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Sliders\RadialSlider.cs">
+      <Link>Runtime\Scripts\Controls\Sliders\RadialSlider.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\InputFocus.cs">
+      <Link>Runtime\Scripts\Controls\InputFocus.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UIPrimitiveBase.cs">
+      <Link>Runtime\Scripts\Primitives\UIPrimitiveBase.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\SelectableScaler.cs">
+      <Link>Runtime\Scripts\Utilities\SelectableScaler.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\ScrollRect\FancyScrollRectCell.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\ScrollRect\FancyScrollRectCell.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UILineRendererFIFO.cs">
+      <Link>Runtime\Scripts\Primitives\UILineRendererFIFO.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\ColorSampler.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\ColorSampler.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\CardUI\3D Cards\CardExpanding3D.cs">
+      <Link>Runtime\Scripts\Layout\CardUI\3D Cards\CardExpanding3D.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Accordion\Tweening\TweenRunner.cs">
+      <Link>Runtime\Scripts\Controls\Accordion\Tweening\TweenRunner.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\MenuSystem\SimpleMenu.cs">
+      <Link>Runtime\Scripts\MenuSystem\SimpleMenu.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UICornerCut.cs">
+      <Link>Runtime\Scripts\Primitives\UICornerCut.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\SelectionBox\SelectionBox.cs">
+      <Link>Runtime\Scripts\Controls\SelectionBox\SelectionBox.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\RaycastMask.cs">
+      <Link>Runtime\Scripts\Effects\RaycastMask.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\HSVUtil.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\HSVUtil.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\ScrollSnap.cs">
+      <Link>Runtime\Scripts\Layout\ScrollSnap.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UILineRendererList.cs">
+      <Link>Runtime\Scripts\Primitives\UILineRendererList.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\GridView\IFancyGridViewContext.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\GridView\IFancyGridViewContext.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Sliders\RangeSlider.cs">
+      <Link>Runtime\Scripts\Controls\Sliders\RangeSlider.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ExtensionsToggleGroup.cs">
+      <Link>Runtime\Scripts\Utilities\ExtensionsToggleGroup.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\Core\FancyCell.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\Core\FancyCell.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\HexColorField.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\HexColorField.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UICircle.cs">
+      <Link>Runtime\Scripts\Primitives\UICircle.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\UIWindowBase.cs">
+      <Link>Runtime\Scripts\UIWindowBase.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\Scroller\ScrollDirection.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\Scroller\ScrollDirection.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\Events\HSVChangedEvent.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\Events\HSVChangedEvent.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ReorderableList\ReorderableListElement.cs">
+      <Link>Runtime\Scripts\Controls\ReorderableList\ReorderableListElement.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\CardUI\Superellipse Creation\Triangulator.cs">
+      <Link>Runtime\Scripts\Layout\CardUI\Superellipse Creation\Triangulator.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UILineTextureRenderer.cs">
+      <Link>Runtime\Scripts\Primitives\UILineTextureRenderer.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\Accordion\Accordion.cs">
+      <Link>Runtime\Scripts\Controls\Accordion\Accordion.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\ReturnKeyTriggersButton.cs">
+      <Link>Runtime\Scripts\Utilities\ReturnKeyTriggersButton.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ComboBox\AutoCompleteComboBox.cs">
+      <Link>Runtime\Scripts\Controls\ComboBox\AutoCompleteComboBox.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ColorPicker\TiltWindow.cs">
+      <Link>Runtime\Scripts\Controls\ColorPicker\TiltWindow.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\InputFieldEnterSubmit.cs">
+      <Link>Runtime\Scripts\Utilities\InputFieldEnterSubmit.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\CurlyUI\CUIImage.cs">
+      <Link>Runtime\Scripts\Effects\CurlyUI\CUIImage.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\ShaderEffects\UIScreenEffect.cs">
+      <Link>Runtime\Scripts\Effects\ShaderEffects\UIScreenEffect.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\CurlyUI\CUIMisc.cs">
+      <Link>Runtime\Scripts\Effects\CurlyUI\CUIMisc.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\CLZF2.cs">
+      <Link>Runtime\Scripts\Utilities\CLZF2.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FlowLayoutGroup.cs">
+      <Link>Runtime\Scripts\Layout\FlowLayoutGroup.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\SelectionBox\ExampleSelectable.cs">
+      <Link>Runtime\Scripts\Controls\SelectionBox\ExampleSelectable.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Primitives\UIPolygon.cs">
+      <Link>Runtime\Scripts\Primitives\UIPolygon.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\RescalingPanels\RescalePanel.cs">
+      <Link>Runtime\Scripts\Controls\RescalingPanels\RescalePanel.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\CardUI\2D Cards\CardExpanding2D.cs">
+      <Link>Runtime\Scripts\Layout\CardUI\2D Cards\CardExpanding2D.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\ToolTips\BoundTooltip\BoundTooltipTrigger.cs">
+      <Link>Runtime\Scripts\ToolTips\BoundTooltip\BoundTooltipTrigger.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\ScrollSnapBase.cs">
+      <Link>Runtime\Scripts\Layout\ScrollSnapBase.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\ShaderEffects\UIAdditiveEffect.cs">
+      <Link>Runtime\Scripts\Effects\ShaderEffects\UIAdditiveEffect.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\Gradient.cs">
+      <Link>Runtime\Scripts\Effects\Gradient.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\Scroller\EasingCore.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\Scroller\EasingCore.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Layout\FancyScrollView\Scroller\Scroller.cs">
+      <Link>Runtime\Scripts\Layout\FancyScrollView\Scroller\Scroller.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Utilities\DragCorrector.cs">
+      <Link>Runtime\Scripts\Utilities\DragCorrector.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Controls\ComboBox\ComboBox.cs">
+      <Link>Runtime\Scripts\Controls\ComboBox\ComboBox.cs</Link>
+    </Compile>
+    <Compile Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Scripts\Effects\CurlyUI\CUIBezierCurve.cs">
+      <Link>Runtime\Scripts\Effects\CurlyUI\CUIBezierCurve.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Effekseer\External\URP\Effekseer.URP.asmdef" />
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UIAdditive.shader">
+      <Link>Runtime\Resources\Shaders\UIAdditive.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle Add.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle Add.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UIScreen.shader">
+      <Link>Runtime\Resources\Shaders\UIScreen.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle Multiply.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle Multiply.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UIMultiply.shader">
+      <Link>Runtime\Resources\Shaders\UIMultiply.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UILinearDodge.shader">
+      <Link>Runtime\Resources\Shaders\UILinearDodge.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle Alpha Blend.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle Alpha Blend.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\SoftMaskShader.shader">
+      <Link>Runtime\Resources\Shaders\SoftMaskShader.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle Premultiply Blend.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle Premultiply Blend.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle VertexLit Blended.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle VertexLit Blended.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle MultiplyDouble.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle MultiplyDouble.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle AddMultiply.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle AddMultiply.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle Blend.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle Blend.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UISoftAdditive.shader">
+      <Link>Runtime\Resources\Shaders\UISoftAdditive.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UI Particle AddSmooth.shader">
+      <Link>Runtime\Resources\Shaders\UI Particle AddSmooth.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UIImageCrop.shader">
+      <Link>Runtime\Resources\Shaders\UIImageCrop.shader</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\UnityUIExtensions.asmdef">
+      <Link>Runtime\UnityUIExtensions.asmdef</Link>
+    </None>
+    <None Include="C:\Users\Manabu\Downloads\com.unity.uiextensions-release\com.unity.uiextensions-release\Runtime\Resources\Shaders\UIParticleHidden.shader">
+      <Link>Runtime\Resources\Shaders\UIParticleHidden.shader</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -922,28 +1484,24 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Effekseer.csproj">
-      <Project>{5FBB86BE-02C6-FC54-99E0-C43A32D2BB59}</Project>
-      <Name>Effekseer</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
