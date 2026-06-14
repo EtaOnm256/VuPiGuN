@@ -79,7 +79,7 @@ public class Loading : MonoBehaviour
 					if (gameState.loadingDestination == Destination.Mission)
 					{
 						gameState.army_enemy = Resources.Load<Army>($"Armys/Army{gameState.GetNextStage_UpdateSkyIndex().Item2}_{gameState.skyindex}_enemy");
-						gameState.army_friend = Resources.Load<Army>($"Armys/Army{gameState.progressStage}_friend");
+						gameState.army_friend = Resources.Load<Army>($"Armys/Army{gameState.GetNextStage_UpdateSkyIndex().Item2}_{gameState.skyindex}_friend");
 					}
 
 					if (gameState.loadingDestination == Destination.TestingRoom)

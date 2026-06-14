@@ -5,6 +5,14 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Army : ScriptableObject
 {
+    public enum Type
+    {
+        Sequence,
+        Group
+    }
+
+    public Type type;
+
     [System.Serializable]
     public class OneSpawn
     {
@@ -18,5 +26,17 @@ public class Army : ScriptableObject
     }
 
     public List<OneSpawn> spawns;
+
+    [System.Serializable]
+    public class UnitGroup
+    {
+        public GameObject variant;
+        //public Vector3 pos;
+        //public Quaternion rot;
+        public int count;
+    }
+
+    public List<UnitGroup> groups;
+
     public int power;  
 }

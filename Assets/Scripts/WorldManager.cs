@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static WorldManager;
+using static WorldManager.Team;
 
 public class WorldManager : MonoBehaviour
 {
@@ -20,7 +23,6 @@ public class WorldManager : MonoBehaviour
     {
         public List<RobotController> robotControllers = new List<RobotController>();
         public List<Projectile> projectiles = new List<Projectile>();
-        public List<Spawning> spawnings = new List<Spawning>();
 
         public Slider powerslider;
 
@@ -90,11 +92,20 @@ public class WorldManager : MonoBehaviour
         public int currentSpawn = 0;
         public int loop_index = -1;
         public bool spawned = false;
+
+        public List<Spawning> spawnings_seq = new List<Spawning>();
+
+        public class Group
+        {
+            public List<RobotController> controllers = new List<RobotController>();
+            public List<Spawning> spawnings = new List<Spawning>();
+        }
+
+        public List<Group> groups = new List<Group>();
     }
 
     ArmyInstance armyInstance_enemy = new ArmyInstance();
     ArmyInstance armyInstance_friend = new ArmyInstance();
-
 
     [SerializeField] CanvasControl canvasControl;
 
@@ -165,7 +176,18 @@ public class WorldManager : MonoBehaviour
 
         Vector3 pos = PlacePlayerSpawn(60);
 
+        foreach (var group_tmpl in armyInstance_enemy.army.groups)
+        {
+            armyInstance_enemy.groups.Add(new ArmyInstance.Group());
+        }
+
         while (ProcessSpawn(armyInstance_friend, friend_team, true)) ;
+
+        foreach (var group_tmpl in armyInstance_friend.army.groups)
+        {
+            armyInstance_friend.groups.Add(new ArmyInstance.Group());
+        }
+
         while (ProcessSpawn(armyInstance_enemy, enemy_team, true)) ;
 
         PresetCameraTransform(pos);
@@ -225,6 +247,15 @@ public class WorldManager : MonoBehaviour
                 robotController.OnRobotRemoved(robot);
             }
         }
+
+        foreach (var group in armyInstance_friend.groups)
+        {
+            if (group.controllers.Remove(robotController)) break;
+        }
+        foreach (var group in armyInstance_enemy.groups)
+        {
+            if (group.controllers.Remove(robotController)) break;
+        }
     }
 
 
@@ -238,48 +269,159 @@ public class WorldManager : MonoBehaviour
 
     }
 
-    
+    void DetermineSpawnTransform(out Vector3 spawn_position,out Quaternion spawn_rotation,Team team)
+    {
+        if (spawnType == SpawnType.LARGESCALE)
+        {
+            while (true)
+            {
+                Vector3 pos;
 
-    bool ProcessSpawn(ArmyInstance sequence,Team team,bool instant)
+                /*pos.y = 0.0f;
+                pos.x = Random.value * 100.0f - 50.0f;
+                if (team == teams[0])
+                {
+                    pos.z = -Random.value * 50.0f-100.0f;
+                    spawn_rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+                }
+                else
+                {
+                    pos.z = Random.value * 50.0f+100.0f;
+                    spawn_rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+                }*/
+
+
+                pos.y = 0.0f;
+                pos.x = Random.value * 300.0f - 150.0f;
+                pos.z = Random.value * 300.0f - 150.0f;
+
+                spawn_rotation = Quaternion.LookRotation(-pos, Vector3.up);
+
+                RaycastHit raycastHit;
+                Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+
+                if (raycastHit.collider.gameObject.layer != 7)
+                {
+                    spawn_position = raycastHit.point;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            float distance;
+
+            if (team == teams[0])
+            {
+                distance = 25.0f;
+            }
+            else
+            {
+                distance = 100.0f;
+            }
+
+            while (true)
+            {
+                Vector3 pos;
+
+                RaycastHit raycastHit;
+                if (player)
+                {
+                    pos = player.GetCenter() + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+
+                    if (team == teams[0])
+                        spawn_rotation = player.transform.rotation;
+                    else
+                        spawn_rotation = Quaternion.LookRotation(player.GetCenter() - pos, Vector3.up);
+                }
+                else if (armyInstance_friend.spawnings_seq.Find(x => x.player) != null)
+                {
+                    var spawning = armyInstance_friend.spawnings_seq.Find(x => x.player);
+
+                    pos = spawning.pos + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+
+                    if (team == teams[0])
+                        spawn_rotation = spawning.rot;
+                    else
+                        spawn_rotation = Quaternion.LookRotation(spawning.pos - pos, Vector3.up);
+                }
+                else
+                {
+                    pos = player_last_position + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                    spawn_rotation = Quaternion.LookRotation(player_last_position - pos, Vector3.up);
+                }
+
+                if (pos.x >= 150.0f)
+                {
+                    pos.x -= distance * 2;
+                }
+                else if (pos.x <= -150.0f)
+                {
+                    pos.x += distance * 2f;
+                }
+
+                if (pos.z >= 150.0f)
+                {
+                    pos.z -= distance * 2;
+                }
+                else if (pos.z <= -150.0f)
+                {
+                    pos.z += distance * 2;
+                }
+
+                Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+
+                if (raycastHit.collider.gameObject.layer != 7)
+                {
+                    spawn_position = raycastHit.point;
+                    break;
+                }
+            }
+        }
+    }
+
+    bool ProcessSpawn(ArmyInstance armyInst,Team team,bool instant)
     {
         bool hav_progress = false;
 
-        for(int i=0;i<team.spawnings.Count;)
+        for(int i=0;i<armyInst.spawnings_seq.Count;)
         {
-            if(team.spawnings[i].player)
+            if(armyInst.spawnings_seq[i].player)
             {
                 i++;
                 continue;
             }
 
-            if(team.spawnings[i].wait <= 0)
+            if(armyInst.spawnings_seq[i].wait <= 0)
             {
-                SpawnNPC(team.spawnings[i].variant, team.spawnings[i].pos, team.spawnings[i].rot, team, team.spawnings[i].boss);
-                team.spawnings.RemoveAt(i);               
+                SpawnNPC(armyInst.spawnings_seq[i].variant, armyInst.spawnings_seq[i].pos, armyInst.spawnings_seq[i].rot, team, armyInst.spawnings_seq[i].boss);
+                armyInst.spawnings_seq.RemoveAt(i);               
             }
             else
             {
-                team.spawnings[i].wait--;
+                armyInst.spawnings_seq[i].wait--;
                 i++;
             }
         }
 
-        if (sequence.spawned) // 今のインデックスはスポーン済み。次に進むかの判定
+        // シーケンス処理
+
+        if (armyInst.spawned) // 今のインデックスはスポーン済み。次に進むかの判定
         {
-            if (team.robotControllers.Count+team.spawnings.Count < sequence.army.spawns[sequence.currentSpawn].squadCount)
+            if (team.robotControllers.Count+armyInst.spawnings_seq.Count < armyInst.army.spawns[armyInst.currentSpawn].squadCount)
             {
-                if (sequence.currentSpawn < sequence.army.spawns.Count - 1)
+                if (armyInst.currentSpawn < armyInst.army.spawns.Count - 1)
                 {
-                    sequence.currentSpawn++;
-                    sequence.spawned = false;
+                    armyInst.currentSpawn++;
+                    armyInst.spawned = false;
                     hav_progress = true;
                 }
                 else
                 {
-                    if (sequence.loop_index != -1)
+                    if (armyInst.loop_index != -1)
                     {
-                        sequence.currentSpawn = sequence.loop_index;
-                        sequence.spawned = false;
+                        armyInst.currentSpawn = armyInst.loop_index;
+                        armyInst.spawned = false;
                         hav_progress = true;
                     }
                 }
@@ -290,137 +432,74 @@ public class WorldManager : MonoBehaviour
         }
         else　// 今のインデックスはスポーンまだ。スポーンするかの判定
         {
-            bool do_spawn;
+            bool do_spawn = false;
 
-            if (sequence.army.spawns[sequence.currentSpawn].burst)
+            if (armyInst.currentSpawn < armyInst.army.spawns.Count)
             {
-                do_spawn = team.robotControllers.Count + team.spawnings.Count == 0;
+                if (armyInst.army.spawns[armyInst.currentSpawn].burst)
+                {
+                    do_spawn = team.robotControllers.Count + armyInst.spawnings_seq.Count == 0;
+                }
+                else
+                    do_spawn = team.robotControllers.Count + armyInst.spawnings_seq.Count < armyInst.army.spawns[armyInst.currentSpawn].squadCount;
             }
-            else
-                do_spawn = team.robotControllers.Count + team.spawnings.Count < sequence.army.spawns[sequence.currentSpawn].squadCount;
 
             if (do_spawn)
             {
                 Vector3 spawn_position;
                 Quaternion spawn_rotation;
 
-                if (spawnType == SpawnType.LARGESCALE)
-                {
-                    while (true)
-                    {
-                        Vector3 pos;
-                        
+                DetermineSpawnTransform(out spawn_position, out spawn_rotation, team);
 
-                        /*pos.y = 0.0f;
-                        pos.x = Random.value * 100.0f - 50.0f;
-                        if (team == teams[0])
-                        {
-                            pos.z = -Random.value * 50.0f-100.0f;
-                            spawn_rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-                        }
-                        else
-                        {
-                            pos.z = Random.value * 50.0f+100.0f;
-                            spawn_rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
-                        }*/
-
-                        
-                        pos.y = 0.0f;
-                        pos.x = Random.value * 300.0f - 150.0f;
-                        pos.z = Random.value * 300.0f - 150.0f;
-
-                        spawn_rotation = Quaternion.LookRotation(-pos, Vector3.up);
-
-                        RaycastHit raycastHit;
-                        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
-
-                        if (raycastHit.collider.gameObject.layer != 7)
-                        {
-                            spawn_position = raycastHit.point;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    float distance;
-
-                    if (team == teams[0])
-                    {
-                        distance = 25.0f;
-                    }
-                    else
-                    {
-                        distance = 100.0f;
-                    }
-
-                    while (true)
-                    {
-                        Vector3 pos;
-
-                        RaycastHit raycastHit;
-                        if (player)
-                        {
-                            pos = player.GetCenter() + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-
-                            if (team == teams[0])
-                                spawn_rotation = player.transform.rotation;
-                            else
-                                spawn_rotation = Quaternion.LookRotation(player.GetCenter() - pos, Vector3.up);
-                        }
-                        else if (teams[0].spawnings.Find(x => x.player) != null)
-                        {
-                            var spawning = teams[0].spawnings.Find(x => x.player);
-
-                            pos = spawning.pos + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-
-                            if (team == teams[0])
-                                spawn_rotation = spawning.rot;
-                            else
-                                spawn_rotation = Quaternion.LookRotation(spawning.pos - pos, Vector3.up);
-                        }
-                        else
-                        {
-                            pos = player_last_position + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-                            spawn_rotation = Quaternion.LookRotation(player_last_position - pos, Vector3.up);
-                        }
-
-                        if (pos.x >= 150.0f)
-                        {
-                            pos.x -= distance * 2;
-                        }
-                        else if (pos.x <= -150.0f)
-                        {
-                            pos.x += distance * 2f;
-                        }
-
-                        if (pos.z >= 150.0f)
-                        {
-                            pos.z -= distance * 2;
-                        }
-                        else if (pos.z <= -150.0f)
-                        {
-                            pos.z += distance * 2;
-                        }
-
-                        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
-
-                        if (raycastHit.collider.gameObject.layer != 7)
-                        {
-                            spawn_position = raycastHit.point;
-                            break;
-                        }
-                    }
-                }
-
-                Army.OneSpawn spawn = sequence.army.spawns[sequence.currentSpawn];
+                Army.OneSpawn spawn = armyInst.army.spawns[armyInst.currentSpawn];
 
                 if (instant)
                     SpawnNPC(spawn.variant, spawn_position, spawn_rotation, team, spawn.boss);
                 else
-                    team.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = spawn.variant, wait = 60, boss = spawn.boss });
+                    armyInst.spawnings_seq.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = spawn.variant, wait = 60, boss = spawn.boss });
                 
-                sequence.spawned = true;
+                armyInst.spawned = true;
+                hav_progress = true;
+            }
+        }
+
+        // グループ処理
+
+        for(int g_idx=0; g_idx < armyInst.groups.Count; g_idx++)
+        {
+            var group_inst = armyInst.groups[g_idx];
+            var group_templ = armyInst.army.groups[g_idx];
+
+            for (int i = 0; i < group_inst.spawnings.Count;)
+            {
+                if (group_inst.spawnings[i].wait <= 0)
+                {
+                    group_inst.controllers.Add(SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team, group_inst.spawnings[i].boss));
+                    group_inst.spawnings.RemoveAt(i);
+                }
+                else
+                {
+                    group_inst.spawnings[i].wait--;
+                    i++;
+                }
+            }
+
+            bool do_spawn;
+
+            do_spawn = group_inst.controllers.Count + group_inst.spawnings.Count < group_templ.count;
+
+            if (do_spawn)
+            {
+                Vector3 spawn_position;
+                Quaternion spawn_rotation;
+
+                DetermineSpawnTransform(out spawn_position, out spawn_rotation, team);
+
+                if (instant)
+                    group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team, false));
+                else
+                    group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = false });
+
                 hav_progress = true;
             }
         }
@@ -474,7 +553,7 @@ public class WorldManager : MonoBehaviour
 
         //CinemachineCameraTarget.transform.position = raycastHit.point + CinemachineCameraTarget.transform.rotation * RobotController.offset;
 
-        teams[0].spawnings.Add(new Team.Spawning { player = true, pos = raycastHit.point, rot = quaternion, wait = 60 });
+        armyInstance_friend.spawnings_seq.Add(new Team.Spawning { player = true, pos = raycastHit.point, rot = quaternion, wait = 60 });
 
         return raycastHit.point;
     }
@@ -499,7 +578,7 @@ public class WorldManager : MonoBehaviour
                 }
             }
 
-            foreach (var spawning in team.spawnings)
+            foreach (var spawning in armyInstance_enemy.spawnings_seq)
             {
                 float dist = (spawning.pos - pos).magnitude;
 
@@ -532,7 +611,7 @@ public class WorldManager : MonoBehaviour
         if (player == null)
         {
             Team.Spawning player_spawning = null;
-            foreach (var spawning in teams[0].spawnings)
+            foreach (var spawning in armyInstance_friend.spawnings_seq)
             {
                 if (spawning.player)
                 {
@@ -550,7 +629,7 @@ public class WorldManager : MonoBehaviour
                 if (player_spawning.wait == 0)
                 {
                     SpawnPlayer(player_spawning.pos, player_spawning.rot, teams[0]);
-                    teams[0].spawnings.Remove(player_spawning);
+                    armyInstance_friend.spawnings_seq.Remove(player_spawning);
                 }
                 else
                 {
@@ -823,7 +902,7 @@ public class WorldManager : MonoBehaviour
         HandleRobotAdd(robot);
     }
 
-    private void SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team,bool boss)
+    private RobotController SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team,bool boss)
     {
         //RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
        
@@ -850,6 +929,8 @@ public class WorldManager : MonoBehaviour
             attention_timer = 0;
             attention_target = robot;
         }
+
+        return robot;
     }
 
     public void AddProjectile(Projectile projectile,Team team)
