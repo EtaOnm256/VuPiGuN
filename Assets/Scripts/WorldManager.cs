@@ -99,6 +99,7 @@ public class WorldManager : MonoBehaviour
         {
             public List<RobotController> controllers = new List<RobotController>();
             public List<Spawning> spawnings = new List<Spawning>();
+            public int reinforce_count = 0;
         }
 
         public List<Group> groups = new List<Group>();
@@ -490,6 +491,28 @@ public class WorldManager : MonoBehaviour
 
             if (do_spawn)
             {
+                if (!(
+                        (group_templ.reinforce_count <= 0 || group_inst.reinforce_count < group_templ.reinforce_count)
+                     ))
+                    continue;
+
+                bool condition_met;
+
+                switch(group_templ.condition.type)
+                {
+                    case Army.UnitGroup.Condition.Type.None:
+                        condition_met = true;
+                        break;
+                    case Army.UnitGroup.Condition.Type.PowerLessThan:
+                        condition_met = team.power < group_templ.condition.param;
+                        break;
+                    default:
+                        throw new System.NotSupportedException();
+                }
+
+                if (!condition_met)
+                    continue;
+
                 Vector3 spawn_position;
                 Quaternion spawn_rotation;
 
@@ -498,9 +521,10 @@ public class WorldManager : MonoBehaviour
                 if (instant)
                     group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team, false));
                 else
-                    group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = false });
+                    group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
 
                 hav_progress = true;
+                group_inst.reinforce_count++;
             }
         }
 

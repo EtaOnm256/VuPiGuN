@@ -34,6 +34,26 @@ public class Army : ScriptableObject
         //public Vector3 pos;
         //public Quaternion rot;
         public int count;
+
+        [System.Serializable]
+        public class Condition
+        {
+            public enum Type
+            {
+                None,
+                PowerLessThan
+            }
+
+            public Type type;
+
+            public float param;
+        }
+
+        public Condition condition;
+
+        public int reinforce_count = 0;
+
+        public bool boss = false;
     }
 
     public List<UnitGroup> groups;
