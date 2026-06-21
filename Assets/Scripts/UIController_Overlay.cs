@@ -195,10 +195,13 @@ public class UIController_Overlay : MonoBehaviour
             return;
 
         float distance = float.MaxValue;
+        Vector3 radardir = Camera.main.transform.forward;
+        radardir.y = 0.0f;
 
         foreach (var reticle in robotReticle)
         {
             Vector3 relative = AbsToRel(reticle.Key.GetCenter(), origin.GetCenter(), Camera.main.transform.rotation);
+
 
             float z = Camera.main.transform.InverseTransformPoint(reticle.Key.transform.position).z;
 
@@ -352,7 +355,9 @@ public class UIController_Overlay : MonoBehaviour
                 reticle.Value.reticle.inner_gameObject.SetActive(false);
             }
 
-            reticle.Value.reticle.radarrectTransform.anchoredPosition = new Vector3(relative.x, relative.z, 0.0f);
+            Vector3 relative_horiz = AbsToRel(reticle.Key.GetCenter(), origin.GetCenter(), Quaternion.LookRotation(radardir, Vector3.up));
+
+            reticle.Value.reticle.radarrectTransform.anchoredPosition = new Vector3(relative_horiz.x, relative_horiz.z, 0.0f);
 
             if (reticle.Key.team != origin.team)
             {
@@ -396,9 +401,10 @@ public class UIController_Overlay : MonoBehaviour
         
         Vector3[] relative_radar = new Vector3[4];
 
+
         for (int i = 0; i < 4; i++)
         {
-            relative_radar[i] = AbsToRel(cornerPoint[i], origin.GetCenter(), Camera.main.transform.rotation);
+            relative_radar[i] = AbsToRel(cornerPoint[i], origin.GetCenter(), Quaternion.LookRotation(radardir, Vector3.up));
         }
 
         for (int i = 0; i < 5; i++)
