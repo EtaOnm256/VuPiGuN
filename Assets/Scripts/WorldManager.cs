@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -103,6 +104,8 @@ public class WorldManager : MonoBehaviour
         }
 
         public List<Group> groups = new List<Group>();
+
+        public int allgroup_maxrobot = 0;
     }
 
     ArmyInstance armyInstance_enemy = new ArmyInstance();
@@ -180,6 +183,9 @@ public class WorldManager : MonoBehaviour
         foreach (var group_tmpl in armyInstance_enemy.army.groups)
         {
             armyInstance_enemy.groups.Add(new ArmyInstance.Group());
+
+            if(group_tmpl.condition.type == Army.UnitGroup.Condition.Type.None)
+                armyInstance_enemy.allgroup_maxrobot += group_tmpl.count;
         }
 
         while (ProcessSpawn(armyInstance_friend, friend_team, true)) ;
@@ -187,6 +193,9 @@ public class WorldManager : MonoBehaviour
         foreach (var group_tmpl in armyInstance_friend.army.groups)
         {
             armyInstance_friend.groups.Add(new ArmyInstance.Group());
+
+            if (group_tmpl.condition.type == Army.UnitGroup.Condition.Type.None)
+                armyInstance_friend.allgroup_maxrobot += group_tmpl.count;
         }
 
         while (ProcessSpawn(armyInstance_enemy, enemy_team, true)) ;
@@ -381,6 +390,75 @@ public class WorldManager : MonoBehaviour
         }
     }
 
+    bool ProcessUnitGroup(int g_idx,ArmyInstance armyInst, Team team, bool instant,ref int grouping_force_num)
+    {
+        bool hav_progress = false;
+
+        var group_inst = armyInst.groups[g_idx];
+        var group_templ = armyInst.army.groups[g_idx];
+
+        for (int i = 0; i < group_inst.spawnings.Count;)
+        {
+            if (group_inst.spawnings[i].wait <= 0)
+            {
+                group_inst.controllers.Add(SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team, group_inst.spawnings[i].boss));
+                group_inst.spawnings.RemoveAt(i);
+            }
+            else
+            {
+                group_inst.spawnings[i].wait--;
+                i++;
+            }
+        }
+
+        bool do_spawn;
+
+        do_spawn = group_inst.controllers.Count + group_inst.spawnings.Count < group_templ.count;
+
+        if (do_spawn)
+        {
+            if (!(
+                    (group_templ.reinforce_count <= 0 || group_inst.reinforce_count < group_templ.reinforce_count)
+                    ))
+                return false;
+
+            bool condition_met;
+
+            switch (group_templ.condition.type)
+            {
+                case Army.UnitGroup.Condition.Type.None:
+                    //増援がいる分通常戦力の補充を減らす
+                    condition_met = grouping_force_num < armyInst.allgroup_maxrobot;
+                    break;
+                case Army.UnitGroup.Condition.Type.PowerLessThan:
+                    //通常戦力が最大いても増援は出す
+                    condition_met = team.power < group_templ.condition.param;
+                    break;
+                default:
+                    throw new System.NotSupportedException();
+            }
+
+            if (!condition_met)
+                return false;
+
+            Vector3 spawn_position;
+            Quaternion spawn_rotation;
+
+            DetermineSpawnTransform(out spawn_position, out spawn_rotation, team);
+
+            if (instant)
+                group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team, false));
+            else
+                group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
+
+            hav_progress = true;
+            group_inst.reinforce_count++;
+            grouping_force_num++;
+        }
+
+        return hav_progress;
+    }
+
     bool ProcessSpawn(ArmyInstance armyInst,Team team,bool instant)
     {
         bool hav_progress = false;
@@ -466,66 +544,26 @@ public class WorldManager : MonoBehaviour
 
         // グループ処理
 
-        for(int g_idx=0; g_idx < armyInst.groups.Count; g_idx++)
+
+        // 最大数を無視して増援は出るけど、増援がいる分通常戦力の補充を減らすためのカウンタ
+        int grouping_force_num = 0;
+
+        // 中で計算しなおすのがちょっと嫌（今更だけど）、ループ内でスポーンしたら足してる
+        foreach(var group_inst in armyInst.groups)
         {
-            var group_inst = armyInst.groups[g_idx];
-            var group_templ = armyInst.army.groups[g_idx];
+            grouping_force_num += group_inst.controllers.Count + group_inst.spawnings.Count;
+        }
 
-            for (int i = 0; i < group_inst.spawnings.Count;)
-            {
-                if (group_inst.spawnings[i].wait <= 0)
-                {
-                    group_inst.controllers.Add(SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team, group_inst.spawnings[i].boss));
-                    group_inst.spawnings.RemoveAt(i);
-                }
-                else
-                {
-                    group_inst.spawnings[i].wait--;
-                    i++;
-                }
-            }
+        for (int g_idx = 0; g_idx < armyInst.groups.Count; g_idx++)
+        {
+            if (armyInst.army.groups[g_idx].condition.type != Army.UnitGroup.Condition.Type.None)
+                hav_progress |= ProcessUnitGroup(g_idx, armyInst, team, instant, ref grouping_force_num);
+        }
 
-            bool do_spawn;
-
-            do_spawn = group_inst.controllers.Count + group_inst.spawnings.Count < group_templ.count;
-
-            if (do_spawn)
-            {
-                if (!(
-                        (group_templ.reinforce_count <= 0 || group_inst.reinforce_count < group_templ.reinforce_count)
-                     ))
-                    continue;
-
-                bool condition_met;
-
-                switch(group_templ.condition.type)
-                {
-                    case Army.UnitGroup.Condition.Type.None:
-                        condition_met = true;
-                        break;
-                    case Army.UnitGroup.Condition.Type.PowerLessThan:
-                        condition_met = team.power < group_templ.condition.param;
-                        break;
-                    default:
-                        throw new System.NotSupportedException();
-                }
-
-                if (!condition_met)
-                    continue;
-
-                Vector3 spawn_position;
-                Quaternion spawn_rotation;
-
-                DetermineSpawnTransform(out spawn_position, out spawn_rotation, team);
-
-                if (instant)
-                    group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team, false));
-                else
-                    group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
-
-                hav_progress = true;
-                group_inst.reinforce_count++;
-            }
+        for (int g_idx = 0; g_idx < armyInst.groups.Count; g_idx++)
+        {
+            if (armyInst.army.groups[g_idx].condition.type == Army.UnitGroup.Condition.Type.None)
+                hav_progress |= ProcessUnitGroup(g_idx, armyInst, team, instant, ref grouping_force_num);
         }
 
         return hav_progress;
