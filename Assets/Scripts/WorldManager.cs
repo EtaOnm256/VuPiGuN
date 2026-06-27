@@ -1,9 +1,13 @@
+using Cinemachine.Utility;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
 using static WorldManager;
 using static WorldManager.Team;
 
@@ -126,7 +130,9 @@ public class WorldManager : MonoBehaviour
 
     public bool attention;
     int attention_timer = 0;
-    RobotController attention_target;
+    //RobotController attention_target;
+    //Vector3 attention_position;
+    BoundingSphere attention_sphere;
 
     [SerializeField] public GameState gameState;
 
@@ -302,8 +308,8 @@ public class WorldManager : MonoBehaviour
 
 
                 pos.y = 0.0f;
-                pos.x = Random.value * 300.0f - 150.0f;
-                pos.z = Random.value * 300.0f - 150.0f;
+                pos.x = UnityEngine.Random.value * 300.0f - 150.0f;
+                pos.z = UnityEngine.Random.value * 300.0f - 150.0f;
 
                 spawn_rotation = Quaternion.LookRotation(-pos, Vector3.up);
 
@@ -337,7 +343,7 @@ public class WorldManager : MonoBehaviour
                 RaycastHit raycastHit;
                 if (player)
                 {
-                    pos = player.GetCenter() + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                    pos = player.GetCenter() + Quaternion.Euler(0.0f, UnityEngine.Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
 
                     if (team == teams[0])
                         spawn_rotation = player.transform.rotation;
@@ -348,7 +354,7 @@ public class WorldManager : MonoBehaviour
                 {
                     var spawning = armyInstance_friend.spawnings_seq.Find(x => x.player);
 
-                    pos = spawning.pos + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                    pos = spawning.pos + Quaternion.Euler(0.0f, UnityEngine.Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
 
                     if (team == teams[0])
                         spawn_rotation = spawning.rot;
@@ -357,7 +363,7 @@ public class WorldManager : MonoBehaviour
                 }
                 else
                 {
-                    pos = player_last_position + Quaternion.Euler(0.0f, Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                    pos = player_last_position + Quaternion.Euler(0.0f, UnityEngine.Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
                     spawn_rotation = Quaternion.LookRotation(player_last_position - pos, Vector3.up);
                 }
 
@@ -397,63 +403,141 @@ public class WorldManager : MonoBehaviour
         var group_inst = armyInst.groups[g_idx];
         var group_templ = armyInst.army.groups[g_idx];
 
+        //Vector3 attention_inThisFrame_avgPos = Vector3.zero;
+        int attention_inThisFrame = 0;
+
+        List<Target> tr = new List<Target>();
+
         for (int i = 0; i < group_inst.spawnings.Count;)
         {
             if (group_inst.spawnings[i].wait <= 0)
             {
-                group_inst.controllers.Add(SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team, group_inst.spawnings[i].boss));
+                RobotController robot = SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team);
+
+                group_inst.controllers.Add(robot);
+
+                if (group_inst.spawnings[i].boss)
+                {
+                    attention_inThisFrame++;
+                    //attention_inThisFrame_avgPos += robot.GetCenter();
+
+                    tr.Add(new Target { target = robot.GetCenter(), radius = 7.0f, weight = 1.0f });
+                }
+
                 group_inst.spawnings.RemoveAt(i);
             }
             else
-            {
-                group_inst.spawnings[i].wait--;
                 i++;
-            }
         }
 
-        bool do_spawn;
+      
 
-        do_spawn = group_inst.controllers.Count + group_inst.spawnings.Count < group_templ.count;
-
-        if (do_spawn)
+        if (attention_inThisFrame > 0)
         {
-            if (!(
-                    (group_templ.reinforce_count <= 0 || group_inst.reinforce_count < group_templ.reinforce_count)
-                    ))
-                return false;
+            attention = true;
+            attention_timer = 0;
+            attention_sphere = CalculateBoundingSphere(tr);
+        }
 
-            bool condition_met;
+      
+
+        int spawn_count;
+
+        spawn_count = group_templ.count - (group_inst.controllers.Count + group_inst.spawnings.Count);
+
+        if (spawn_count > 0)
+        {
+            if (group_templ.reinforce_count > 0)
+            {
+                spawn_count = System.Math.Min(spawn_count, group_templ.reinforce_count - group_inst.reinforce_count);
+
+                if (spawn_count <= 0)
+                    return false;
+            }
 
             switch (group_templ.condition.type)
             {
                 case Army.UnitGroup.Condition.Type.None:
                     //増援がいる分通常戦力の補充を減らす
-                    condition_met = grouping_force_num < armyInst.allgroup_maxrobot;
+                    spawn_count = System.Math.Min(spawn_count, armyInst.allgroup_maxrobot - grouping_force_num);
                     break;
                 case Army.UnitGroup.Condition.Type.PowerLessThan:
                     //通常戦力が最大いても増援は出す
-                    condition_met = team.power < group_templ.condition.param;
+                    if (team.power >= group_templ.condition.param)
+                        spawn_count = 0;
                     break;
                 default:
                     throw new System.NotSupportedException();
             }
 
-            if (!condition_met)
+            if (spawn_count <= 0)
                 return false;
 
-            Vector3 spawn_position;
-            Quaternion spawn_rotation;
+            Vector3 spawn_position_pivot = Vector3.zero;
+            Quaternion spawn_rotation_pivot = Quaternion.identity;
 
-            DetermineSpawnTransform(out spawn_position, out spawn_rotation, team);
+            if (group_templ.condition.type != Army.UnitGroup.Condition.Type.None)
+            {
+                DetermineSpawnTransform(out spawn_position_pivot, out spawn_rotation_pivot, team);
+            }
+                        
 
-            if (instant)
-                group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team, false));
-            else
-                group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
+            for (int i = 0; i < spawn_count; i++)
+            {
+                Vector3 spawn_position;
+                Quaternion spawn_rotation;
 
-            hav_progress = true;
-            group_inst.reinforce_count++;
-            grouping_force_num++;
+                if (group_templ.condition.type != Army.UnitGroup.Condition.Type.None)
+                {
+                    float distance = UnityEngine.Random.value * 25.0f;
+                    spawn_rotation = spawn_rotation_pivot;
+
+                    while (true)
+                    {
+                        Vector3 pos = spawn_position_pivot + Quaternion.Euler(0.0f, UnityEngine.Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
+                        RaycastHit raycastHit;
+                        
+                        if (pos.x >= 150.0f)
+                        {
+                            pos.x -= distance * 2;
+                        }
+                        else if (pos.x <= -150.0f)
+                        {
+                            pos.x += distance * 2f;
+                        }
+
+                        if (pos.z >= 150.0f)
+                        {
+                            pos.z -= distance * 2;
+                        }
+                        else if (pos.z <= -150.0f)
+                        {
+                            pos.z += distance * 2;
+                        }
+
+                        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+
+                        if (raycastHit.collider.gameObject.layer != 7)
+                        {
+                            spawn_position = raycastHit.point;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    DetermineSpawnTransform(out spawn_position, out spawn_rotation, team);
+                }
+
+                if (instant)
+                    group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team));
+                else
+                    group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
+
+                hav_progress = true;
+                group_inst.reinforce_count++;
+                grouping_force_num++;
+            }
         }
 
         return hav_progress;
@@ -473,15 +557,21 @@ public class WorldManager : MonoBehaviour
 
             if(armyInst.spawnings_seq[i].wait <= 0)
             {
-                SpawnNPC(armyInst.spawnings_seq[i].variant, armyInst.spawnings_seq[i].pos, armyInst.spawnings_seq[i].rot, team, armyInst.spawnings_seq[i].boss);
+                RobotController robot = SpawnNPC(armyInst.spawnings_seq[i].variant, armyInst.spawnings_seq[i].pos, armyInst.spawnings_seq[i].rot, team);
+
+                if (armyInst.spawnings_seq[i].boss)
+                {
+                    attention = true;
+                    attention_timer = 0;
+                    attention_sphere = new BoundingSphere(robot.GetCenter(),7.0f);
+                }
                 armyInst.spawnings_seq.RemoveAt(i);               
             }
             else
-            {
-                armyInst.spawnings_seq[i].wait--;
                 i++;
-            }
         }
+
+
 
         // シーケンス処理
 
@@ -533,7 +623,16 @@ public class WorldManager : MonoBehaviour
                 Army.OneSpawn spawn = armyInst.army.spawns[armyInst.currentSpawn];
 
                 if (instant)
-                    SpawnNPC(spawn.variant, spawn_position, spawn_rotation, team, spawn.boss);
+                {
+                    RobotController robot = SpawnNPC(spawn.variant, spawn_position, spawn_rotation, team);
+
+                    if (spawn.boss)
+                    {
+                        attention = true;
+                        attention_timer = 0;
+                        attention_sphere = new BoundingSphere(robot.GetCenter(), 7.0f);
+                    }
+                }
                 else
                     armyInst.spawnings_seq.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = spawn.variant, wait = 60, boss = spawn.boss });
                 
@@ -576,7 +675,7 @@ public class WorldManager : MonoBehaviour
 
         while (true)
         {
-            Vector3 pos = new Vector3(Random.value * 200.0f - 100.0f, 0, Random.value * 200.0f - 100.0f);
+            Vector3 pos = new Vector3(UnityEngine.Random.value * 200.0f - 100.0f, 0, UnityEngine.Random.value * 200.0f - 100.0f);
             Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
 
             if (raycastHit.collider.gameObject.layer != 7)
@@ -688,14 +787,10 @@ public class WorldManager : MonoBehaviour
             }
             else
             {
-                if (player_spawning.wait == 0)
+                if (player_spawning.wait <= 0)
                 {
                     SpawnPlayer(player_spawning.pos, player_spawning.rot, teams[0]);
                     armyInstance_friend.spawnings_seq.Remove(player_spawning);
-                }
-                else
-                {
-                    player_spawning.wait--;
                 }
             }
 
@@ -810,29 +905,44 @@ public class WorldManager : MonoBehaviour
                 canvasControl.HUDCanvas.gameObject.SetActive(false);
             }
 
-            if (attention_timer < 60)
+             if (attention_timer < 60)
+             {
+
+
+                 Quaternion qFrom = CinemachineCameraTarget.transform.rotation;
+                 Quaternion qTo = Quaternion.LookRotation(attention_sphere.position - CinemachineCameraTarget.transform.position);
+
+                 float angle = Quaternion.Angle(qFrom, qTo);
+
+                 float v = Mathf.Max(angle / 15.0f, 0.2f);
+
+                 CinemachineCameraTarget.transform.rotation = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, qTo, v);
+             }/*
+             else if(attention_timer < 120)
+             {
+                 Vector3 rel = (attention_position - CinemachineCameraTarget.transform.position);
+
+                 if (rel.magnitude > 15.0f)
+                 {
+                     CinemachineCameraTarget.transform.position += rel.normalized * (rel.magnitude - 15.0f) / 15.0f;
+                 }
+
+                 CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(attention_position - CinemachineCameraTarget.transform.position);
+             }*/
+            else if (attention_timer < 120)
             {
-              
+                Vector3 LookAt = attention_sphere.position;
 
-                Quaternion qFrom = CinemachineCameraTarget.transform.rotation;
-                Quaternion qTo = Quaternion.LookRotation(attention_target.GetCenter() - CinemachineCameraTarget.transform.position);
+                Vector3 From_Horiz = CinemachineCameraTarget.transform.position- LookAt;
+                From_Horiz.y = 0.0f;
+                From_Horiz = From_Horiz.normalized;
 
-                float angle = Quaternion.Angle(qFrom, qTo);
+                Vector3 From = LookAt + new Vector3(From_Horiz.x, 0.5f, From_Horiz.z) *attention_sphere.radius*1.0f;
+                Vector3 rel = From - CinemachineCameraTarget.transform.position;
 
-                float v = Mathf.Max(angle / 15.0f, 0.2f);
+                CinemachineCameraTarget.transform.position += rel.normalized * (rel.magnitude) / 15.0f;
 
-                CinemachineCameraTarget.transform.rotation = Quaternion.RotateTowards(CinemachineCameraTarget.transform.rotation, qTo, v);
-            }
-            else if(attention_timer < 120)
-            {
-                Vector3 rel = (attention_target.GetCenter() - CinemachineCameraTarget.transform.position);
-
-                if (rel.magnitude > 15.0f)
-                {
-                    CinemachineCameraTarget.transform.position += rel.normalized * (rel.magnitude - 15.0f) / 15.0f;
-                }
-
-                CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(attention_target.GetCenter() - CinemachineCameraTarget.transform.position);
+                CinemachineCameraTarget.transform.rotation = Quaternion.LookRotation(LookAt - CinemachineCameraTarget.transform.position);
             }
             else
             {
@@ -879,8 +989,30 @@ public class WorldManager : MonoBehaviour
 
             ProcessPlayerSpawn();
 
-            ProcessSpawn(armyInstance_friend, teams[0], false);
-            ProcessSpawn(armyInstance_enemy, teams[1], false);
+            while (ProcessSpawn(armyInstance_friend, teams[0], false)) ;
+            while (ProcessSpawn(armyInstance_enemy, teams[1], false)) ;
+
+            foreach(var spawning in armyInstance_friend.spawnings_seq)
+                spawning.wait--;
+
+            foreach (var spawning in armyInstance_enemy.spawnings_seq)
+                spawning.wait--;
+
+            foreach (var group in armyInstance_friend.groups)
+            {
+                foreach(var spawning in group.spawnings)
+                {
+                    spawning.wait--;
+                }
+            }
+
+            foreach (var group in armyInstance_enemy.groups)
+            {
+                foreach (var spawning in group.spawnings)
+                {
+                    spawning.wait--;
+                }
+            }
         }
 
         prev_command = humanInput.command;
@@ -964,7 +1096,7 @@ public class WorldManager : MonoBehaviour
         HandleRobotAdd(robot);
     }
 
-    private RobotController SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team,bool boss)
+    private RobotController SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team)
     {
         //RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
        
@@ -984,13 +1116,6 @@ public class WorldManager : MonoBehaviour
 
         team.robotControllers.Add(robot);
         HandleRobotAdd(robot);
-
-        if (boss)
-        {
-            attention = true;
-            attention_timer = 0;
-            attention_target = robot;
-        }
 
         return robot;
     }
@@ -1037,5 +1162,82 @@ public class WorldManager : MonoBehaviour
         Physics.autoSimulation = true;
 
         pausing = false;
+    }
+    BoundingSphere CalculateBoundingSphere(IList<Target> targets)
+    {
+        var averagePos = CalculateAveragePosition(targets);
+
+        float maxweight = CalculateMaxWeight(targets);
+
+        var sphere = WeightedMemberBoundsForValidMember(targets[0], averagePos, maxweight);
+        for (int i = 1; i < targets.Count; ++i)
+        {
+            var s = WeightedMemberBoundsForValidMember(targets[i], averagePos, maxweight);
+            var distance = (s.position - sphere.position).magnitude + s.radius;
+            if (distance > sphere.radius)
+            {
+                // Point is outside current sphere: update
+                sphere.radius = (sphere.radius + distance) * 0.5f;
+                sphere.position = (sphere.radius * sphere.position + (distance - sphere.radius) * s.position) / distance;
+            }
+        }
+        return sphere;
+    }
+
+    static BoundingSphere WeightedMemberBoundsForValidMember(Target t, Vector3 avgPos, float maxWeight)
+    {
+        var pos = t.target == null ? avgPos : /*TargetPositionCache.GetTargetPosition(t.target)*/t.target;
+        var w = Mathf.Max(0, t.weight);
+        if (maxWeight > UnityVectorExtensions.Epsilon && w < maxWeight)
+            w /= maxWeight;
+        else
+            w = 1;
+        return new BoundingSphere(Vector3.Lerp(avgPos, pos, w), t.radius * w);
+    }
+
+    Vector3 CalculateAveragePosition(IList<Target> targets)
+    {
+        //if (m_WeightSum < UnityVectorExtensions.Epsilon)
+        //    return transform.position;
+
+        var pos = Vector3.zero;
+        var count = targets.Count;
+        float weightsum = 0.0f;
+        for (int i = 0; i < count; ++i)
+        {
+            var weight = targets[i].weight;
+            pos += targets[i].target * weight;
+            weightsum += weight;
+        }
+        if (weightsum < UnityVectorExtensions.Epsilon)
+            return transform.position;
+        else
+            return pos / weightsum;
+    }
+
+    float CalculateMaxWeight(IList<Target> targets)
+    {
+        float result = 0.0f;
+
+        foreach(var target in targets)
+        {
+            result = Mathf.Max(result, target.weight);
+        }
+        return result;
+    }
+
+    public struct Target
+    {
+        /// <summary>The target objects.  This object's position and orientation will contribute to the
+        /// group's average position and orientation, in accordance with its weight</summary>
+        [Tooltip("The target objects.  This object's position and orientation will contribute to the "
+            + "group's average position and orientation, in accordance with its weight")]
+        public Vector3 target;
+        /// <summary>How much weight to give the target when averaging.  Cannot be negative</summary>
+        [Tooltip("How much weight to give the target when averaging.  Cannot be negative")]
+        public float weight;
+        /// <summary>The radius of the target, used for calculating the bounding box.  Cannot be negative</summary>
+        [Tooltip("The radius of the target, used for calculating the bounding box.  Cannot be negative")]
+        public float radius;
     }
 }
