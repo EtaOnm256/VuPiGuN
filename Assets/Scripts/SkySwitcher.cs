@@ -5,7 +5,7 @@ using UnityEngine;
 public class SkySwitcher : MonoBehaviour
 {
     [System.Serializable]
-    class Variant
+    public class Variant
     {
         public Material skybox;
         public Color fogColor;
@@ -18,10 +18,11 @@ public class SkySwitcher : MonoBehaviour
 
     [SerializeField] List<Variant> variants;
     [SerializeField] GameState gameState;
+    [SerializeField] public int current;
 
-    private void Awake()
+    public void Apply(int skyindex)
     {
-        int idx = gameState.skyindex;
+        int idx = skyindex;
 
         if (variants[idx].skybox)
         {
@@ -43,5 +44,21 @@ public class SkySwitcher : MonoBehaviour
             }
         }
     }
- 
+
+    private void Awake()
+    {
+        if (gameState.skyindex != -1)
+        {
+            Apply(gameState.skyindex);
+        }
+        else
+        {
+            Apply(current);
+        }
+    }
+
+    void OnValidate()
+    {
+        Apply(current);
+    }
 }

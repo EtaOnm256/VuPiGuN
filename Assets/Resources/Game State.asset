@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e285c4227a62344bb4272e39a553024, type: 3}
   m_Name: Game State
   m_EditorClassIdentifier: 
-  progress: -1
-  progressStage: -1
-  skyindex: 0
+  progress: 0
+  progressStage: 1
+  skyindex: -1
   chapters:
   - name: Chapter1
     stages: 0100000002000000
@@ -30,37 +30,26 @@ MonoBehaviour:
     hasShop: 0
   journeyPlan:
   - name: Chapter1
-    index_in_chapter: 0100000000000000
+    index_in_chapter: 0000000001000000
   - name: Chapter2
     index_in_chapter: 0100000000000000
   - name: Chapter3
-    index_in_chapter: 00000000
-  destination: 6
+    index_in_chapter: 0000000001000000
+  destination: 2
   loadingDestination: 0
   subDestination_Intermission: 0
-  gold: -984
-  inventryWeapons:
-  - prefabname: SMG Variant
-    type: 0
-  - prefabname: MissilePod Variant
-    type: 1
-  - prefabname: BeamSprayCannon
-    type: 1
-  - prefabname: GatlingCannon
-    type: 0
-  inventryParts:
-  - itemFlag: 8192
-  - itemFlag: 512
-  - itemFlag: 16
-  rightWeapon_name: GatlingCannon
-  shoulderWeapon_name: BeamSprayCannon
+  gold: 3000
+  inventryWeapons: []
+  inventryParts: []
+  rightWeapon_name: 
+  shoulderWeapon_name: 
   subWeaponType: 1
-  itemFlag: 8720
+  itemFlag: 0
   player_variant: {fileID: 7622608550062222278, guid: a1824583b2b1e6f41b125baa365ae237, type: 3}
   shopWeapons:
   - prefabname: MissilePod Variant
     type: 1
   shopParts:
   - itemFlag: 256
-  army_enemy: {fileID: 11400000, guid: 147f45dfbc9b8a143a3d7d51c28bae3f, type: 2}
-  army_friend: {fileID: 11400000, guid: c779cdfa5d3ab0e4880dc45be62967c7, type: 2}
+  army_enemy: {fileID: 0}
+  army_friend: {fileID: 0}

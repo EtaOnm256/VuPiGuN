@@ -12,28 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c611b4e3fac10b48a151ec425008698, type: 3}
   m_Name: Army1_1_enemy
   m_EditorClassIdentifier: 
-  type: 0
   spawns: []
   groups:
   - variant: {fileID: 2025982511747938697, guid: 28aca36aafd6e3341bb5072edb571f60, type: 3}
-    count: 6
+    count: 3
     condition:
       type: 0
       param: 0
     reinforce_count: 0
     boss: 0
   - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
-    count: 2
+    count: 1
     condition:
       type: 0
       param: 0
     reinforce_count: 0
     boss: 0
   - variant: {fileID: 1721552399784020631, guid: c9ad67eba16ad104baece7c1a81b047a, type: 3}
-    count: 3
+    count: 1
     condition:
       type: 1
-      param: 7100
-    reinforce_count: 3
+      param: 900
+    reinforce_count: 1
     boss: 1
-  power: 7200
+  power: 1800

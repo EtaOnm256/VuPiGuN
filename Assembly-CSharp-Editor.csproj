@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\RainMaker\Editor\RainMakerEditor.cs" />
+    <Compile Include="Assets\Scripts\Editor\SkySwitcherEditor.cs" />
     <Compile Include="Assets\LightProbeHelper\Editor\LightProbeGenEditor.cs" />
     <Compile Include="Assets\StarterAssets\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
   </ItemGroup>

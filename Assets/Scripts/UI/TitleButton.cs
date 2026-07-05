@@ -52,7 +52,7 @@ public class TitleButton : MonoBehaviour
 
         }
 
-        gameState.Reset();
+        gameState.Reset_Journey();
         SceneManager.LoadScene("Intermission");
     }
 }

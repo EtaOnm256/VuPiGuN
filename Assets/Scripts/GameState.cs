@@ -69,7 +69,8 @@ public class GameState : ScriptableObject
     public Army army_enemy;
     public Army army_friend;
 
-    public void Reset()
+    [ContextMenu("Reset Journey")]
+    public void Reset_Journey()
     {
         progress =  0;
         progressStage = 1;
@@ -81,6 +82,9 @@ public class GameState : ScriptableObject
         rightWeapon_name = "";
         shoulderWeapon_name = "";
         itemFlag = 0;
+        skyindex = -1;
+        army_enemy = null;
+        army_friend = null;
 
         MakeJourneyPlan();
     }

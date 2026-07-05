@@ -3577,7 +3577,7 @@ public class RobotController : Pausable
                 result = Quaternion.LookRotation(relative, new Vector3(0.0f, 1.0f, 0.0f));
             }
 
-            if (gatling)
+            if (gatling && upperBodyState != UpperBodyState.SUBFIRE)
             {
                 result = result * Quaternion.Euler(0.0f, 20.0f, 0.0f);
             }

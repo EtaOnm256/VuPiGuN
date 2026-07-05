@@ -6,6 +6,7 @@ using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEditor.PlayerSettings;
 using static WorldManager;
@@ -23,7 +24,6 @@ public class WorldManager : MonoBehaviour
         LARGESCALE
     }
 
-    [SerializeField] SpawnType spawnType = SpawnType.NORMAL;
     public class Team
     {
         public List<RobotController> robotControllers = new List<RobotController>();
@@ -165,8 +165,15 @@ public class WorldManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        armyInstance_friend.army = gameState.army_friend;
-        armyInstance_enemy.army = gameState.army_enemy;
+        if (gameState.army_friend != null)
+            armyInstance_friend.army = gameState.army_friend;
+        else
+            armyInstance_friend.army = DetermineFriendArmyFromSceneName();
+
+        if (gameState.army_enemy != null)
+            armyInstance_enemy.army = gameState.army_enemy;
+        else
+            armyInstance_enemy.army = DetermineEnemyArmyFromSceneName();
 
         CinemachineCameraTarget = GameObject.Find("Main Camera");
 
@@ -285,7 +292,7 @@ public class WorldManager : MonoBehaviour
 
     }
 
-    void DetermineSpawnTransform(out Vector3 spawn_position,out Quaternion spawn_rotation,Team team)
+    void DetermineSpawnTransform(out Vector3 spawn_position,out Quaternion spawn_rotation,Team team,SpawnType spawnType)
     {
         if (spawnType == SpawnType.LARGESCALE)
         {
@@ -478,7 +485,7 @@ public class WorldManager : MonoBehaviour
 
             if (group_templ.condition.type != Army.UnitGroup.Condition.Type.None)
             {
-                DetermineSpawnTransform(out spawn_position_pivot, out spawn_rotation_pivot, team);
+                DetermineSpawnTransform(out spawn_position_pivot, out spawn_rotation_pivot, team,SpawnType.LARGESCALE);
             }
                         
 
@@ -526,7 +533,7 @@ public class WorldManager : MonoBehaviour
                 }
                 else
                 {
-                    DetermineSpawnTransform(out spawn_position, out spawn_rotation, team);
+                    DetermineSpawnTransform(out spawn_position, out spawn_rotation, team, SpawnType.LARGESCALE);
                 }
 
                 if (instant)
@@ -618,7 +625,7 @@ public class WorldManager : MonoBehaviour
                 Vector3 spawn_position;
                 Quaternion spawn_rotation;
 
-                DetermineSpawnTransform(out spawn_position, out spawn_rotation, team);
+                DetermineSpawnTransform(out spawn_position, out spawn_rotation, team, SpawnType.NORMAL);
 
                 Army.OneSpawn spawn = armyInst.army.spawns[armyInst.currentSpawn];
 
@@ -1239,5 +1246,38 @@ public class WorldManager : MonoBehaviour
         /// <summary>The radius of the target, used for calculating the bounding box.  Cannot be negative</summary>
         [Tooltip("The radius of the target, used for calculating the bounding box.  Cannot be negative")]
         public float radius;
+    }
+
+    Army DetermineFriendArmyFromSceneName()
+    {
+        String stageName = SceneManager.GetActiveScene().name;
+        String armyName;
+        SkySwitcher skySwitcher = GetComponent<SkySwitcher>();
+        
+        if(stageName == "TestingRoom")
+        {
+            armyName = "Test";
+        }
+        else
+        {
+            armyName = $"{stageName.Substring(5, 1)}_{skySwitcher.current}";
+        }
+        return Resources.Load<Army>($"Armys/Army{armyName}_friend");
+    }
+    Army DetermineEnemyArmyFromSceneName()
+    {
+        String stageName = SceneManager.GetActiveScene().name;
+        String armyName;
+        SkySwitcher skySwitcher = GetComponent<SkySwitcher>();
+
+        if (stageName == "TestingRoom")
+        {
+            armyName = "Test";
+        }
+        else
+        {
+            armyName = $"{stageName.Substring(5, 1)}_{skySwitcher.current}";
+        }
+        return Resources.Load<Army>($"Armys/Army{armyName}_enemy");
     }
 }

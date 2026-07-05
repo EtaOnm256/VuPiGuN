@@ -5,14 +5,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Army : ScriptableObject
 {
-    public enum Type
-    {
-        Sequence,
-        Group
-    }
-
-    public Type type;
-
     [System.Serializable]
     public class OneSpawn
     {
