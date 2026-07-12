@@ -1,7 +1,9 @@
 using Cinemachine.Utility;
+using OpenCover.Framework.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -193,15 +195,7 @@ public class WorldManager : MonoBehaviour
 
         Vector3 pos = PlacePlayerSpawn(60);
 
-        foreach (var group_tmpl in armyInstance_enemy.army.groups)
-        {
-            armyInstance_enemy.groups.Add(new ArmyInstance.Group());
 
-            if(group_tmpl.condition.type == Army.UnitGroup.Condition.Type.None)
-                armyInstance_enemy.allgroup_maxrobot += group_tmpl.count;
-        }
-
-        while (ProcessSpawn(armyInstance_friend, friend_team, true)) ;
 
         foreach (var group_tmpl in armyInstance_friend.army.groups)
         {
@@ -211,7 +205,20 @@ public class WorldManager : MonoBehaviour
                 armyInstance_friend.allgroup_maxrobot += group_tmpl.count;
         }
 
-        while (ProcessSpawn(armyInstance_enemy, enemy_team, true)) ;
+        while (ProcessSpawnSequence(armyInstance_friend, friend_team, true)) ;
+        while (ProcessSpawnGroup(armyInstance_friend, friend_team, true)) ;
+
+        foreach (var group_tmpl in armyInstance_enemy.army.groups)
+        {
+            armyInstance_enemy.groups.Add(new ArmyInstance.Group());
+
+            if (group_tmpl.condition.type == Army.UnitGroup.Condition.Type.None)
+                armyInstance_enemy.allgroup_maxrobot += group_tmpl.count;
+        }
+
+
+        while (ProcessSpawnSequence(armyInstance_enemy, enemy_team, true)) ;
+        while (ProcessSpawnGroup(armyInstance_enemy, enemy_team, true)) ;
 
         PresetCameraTransform(pos);
 
@@ -403,41 +410,47 @@ public class WorldManager : MonoBehaviour
         }
     }
 
-    bool ProcessUnitGroup(int g_idx,ArmyInstance armyInst, Team team, bool instant,ref int grouping_force_num)
+    bool ProcessUnitGroup(ArmyInstance armyInst, Team team, bool instant, ref int grouping_force_num, bool hav_condition)
     {
         bool hav_progress = false;
-
-        var group_inst = armyInst.groups[g_idx];
-        var group_templ = armyInst.army.groups[g_idx];
-
-        //Vector3 attention_inThisFrame_avgPos = Vector3.zero;
-        int attention_inThisFrame = 0;
-
         List<Target> tr = new List<Target>();
-
-        for (int i = 0; i < group_inst.spawnings.Count;)
+        int attention_inThisFrame = 0;
+        for (int g_idx = 0; g_idx < armyInst.groups.Count; g_idx++)
         {
-            if (group_inst.spawnings[i].wait <= 0)
+            var group_templ = armyInst.army.groups[g_idx];
+
+            if ((group_templ.condition.type != Army.UnitGroup.Condition.Type.None) != hav_condition)
+                continue;
+
+            var group_inst = armyInst.groups[g_idx];
+
+            //Vector3 attention_inThisFrame_avgPos = Vector3.zero;
+         
+
+
+            for (int i = 0; i < group_inst.spawnings.Count;)
             {
-                RobotController robot = SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team);
-
-                group_inst.controllers.Add(robot);
-
-                if (group_inst.spawnings[i].boss)
+                if (group_inst.spawnings[i].wait <= 0)
                 {
-                    attention_inThisFrame++;
-                    //attention_inThisFrame_avgPos += robot.GetCenter();
+                    RobotController robot = SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team);
 
-                    tr.Add(new Target { target = robot.GetCenter(), radius = 7.0f, weight = 1.0f });
+                    group_inst.controllers.Add(robot);
+
+                    if (group_inst.spawnings[i].boss)
+                    {
+                        attention_inThisFrame++;
+                        //attention_inThisFrame_avgPos += robot.GetCenter();
+
+                        tr.Add(new Target { target = robot.GetCenter(), radius = 7.0f, weight = 1.0f });
+                    }
+
+                    group_inst.spawnings.RemoveAt(i);
                 }
-
-                group_inst.spawnings.RemoveAt(i);
+                else
+                    i++;
             }
-            else
-                i++;
         }
 
-      
 
         if (attention_inThisFrame > 0)
         {
@@ -446,111 +459,140 @@ public class WorldManager : MonoBehaviour
             attention_sphere = CalculateBoundingSphere(tr);
         }
 
-      
+        List<(Army.UnitGroup,ArmyInstance.Group)> spawn_determinePosRot = new List<(Army.UnitGroup, ArmyInstance.Group)> ();
 
-        int spawn_count;
-
-        spawn_count = group_templ.count - (group_inst.controllers.Count + group_inst.spawnings.Count);
-
-        if (spawn_count > 0)
+        for (int g_idx = 0; g_idx < armyInst.groups.Count; g_idx++)
         {
-            if (group_templ.reinforce_count > 0)
+            var group_templ = armyInst.army.groups[g_idx];
+
+            if ((group_templ.condition.type != Army.UnitGroup.Condition.Type.None) != hav_condition)
+                continue;
+
+            var group_inst = armyInst.groups[g_idx];
+            int spawn_count;
+
+            spawn_count = group_templ.count - (group_inst.controllers.Count + group_inst.spawnings.Count);
+
+            if (spawn_count > 0)
             {
-                spawn_count = System.Math.Min(spawn_count, group_templ.reinforce_count - group_inst.reinforce_count);
+                if (group_templ.reinforce_count > 0)
+                {
+                    spawn_count = System.Math.Min(spawn_count, group_templ.reinforce_count - group_inst.reinforce_count);
+
+                    if (spawn_count <= 0)
+                        continue;
+                }
+
+                switch (group_templ.condition.type)
+                {
+                    case Army.UnitGroup.Condition.Type.None:
+                        //増援がいる分通常戦力の補充を減らす
+                        spawn_count = System.Math.Min(spawn_count, armyInst.allgroup_maxrobot - grouping_force_num);
+                        break;
+                    case Army.UnitGroup.Condition.Type.PowerLessThan:
+                        //通常戦力が最大いても増援は出す
+                        if (team.power >= group_templ.condition.param)
+                            spawn_count = 0;
+                        break;
+                    default:
+                        throw new System.NotSupportedException();
+                }
 
                 if (spawn_count <= 0)
-                    return false;
+                    continue;
+
+                for (int i = 0; i < spawn_count; i++)
+                {
+                    if (!hav_condition)
+                    {
+                        Vector3 spawn_position;
+                        Quaternion spawn_rotation;
+
+                        DetermineSpawnTransform(out spawn_position, out spawn_rotation, team, SpawnType.LARGESCALE);
+
+                        if (instant)
+                            group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team));
+                        else
+                            group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
+                    }
+                    else
+                        spawn_determinePosRot.Add((group_templ,group_inst));
+
+                    hav_progress = true;
+                    group_inst.reinforce_count++;
+                    grouping_force_num++;
+                }
             }
+        }
 
-            switch (group_templ.condition.type)
-            {
-                case Army.UnitGroup.Condition.Type.None:
-                    //増援がいる分通常戦力の補充を減らす
-                    spawn_count = System.Math.Min(spawn_count, armyInst.allgroup_maxrobot - grouping_force_num);
-                    break;
-                case Army.UnitGroup.Condition.Type.PowerLessThan:
-                    //通常戦力が最大いても増援は出す
-                    if (team.power >= group_templ.condition.param)
-                        spawn_count = 0;
-                    break;
-                default:
-                    throw new System.NotSupportedException();
-            }
-
-            if (spawn_count <= 0)
-                return false;
-
+        if (hav_condition && spawn_determinePosRot.Count > 0)
+        {
             Vector3 spawn_position_pivot = Vector3.zero;
             Quaternion spawn_rotation_pivot = Quaternion.identity;
 
-            if (group_templ.condition.type != Army.UnitGroup.Condition.Type.None)
-            {
-                DetermineSpawnTransform(out spawn_position_pivot, out spawn_rotation_pivot, team,SpawnType.LARGESCALE);
-            }
-                        
+            DetermineSpawnTransform(out spawn_position_pivot, out spawn_rotation_pivot, team, SpawnType.LARGESCALE);
 
-            for (int i = 0; i < spawn_count; i++)
+            for (int i=0;i< spawn_determinePosRot.Count;i++)
             {
+                var determinePosRot = spawn_determinePosRot[i];
+
+                var group_templ = determinePosRot.Item1;
+                var group_inst = determinePosRot.Item2;
+
                 Vector3 spawn_position;
                 Quaternion spawn_rotation;
 
-                if (group_templ.condition.type != Army.UnitGroup.Condition.Type.None)
-                {
-                    float distance = UnityEngine.Random.value * 25.0f;
-                    spawn_rotation = spawn_rotation_pivot;
+                
+                spawn_rotation = spawn_rotation_pivot;
 
-                    while (true)
+                float distance = spawn_determinePosRot.Count == 1 ? 0.0f : 10.0f;
+                Vector3 pos = spawn_position_pivot + Quaternion.Euler(0.0f, 360.0f*i/spawn_determinePosRot.Count, 0.0f) * Vector3.forward * distance;
+
+                while (true)
+                {
+                
+                    RaycastHit raycastHit;
+
+                    if (pos.x >= 150.0f)
                     {
-                        Vector3 pos = spawn_position_pivot + Quaternion.Euler(0.0f, UnityEngine.Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
-                        RaycastHit raycastHit;
-                        
-                        if (pos.x >= 150.0f)
-                        {
-                            pos.x -= distance * 2;
-                        }
-                        else if (pos.x <= -150.0f)
-                        {
-                            pos.x += distance * 2f;
-                        }
-
-                        if (pos.z >= 150.0f)
-                        {
-                            pos.z -= distance * 2;
-                        }
-                        else if (pos.z <= -150.0f)
-                        {
-                            pos.z += distance * 2;
-                        }
-
-                        Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
-
-                        if (raycastHit.collider.gameObject.layer != 7)
-                        {
-                            spawn_position = raycastHit.point;
-                            break;
-                        }
+                        pos.x -= distance * 2;
                     }
-                }
-                else
-                {
-                    DetermineSpawnTransform(out spawn_position, out spawn_rotation, team, SpawnType.LARGESCALE);
+                    else if (pos.x <= -150.0f)
+                    {
+                        pos.x += distance * 2f;
+                    }
+
+                    if (pos.z >= 150.0f)
+                    {
+                        pos.z -= distance * 2;
+                    }
+                    else if (pos.z <= -150.0f)
+                    {
+                        pos.z += distance * 2;
+                    }
+
+                    Physics.Raycast(pos + new Vector3(0.0f, 500.0f, 0.0f), -Vector3.up, out raycastHit, float.MaxValue, WorldManager.layerPattern_Building);
+
+                    if (raycastHit.collider.gameObject.layer != 7)
+                    {
+                        spawn_position = raycastHit.point;
+                        break;
+                    }
+
+                    distance = UnityEngine.Random.Range(10.0f, 20.0f);
+                    pos = spawn_position_pivot + Quaternion.Euler(0.0f, UnityEngine.Random.value * 360.0f, 0.0f) * Vector3.forward * distance;
                 }
 
                 if (instant)
                     group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team));
                 else
                     group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
-
-                hav_progress = true;
-                group_inst.reinforce_count++;
-                grouping_force_num++;
             }
         }
-
         return hav_progress;
     }
 
-    bool ProcessSpawn(ArmyInstance armyInst,Team team,bool instant)
+    bool ProcessSpawnSequence(ArmyInstance armyInst,Team team,bool instant)
     {
         bool hav_progress = false;
 
@@ -648,29 +690,27 @@ public class WorldManager : MonoBehaviour
             }
         }
 
-        // グループ処理
+        return hav_progress;
+    }
 
+    bool ProcessSpawnGroup(ArmyInstance armyInst, Team team, bool instant)
+    {
+        // グループ処理
+        bool hav_progress = false;
 
         // 最大数を無視して増援は出るけど、増援がいる分通常戦力の補充を減らすためのカウンタ
         int grouping_force_num = 0;
 
         // 中で計算しなおすのがちょっと嫌（今更だけど）、ループ内でスポーンしたら足してる
-        foreach(var group_inst in armyInst.groups)
+        foreach (var group_inst in armyInst.groups)
         {
             grouping_force_num += group_inst.controllers.Count + group_inst.spawnings.Count;
         }
 
-        for (int g_idx = 0; g_idx < armyInst.groups.Count; g_idx++)
-        {
-            if (armyInst.army.groups[g_idx].condition.type != Army.UnitGroup.Condition.Type.None)
-                hav_progress |= ProcessUnitGroup(g_idx, armyInst, team, instant, ref grouping_force_num);
-        }
 
-        for (int g_idx = 0; g_idx < armyInst.groups.Count; g_idx++)
-        {
-            if (armyInst.army.groups[g_idx].condition.type == Army.UnitGroup.Condition.Type.None)
-                hav_progress |= ProcessUnitGroup(g_idx, armyInst, team, instant, ref grouping_force_num);
-        }
+        hav_progress |= ProcessUnitGroup(armyInst, team, instant, ref grouping_force_num,true);
+        
+        hav_progress |= ProcessUnitGroup(armyInst, team, instant, ref grouping_force_num,false);
 
         return hav_progress;
     }
@@ -996,10 +1036,12 @@ public class WorldManager : MonoBehaviour
 
             ProcessPlayerSpawn();
 
-            while (ProcessSpawn(armyInstance_friend, teams[0], false)) ;
-            while (ProcessSpawn(armyInstance_enemy, teams[1], false)) ;
+            while (ProcessSpawnSequence(armyInstance_friend, teams[0], false)) ;
+            while (ProcessSpawnGroup(armyInstance_friend, teams[0], false)) ;
+            while (ProcessSpawnSequence(armyInstance_enemy, teams[1], false)) ;
+            while (ProcessSpawnGroup(armyInstance_enemy, teams[1], false)) ;
 
-            foreach(var spawning in armyInstance_friend.spawnings_seq)
+            foreach (var spawning in armyInstance_friend.spawnings_seq)
                 spawning.wait--;
 
             foreach (var spawning in armyInstance_enemy.spawnings_seq)
@@ -1034,7 +1076,12 @@ public class WorldManager : MonoBehaviour
         if (!testingroom)
         {
             if (robotController.robotParameter.Cost < 0)
-                robotController.team.power = System.Math.Max(0, robotController.team.power - armyInstance_friend.army.power / 3);
+            {
+                if(armyInstance_friend.allgroup_maxrobot == 0)
+                    robotController.team.power = System.Math.Max(0, robotController.team.power - (armyInstance_friend.army.power / 3));
+                else
+                    robotController.team.power = System.Math.Max(0, robotController.team.power - (armyInstance_friend.army.power  * 2 / armyInstance_friend.allgroup_maxrobot / 3));
+            }
             else
                 robotController.team.power = System.Math.Max(0, robotController.team.power - robotController.robotParameter.Cost);
 
@@ -1258,6 +1305,10 @@ public class WorldManager : MonoBehaviour
         {
             armyName = "Test";
         }
+        else if(skySwitcher == null)
+        {
+            armyName = $"{stageName.Substring(5, 1)}_0";
+        }
         else
         {
             armyName = $"{stageName.Substring(5, 1)}_{skySwitcher.current}";
@@ -1273,6 +1324,10 @@ public class WorldManager : MonoBehaviour
         if (stageName == "TestingRoom")
         {
             armyName = "Test";
+        }
+        else if (skySwitcher == null)
+        {
+            armyName = $"{stageName.Substring(5, 1)}_0";
         }
         else
         {

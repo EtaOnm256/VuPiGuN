@@ -30,7 +30,7 @@ MonoBehaviour:
     hasShop: 0
   journeyPlan:
   - name: Chapter1
-    index_in_chapter: 0000000001000000
+    index_in_chapter: 0100000000000000
   - name: Chapter2
     index_in_chapter: 0100000000000000
   - name: Chapter3
@@ -43,13 +43,22 @@ MonoBehaviour:
   inventryParts: []
   rightWeapon_name: 
   shoulderWeapon_name: 
-  subWeaponType: 1
+  subWeaponType: 2
   itemFlag: 0
-  player_variant: {fileID: 7622608550062222278, guid: a1824583b2b1e6f41b125baa365ae237, type: 3}
+  player_variant: {fileID: 6538551618372168848, guid: 9435b83fcb0867d448fcbad779200e27, type: 3}
   shopWeapons:
-  - prefabname: MissilePod Variant
+  - prefabname: BeamLauncher
+    type: 0
+  - prefabname: BeamSprayCannon
     type: 1
+  - prefabname: SolidRifle Variant
+    type: 0
   shopParts:
-  - itemFlag: 256
+  - itemFlag: 1
+  - itemFlag: 64
+  - itemFlag: 2048
+  - itemFlag: 16384
+  - itemFlag: 65536
+  - itemFlag: 4194304
   army_enemy: {fileID: 0}
   army_friend: {fileID: 0}

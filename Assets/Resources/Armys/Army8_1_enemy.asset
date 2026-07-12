@@ -42,4 +42,25 @@ MonoBehaviour:
       param: 0
     reinforce_count: 0
     boss: 0
-  power: 3000
+  - variant: {fileID: 2102338208687523016, guid: f25f3cf33706fff46a9d17f0bc11f61e, type: 3}
+    count: 1
+    condition:
+      type: 1
+      param: 1500
+    reinforce_count: 1
+    boss: 1
+  - variant: {fileID: 3234803710502351383, guid: a594acf0c0739c84cb93029cad6a23fc, type: 3}
+    count: 1
+    condition:
+      type: 1
+      param: 1500
+    reinforce_count: 1
+    boss: 1
+  - variant: {fileID: 5169161122506380955, guid: 3f1bfddb612ba1842a3222075ce586e2, type: 3}
+    count: 1
+    condition:
+      type: 1
+      param: 1500
+    reinforce_count: 1
+    boss: 1
+  power: 1600

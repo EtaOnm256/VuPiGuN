@@ -12,13 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c611b4e3fac10b48a151ec425008698, type: 3}
   m_Name: Army4_0_friend
   m_EditorClassIdentifier: 
-  spawns: []
-  groups:
+  spawns:
   - variant: {fileID: 1721552399784020631, guid: 86fcadc74dd6c3a44bdcc5f1f91770cd, type: 3}
-    count: 8
-    condition:
-      type: 0
-      param: 0
-    reinforce_count: 0
+    squadCount: 2
+    loop: 1
+    burst: 0
     boss: 0
-  power: 8800
+  power: 1200

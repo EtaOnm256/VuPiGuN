@@ -28,4 +28,11 @@ MonoBehaviour:
       param: 0
     reinforce_count: 0
     boss: 0
+  - variant: {fileID: 2102338208687523016, guid: d74d527be600e594da089655448f9ffb, type: 3}
+    count: 1
+    condition:
+      type: 1
+      param: 2100
+    reinforce_count: 1
+    boss: 1
   power: 2200

@@ -3243,6 +3243,7 @@ MonoBehaviour:
     objects:
     - {fileID: 727476092}
   gameState: {fileID: 11400000, guid: c86ac7e4de34aea4aa0c382ffee862c3, type: 2}
+  current: 1
 --- !u!1 &2118298625
 GameObject:
   m_ObjectHideFlags: 0

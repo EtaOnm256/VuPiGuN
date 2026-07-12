@@ -15,17 +15,24 @@ MonoBehaviour:
   spawns: []
   groups:
   - variant: {fileID: 2102338208687523016, guid: 2d01e1233d920fd4894c79640c5a526a, type: 3}
-    count: 2
+    count: 8
     condition:
       type: 0
       param: 0
     reinforce_count: 0
     boss: 0
   - variant: {fileID: 1721552399784020631, guid: c6e163194eeb75c4fa52cc27bf4971db, type: 3}
-    count: 2
+    count: 0
     condition:
       type: 0
       param: 0
     reinforce_count: 0
     boss: 0
-  power: 2200
+  - variant: {fileID: 2102338208687523016, guid: f25f3cf33706fff46a9d17f0bc11f61e, type: 3}
+    count: 1
+    condition:
+      type: 1
+      param: 2500
+    reinforce_count: 1
+    boss: 1
+  power: 5000

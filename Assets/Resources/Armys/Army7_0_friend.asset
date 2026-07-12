@@ -15,10 +15,10 @@ MonoBehaviour:
   spawns: []
   groups:
   - variant: {fileID: 1721552399784020631, guid: 86fcadc74dd6c3a44bdcc5f1f91770cd, type: 3}
-    count: 4
+    count: 3
     condition:
       type: 0
       param: 0
     reinforce_count: 0
     boss: 0
-  power: 3500
+  power: 3600
