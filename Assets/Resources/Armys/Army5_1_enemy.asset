@@ -32,7 +32,7 @@ MonoBehaviour:
     count: 1
     condition:
       type: 1
-      param: 2500
+      param: 2200
     reinforce_count: 1
     boss: 1
-  power: 5000
+  power: 4400

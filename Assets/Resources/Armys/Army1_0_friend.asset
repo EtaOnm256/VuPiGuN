@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawns:
   - variant: {fileID: 2025982511747938697, guid: 94647c336c6be5c43b5399d181bb9e80, type: 3}
-    squadCount: 2
+    squadCount: 3
     loop: 1
     burst: 0
     boss: 0
   groups: []
-  power: 740
+  power: 1500
