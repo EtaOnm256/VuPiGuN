@@ -50,9 +50,6 @@ public class RobotAI_Leopard : RobotAI_Base
     //public float movedirection_range = 0.0f;
     public float movedirection_range = 180.0f;
 
-    //public float lock_range = 75.0f;
-    public float lock_range = 150.0f;
-
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
@@ -60,7 +57,18 @@ public class RobotAI_Leopard : RobotAI_Base
 
         float mindist = float.MaxValue;
         Vector2 stepMove;
-        TargetNearest(null);
+
+        TargetNearest_OnePass(null,false,true);
+
+        if(current_target == null)
+        {
+            TargetNearest_OnePass(null, true, false);
+        }
+
+        if (current_target == null)
+        {
+            TargetNearest_OnePass(null, false, false);
+        }
 
         if (current_target != null && current_target)
             mindist = (current_target.GetCenter() - robotController.GetCenter()).magnitude;

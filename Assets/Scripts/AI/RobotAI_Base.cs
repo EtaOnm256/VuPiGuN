@@ -7,6 +7,7 @@ public class RobotAI_Base : InputBase
     protected RobotController robotController = null;
     protected bool prev_dodge = false;
     protected Vector2 prev_stepMove = Vector2.zero;
+    [SerializeField] protected float lock_range = 150.0f;
 
     void Awake()
     {
@@ -94,6 +95,15 @@ public class RobotAI_Base : InputBase
                     {
                         TargetNearest(null);
                     }
+                    else
+                    {
+                        float mindist = (current_target.GetCenter() - robotController.GetCenter()).magnitude;
+
+                        if(mindist > lock_range)
+                        {
+                            TargetNearest(null);
+                        }
+                    }
                 }
                 break;
             case WorldManager.OrderToAI.FOCUS:
@@ -130,7 +140,7 @@ public class RobotAI_Base : InputBase
         }
     }
 
-    protected void TargetNearest(RobotController exclude)
+    protected void TargetNearest_OnePass(RobotController exclude,bool duel,bool onlynear)
     {
         float mindist = float.MaxValue;
 
@@ -144,7 +154,13 @@ public class RobotAI_Base : InputBase
                 if (robot == exclude)
                     continue;
 
+                if (duel && robot.lockingEnemys.Count > 1)
+                    continue;
+
                 float dist = (robotController.GetCenter() - robot.GetCenter()).magnitude;
+
+                if (onlynear && dist > lock_range)
+                    continue;
 
                 if (dist < mindist)
                 {
@@ -153,6 +169,36 @@ public class RobotAI_Base : InputBase
                 }
             }
 
+        }
+    }
+
+    protected void TargetNearest_OnlyNear(RobotController exclude)
+    {
+        TargetNearest_OnePass(exclude, true, true);
+
+        if (current_target == null)
+        {
+            TargetNearest_OnePass(exclude, false, true);
+        }
+    }
+
+    protected void TargetNearest(RobotController exclude)
+    {
+        TargetNearest_OnePass(exclude, true,true);
+
+        if (current_target == null)
+        {
+            TargetNearest_OnePass(exclude, false, true);
+        }
+
+        if (current_target == null)
+        {
+            TargetNearest_OnePass(exclude, true, false);
+        }
+
+        if (current_target == null)
+        {
+            TargetNearest_OnePass(exclude, false, false);
         }
     }
 

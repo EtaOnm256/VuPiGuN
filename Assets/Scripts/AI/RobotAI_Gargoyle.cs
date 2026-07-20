@@ -45,9 +45,6 @@ public class RobotAI_Gargoyle : RobotAI_Base
 
     public float movedirection_range = 135.0f;
 
-    //public float lock_range = 75.0f;
-    public float lock_range = 150.0f;
-
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {

@@ -58,8 +58,6 @@ public class RobotAI_Medium : RobotAI_Base
 
     //public float movedirection_range = 180.0f;
 
-    public float lock_range = 75.0f;
-
     enum SubweaponState
     {
         READY,
