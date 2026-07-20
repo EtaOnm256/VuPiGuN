@@ -74,6 +74,8 @@ public class RobotAI_Base : InputBase
 
     [SerializeField] protected AI_Type type = AI_Type.NORMAL;
 
+    int changetarget_wait = 0;
+
     protected void DetermineTarget()
     {
         switch (robotController.team.orderToAI)
@@ -99,11 +101,27 @@ public class RobotAI_Base : InputBase
                     {
                         float mindist = (current_target.GetCenter() - robotController.GetCenter()).magnitude;
 
-                        if(mindist > lock_range)
+                        if (mindist > lock_range)
                         {
                             TargetNearest(null);
                         }
+                        else if (current_target.lockingEnemys.Count > 1 && current_target.Target_Robot != robotController)
+                        { 
+                            int change_judge = changetarget_wait + Random.Range(0, 60);
+
+                            if (change_judge >= 120)
+                            {
+                                TargetNearest_OnePass(null, true, false);
+                                changetarget_wait = 0;
+                            }
+                            else changetarget_wait++;
+                        }
+                        else
+                        {
+                            changetarget_wait = 0;
+                        }
                     }
+                        
                 }
                 break;
             case WorldManager.OrderToAI.FOCUS:
