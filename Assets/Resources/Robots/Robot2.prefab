@@ -23,13 +23,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1333666362038269751}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: -0.00662, y: 0.001540003, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2513129377539528410}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -180, y: 180, z: 0}
 --- !u!1 &7067554942869571916
 GameObject:
@@ -54,20 +54,20 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7067554942869571916}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0.00662, y: 0.001540003, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2513129377539528410}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -180, y: 180, z: 0}
 --- !u!1001 &672475924169244797
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 2513129377539528410}
     m_Modifications:
     - target: {fileID: 8221035263706533060, guid: 1b49c59f5b0a5444eb4b4137e4062fda, type: 3}
@@ -123,7 +123,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b49c59f5b0a5444eb4b4137e4062fda, type: 3}
 --- !u!114 &177410597451924033 stripped
 MonoBehaviour:
@@ -146,7 +148,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 2513129377539528410}
     m_Modifications:
     - target: {fileID: 8221035263706533060, guid: 1b49c59f5b0a5444eb4b4137e4062fda, type: 3}
@@ -202,7 +204,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b49c59f5b0a5444eb4b4137e4062fda, type: 3}
 --- !u!114 &2859552691806639914 stripped
 MonoBehaviour:
@@ -225,7 +229,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5774282186433520171, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
@@ -310,7 +314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.MaxHP
-      value: 700
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: thrusters.Array.size
@@ -353,6 +357,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1333666362038269751}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       insertIndex: -1
@@ -366,6 +371,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9018510432452168786}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6586953858126985361, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7492298820299591746}
   m_SourcePrefab: {fileID: 100100000, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
 --- !u!4 &2513129377539528410 stripped
 Transform:
@@ -398,15 +407,20 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
+  sprint_once: 0
   fire: 0
+  fire_forcedispatch: 0
   down: 0
   slash: 0
+  slash_forcedispatch: 0
   subfire: 0
   lockswitch: 0
   ringMenuDir: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
+  lock_range: 100
+  type: 0
   ascend_margin: 0
   fire_wait: 0
   fire_prepare: 15
@@ -415,4 +429,3 @@ MonoBehaviour:
   jumpinfight_reload: 0
   state: 0
   movedirection_range: 135
-  lock_range: 100

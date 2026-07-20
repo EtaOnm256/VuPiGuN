@@ -5,7 +5,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 6599719592761147466}
     m_Modifications:
     - target: {fileID: 8221035263706533060, guid: 1b49c59f5b0a5444eb4b4137e4062fda, type: 3}
@@ -69,7 +69,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b49c59f5b0a5444eb4b4137e4062fda, type: 3}
 --- !u!114 &294073070310815893 stripped
 MonoBehaviour:
@@ -92,7 +94,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1001536712538581167, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
@@ -185,7 +187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.MaxHP
-      value: 600
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 8480790362381077383, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       propertyPath: robotParameter.itemFlag
@@ -204,6 +206,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       insertIndex: -1
@@ -211,6 +214,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9016603721597793900}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6586953858126985361, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3443801055118874746}
   m_SourcePrefab: {fileID: 100100000, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
 --- !u!1 &5719352722978381492 stripped
 GameObject:
@@ -245,17 +252,20 @@ MonoBehaviour:
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
+  lock_range: 75
   type: 1
   ascend_margin: 0
-  fire_wait: 0
-  fire_prepare: 15
-  infight_reload: 0
-  infight_wait: 0
-  jumpinfight_reload: 0
+  attack_reload: 0
+  fire_wait_min: 60
+  fire_wait_max: 120
+  attack_prepare: 15
+  fire_prepare_max: 15
+  jumpslash_reload: 0
+  dashslash_reload: 0
+  horizon_reload: 0
   ground_step_remain: 2
   state: 0
-  movedirection_range: 90
-  lock_range: 75
+  subweaponState: 0
 --- !u!4 &6599719592761147466 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5737688583317284463, guid: 6b8ac32cc2acfe34d85479014534d652, type: 3}
@@ -266,7 +276,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 6599719592761147466}
     m_Modifications:
     - target: {fileID: 8221035263706533060, guid: 1b49c59f5b0a5444eb4b4137e4062fda, type: 3}
@@ -330,7 +340,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b49c59f5b0a5444eb4b4137e4062fda, type: 3}
 --- !u!4 &3649623986204154961 stripped
 Transform:
