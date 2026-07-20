@@ -35,8 +35,15 @@ MonoBehaviour:
       param: 0
     reinforce_count: 0
     boss: 0
+  - variant: {fileID: 3234803710502351383, guid: a99d7ce550f40384997a4abe7e9cc359, type: 3}
+    count: 1
+    condition:
+      type: 0
+      param: 0
+    reinforce_count: 0
+    boss: 0
   - variant: {fileID: 6959348128572115217, guid: d25a48c4cd6059140b71a69e00a90250, type: 3}
-    count: 2
+    count: 1
     condition:
       type: 0
       param: 0
@@ -46,21 +53,21 @@ MonoBehaviour:
     count: 1
     condition:
       type: 1
-      param: 1500
+      param: 2500
     reinforce_count: 1
     boss: 1
   - variant: {fileID: 3234803710502351383, guid: a594acf0c0739c84cb93029cad6a23fc, type: 3}
     count: 1
     condition:
       type: 1
-      param: 1500
+      param: 2500
     reinforce_count: 1
     boss: 1
   - variant: {fileID: 5169161122506380955, guid: 3f1bfddb612ba1842a3222075ce586e2, type: 3}
     count: 1
     condition:
       type: 1
-      param: 1500
+      param: 2500
     reinforce_count: 1
     boss: 1
-  power: 1600
+  power: 5000
