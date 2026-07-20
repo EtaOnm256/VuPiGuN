@@ -100,18 +100,14 @@ public class RobotAI_Base : InputBase
                     else
                     {
                         float mindist = (current_target.GetCenter() - robotController.GetCenter()).magnitude;
-
-                        if (mindist > lock_range)
+                        
+                        if (mindist > lock_range || (current_target.lockingEnemys.Count > 1 && current_target.Target_Robot != robotController))
                         {
-                            TargetNearest(null);
-                        }
-                        else if (current_target.lockingEnemys.Count > 1 && current_target.Target_Robot != robotController)
-                        { 
                             int change_judge = changetarget_wait + Random.Range(0, 60);
 
                             if (change_judge >= 120)
                             {
-                                TargetNearest_OnePass(null, true, false);
+                                TargetNearest(null);
                                 changetarget_wait = 0;
                             }
                             else changetarget_wait++;
@@ -154,11 +150,18 @@ public class RobotAI_Base : InputBase
         if (robotController.team.orderToAI == WorldManager.OrderToAI.NORMAL)
         {
             if (dealer != null && dealer && dealer.team != robotController.team)
-                current_target = dealer;
+            {
+                float mindist = (dealer.GetCenter() - robotController.GetCenter()).magnitude;
+
+                // ƒ^ƒQ•Ï‚¦”»’è‚É“ü‚é‚æ‚¤‚È‘ŠŽè‚É‚Í”í’e‚µ‚Ä‚à•Ï‚¦‚È‚¢B
+                // iƒsƒ“ƒ|ƒ“‘ÎôB‰“‹——£‚©‚ç‚ÌUŒ‚‚É–³’ïR‚É‚È‚Á‚¿‚á‚¤‚Ì‚Å‚È‚ñ‚©‘Îô‚¢‚é‚©‚àj
+                if (!(mindist > lock_range || (current_target.lockingEnemys.Count > 1 && current_target.Target_Robot != robotController)))
+                    current_target = dealer;
+            }
         }
     }
 
-    protected void TargetNearest_OnePass(RobotController exclude,bool duel,bool onlynear)
+    protected void TargetNearest_OnePass(RobotController exclude,bool duel)
     {
         float mindist = float.MaxValue;
 
@@ -172,13 +175,10 @@ public class RobotAI_Base : InputBase
                 if (robot == exclude)
                     continue;
 
-                if (duel && robot.lockingEnemys.Count > 1)
+                if (duel && robot.lockingEnemys.Count > 1 && robot.Target_Robot != robotController)
                     continue;
 
                 float dist = (robotController.GetCenter() - robot.GetCenter()).magnitude;
-
-                if (onlynear && dist > lock_range)
-                    continue;
 
                 if (dist < mindist)
                 {
@@ -190,33 +190,13 @@ public class RobotAI_Base : InputBase
         }
     }
 
-    protected void TargetNearest_OnlyNear(RobotController exclude)
-    {
-        TargetNearest_OnePass(exclude, true, true);
-
-        if (current_target == null)
-        {
-            TargetNearest_OnePass(exclude, false, true);
-        }
-    }
-
     protected void TargetNearest(RobotController exclude)
     {
-        TargetNearest_OnePass(exclude, true,true);
+        TargetNearest_OnePass(exclude, true);
 
         if (current_target == null)
         {
-            TargetNearest_OnePass(exclude, false, true);
-        }
-
-        if (current_target == null)
-        {
-            TargetNearest_OnePass(exclude, true, false);
-        }
-
-        if (current_target == null)
-        {
-            TargetNearest_OnePass(exclude, false, false);
+            TargetNearest_OnePass(exclude, false);
         }
     }
 

@@ -58,18 +58,8 @@ public class RobotAI_Leopard : RobotAI_Base
         float mindist = float.MaxValue;
         Vector2 stepMove;
 
-        TargetNearest_OnePass(null,false,true);
-
-        if(current_target == null)
-        {
-            TargetNearest_OnePass(null, true, false);
-        }
-
-        if (current_target == null)
-        {
-            TargetNearest_OnePass(null, false, false);
-        }
-
+        DetermineTarget();
+        
         if (current_target != null && current_target)
             mindist = (current_target.GetCenter() - robotController.GetCenter()).magnitude;
 
