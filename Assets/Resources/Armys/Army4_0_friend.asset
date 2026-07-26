@@ -18,4 +18,5 @@ MonoBehaviour:
     loop: 1
     burst: 0
     boss: 0
-  power: 1200
+  groups: []
+  power: 2200
