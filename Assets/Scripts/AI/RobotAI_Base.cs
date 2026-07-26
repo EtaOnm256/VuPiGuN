@@ -284,7 +284,7 @@ public class RobotAI_Base : InputBase
 
                 float dist = (robotController.GetCenter() - projectile.position).magnitude;
 
-                if (Vector3.Dot((robotController.GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
+                if (Vector3.Dot((robotController.GetCenter() - projectile.position).normalized, projectile.direction.normalized) > Mathf.Cos(Mathf.PI / 4)
                     && (shift < 3.0f || projectile.trajectory == Weapon.Trajectory.Curved)
                     && dist / projectile.speed < evade_thresh
                     )
@@ -292,7 +292,7 @@ public class RobotAI_Base : InputBase
                     dodge = true;
 
                     if (!prev_dodge)
-                        prev_stepMove = ThreatPosToStepMove_Strafe(projectile.transform.position, targetQ);
+                        prev_stepMove = ThreatPosToStepMove_Strafe(projectile.position, targetQ);
                     
                     stepMove = prev_stepMove;
 

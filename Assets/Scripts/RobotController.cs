@@ -1681,7 +1681,7 @@ public class RobotController : Pausable
                             {
                                 Vector3 rel = transform_tmp.InverseTransformPoint(projectile.position);
 
-                                if(Vector3.Dot((GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) < 0.0f)
+                                if(Vector3.Dot((GetCenter() - projectile.position).normalized, projectile.direction.normalized) < 0.0f)
                                     continue;
 
                                 if (Mathf.Abs(rel.x) > Mathf.Abs(rel.z))
