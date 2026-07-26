@@ -566,6 +566,11 @@ public class RobotController : Pausable
     Image alertImage_left;
     Image alertImage_right;
 
+    Image dangerImage_forward;
+    Image dangerImage_back;
+    Image dangerImage_left;
+    Image dangerImage_right;
+
     GameObject ringMenu;
 
     Image ringMenu_Up_Cursor;
@@ -1078,6 +1083,11 @@ public class RobotController : Pausable
             alertImage_back = HUDCanvas.gameObject.transform.Find("Alert_Back").GetComponent<Image>();
             alertImage_left = HUDCanvas.gameObject.transform.Find("Alert_Left").GetComponent<Image>();
             alertImage_right = HUDCanvas.gameObject.transform.Find("Alert_Right").GetComponent<Image>();
+
+            dangerImage_forward = HUDCanvas.gameObject.transform.Find("Danger_Forward").GetComponent<Image>();
+            dangerImage_back = HUDCanvas.gameObject.transform.Find("Danger_Back").GetComponent<Image>();
+            dangerImage_left = HUDCanvas.gameObject.transform.Find("Danger_Left").GetComponent<Image>();
+            dangerImage_right = HUDCanvas.gameObject.transform.Find("Danger_Right").GetComponent<Image>();
 
             uIController_Overlay.origin = this;
 
@@ -1625,6 +1635,11 @@ public class RobotController : Pausable
                     alertImage_forward.enabled = false;
                     alertImage_back.enabled = false;
 
+                    dangerImage_right.enabled = false;
+                    dangerImage_left.enabled = false;
+                    dangerImage_forward.enabled = false;
+                    dangerImage_back.enabled = false;
+
                     foreach (var lockingEnemy in lockingEnemys)
                     {
                         if (lockingEnemy)
@@ -1648,6 +1663,53 @@ public class RobotController : Pausable
                                 }
                                 else
                                     alertImage_back.enabled = true;
+                            }
+                        }
+                    }
+
+                    foreach (var team in WorldManager.current_instance.teams)
+                    {
+                        if (team == this.team)
+                            continue;
+
+                        foreach (var projectile in team.projectiles)
+                        {
+                            if (projectile.dead)
+                                continue;
+
+                            if (projectile.target==this)
+                            {
+                                Vector3 rel = transform_tmp.InverseTransformPoint(projectile.position);
+
+                                if(Vector3.Dot((GetCenter() - projectile.transform.position).normalized, projectile.direction.normalized) < 0.0f)
+                                    continue;
+
+                                if (Mathf.Abs(rel.x) > Mathf.Abs(rel.z))
+                                {
+                                    if (rel.x > 0.0f)
+                                    {
+                                        dangerImage_right.enabled = true;
+                                        alertImage_right.enabled = false;
+                                    }
+                                    else
+                                    {
+                                        dangerImage_left.enabled = true;
+                                        alertImage_left.enabled = false;
+                                    }
+                                }
+                                else
+                                {
+                                    if (rel.z > 0.0f)
+                                    {
+                                        dangerImage_forward.enabled = true;
+                                        alertImage_forward.enabled = false;
+                                    }
+                                    else
+                                    {
+                                        dangerImage_back.enabled = true;
+                                        alertImage_back.enabled = false;
+                                    }
+                                }
                             }
                         }
                     }
