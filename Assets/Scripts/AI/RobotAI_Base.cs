@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UIController_Overlay;
 
 public class RobotAI_Base : InputBase
 {
@@ -78,7 +79,7 @@ public class RobotAI_Base : InputBase
 
     protected void DetermineTarget()
     {
-        switch (robotController.team.orderToAI)
+        switch (getOrder())
         {
             case WorldManager.OrderToAI.NORMAL:
 
@@ -129,7 +130,7 @@ public class RobotAI_Base : InputBase
                     TargetNearest(null);
                 }
                 break;
-            case WorldManager.OrderToAI.SPREAD:
+            /*case WorldManager.OrderToAI.SPREAD:
 
                 
 
@@ -139,7 +140,7 @@ public class RobotAI_Base : InputBase
                 {
                     TargetNearest(null);
                 }
-                break;
+                break;*/
             case WorldManager.OrderToAI.EVADE:
                 TargetNearest(null);
                 break;
@@ -147,7 +148,7 @@ public class RobotAI_Base : InputBase
     }
     public override void OnTakeDamage(Vector3 pos, Vector3 dir, int damage, RobotController.KnockBackType_Deal knockBackType, RobotController dealer)
     {
-        if (robotController.team.orderToAI == WorldManager.OrderToAI.NORMAL)
+        if (getOrder() == WorldManager.OrderToAI.NORMAL)
         {
             if (dealer != null && dealer && dealer.team != robotController.team)
             {
@@ -338,5 +339,13 @@ public class RobotAI_Base : InputBase
                 }
             }
         }
+    }
+
+    public WorldManager.OrderToAI getOrder()
+    {
+        if (robotController.IsWingMan())
+            return robotController.team.orderToAI;
+        else
+            return WorldManager.OrderToAI.NORMAL;
     }
 }

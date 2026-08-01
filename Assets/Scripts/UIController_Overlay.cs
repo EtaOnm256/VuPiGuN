@@ -365,10 +365,15 @@ public class UIController_Overlay : MonoBehaviour
             }
             else if (reticle.Key == origin)
             {
-                reticle.Value.reticle.radaricon_image.color = Color.blue;
+                reticle.Value.reticle.radaricon_image.color = Color.yellow;
             }
             else
-                reticle.Value.reticle.radaricon_image.color = Color.green;
+            {
+                if (reticle.Key.IsWingMan())
+                    reticle.Value.reticle.radaricon_image.color = Color.green;
+                else
+                    reticle.Value.reticle.radaricon_image.color = Color.blue;
+            }
         }
 
         if (lockonState == RobotController.LockonState.FREE)
@@ -428,9 +433,9 @@ public class UIController_Overlay : MonoBehaviour
             case WorldManager.OrderToAI.FOCUS:
                 orderText.text = "èWíÜ";
                 break;
-            case WorldManager.OrderToAI.SPREAD:
-                orderText.text = "ï™éU";
-                break;
+            //case WorldManager.OrderToAI.SPREAD:
+            //    orderText.text = "ï™éU";
+            //    break;
             case WorldManager.OrderToAI.EVADE:
                 orderText.text = "âÒî";
                 break;

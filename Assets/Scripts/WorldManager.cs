@@ -63,6 +63,8 @@ public class WorldManager : MonoBehaviour
         public RobotController target_by_commander = null;
 
         //public int affected_by_sensorarray = 0;
+
+        public ArmyInstance armyInstance;
     }
 
     public List<Pausable> pausables = new List<Pausable>();
@@ -107,6 +109,7 @@ public class WorldManager : MonoBehaviour
             public List<RobotController> controllers = new List<RobotController>();
             public List<Spawning> spawnings = new List<Spawning>();
             public int reinforce_count = 0;
+            public OrderToAI orderToAI = OrderToAI.NORMAL;
         }
 
         public List<Group> groups = new List<Group>();
@@ -150,7 +153,7 @@ public class WorldManager : MonoBehaviour
     {
         NORMAL = 0,
         FOCUS,
-        SPREAD,
+        //SPREAD,
         EVADE,
     }
 
@@ -184,8 +187,8 @@ public class WorldManager : MonoBehaviour
         Slider friendPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("FriendTeamPower").GetComponent<Slider>();
         Slider enemyPowerSlider = canvasControl.HUDCanvas.gameObject.transform.Find("EnemyTeamPower").GetComponent<Slider>();
 
-        Team friend_team = new Team {power = armyInstance_friend.army.power, powerslider = friendPowerSlider };
-        Team enemy_team = new Team { power = armyInstance_enemy.army.power, powerslider = enemyPowerSlider };
+        Team friend_team = new Team {power = armyInstance_friend.army.power, powerslider = friendPowerSlider, armyInstance = armyInstance_friend };
+        Team enemy_team = new Team { power = armyInstance_enemy.army.power, powerslider = enemyPowerSlider, armyInstance = armyInstance_enemy };
 
         friendPowerSlider.value = friendPowerSlider.maxValue = armyInstance_friend.army.power;
         enemyPowerSlider.value = enemyPowerSlider.maxValue = armyInstance_enemy.army.power;
@@ -432,7 +435,7 @@ public class WorldManager : MonoBehaviour
             {
                 if (group_inst.spawnings[i].wait <= 0)
                 {
-                    RobotController robot = SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team);
+                    RobotController robot = SpawnNPC(group_inst.spawnings[i].variant, group_inst.spawnings[i].pos, group_inst.spawnings[i].rot, team, group_inst);
 
                     group_inst.controllers.Add(robot);
 
@@ -511,7 +514,7 @@ public class WorldManager : MonoBehaviour
                         DetermineSpawnTransform(out spawn_position, out spawn_rotation, team, SpawnType.LARGESCALE);
 
                         if (instant)
-                            group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team));
+                            group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team, group_inst));
                         else
                             group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
                     }
@@ -584,7 +587,7 @@ public class WorldManager : MonoBehaviour
                 }
 
                 if (instant)
-                    group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team));
+                    group_inst.controllers.Add(SpawnNPC(group_templ.variant, spawn_position, spawn_rotation, team, group_inst));
                 else
                     group_inst.spawnings.Add(new Team.Spawning { player = false, pos = spawn_position, rot = spawn_rotation, variant = group_templ.variant, wait = 60, boss = group_templ.boss });
             }
@@ -606,7 +609,7 @@ public class WorldManager : MonoBehaviour
 
             if(armyInst.spawnings_seq[i].wait <= 0)
             {
-                RobotController robot = SpawnNPC(armyInst.spawnings_seq[i].variant, armyInst.spawnings_seq[i].pos, armyInst.spawnings_seq[i].rot, team);
+                RobotController robot = SpawnNPC(armyInst.spawnings_seq[i].variant, armyInst.spawnings_seq[i].pos, armyInst.spawnings_seq[i].rot, team,null);
 
                 if (armyInst.spawnings_seq[i].boss)
                 {
@@ -673,7 +676,7 @@ public class WorldManager : MonoBehaviour
 
                 if (instant)
                 {
-                    RobotController robot = SpawnNPC(spawn.variant, spawn_position, spawn_rotation, team);
+                    RobotController robot = SpawnNPC(spawn.variant, spawn_position, spawn_rotation, team,null);
 
                     if (spawn.boss)
                     {
@@ -1150,7 +1153,7 @@ public class WorldManager : MonoBehaviour
         HandleRobotAdd(robot);
     }
 
-    private RobotController SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team)
+    private RobotController SpawnNPC(GameObject variant_obj,Vector3 pos, Quaternion rot, Team team,ArmyInstance.Group groupInst)
     {
         //RobotVariant variant = variant_obj.GetComponent<RobotVariant>();
        
@@ -1165,7 +1168,7 @@ public class WorldManager : MonoBehaviour
         robot.uIController_Overlay = uIController_Overlay;
         robot.is_player = false;
         robot.team = team;
-
+        robot.groupInst = groupInst;
         GameObject.Instantiate(spawn_prefab, robot.transform.position, Quaternion.identity);
 
         team.robotControllers.Add(robot);

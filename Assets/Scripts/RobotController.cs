@@ -16,6 +16,7 @@ using Unity​Engine.Rendering;
 
 using StarterAssets;
 using System.Linq;
+using static UIController_Overlay;
 
 
 
@@ -414,6 +415,8 @@ public class RobotController : Pausable
     Material[] material_in_voidshift;
 
     public WorldManager.Team team;
+
+    public WorldManager.ArmyInstance.Group groupInst = null;
 
     //public bool firing = false;
 
@@ -7242,5 +7245,17 @@ public class RobotController : Pausable
         enqueueAfterimage.enabled = false;
         afterimageRenderer.Clear();
         virtual_targeted_position = GetCenter();
+    }
+
+    public bool IsWingMan()
+    {
+        bool wingMan = false;
+
+        if (groupInst == null)
+            wingMan = true;
+        else if (groupInst == team.armyInstance.groups[0])
+            wingMan = true;
+
+        return wingMan;
     }
 }

@@ -151,7 +151,7 @@ public class RobotAI_Easy : RobotAI_Base
                 {
                     jump = false;
 
-                    if (fire_wait <= 0 && robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                    if (fire_wait <= 0 && getOrder() != WorldManager.OrderToAI.EVADE)
                     {
                         if (mindist < 100.0f)
                         {
@@ -206,7 +206,7 @@ public class RobotAI_Easy : RobotAI_Base
                             }
                             else
                             {
-                                if(robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
+                                if(getOrder() == WorldManager.OrderToAI.EVADE)
                                 {
                                     if (moveDirChangeTimer <= 0)
                                     {

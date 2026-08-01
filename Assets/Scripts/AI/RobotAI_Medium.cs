@@ -242,7 +242,7 @@ public class RobotAI_Medium : RobotAI_Base
                                 {
                                     if (ground_step_remain > 0)
                                     {
-                                        if(robotController.team.orderToAI != WorldManager.OrderToAI.EVADE && mindist > infight_dist &&
+                                        if (getOrder() != WorldManager.OrderToAI.EVADE && mindist > infight_dist &&
                                             robotController.shoulderWeapon != null && robotController.shoulderWeapon.allrange && robotController.shoulderWeapon.canHold
                                             && subweaponState != SubweaponState.CHARGING
                                             )
@@ -251,7 +251,7 @@ public class RobotAI_Medium : RobotAI_Base
                                             subweaponState = SubweaponState.FIRING;
                                         }
 
-                                        if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
+                                        if (getOrder() == WorldManager.OrderToAI.EVADE)
                                         {
                                             move.y = -1.0f;
                                             move.x = 0.0f;
@@ -290,7 +290,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     {
                                         bool far = false;
 
-                                        if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
+                                        if (getOrder() == WorldManager.OrderToAI.EVADE)
                                             far = mindist > 150.0f;
                                         else
                                             far = mindist > lock_range;
@@ -303,7 +303,7 @@ public class RobotAI_Medium : RobotAI_Base
                                         }
                                         else
                                         {
-                                            if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
+                                            if (getOrder() == WorldManager.OrderToAI.EVADE)
                                             {
                                                 if (moveDirChangeTimer <= 0)
                                                 {
@@ -329,7 +329,7 @@ public class RobotAI_Medium : RobotAI_Base
                                         }
                                     }
 
-                                    if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                                    if (getOrder() != WorldManager.OrderToAI.EVADE)
                                     {
                                         if (mindist < jumpslash_dist)
                                             allow_jumpslash = true;
@@ -395,7 +395,7 @@ public class RobotAI_Medium : RobotAI_Base
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                                if (getOrder() != WorldManager.OrderToAI.EVADE)
                                 {
                                     if (!dodge)
                                     {
@@ -420,7 +420,7 @@ public class RobotAI_Medium : RobotAI_Base
 
                                 bool far = false;
 
-                                if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
+                                if (getOrder() == WorldManager.OrderToAI.EVADE)
                                     far = mindist > 150.0f;
                                 else
                                     far = mindist > lock_range;
@@ -451,7 +451,7 @@ public class RobotAI_Medium : RobotAI_Base
                                 }
                                 else
                                 {
-                                    if (robotController.team.orderToAI == WorldManager.OrderToAI.EVADE)
+                                    if (getOrder() == WorldManager.OrderToAI.EVADE)
                                     {
                                         if (moveDirChangeTimer <= 0)
                                         {
@@ -484,7 +484,7 @@ public class RobotAI_Medium : RobotAI_Base
                                             else if (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                             {
                                                 if (
-                                                    robotController.team.orderToAI != WorldManager.OrderToAI.EVADE && mindist > infight_dist &&
+                                                    getOrder() != WorldManager.OrderToAI.EVADE && mindist > infight_dist &&
                                                     robotController.shoulderWeapon != null && robotController.shoulderWeapon.allrange && robotController.shoulderWeapon.canHold
                                                     && subweaponState != SubweaponState.CHARGING
                                                     )
@@ -524,7 +524,7 @@ public class RobotAI_Medium : RobotAI_Base
                                 if (floorhit.distance < 10.0f && !dodge)
                                     state = State.Ascend;
 
-                                if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                                if (getOrder() != WorldManager.OrderToAI.EVADE)
                                 {
                                     if (target_angle <= 90)
                                         allow_fire = true;
@@ -563,7 +563,7 @@ public class RobotAI_Medium : RobotAI_Base
                                     ground_step_remain = 2;
                                 }
 
-                                if (robotController.team.orderToAI != WorldManager.OrderToAI.EVADE)
+                                if (getOrder() != WorldManager.OrderToAI.EVADE)
                                 {
                                     if (floorhit.distance > 10.0f)
                                     {
