@@ -382,18 +382,16 @@ public class RobotAI_Medium : RobotAI_Base
                             {
                                 jump = true;
 
-                              
-
-                                if (floorhit.distance > 15.0f || dodge)
+                                if (robotController.Grounded)
+                                    state = State.Ground;
+                                else if (overheating)
+                                    state = State.Decend;
+                                else if ( (floorhit.distance > 15.0f || dodge)
+                                    && (robotController.upperBodyState == RobotController.UpperBodyState.STAND || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
+                                    )
                                 {
                                     state = State.Dash;
                                 }
-
-                                if (overheating)
-                                    state = State.Decend;
-
-                                if (robotController.Grounded)
-                                    state = State.Ground;
 
                                 if (getOrder() != WorldManager.OrderToAI.EVADE)
                                 {
