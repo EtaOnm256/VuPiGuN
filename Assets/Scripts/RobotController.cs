@@ -390,7 +390,7 @@ public class RobotController : Pausable
     RobotController finish_dealer;
     Vector3 finish_dir;
 
-    float firing_multiplier = 1.0f;
+    [NonSerialized] public float firing_multiplier = 1.0f;
 
     float lockon_multiplier
     {
@@ -2670,7 +2670,7 @@ public class RobotController : Pausable
 
     float aiming_begin_aiming_factor_current = 0.0f;
     float aiming_angle_speed_current = 0.0f;
-    float aiming_factor = 0.0f;
+    [NonSerialized]public float aiming_factor = 0.0f;
     private void UpperBodyMove()
     {
         if (hitstop_timer > 0)

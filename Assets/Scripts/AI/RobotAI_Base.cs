@@ -294,7 +294,7 @@ public class RobotAI_Base : InputBase
 
                     if (!prev_dodge)
                         prev_stepMove = ThreatPosToStepMove_Strafe(projectile.position, targetQ);
-                    
+
                     stepMove = prev_stepMove;
 
                     break;
@@ -336,6 +336,44 @@ public class RobotAI_Base : InputBase
 
                     stepMove = prev_stepMove;
                     break;
+                }
+            }
+
+            foreach (var robot in team.robotControllers)
+            {
+                if (robot.dead)
+                    continue;
+
+                if( ((robot.upperBodyState == RobotController.UpperBodyState.FIRE 
+                    || robot.upperBodyState == RobotController.UpperBodyState.HEAVYFIRE
+                    || robot.upperBodyState == RobotController.UpperBodyState.STEADYFIRE
+                    || robot.upperBodyState == RobotController.UpperBodyState.STEADYHEAVYFIRE) && !robot.fire_done)
+                    || robot.upperBodyState == RobotController.UpperBodyState.ROLLINGFIRE
+                    || robot.upperBodyState == RobotController.UpperBodyState.ROLLINGHEAVYFIRE)
+                {
+                    float dist = (robot.GetCenter() - robotController.GetCenter()).magnitude;
+
+                    float k = Mathf.Clamp01(robot.aiming_factor);
+
+                    float t1 = dist / 1.6f;
+
+                    float t2;
+                    
+                    if(robot.upperBodyState == RobotController.UpperBodyState.ROLLINGHEAVYFIRE)
+                        t2 = (0.5f - k) / robot.firing_multiplier * 40.0f;
+                    else
+                        t2 = (1.0f - k) / robot.firing_multiplier * 20.0f;
+
+                    if(t1 + t2 < evade_thresh/2)
+                    {
+                        dodge = true;
+
+                        if (!prev_dodge)
+                            prev_stepMove = ThreatPosToStepMove_Strafe(robot.GetCenter(), targetQ);
+
+                        stepMove = prev_stepMove;
+                        break;
+                    }
                 }
             }
         }
