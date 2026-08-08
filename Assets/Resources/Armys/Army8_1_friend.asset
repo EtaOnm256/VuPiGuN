@@ -28,4 +28,4 @@ MonoBehaviour:
       param: 0
     reinforce_count: 0
     boss: 0
-  power: 7000
+  power: 8000
