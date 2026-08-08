@@ -1,5 +1,4 @@
 using Cinemachine.Utility;
-using OpenCover.Framework.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +9,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
 using static WorldManager;
 using static WorldManager.Team;
 
