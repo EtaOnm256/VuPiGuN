@@ -132,6 +132,8 @@ public class BusterRifle : Weapon
         beam.emitting = false;
 
         magazine = MaxMagazine;
+
+        projectile_speed = beam.speed / Time.deltaTime;
     }
 
     bool prev_fire = false;

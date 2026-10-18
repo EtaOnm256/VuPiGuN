@@ -79,6 +79,9 @@ public class SolidRifle : Weapon
     {
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
+
+        Bullet bullet = bullet_prefab.GetComponent<Bullet>();
+        projectile_speed = bullet.speed / Time.deltaTime;
     }
 
     // Update is called once per frame

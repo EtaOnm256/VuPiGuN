@@ -106,7 +106,7 @@ public class Beam : Projectile
             {
                 Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
-                Quaternion qTarget = Quaternion.LookRotation(target.GetTargetedPosition() - lineRenderer.GetPosition(lineRenderer.positionCount - 1));
+                Quaternion qTarget = Quaternion.LookRotation(target.GetFinalTargetedPosition(position, speed) - lineRenderer.GetPosition(lineRenderer.positionCount - 1));
 
                 if (Quaternion.Angle(qDirection, qTarget) < 90.0f)
                 {

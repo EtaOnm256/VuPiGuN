@@ -16,6 +16,7 @@ public class Drone : Pausable
 
     public GameObject anchor;
     const float speed = 1.2f;
+    const float beamspeed = 1.2f;
 
     public GameObject firePoint;
 
@@ -73,7 +74,7 @@ public class Drone : Pausable
                 else
                 {
 
-                    Vector3 goal_pos = target.GetTargetedPosition()
+                    Vector3 goal_pos = target.GetCurrentTargetedPosition()
                         + orient * Vector3.back * 10.0f;
     
 
@@ -111,7 +112,7 @@ public class Drone : Pausable
                 }
                 else
                 {
-                    Vector3 goal_pos = target.GetTargetedPosition();
+                    Vector3 goal_pos = target.GetCurrentTargetedPosition();
                     Vector3 goal_dir = (goal_pos - transform.position).normalized;
 
                     float angle;

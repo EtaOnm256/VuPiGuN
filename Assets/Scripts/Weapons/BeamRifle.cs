@@ -89,6 +89,8 @@ public class BeamRifle : Weapon
     {
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
+        Beam beam = beam_prefab.GetComponent<Beam>();
+        projectile_speed = beam.speed / Time.deltaTime;
     }
 
     // Update is called once per frame

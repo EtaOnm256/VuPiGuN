@@ -84,6 +84,9 @@ public class SprayBeamCannon : Weapon
     {
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
+
+        SprayBeam beam = beam_prefab.GetComponent<SprayBeam>();
+        projectile_speed = beam.speed / Time.deltaTime;
     }
 
     // Update is called once per frame

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static WorldManager;
 
 public class MissilePod : Weapon
 {
@@ -76,7 +77,9 @@ public class MissilePod : Weapon
     {
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
-        
+
+        Missile beam = missile_prefab.GetComponent<Missile>();
+        projectile_speed = beam.speed / Time.deltaTime;
     }
 
     // Update is called once per frame

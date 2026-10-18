@@ -125,6 +125,18 @@ public class SMG : Weapon
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
         magazine = MaxMagazine;
+
+        if (beam)
+        {
+            Beam bullet = bullet_prefab.GetComponent<Beam>();
+            projectile_speed = bullet.speed / Time.deltaTime;
+
+        }
+        else
+        {
+            SMGBullet bullet = bullet_prefab.GetComponent<SMGBullet>();
+            projectile_speed = bullet.speed / Time.deltaTime;
+        }
     }
 
     // Update is called once per frame

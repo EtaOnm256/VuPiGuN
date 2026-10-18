@@ -46,4 +46,63 @@ public class VectorUtil
             return false;
         }
     }
+    static public Vector3 LinePrediction(Vector3 shotPosition, Vector3 targetPosition, Vector3 targetPrePosition, float bulletSpeed)
+    {
+        //Unityの物理はm/sなのでm/flameにする
+        bulletSpeed = bulletSpeed * Time.fixedDeltaTime;
+        //目標の1フレームの移動速度
+        Vector3 v3_Mv = targetPosition - targetPrePosition;
+        //射撃する位置から見た目標位置
+        Vector3 v3_Pos = targetPosition - shotPosition;
+
+        //ピタゴラスの定理から２つのベクトルの長さが等しい場合の式を作り
+        //二次方程式の解の公式を使って弾が当たる予測時間を計算する
+        float A = (v3_Mv.x * v3_Mv.x + v3_Mv.y * v3_Mv.y + v3_Mv.z * v3_Mv.z) - bulletSpeed * bulletSpeed;
+        float B = 2 * (v3_Pos.x * v3_Mv.x + v3_Pos.y * v3_Mv.y + v3_Pos.z * v3_Mv.z);
+        float C = (v3_Pos.x * v3_Pos.x + v3_Pos.y * v3_Pos.y + v3_Pos.z * v3_Pos.z);
+
+        //0割り禁止処理
+        if (A == 0)
+        {
+            if (B == 0)
+            {
+                return targetPosition;
+            }
+            else
+            {
+                return targetPosition + v3_Mv * (-C / B);
+            }
+        }
+
+        //弾が当たる時間のフレームを計算する
+        float flame1, flame2;
+        //二次方程式の解の公式の判別式で分類
+        float D = B * B - 4 * A * C;
+        if (D > 0)
+        {
+            float E = Mathf.Sqrt(D);
+            flame1 = (-B - E) / (2 * A);
+            flame2 = (-B + E) / (2 * A);
+            //解は2つなので正の数の最小値を使う
+            flame1 = PlusMin(flame1, flame2);
+        }
+        else
+        {
+            //虚数解
+            //当たらないので今の位置を狙う
+            flame1 = 0;
+        }
+
+        //予想位置を返す
+        return targetPosition + v3_Mv * flame1;
+    }
+
+    //プラスの最小値を返す(両方マイナスなら0)
+    static public float PlusMin(float a, float b)
+    {
+        if (a < 0 && b < 0) return 0;
+        if (a < 0) return b;
+        if (b < 0) return a;
+        return a < b ? a : b;
+    }
 }

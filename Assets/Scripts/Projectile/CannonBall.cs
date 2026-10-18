@@ -65,7 +65,7 @@ public class CannonBall : Projectile
 
             if (target != null)
             {
-                Vector3 relative = (target.GetTargetedPosition() - transform.position);
+                Vector3 relative = (target.GetFinalTargetedPosition(position, speed) - transform.position);
                 
                 float h = relative.y;
 
