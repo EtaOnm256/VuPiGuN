@@ -25,6 +25,11 @@ public class Weapon : Pausable
         get { return false; }
     }
 
+    virtual public bool dualwielded
+    {
+        get { return false; }
+    }
+
     public enum Trajectory
     {
         Straight,

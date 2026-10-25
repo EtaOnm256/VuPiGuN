@@ -345,7 +345,7 @@ public class RobotAI_Medium : RobotAI_Base
                                             && (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
                                             allow_infight = true;
 
-                                        if (target_angle <= 90)
+                                        if (robotController.rightWeapon != null && target_angle <= robotController.rightWeapon.firing_angle - 10.0f)
                                             allow_fire = true;
 
                                   
@@ -524,7 +524,9 @@ public class RobotAI_Medium : RobotAI_Base
 
                                 if (getOrder() != WorldManager.OrderToAI.EVADE)
                                 {
-                                    if (target_angle <= 90)
+                                    if (robotController.rightWeapon != null
+                                        && (target_angle <= robotController.rightWeapon.firing_angle-10.0f || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.SkilledLanding) )
+                                        )
                                         allow_fire = true;
 
                                     if (!dodge)

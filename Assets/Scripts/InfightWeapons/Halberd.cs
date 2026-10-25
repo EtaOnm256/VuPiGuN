@@ -61,7 +61,7 @@ public class Halberd : InfightWeapon
     {
         get { return true; }
     }
-    override public bool dualwielded
+    override public bool twohanded
     {
         get { return true; }
     }

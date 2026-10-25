@@ -18,6 +18,7 @@ using StarterAssets;
 using System.Linq;
 using static UIController_Overlay;
 using static UnityEditor.PlayerSettings;
+using UnityEngine.XR;
 
 
 
@@ -169,6 +170,8 @@ public class RobotController : Pausable
     private int _animIDRollingFire3_Right;
     private int _animIDRollingFire4_Left;
     private int _animIDRollingFire4_Right;
+    private int _animIDRollingFire5_Left;
+    private int _animIDRollingFire5_Right;
 
     private int _animIDSnipeFire;
     private int _animIDSnipeFire2;
@@ -180,12 +183,15 @@ public class RobotController : Pausable
 
     int ChooseDualwieldStandMotion()
     {
-        if (Sword != null && Sword.dualwielded)
+        if (Sword != null && Sword.twohanded)
             return _animIDStand4;
         if (carrying_weapon)
             return _animIDStand3;
         if (gatling)
             return _animIDStand5;
+
+        if (rightWeapon != null && rightWeapon.dualwielded)
+            return _animIDStand;
         else
             return _animIDStand2;
     }
@@ -276,6 +282,7 @@ public class RobotController : Pausable
     public MultiAimConstraint headmultiAimConstraint;
     public MultiAimConstraint chestmultiAimConstraint;
     public MultiAimConstraint rhandmultiAimConstraint;
+    public MultiAimConstraint lhandmultiAimConstraint;
     public RigBuilder rigBuilder;
 
     //public MultiAimConstraint rarmmultiAimConstraint;
@@ -288,7 +295,7 @@ public class RobotController : Pausable
     {
         get
         {
-            if (dualwielding) return chest_hint;
+            if (twohanded) return chest_hint;
             else return shoulder_hint;
         }
     }
@@ -306,14 +313,15 @@ public class RobotController : Pausable
     //    get { return rightWeapon.heavy || rightWeapon.dualwielded; }
     //}
 
-    public bool dualwielding
+    public bool twohanded
     {
         get
         {
             bool rightWeapon_heavy = rightWeapon == null ? false : rightWeapon.heavy;
-            bool Sword_dualwielded = Sword == null ? false : Sword.dualwielded;
+            bool Sword_twohanded = Sword == null ? false : Sword.twohanded;
+            bool dualwielding = rightWeapon == null ? false : rightWeapon.dualwielded;
 
-            return rightWeapon_heavy || robotParameter.dualwield_lightweapon || Sword_dualwielded || carrying_weapon || gatling;
+            return rightWeapon_heavy || robotParameter.dualwield_lightweapon || Sword_twohanded || carrying_weapon || gatling || dualwielding;
         }
     }
 
@@ -676,6 +684,7 @@ public class RobotController : Pausable
     public GameObject AimHelper_Head = null;
     public GameObject AimHelper_Chest = null;
     public GameObject AimHelper_RHand = null;
+    public GameObject AimHelper_LHand = null;
 
     Quaternion AimTargetRotation_Head;
     Quaternion AimTargetRotation_Chest;
@@ -944,7 +953,7 @@ public class RobotController : Pausable
                     Sword.emitting = false;
 
                 // 射撃中だった場合に備えて
-                if (dualwielding)
+                if (twohanded)
                 {
                     _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
                 }
@@ -1232,13 +1241,13 @@ public class RobotController : Pausable
 
         if (Sword != null)
         {
-            Sword.autovanish = dualwielding && !Sword.dualwielded;
+            Sword.autovanish = twohanded && !Sword.twohanded;
             Sword.emitting = false;
         }
 
 
 
-        if (dualwielding)
+        if (twohanded)
             animator.Play(ChooseDualwieldStandMotion(), 2);
 
         if (rightWeapon != null)
@@ -1268,7 +1277,7 @@ public class RobotController : Pausable
         _rarmaimweight = 0.0f;
         _chestaimweight = 0.0f;
 
-        if (dualwielding)
+        if (twohanded)
             _barmlayerweight = 1.0f;
         else
             _barmlayerweight = 0.0f;
@@ -2018,11 +2027,14 @@ public class RobotController : Pausable
             AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 3;
             rhandmultiAimConstraint.weight = aiming_factor;
 
+            if(rightWeapon != null && rightWeapon.dualwielded)
+                lhandmultiAimConstraint.weight = aiming_factor;
+
             overrideTransform.weight = _rarmaimweight;
 
             animator.SetLayerWeight(2, _barmlayerweight);
 
-            if (!dualwielding)
+            if (!twohanded)
                 animator.SetLayerWeight(1, _rarmaimweight);
 
             float targetSpeed = 0.0f;
@@ -2175,6 +2187,8 @@ public class RobotController : Pausable
         _animIDRollingFire3_Right = Animator.StringToHash("RollingFire3_Right");
         _animIDRollingFire4_Left = Animator.StringToHash("RollingFire4_Left");
         _animIDRollingFire4_Right = Animator.StringToHash("RollingFire4_Right");
+        _animIDRollingFire5_Left = Animator.StringToHash("RollingFire5_Left");
+        _animIDRollingFire5_Right = Animator.StringToHash("RollingFire5_Right");
 
         _animIDSnipeFire = Animator.StringToHash("SnipeFire");
         _animIDSnipeFire2 = Animator.StringToHash("SnipeFire2");
@@ -2725,7 +2739,7 @@ public class RobotController : Pausable
                         _rarmaimweight = Mathf.Min(1.0f, _rarmaimweight + 0.04f * firing_multiplier);
                         _chestaimweight = Mathf.Min(1.0f, _chestaimweight + 0.04f * firing_multiplier);
 
-                        if (dualwielding || upperBodyState == UpperBodyState.STEADYFIRE)
+                        if (twohanded || upperBodyState == UpperBodyState.STEADYFIRE)
                         {
                             aiming_factor = animator.GetCurrentAnimatorStateInfo(2).normalizedTime;
                             rhandaimweight_thisframe = Mathf.Clamp((aiming_factor - 0.70f) * 4, 0.0f, 1.0f);
@@ -2912,7 +2926,7 @@ public class RobotController : Pausable
                                     TransitLowerBodyState(LowerBodyState.AIR);
                             }
 
-                            if (dualwielding)
+                            if (twohanded)
                             {
                                 _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
                                 intend_animator_speed = 1.0f;
@@ -3196,7 +3210,7 @@ public class RobotController : Pausable
                                     TransitLowerBodyState(LowerBodyState.AIR);
                             }
 
-                            if (dualwielding)
+                            if (twohanded)
                             {
                                 _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
                                 intend_animator_speed = 1.0f;
@@ -3327,7 +3341,7 @@ public class RobotController : Pausable
                     _rarmaimweight = Mathf.Max(0.0f, _rarmaimweight - 0.04f);
                     _chestaimweight = Mathf.Max(0.0f, _chestaimweight - 0.04f);
 
-                    if (dualwielding)
+                    if (twohanded)
                         _barmlayerweight = Mathf.Min(1.0f, _barmlayerweight + 0.08f);
                     else
                         _barmlayerweight = Mathf.Max(0.0f, _barmlayerweight - 0.08f);
@@ -3528,14 +3542,21 @@ public class RobotController : Pausable
 
         AimHelper_RHand.transform.position = RHand.transform.position + target_rot_rhand * Vector3.forward * 10.0f;
 
+       
         rhandmultiAimConstraint.weight = rhandaimweight_thisframe;
 
-        overrideTransform.weight = _rarmaimweight;
+        if (rightWeapon != null && rightWeapon.dualwielded)
+        {
+            lhandmultiAimConstraint.weight = rhandaimweight_thisframe;
+            AimHelper_LHand.transform.position = LHand.transform.position + target_rot_rhand * Vector3.forward * 10.0f;
+        }
+
+         overrideTransform.weight = _rarmaimweight;
 
 
         animator.SetLayerWeight(2, _barmlayerweight);
 
-        if (!dualwielding)
+        if (!twohanded)
             animator.SetLayerWeight(1, _rarmaimweight);
 
         if (rightWeapon != null)
@@ -4167,7 +4188,7 @@ public class RobotController : Pausable
                                 float rotation_pitch;
 
                                 if (lowerBodyState == LowerBodyState.ROLLINGHEAVYFIRE || lowerBodyState == LowerBodyState.AIRROLLINGHEAVYFIRE
-                                    || dualwielding)
+                                    || carrying_weapon)
                                 {
                                     rotation_pitch = 0.0f;
                                 }
@@ -6026,7 +6047,7 @@ public class RobotController : Pausable
             Sword.emitting = false;
 
         // 射撃中だった場合に備えて
-        if (dualwielding)
+        if (twohanded)
         {
             _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
         }
@@ -6336,13 +6357,18 @@ public class RobotController : Pausable
             if (lowerBodyState != LowerBodyState.STEP)
                 ground_boost_now = false; // ステップから他の状態遷移でクリアしてないので、滑り撃ち処理の判定のためにここでクリア
 
-            if (dualwielding)
-                animator.Play(gatling ? "Fire5" : (carrying_weapon ? "Fire3" : "Fire2"), 2, 0.0f);
+            if (twohanded)
+            {
+                if(rightWeapon.dualwielded)
+                    animator.Play("Fire8", 2, 0.0f);
+                else
+                    animator.Play(gatling ? "Fire5" : (carrying_weapon ? "Fire3" : "Fire2"), 2, 0.0f);
+            }
             else
             {
-                if(rightWeapon.wrist_equipped)
+                if (rightWeapon.wrist_equipped)
                     animator.Play("Fire4", 1, 0.0f);
-                else if(rightWeapon.shottype == Weapon.ShotType.LASER)
+                else if (rightWeapon.shottype == Weapon.ShotType.LASER)
                     animator.Play("Fire7", 1, 0.0f);
                 else
                     animator.Play("Fire", 1, 0.0f);
@@ -6514,7 +6540,7 @@ public class RobotController : Pausable
                     Sword.emitting = false;
 
                 // 射撃中だった場合に備えて
-                if (dualwielding)
+                if (twohanded)
                 {
                     _animator.CrossFadeInFixedTime(ChooseDualwieldStandMotion(), 0.5f, 2);
                 }
@@ -6821,6 +6847,11 @@ public class RobotController : Pausable
                                 animator.Play(_animIDRollingFire4_Left, 0, 0.0f);
                                 animator.Play("Fire5", 2, 0.0f);
                             }
+                            else if(rightWeapon != null && rightWeapon.dualwielded)
+                            {
+                                animator.Play(_animIDRollingFire5_Left, 0, 0.0f);
+                                animator.Play("Fire8", 2, 0.0f);
+                            }
                             else
                                 animator.Play(_animIDRollingFire_Left, 0, 0.0f);
                         }
@@ -6837,6 +6868,11 @@ public class RobotController : Pausable
                             {
                                 animator.Play(_animIDRollingFire4_Right, 0, 0.0f);
                                 animator.Play("Fire5", 2, 0.0f);
+                            }
+                            else if (rightWeapon != null && rightWeapon.dualwielded)
+                            {
+                                animator.Play(_animIDRollingFire5_Right, 0, 0.0f);
+                                animator.Play("Fire8", 2, 0.0f);
                             }
                             else
                                 animator.Play(_animIDRollingFire_Right, 0, 0.0f);
@@ -7220,6 +7256,22 @@ public class RobotController : Pausable
                 playerrweapon_r.transform.localEulerAngles = new Vector3(-90, 0, 180);
             }
 
+            if (playerrweapon_r.GetComponent<Weapon>().dualwielded)
+            {
+                GameObject playerweapon_l = GameObject.Instantiate(robotParameter.rweapon_prefab);
+
+                playerweapon_l.transform.parent = LHand.transform;
+                playerweapon_l.transform.localPosition = new Vector3(-0.0004f, 0.0072f, 0.004f);
+                playerweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
+                playerweapon_l.transform.localScale = new Vector3(1, 1, 1);
+
+                playerweapon_l.GetComponent<Weapon>().this_is_slave = true;
+                playerweapon_l.GetComponent<Weapon>().another = playerrweapon_r.GetComponent<Weapon>();
+
+                playerrweapon_r.GetComponent<Weapon>().this_is_slave = false;
+                playerrweapon_r.GetComponent<Weapon>().another = playerweapon_l.GetComponent<Weapon>();
+            }
+
             rightWeapon = playerrweapon_r.GetComponent<Weapon>();
         }
 
@@ -7232,7 +7284,7 @@ public class RobotController : Pausable
             playerlweapon_l.transform.localEulerAngles = new Vector3(-90, 0, 180);
             playerlweapon_l.transform.localScale = new Vector3(1, 1, 1);
 
-            if (playerlweapon_l.GetComponent<InfightWeapon>().paired)
+            if (playerlweapon_l.GetComponent<InfightWeapon>().dualwielded)
             {
                 GameObject playerlweapon_r = GameObject.Instantiate(robotParameter.lweapon_prefab);
 

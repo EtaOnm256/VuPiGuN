@@ -123,6 +123,7 @@
     <Compile Include="Assets\IgniteCoders\Simple Water Shader\Resources\WaterReflection.cs" />
     <Compile Include="Assets\Effekseer\Example\EfkBasic.cs" />
     <Compile Include="Assets\Scripts\WorldMapEdge.cs" />
+    <Compile Include="Assets\Scripts\Weapons\HandGun.cs" />
     <Compile Include="Assets\Scripts\Effects\SpaceExplosionEmit.cs" />
     <Compile Include="Assets\Scripts\Projectile\SprayBeam.cs" />
     <Compile Include="Assets\Scripts\InfightWeapons\BeamSaber.cs" />

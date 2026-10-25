@@ -56,7 +56,7 @@ public class BeamDagger : InfightWeapon
         get { return _emitting; }
     }
 
-    override public bool paired
+    override public bool dualwielded
     {
         get { return true; }
     }

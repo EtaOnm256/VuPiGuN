@@ -45,7 +45,7 @@ public class InfightWeapon : Pausable
 
     public bool sweep = false;
 
-    virtual public bool paired
+    virtual public bool dualwielded
     {
         get { return false; }
     }
@@ -85,7 +85,7 @@ public class InfightWeapon : Pausable
     {
         get { return false; }
     }
-    virtual public bool dualwielded
+    virtual public bool twohanded
     {
         get { return false; }
     }

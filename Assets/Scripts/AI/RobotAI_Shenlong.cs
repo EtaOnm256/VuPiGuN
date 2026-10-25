@@ -283,7 +283,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                                         infight_wait = 0;
                                     }*/
 
-                                    if (target_angle <= 90)
+                                    if (robotController.rightWeapon != null && target_angle <= robotController.rightWeapon.firing_angle - 10.0f)
                                         allow_fire = true;
                                 }
                                 prev_dodge = dodge;
@@ -341,7 +341,7 @@ public class RobotAI_Shenlong : RobotAI_Base
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (target_angle <= 90)
+                                if (robotController.rightWeapon != null && target_angle <= robotController.rightWeapon.firing_angle - 10.0f)
                                     allow_fire = true;
 
                                 if (mindist < jumpslash_dist && robotController.boost >= robotController.robotParameter.Boost_Max / 2)

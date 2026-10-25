@@ -416,7 +416,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                if (target_angle <= 100)
+                                if (robotController.rightWeapon != null && target_angle <= robotController.rightWeapon.firing_angle)
                                     allow_fire = true;
 
                                 if (mindist < 20.0f)
@@ -446,7 +446,7 @@ public class RobotAI_Gargoyle : RobotAI_Base
                                     }
                                 }
 
-                                if (floorhit.distance > 25.0f && target_angle <= 90)
+                                if (floorhit.distance > 25.0f && robotController.rightWeapon != null && target_angle <= robotController.rightWeapon.firing_angle)
                                     allow_fire = true;
 
                                 if (mindist < 20.0f)

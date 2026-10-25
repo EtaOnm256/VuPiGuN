@@ -364,7 +364,7 @@ public class RobotAI_Leopard : RobotAI_Base
                                 if (robotController.Grounded)
                                     state = State.Ground;
 
-                                //if (target_angle <= 60)
+                                //if (robotController.rightWeapon != null && target_angle <= robotController.rightWeapon.firing_angle-10.0f)
                                 //    allow_fire = true;
 
                                 if (mindist < 20.0f)
