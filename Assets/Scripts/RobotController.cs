@@ -2029,6 +2029,8 @@ public class RobotController : Pausable
 
             if(rightWeapon != null && rightWeapon.dualwielded)
                 lhandmultiAimConstraint.weight = aiming_factor;
+            else
+                lhandmultiAimConstraint.weight = 0.0f;
 
             overrideTransform.weight = _rarmaimweight;
 
@@ -3550,6 +3552,8 @@ public class RobotController : Pausable
             lhandmultiAimConstraint.weight = rhandaimweight_thisframe;
             AimHelper_LHand.transform.position = LHand.transform.position + target_rot_rhand * Vector3.forward * 10.0f;
         }
+        else
+            lhandmultiAimConstraint.weight = 0.0f;
 
          overrideTransform.weight = _rarmaimweight;
 
