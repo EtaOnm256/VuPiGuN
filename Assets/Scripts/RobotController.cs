@@ -6378,9 +6378,7 @@ public class RobotController : Pausable
                     animator.Play("Fire", 1, 0.0f);
             }
 
-
-
-            if (angle > rightWeapon.firing_angle || (lowerBodyState == LowerBodyState.STEP && ground_boost_now))
+            if (angle > firing_angle_effective() || (lowerBodyState == LowerBodyState.STEP && ground_boost_now))
             {
                 if (lowerBodyState == LowerBodyState.AIR || lowerBodyState == LowerBodyState.DASH || lowerBodyState == LowerBodyState.AIRROTATE)
                 {
@@ -6421,6 +6419,16 @@ public class RobotController : Pausable
         quickdraw_followthrough = quick;
         rightWeapon.ResetCycle();
         fire_dispatch_triggerhold = fire_dispatch_triggerhold_max;
+    }
+
+    public float firing_angle_effective()
+    {
+        if (rightWeapon == null)
+            return 0.0f;
+        else if (robotParameter.itemFlag.HasFlag(ItemFlag.TrackingSystem))
+            return rightWeapon.firing_angle + 40.0f;
+        else
+            return rightWeapon.firing_angle;
     }
 
     bool AcceptMainFire(float angle)

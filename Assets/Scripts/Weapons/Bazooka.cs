@@ -26,6 +26,11 @@ public class Bazooka : Weapon
     {
         get { return 60.0f; }
     }
+    override public float aiming_angle_speed
+    {
+        get { return 0.5f; }
+    }
+
 
     override public float firing_multiplier
     {

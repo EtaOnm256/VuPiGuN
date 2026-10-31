@@ -92,7 +92,7 @@ public class IntermissionButton : MonoBehaviour
 
     ShopItemParts[] shopItemParts =
     {
-        new ShopItemParts{tier=1,name = "トラッキングシステム",description="近距離における射撃の照準性能が強化される。",price=1000,itemFlag=RobotController.ItemFlag.TrackingSystem},
+        new ShopItemParts{tier=1,name = "トラッキングシステム",description="近距離における射撃の照準性能が強化される。またメイン武装の射角が広がる（一部を除く）。",price=1000,itemFlag=RobotController.ItemFlag.TrackingSystem},
         new ShopItemParts{tier=1,name = "アジャイルブースター",description="ステップと空中ダッシュの初速が速くなる。",price=1500,itemFlag=RobotController.ItemFlag.AgileBooster },
         new ShopItemParts{tier=1,name = "ステディショット",description="射撃+下フリックで構えて強力な射撃をする。全ての攻撃からキャンセル可能。\n\n※射撃系追加技の使用回数の回復速度と最大保持数が増加する。",price=2000,itemFlag=RobotController.ItemFlag.SteadyShoot},
         new ShopItemParts{tier=1,name = "チェインファイア",description="メイン射撃からサブ射撃にキャンセルできるようになる。また、サブ射撃の弾数が早く回復する。",price=1000,itemFlag=RobotController.ItemFlag.ChainFire },

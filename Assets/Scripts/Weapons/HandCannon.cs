@@ -66,7 +66,7 @@ public class HandCannon : Weapon
 
     override public float aiming_angle_speed
     {
-        get { return 1.0f; }
+        get { return 0.25f; }
     }
     protected override void OnAwake()
     {

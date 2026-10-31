@@ -173,5 +173,5 @@ MonoBehaviour:
   barrel_origin: {fileID: 1566181169961162494}
   _optimal_range_max: 3.402823e+38
   _optimal_range_min: 500
-  _firing_angle: 150
+  _firing_angle: 100
   _firing_multiplier: 2

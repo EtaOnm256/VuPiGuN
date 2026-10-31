@@ -116,7 +116,7 @@ public class Weapon : Pausable
 
     virtual public float aiming_angle_speed
     {
-        get { return 2.0f; }
+        get { return 1.0f; }
     }
 
     //virtual public bool dualwielded
