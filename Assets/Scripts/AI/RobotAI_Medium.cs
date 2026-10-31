@@ -381,12 +381,13 @@ public class RobotAI_Medium : RobotAI_Base
                         case State.Ascend:
                             {
                                 jump = true;
-
                                 if (robotController.Grounded)
                                     state = State.Ground;
                                 else if (overheating)
                                     state = State.Decend;
-                                else if ( (floorhit.distance > 15.0f || dodge)
+                                else if (floorhit.distance > 25.0f)
+                                    jump = false;
+                                else if ((floorhit.distance > 15.0f || dodge)
                                     && (robotController.upperBodyState == RobotController.UpperBodyState.STAND || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.NextDrive))
                                     )
                                 {

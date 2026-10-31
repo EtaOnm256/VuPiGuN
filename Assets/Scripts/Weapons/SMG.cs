@@ -103,7 +103,7 @@ public class SMG : Weapon
         get { return _firing_multiplier; }
     }
 
-    [SerializeField] float _aiming_angle_speed = 1.0f;
+    [SerializeField] float _aiming_angle_speed = 1.5f;
     override public float aiming_angle_speed
     {
         get { return _aiming_angle_speed; }

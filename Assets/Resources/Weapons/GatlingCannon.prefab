@@ -182,7 +182,7 @@ MonoBehaviour:
   rotary_barrel: {fileID: 7516724599195890659}
   _gatling: 1
   _firing_multiplier: 1
-  _aiming_angle_speed: 0.5
+  _aiming_angle_speed: 1
   _firing_angle: 60
 --- !u!1001 &7246763368479968946
 PrefabInstance:

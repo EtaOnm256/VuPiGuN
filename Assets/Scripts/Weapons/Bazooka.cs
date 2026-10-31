@@ -28,7 +28,7 @@ public class Bazooka : Weapon
     }
     override public float aiming_angle_speed
     {
-        get { return 0.5f; }
+        get { return 1.0f; }
     }
 
 
