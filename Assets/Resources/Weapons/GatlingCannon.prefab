@@ -23,13 +23,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645920276618267890}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.01345, z: 0.04639}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2876848624372011380}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2555346578151004396
 GameObject:
@@ -54,20 +54,20 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2555346578151004396}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.01345, z: 0.01653}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2876848624372011380}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2334597341052319391
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c6b8c287b738ce64080512eb65a2191e, type: 3}
@@ -119,6 +119,7 @@ PrefabInstance:
       value: GatlingCannon
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: c6b8c287b738ce64080512eb65a2191e, type: 3}
       insertIndex: -1
@@ -129,6 +130,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: c6b8c287b738ce64080512eb65a2191e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5612476671434761823}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c6b8c287b738ce64080512eb65a2191e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -771305121186622180}
   m_SourcePrefab: {fileID: 100100000, guid: c6b8c287b738ce64080512eb65a2191e, type: 3}
 --- !u!4 &2876848624372011380 stripped
 Transform:
@@ -163,7 +168,6 @@ MonoBehaviour:
   trajectory: 0
   projectile_gravity: 0
   projectile_speed: 0
-  _chargeshot: 0
   bullet_prefab: {fileID: 6571210301752455124, guid: 4a1f6999046f2af45932805c1ecaa8db, type: 3}
   beam: 0
   solidemit_prefab: {fileID: 8961267772553168207, guid: a9188262140e6d748bca1106490714a3, type: 3}
@@ -178,12 +182,14 @@ MonoBehaviour:
   rotary_barrel: {fileID: 7516724599195890659}
   _gatling: 1
   _firing_multiplier: 1
+  _aiming_angle_speed: 0.5
+  _firing_angle: 60
 --- !u!1001 &7246763368479968946
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TransformParent: {fileID: 2876848624372011380}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: bd3189dfd91b2d1408c1184077ab76c0, type: 3}
@@ -247,7 +253,9 @@ PrefabInstance:
       value: Gatling_Barrel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd3189dfd91b2d1408c1184077ab76c0, type: 3}
 --- !u!4 &7141325402528721241 stripped
 Transform:

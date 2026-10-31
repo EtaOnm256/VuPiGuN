@@ -71,11 +71,11 @@ public class HeatAxe : InfightWeapon
 
             _motionProperty = new Dictionary<RobotController.SubState_Slash, MotionProperty>
             {
-                { RobotController.SubState_Slash.GroundSlash,new MotionProperty{DashSpeed = 20.0f ,DashDuration = 67 ,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
-                { RobotController.SubState_Slash.AirSlash,new MotionProperty{DashSpeed = 30.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
-                { RobotController.SubState_Slash.LowerSlash,new MotionProperty{DashSpeed = 30.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
-                 { RobotController.SubState_Slash.QuickSlash,new MotionProperty{DashSpeed = 30.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
-                 { RobotController.SubState_Slash.DashSlash,new MotionProperty{DashSpeed = 40.0f ,DashDuration = 67/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                { RobotController.SubState_Slash.GroundSlash,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45 ,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue} },
+                { RobotController.SubState_Slash.AirSlash,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                { RobotController.SubState_Slash.LowerSlash,new MotionProperty{DashSpeed = 25.0f ,DashDuration = 45,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                 { RobotController.SubState_Slash.QuickSlash,new MotionProperty{DashSpeed = 37.5f ,DashDuration = 45/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
+                 { RobotController.SubState_Slash.DashSlash,new MotionProperty{DashSpeed = 50.0f ,DashDuration = 45/2,SlashDistance = 4.5f,RotateSpeed=4.0f,SlashDistance_Min = float.MinValue } },
             };
 
 

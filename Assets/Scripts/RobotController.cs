@@ -4869,11 +4869,12 @@ public class RobotController : Pausable
                             else
                                 Sword.knockBackType = slash_count < Sword.slashMotionInfo[subState_Slash].num - 1 ? KnockBackType_Deal.Normal : KnockBackType_Deal.Finish;
 
-                            if(subState_Slash != SubState_Slash.DashSlash)
+                            _verticalVelocity = 0.0f; // 振りかぶってからOnDropAirまでの間に垂直速度が維持されてるとずれる
+
+                            if (subState_Slash != SubState_Slash.DashSlash)
                                 _animator.CrossFadeInFixedTime(Sword.slashMotionInfo[subState_Slash]._animID[slash_count], 0.0f, 0);
 
                             audioSource.PlayOneShot(audioClip_Swing);
-        
                         }
 
                         if (robotParameter.itemFlag.HasFlag(ItemFlag.SeedOfArts))

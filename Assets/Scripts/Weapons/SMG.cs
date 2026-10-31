@@ -102,6 +102,19 @@ public class SMG : Weapon
     {
         get { return _firing_multiplier; }
     }
+
+    [SerializeField] float _aiming_angle_speed = 1.0f;
+    override public float aiming_angle_speed
+    {
+        get { return _aiming_angle_speed; }
+    }
+
+    [SerializeField] float _firing_angle = 100.0f;
+    override public float firing_angle
+    {
+        get { return _firing_angle; }
+    }
+
     override public float lockon_multiplier
     {
         get { return 3.0f; }

@@ -51,7 +51,7 @@ public class CannonBall : Projectile
 
     public MeshRenderer meshRenderer;
 
-    int damage = 100;
+    int damage = 125;
     public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
     // Update is called once per frame
     protected override void OnFixedUpdate()
