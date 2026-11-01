@@ -39,6 +39,11 @@ public class SolidRifle : Weapon
         get { return 1.15f; }
     }
 
+    [SerializeField] float _aiming_angle_speed = 1.5f;
+    override public float aiming_angle_speed
+    {
+        get { return _aiming_angle_speed; }
+    }
     public override int energy
     {
         set
