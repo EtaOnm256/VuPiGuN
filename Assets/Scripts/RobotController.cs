@@ -735,7 +735,8 @@ public class RobotController : Pausable
         SeedOfArts = 1 << 21,
         SpinningSlash = 1 << 22,
         VoidShift = 1 << 23,
-        HorizonSweep = 1 << 24
+        HorizonSweep = 1 << 24,
+        AssaultArmor = 1 << 25
     }
 
 
@@ -752,7 +753,7 @@ public class RobotController : Pausable
     {
         get
         {
-            return spawn_completed && !dead && lowerBodyState != LowerBodyState.VOIDSHIFT;
+            return spawn_completed && !dead;
         }
     }
 
@@ -768,7 +769,10 @@ public class RobotController : Pausable
             return;*/
 
         if (invulnerable)
+        {
+            DoHitStop(2);
             return;
+        }
 
         if (knockBackType == KnockBackType_Deal.Weak_MachineGun || knockBackType == KnockBackType_Deal.Weak_MachineGun_Modern || knockBackType == KnockBackType_Deal.Weak_ShotGun)
         {
@@ -3808,11 +3812,11 @@ public class RobotController : Pausable
 
         bool regen_boost_now = false;
 
-        invulnerable = false;
+        
 
         if (hitstop_timer <= 0)
         {
-
+            invulnerable = false;
             switch (lowerBodyState)
             {
                 case LowerBodyState.STAND:
@@ -4404,6 +4408,8 @@ public class RobotController : Pausable
 
                                         _controller.Move(new Vector3(0.0f, 0.1f, 0.0f));
                                     }
+                                    if (robotParameter.itemFlag.HasFlag(ItemFlag.AssaultArmor))
+                                        invulnerable = true;
                                 }
                                 break;
 
@@ -4905,6 +4911,9 @@ public class RobotController : Pausable
                                     AcceptStep(true);
                             }
                         }
+
+                        if (robotParameter.itemFlag.HasFlag(ItemFlag.AssaultArmor))
+                            invulnerable = true;
                     }
                     break;
                 case LowerBodyState.KNOCKBACK:
@@ -5345,13 +5354,18 @@ public class RobotController : Pausable
 
                             if (event_slash/* && _verticalVelocity == -Sword.motionProperty[LowerBodyState.JumpSlash_Jump].DashSpeed*/)
                             {
-                                
+
                                 if (Grounded)
                                 {
                                     Sword.slashing = false;
                                     TransitLowerBodyState(LowerBodyState.JumpSlash_Ground);
                                     upperBodyState = UpperBodyState.JumpSlash_Ground;
                                 }
+                            }
+                            else
+                            {
+                                if (robotParameter.itemFlag.HasFlag(ItemFlag.AssaultArmor))
+                                    invulnerable = true;
                             }
                             GroundedCheck();
                         }
