@@ -4527,27 +4527,36 @@ public class RobotController : Pausable
 
                         float speedOffset = 0.1f;
                         float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+                        float speedChangeRate_thisTime;
 
                         if (extreme_slide_now && !ground_boost_now)
                         {
-                            targetSpeed = Mathf.Lerp(0.0f, robotParameter.StepSpeed, ((float)stepremain) / robotParameter.StepLimit);
+                            //targetSpeed = Mathf.Lerp(0.0f, robotParameter.StepSpeed, ((float)stepremain) / robotParameter.StepLimit);
+                            targetSpeed = 0.0f;
+
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
+                                speedChangeRate_thisTime = robotParameter.SpeedChangeRate * 0.30f;
+                            else
+                                speedChangeRate_thisTime = robotParameter.SpeedChangeRate * 0.20f;
                         }
                         else
                         {
                             targetSpeed = robotParameter.StepSpeed;
+
+                            if (robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
+                                speedChangeRate_thisTime = robotParameter.SpeedChangeRate * 0.5f;
+                            else
+                                speedChangeRate_thisTime = robotParameter.SpeedChangeRate;
                         }
+
+             
 
                         // accelerate or decelerate to target speed
                         if (currentHorizontalSpeed < targetSpeed - speedOffset ||
                             currentHorizontalSpeed > targetSpeed + speedOffset)
                         {
-                            if (currentHorizontalSpeed > targetSpeed + speedOffset
-                                  && robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
-                                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                                Time.deltaTime * robotParameter.SpeedChangeRate*0.35f);
-                            else
-                                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                                Time.deltaTime * robotParameter.SpeedChangeRate);
+                            _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                                Time.deltaTime * speedChangeRate_thisTime);
 
                             // round speed to 3 decimal places
                             _speed = Mathf.Round(_speed * 1000f) / 1000f;
