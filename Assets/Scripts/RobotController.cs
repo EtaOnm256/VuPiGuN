@@ -3865,8 +3865,14 @@ public class RobotController : Pausable
                             {
                                 // creates curved result rather than a linear one giving a more organic speed change
                                 // note T in Lerp is clamped, so we don't need to clamp our speed
-                                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                                Time.deltaTime * robotParameter.SpeedChangeRate);
+
+                                if(lowerBodyState == LowerBodyState.DASH && currentHorizontalSpeed > targetSpeed + speedOffset
+                                    && robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
+                                    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                                                Time.deltaTime * robotParameter.SpeedChangeRate*0.25f);
+                                else
+                                    _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                                                Time.deltaTime * robotParameter.SpeedChangeRate);
 
                                 // round speed to 3 decimal places
                                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
@@ -4524,7 +4530,7 @@ public class RobotController : Pausable
 
                         if (extreme_slide_now && !ground_boost_now)
                         {
-                            targetSpeed = Mathf.Lerp(robotParameter.StepSpeed*0.5f, robotParameter.StepSpeed, ((float)stepremain) / robotParameter.StepLimit);
+                            targetSpeed = Mathf.Lerp(0.0f, robotParameter.StepSpeed, ((float)stepremain) / robotParameter.StepLimit);
                         }
                         else
                         {
@@ -4535,9 +4541,12 @@ public class RobotController : Pausable
                         if (currentHorizontalSpeed < targetSpeed - speedOffset ||
                             currentHorizontalSpeed > targetSpeed + speedOffset)
                         {
-                            // creates curved result rather than a linear one giving a more organic speed change
-                            // note T in Lerp is clamped, so we don't need to clamp our speed
-                            _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                            if (currentHorizontalSpeed > targetSpeed + speedOffset
+                                  && robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
+                                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
+                                Time.deltaTime * robotParameter.SpeedChangeRate*0.35f);
+                            else
+                                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
                                 Time.deltaTime * robotParameter.SpeedChangeRate);
 
                             // round speed to 3 decimal places
@@ -7231,7 +7240,6 @@ public class RobotController : Pausable
         public GameObject subweapon_prefab = null;
         public bool dualwield_lightweapon = false;
         public ItemFlag itemFlag = 0;
-        //public ItemFlag itemFlag = ItemFlag.NextDrive | ItemFlag.ExtremeSlide | ItemFlag.GroundBoost | ItemFlag.VerticalVernier | ItemFlag.QuickIgniter;
 
         public int Cost = 100;
         public int MaxHP = 500;
