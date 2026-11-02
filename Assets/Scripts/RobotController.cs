@@ -19,6 +19,7 @@ using System.Linq;
 using static UIController_Overlay;
 using static UnityEditor.PlayerSettings;
 using UnityEngine.XR;
+using UnityEditor.Experimental.GraphView;
 
 
 
@@ -4533,11 +4534,10 @@ public class RobotController : Pausable
                         {
                             //targetSpeed = Mathf.Lerp(0.0f, robotParameter.StepSpeed, ((float)stepremain) / robotParameter.StepLimit);
                             targetSpeed = 0.0f;
-
                             if (robotParameter.itemFlag.HasFlag(ItemFlag.AgileBooster))
-                                speedChangeRate_thisTime = robotParameter.SpeedChangeRate * 0.30f;
+                                speedChangeRate_thisTime = robotParameter.SpeedChangeRate * 0.40f;
                             else
-                                speedChangeRate_thisTime = robotParameter.SpeedChangeRate * 0.20f;
+                                speedChangeRate_thisTime = robotParameter.SpeedChangeRate * 0.30f;
                         }
                         else
                         {
@@ -6640,7 +6640,11 @@ public class RobotController : Pausable
                     _speed = robotParameter.StepSpeed * 2;
                 }
                 else
+                { 
                     _speed = robotParameter.StepSpeed;
+                }
+                if (extreme_slide_now)
+                    _speed *= 1.5f;
             }
         }
     }
