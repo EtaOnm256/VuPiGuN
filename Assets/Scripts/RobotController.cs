@@ -734,7 +734,7 @@ public class RobotController : Pausable
         MassIllusion = 1 << 20,
         SeedOfArts = 1 << 21,
         SpinningSlash = 1 << 22,
-        VoidShift = 1 << 23,
+        RapidStream = 1 << 23,
         HorizonSweep = 1 << 24,
         AssaultArmor = 1 << 25
     }
@@ -7061,7 +7061,7 @@ public class RobotController : Pausable
 
             bool voidshift = false;
 
-            if (robotParameter.itemFlag.HasFlag(ItemFlag.VoidShift) && dist >= voidshift_limit_distance)
+            if (robotParameter.itemFlag.HasFlag(ItemFlag.RapidStream) && dist >= voidshift_limit_distance)
             {
                 voidshift = true;
             }

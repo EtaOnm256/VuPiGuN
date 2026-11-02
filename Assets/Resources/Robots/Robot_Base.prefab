@@ -2711,7 +2711,7 @@ MonoBehaviour:
   _material: {fileID: 0}
   _duration: 60
   _layer: 6
-  _interpolate: 16
+  _interpolate: 3
   _renderers:
   - {fileID: 8369983012435980953}
 --- !u!1 &5741547912829615669

@@ -342,7 +342,7 @@ public class RobotAI_Medium : RobotAI_Base
                                             
 
                                         if ( (current_target.Grounded || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.IaiSlash) || robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.SeedOfArts))
-                                            && (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
+                                            && (robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RapidStream) || mindist < infight_dist))
                                             allow_infight = true;
 
                                         if (robotController.rightWeapon != null && target_angle <= robotController.firing_angle_effective() - 10.0f)
@@ -407,7 +407,7 @@ public class RobotAI_Medium : RobotAI_Base
                                         if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
                                             allow_horizon = true;
 
-                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
+                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RapidStream) || mindist < infight_dist))
                                             allow_infight = true;
                                     }
                                 }
@@ -542,7 +542,7 @@ public class RobotAI_Medium : RobotAI_Base
                                         if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
                                             allow_horizon = true;
 
-                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
+                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RapidStream) || mindist < infight_dist))
                                             allow_infight = true;
                                     }
 
@@ -589,7 +589,7 @@ public class RobotAI_Medium : RobotAI_Base
                                         if (mindist < horizon_dist && Mathf.Abs(mindist_y) < mindist * 0.5f)
                                             allow_horizon = true;
 
-                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.VoidShift) || mindist < infight_dist))
+                                        if ((robotController.robotParameter.itemFlag.HasFlag(RobotController.ItemFlag.RapidStream) || mindist < infight_dist))
                                             allow_infight = true;
                                     }
 
