@@ -728,7 +728,7 @@ public class RobotController : Pausable
         QuickDraw = 1 << 13,
         RunningTakeOff = 1 << 14,
         CounterMeasure = 1 << 15,
-        AeroJammer = 1 << 16,
+        WaveRide = 1 << 16,
         TrackingSystem = 1 << 17,
         MirageCloud = 1 << 18,
         InfightBoost = 1 << 19,
@@ -4514,10 +4514,11 @@ public class RobotController : Pausable
                             {
                                 _speed = robotParameter.AirDashSpeed * 2;
                             }
-                            if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroJammer))
-                            {
-                                StartMirage(10);
-                            }
+                            //旧エアロジャマー
+                            //if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroJammer))
+                            //{
+                            //    StartMirage(10);
+                            //}
                         }
                     }
                     break;
@@ -5734,27 +5735,81 @@ public class RobotController : Pausable
                 MoveAccordingTerrain(new Vector3(currentHorizontalSpeed_X, 0.0f, currentHorizontalSpeed_Z) * Time.deltaTime +
                                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
             }
-            else
+            else if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.AIRSTEADYHEAVYFIRE || lowerBodyState == LowerBodyState.STEADYHEAVYFIRE)
             {
-                if (lowerBodyState == LowerBodyState.AIRHEAVYFIRE || lowerBodyState == LowerBodyState.HEAVYFIRE || lowerBodyState == LowerBodyState.AIRSTEADYHEAVYFIRE || lowerBodyState == LowerBodyState.STEADYHEAVYFIRE)
-                {
-                    Vector3 targetDirection = transform.rotation * Vector3.back;
+                Vector3 targetDirection = transform.rotation * Vector3.back;
 
-                    // move the player
-                    MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
-                                     new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+                // move the player
+                MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
+                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            }
+            else if(lowerBodyState == LowerBodyState.AIR && robotParameter.itemFlag.HasFlag(ItemFlag.WaveRide))
+            {
+                Vector3 targetDirection = transform.rotation * Vector3.forward;
+                float speedOffset = 0.1f;
+
+
+                Vector3 currentHorizontalVelocity = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z);
+                Vector3 targetHorizontalVelocity = targetDirection*targetSpeed;
+
+                float brakefactor;
+
+                if (Vector3.Dot( (targetHorizontalVelocity-currentHorizontalVelocity).normalized , targetHorizontalVelocity.normalized) > 0.0f)
+                    brakefactor = 1.0f;
+                else
+                    brakefactor = 0.035f;
+
+                // a reference to the players current horizontal velocity
+                float currentHorizontalSpeed_X = _controller.velocity.x;
+                float targetHorizontalSpeed_X = targetDirection.x * targetSpeed;
+
+                // accelerate or decelerate to target speed
+                if (currentHorizontalSpeed_X < targetSpeed - speedOffset ||
+                    currentHorizontalSpeed_X > targetSpeed + speedOffset)
+                {
+                    // creates curved result rather than a linear one giving a more organic speed change
+                    // note T in Lerp is clamped, so we don't need to clamp our speed
+                    currentHorizontalSpeed_X = Mathf.Lerp(currentHorizontalSpeed_X, targetHorizontalSpeed_X, Time.deltaTime * robotParameter.SpeedChangeRate * brakefactor);
+
+                    // round speed to 3 decimal places
+                    currentHorizontalSpeed_X = Mathf.Round(currentHorizontalSpeed_X * 1000f) / 1000f;
                 }
                 else
                 {
-
-
-                    Vector3 targetDirection = transform.rotation * Vector3.forward;
-
-                    // move the player
-                    MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
-                                        new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-
+                    currentHorizontalSpeed_X = targetSpeed;
                 }
+
+                // a reference to the players current horizontal velocity
+                float currentHorizontalSpeed_Z = _controller.velocity.z;
+                float targetHorizontalSpeed_Z = targetDirection.z * targetSpeed;
+
+                // accelerate or decelerate to target speed
+                if (currentHorizontalSpeed_Z < targetSpeed - speedOffset ||
+                    currentHorizontalSpeed_Z > targetSpeed + speedOffset)
+                {
+                    // creates curved result rather than a linear one giving a more organic speed change
+                    // note T in Lerp is clamped, so we don't need to clamp our speed
+                    currentHorizontalSpeed_Z = Mathf.Lerp(currentHorizontalSpeed_Z, targetHorizontalSpeed_Z, Time.deltaTime * robotParameter.SpeedChangeRate * brakefactor);
+
+                    // round speed to 3 decimal places
+                    currentHorizontalSpeed_Z = Mathf.Round(currentHorizontalSpeed_Z * 1000f) / 1000f;
+                }
+                else
+                {
+                    currentHorizontalSpeed_Z = targetSpeed;
+                }
+
+              
+                MoveAccordingTerrain(new Vector3(currentHorizontalSpeed_X, 0.0f, currentHorizontalSpeed_Z) * Time.deltaTime +
+                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            }
+            else
+            {
+                Vector3 targetDirection = transform.rotation * Vector3.forward;
+
+                // move the player
+                MoveAccordingTerrain(targetDirection.normalized * (_speed * Time.deltaTime) +
+                                    new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
             }
 
             if(regen_boost_now)
@@ -6569,10 +6624,11 @@ public class RobotController : Pausable
                     {
                         _speed = robotParameter.AirDashSpeed * 2;
                     }
-                    if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroJammer))
-                    {
-                        StartMirage(10);
-                    }
+                    //旧エアロジャマー
+                    //if (robotParameter.itemFlag.HasFlag(ItemFlag.AeroJammer))
+                    //{
+                    //    StartMirage(10);
+                    //}
                 }
                 else
                 {

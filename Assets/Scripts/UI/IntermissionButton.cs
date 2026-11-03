@@ -105,7 +105,7 @@ public class IntermissionButton : MonoBehaviour
         new ShopItemParts{tier=1,name = "ダッシュスラッシュ",description="格闘+上フリック、または格闘コンボ中に上入力+格闘でダッシュ斬りをする。射撃からキャンセル可能。\n\n※格闘系追加技の使用回数の回復速度と最大保持数が増加する。",price=2000,itemFlag=RobotController.ItemFlag.DashSlash },
         new ShopItemParts{tier=1,name = "ホバークラフト",description="地上での硬直中、滑走するようになる。",price=2000,itemFlag=RobotController.ItemFlag.Hovercraft },
         new ShopItemParts{tier=1,name = "スピンスラッシュ",description="格闘コンボ中に下入力+格闘で高威力の回転切りに派生する。",price=1500,itemFlag=RobotController.ItemFlag.SpinningSlash },
-        new ShopItemParts{tier=1,name = "エアロジャマー",description="空中ダッシュの開始時、残像を発生させる。\n\n※残像…ステップなどの行動時に発生し、攻撃の追尾を振り切る効果がある。",price=1500,itemFlag=RobotController.ItemFlag.AeroJammer },
+        new ShopItemParts{tier=1,name = "ウェイブライド",description="空中ダッシュからの上昇と落下中、進行方向と機体の向きが合っていれば減速が緩やかになる。",price=1500,itemFlag=RobotController.ItemFlag.WaveRide },
         new ShopItemParts{tier=2,name = "グランドブースト",description="ステップ中、ブーストボタンを押し続けるとブーストを消費してダッシュし続ける。途中で前後左右を入力すると方向転換でき、射撃を行うと滑走する。",price=3000,itemFlag=RobotController.ItemFlag.GroundBoost },
         new ShopItemParts{tier=2,name = "フライトユニット",description="空中でもブーストが回復するようになり、滞空性能も向上する。また、射撃での静止中にも上昇できるようになる。",price=4000,itemFlag=RobotController.ItemFlag.FlightUnit },
         new ShopItemParts{tier=2,name = "ローリングショット",description="射撃+横フリックでブーストを消費して回転撃ちをする。射撃からキャンセル可能。\n\n※射撃系追加技の使用回数の回復速度と最大保持数が増加する。",price=4500,itemFlag=RobotController.ItemFlag.RollingShoot },
