@@ -5752,12 +5752,10 @@ public class RobotController : Pausable
                 Vector3 currentHorizontalVelocity = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z);
                 Vector3 targetHorizontalVelocity = targetDirection*targetSpeed;
 
+                float dot = Vector3.Dot((targetHorizontalVelocity - currentHorizontalVelocity).normalized, targetHorizontalVelocity.normalized);
                 float brakefactor;
 
-                if (Vector3.Dot( (targetHorizontalVelocity-currentHorizontalVelocity).normalized , targetHorizontalVelocity.normalized) > 0.0f)
-                    brakefactor = 1.0f;
-                else
-                    brakefactor = 0.035f;
+                brakefactor = Mathf.Lerp(1.0f, 0.035f, Mathf.Clamp01(-(dot/Mathf.Cos(60.0f*Mathf.Deg2Rad))));
 
                 // a reference to the players current horizontal velocity
                 float currentHorizontalSpeed_X = _controller.velocity.x;
