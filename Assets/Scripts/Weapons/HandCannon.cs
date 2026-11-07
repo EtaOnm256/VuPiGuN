@@ -80,7 +80,7 @@ public class HandCannon : Weapon
         energy = MaxEnergy;
 
         projectile_gravity = -CannonBall.Gravity / Time.deltaTime;
-        projectile_speed = CannonBall.Speed / Time.deltaTime;
+        projectile_speed = CannonBall.Speed;
     }
 
     // Update is called once per frame

@@ -92,7 +92,7 @@ public class MissilePod_Weist : Weapon
         anothermissilepod = (MissilePod_Weist)another;
 
         Missile beam = missile_prefab.GetComponent<Missile>();
-        projectile_speed = beam.speed / Time.deltaTime;
+        projectile_speed = beam.speed;
     }
 
     // Update is called once per frame

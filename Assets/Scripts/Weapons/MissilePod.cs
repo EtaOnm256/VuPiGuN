@@ -79,7 +79,7 @@ public class MissilePod : Weapon
         energy = MaxEnergy;
 
         Missile beam = missile_prefab.GetComponent<Missile>();
-        projectile_speed = beam.speed / Time.deltaTime;
+        projectile_speed = beam.speed;
     }
 
     // Update is called once per frame

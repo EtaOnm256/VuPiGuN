@@ -6311,9 +6311,9 @@ public class RobotController : Pausable
         return GetCenterFromTransform(new Transform2(transform));
     }
 
-    public Vector3 GetFinalTargetedPosition(Vector3 shotPosition, float bulletSpeed)
+    public Vector3 GetPredictedTargetedPosition(Vector3 shotPosition, float bulletSpeed)
     {
-        Vector3 predictedPosition = VectorUtil.LinePrediction(shotPosition, virtual_targeted_position, prev_virtual_targeted_position, bulletSpeed);
+        Vector3 predictedPosition = VectorUtil.LinePrediction(shotPosition, virtual_targeted_position, prev_virtual_targeted_position, bulletSpeed / Time.deltaTime);
 
         Vector3 org_pos = virtual_targeted_position;
         RaycastHit raycastHit;

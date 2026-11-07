@@ -86,7 +86,7 @@ public class SolidRifle : Weapon
         energy = MaxEnergy;
 
         Bullet bullet = bullet_prefab.GetComponent<Bullet>();
-        projectile_speed = bullet.speed / Time.deltaTime;
+        projectile_speed = bullet.speed;
     }
 
     // Update is called once per frame

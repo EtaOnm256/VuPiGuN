@@ -133,7 +133,7 @@ public class BusterRifle : Weapon
 
         magazine = MaxMagazine;
 
-        projectile_speed = beam.speed / Time.deltaTime;
+        projectile_speed = beam.speed;
     }
 
     bool prev_fire = false;

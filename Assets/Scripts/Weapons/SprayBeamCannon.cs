@@ -86,7 +86,7 @@ public class SprayBeamCannon : Weapon
         energy = MaxEnergy;
 
         SprayBeam beam = beam_prefab.GetComponent<SprayBeam>();
-        projectile_speed = beam.speed / Time.deltaTime;
+        projectile_speed = beam.speed;
     }
 
     // Update is called once per frame

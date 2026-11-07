@@ -121,13 +121,13 @@ public class HandGun : Weapon
         if (beam)
         {
             Beam bullet = bullet_prefab.GetComponent<Beam>();
-            projectile_speed = bullet.speed / Time.deltaTime;
+            projectile_speed = bullet.speed;
 
         }
         else
         {
             Bullet bullet = bullet_prefab.GetComponent<Bullet>();
-            projectile_speed = bullet.speed / Time.deltaTime;
+            projectile_speed = bullet.speed;
         }
     }
 

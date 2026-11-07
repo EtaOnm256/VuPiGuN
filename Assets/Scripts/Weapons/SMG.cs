@@ -142,13 +142,13 @@ public class SMG : Weapon
         if (beam)
         {
             Beam bullet = bullet_prefab.GetComponent<Beam>();
-            projectile_speed = bullet.speed / Time.deltaTime;
+            projectile_speed = bullet.speed;
 
         }
         else
         {
             SMGBullet bullet = bullet_prefab.GetComponent<SMGBullet>();
-            projectile_speed = bullet.speed / Time.deltaTime;
+            projectile_speed = bullet.speed;
         }
     }
 
