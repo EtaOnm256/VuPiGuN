@@ -33,6 +33,24 @@ public class UIController_Overlay : MonoBehaviour
     [SerializeField] GameObject icon_prefab;
     [SerializeField] GameObject inner_prefab;
 
+    public GameObject ringMenu;
+
+    public Image ringMenu_Up_Cursor;
+    public Image ringMenu_Down_Cursor;
+    public Image ringMenu_Left_Cursor;
+    public Image ringMenu_Right_Cursor;
+    public Image ringMenu_Up_Cursor_Big;
+    public Image ringMenu_Down_Cursor_Big;
+    public Image ringMenu_Left_Cursor_Big;
+    public Image ringMenu_Right_Cursor_Big;
+
+    public Image ringMenu_Up_Border;
+    public Image ringMenu_Down_Border;
+    public Image ringMenu_Left_Border;
+    public Image ringMenu_Right_Border;
+
+    public Image ringMenu_Accum_Cursor;
+
     public GameObject radarPanel;
 
     public class ReticleAndGuideline
@@ -155,7 +173,19 @@ public class UIController_Overlay : MonoBehaviour
 
     void Start()
     {
-       
+        ringMenu = transform.Find("RingMenu").gameObject;
+
+        ringMenu_Up_Cursor = ringMenu.transform.Find("Up_Cursor").gameObject.GetComponent<Image>();
+        ringMenu_Up_Cursor_Big = ringMenu.transform.Find("Up_Cursor_Big").gameObject.GetComponent<Image>();
+
+        ringMenu_Down_Cursor = ringMenu.transform.Find("Down_Cursor").gameObject.GetComponent<Image>();
+        ringMenu_Down_Cursor_Big = ringMenu.transform.Find("Down_Cursor_Big").gameObject.GetComponent<Image>();
+
+        ringMenu_Left_Cursor = ringMenu.transform.Find("Left_Cursor").gameObject.GetComponent<Image>();
+        ringMenu_Left_Cursor_Big = ringMenu.transform.Find("Left_Cursor_Big").gameObject.GetComponent<Image>();
+
+        ringMenu_Right_Cursor = ringMenu.transform.Find("Right_Cursor").gameObject.GetComponent<Image>();
+        ringMenu_Right_Cursor_Big = ringMenu.transform.Find("Right_Cursor_Big").gameObject.GetComponent<Image>();
     }
 
     private Vector3 AbsToRel(Vector3 abs,Vector3 pos,Quaternion rot)

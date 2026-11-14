@@ -272,7 +272,7 @@ public class RobotController : Pausable
 
                 if (is_player)
                 {
-                    ringMenu.SetActive(_burst);
+                    uIController_Overlay.ringMenu.SetActive(_burst);
                 }
             }
         }
@@ -584,16 +584,7 @@ public class RobotController : Pausable
     Image dangerImage_left;
     Image dangerImage_right;
 
-    GameObject ringMenu;
-
-    Image ringMenu_Up_Cursor;
-    Image ringMenu_Down_Cursor;
-    Image ringMenu_Left_Cursor;
-    Image ringMenu_Right_Cursor;
-    Image ringMenu_Up_Cursor_Big;
-    Image ringMenu_Down_Cursor_Big;
-    Image ringMenu_Left_Cursor_Big;
-    Image ringMenu_Right_Cursor_Big;
+  
 
   
     //bool ringMenu_Center_LMB_available;
@@ -1120,19 +1111,7 @@ public class RobotController : Pausable
             if (shoulderWeapon != null)
                 uIController_Overlay.AddWeapon(shoulderWeapon);
 
-            ringMenu = HUDCanvas.gameObject.transform.Find("RingMenu").gameObject;
-     
-            ringMenu_Up_Cursor = ringMenu.transform.Find("Up_Cursor").gameObject.GetComponent<Image>();
-            ringMenu_Up_Cursor_Big = ringMenu.transform.Find("Up_Cursor_Big").gameObject.GetComponent<Image>();
-      
-            ringMenu_Down_Cursor = ringMenu.transform.Find("Down_Cursor").gameObject.GetComponent<Image>();
-            ringMenu_Down_Cursor_Big = ringMenu.transform.Find("Down_Cursor_Big").gameObject.GetComponent<Image>();
-     
-            ringMenu_Left_Cursor = ringMenu.transform.Find("Left_Cursor").gameObject.GetComponent<Image>();
-            ringMenu_Left_Cursor_Big = ringMenu.transform.Find("Left_Cursor_Big").gameObject.GetComponent<Image>();
-      
-            ringMenu_Right_Cursor = ringMenu.transform.Find("Right_Cursor").gameObject.GetComponent<Image>();
-            ringMenu_Right_Cursor_Big = ringMenu.transform.Find("Right_Cursor_Big").gameObject.GetComponent<Image>();
+          
         }
 
         int shoot_skill_num = 0;
@@ -1400,24 +1379,30 @@ public class RobotController : Pausable
             animator.speed = intend_animator_speed;
     }
 
-    static Color ringMenu_enableColor_LMB = new Color(0.0f, 0.5f, 1.0f, 1.0f);
-    static Color ringMenu_disableColor_LMB = new Color(0.0f, 0.5f, 1.0f, 1.0f);
+    static Color ringMenu_enableColor_LMB = new Color(0.0f, 0.5f, 1.0f, 0.90f);
+    static Color ringMenu_activeColor_LMB = new Color(0.5f, 0.75f, 1.0f, 0.90f);
+    static Color ringMenu_disableColor_LMB = new Color(1.0f, 0.0f, 0.0f, 0.90f);
 
-    static Color ringMenu_enableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 1.0f);
-    static Color ringMenu_disableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 1.0f);
+    static Color ringMenu_enableColor_RMB = new Color(1.0f, 0.5f, 0.75f, 0.90f);
+    static Color ringMenu_activeColor_RMB = new Color(1.0f, 0.8f, 0.9f, 0.90f);
+    static Color ringMenu_disableColor_RMB = new Color(1.0f, 0.0f, 0.0f, 0.90f);
 
-    static Color getRingMenuColor(bool enable, bool LMB)
+    static Color getRingMenuColor(bool enable, bool LMB, bool active)
     {
         if (LMB)
         {
-            if (enable)
+            if (active)
+                return ringMenu_activeColor_LMB;
+            else if(enable)
                 return ringMenu_enableColor_LMB;
             else
                 return ringMenu_disableColor_LMB;
         }
         else
         {
-            if (enable)
+            if (active)
+                return ringMenu_activeColor_RMB;
+            else if (enable)
                 return ringMenu_enableColor_RMB;
             else
                 return ringMenu_disableColor_RMB;
@@ -1570,14 +1555,14 @@ public class RobotController : Pausable
                         {
                             if (_input.fire)
                             {
-                                ringMenu.SetActive(true);
+                                uIController_Overlay.ringMenu.SetActive(true);
                                 ringMenuState = RingMenuState.Shoot;
                                 ringMenuDir = RingMenuDir.Center;
                                 ringMenuAccum = Vector2.zero;
                             }
                             else if (_input.slash)
                             {
-                                ringMenu.SetActive(true);
+                                uIController_Overlay.ringMenu.SetActive(true);
                                 ringMenuState = RingMenuState.Slash;
                                 ringMenuDir = RingMenuDir.Center;
                                 ringMenuAccum = Vector2.zero;
@@ -1590,7 +1575,7 @@ public class RobotController : Pausable
                             if (!_input.fire)
                             {
                                 fire_dispatch = true;
-                                ringMenu.SetActive(false);
+                                uIController_Overlay.ringMenu.SetActive(false);
                                 ringMenuState = RingMenuState.Close;
                             }
                         }
@@ -1600,47 +1585,12 @@ public class RobotController : Pausable
                             if (!_input.slash)
                             {
                                 slash_dispatch = true;
-                                ringMenu.SetActive(false);
+                                uIController_Overlay.ringMenu.SetActive(false);
                                 ringMenuState = RingMenuState.Close;
                             }
                         }
                         break;
                 }
-
-                /*if(burst)
-                {
-                    if (_input.move.x > 0.0f)
-                    {
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Right_Outline_rectTfm.anchoredPosition;
-                    }
-                    else if (_input.move.x < 0.0f)
-                    {
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Left_Outline_rectTfm.anchoredPosition;
-                    }
-                    else if (_input.move.y < 0.0f)
-                    {
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Down_Outline_rectTfm.anchoredPosition;
-                    }
-                    else if (_input.move.y > 0.0f)
-                    {
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Up_Outline_rectTfm.anchoredPosition;
-                    }
-                    else
-                    {
-                        ringMenu_Cursor_rectTfm.anchoredPosition = ringMenu_Center_Outline_rectTfm.anchoredPosition;
-                    }
-
-                    ringMenu_Center_LMB.color = getRingMenuColor(ringMenu_Center_LMB_available, true);
-                    ringMenu_Center_RMB.color = getRingMenuColor(ringMenu_Center_RMB_available, false);
-                    ringMenu_Up_LMB.color = getRingMenuColor(ringMenu_Up_LMB_available, true);
-                    ringMenu_Up_RMB.color = getRingMenuColor(ringMenu_Up_RMB_available, false);
-                    ringMenu_Down_LMB.color = getRingMenuColor(ringMenu_Down_LMB_available, true);
-                    ringMenu_Down_RMB.color = getRingMenuColor(ringMenu_Down_RMB_available, false);
-                    ringMenu_Left_LMB.color = getRingMenuColor(ringMenu_Left_LMB_available, true);
-                    ringMenu_Left_RMB.color = getRingMenuColor(ringMenu_Left_RMB_available, false);
-                    ringMenu_Right_LMB.color = getRingMenuColor(ringMenu_Right_LMB_available, true);
-                    ringMenu_Right_RMB.color = getRingMenuColor(ringMenu_Right_RMB_available, false);
-                }*/
 
                 {
 
@@ -1774,138 +1724,161 @@ public class RobotController : Pausable
 
             if (ringMenuState != RingMenuState.Close)
             {
-                bool stay = false;
+                uIController_Overlay.ringMenu_Left_Cursor.enabled = true;
+                uIController_Overlay.ringMenu_Right_Cursor.enabled = true;
+                uIController_Overlay.ringMenu_Up_Cursor.enabled = true;
+                uIController_Overlay.ringMenu_Down_Cursor.enabled = true;
 
-                ringMenu_Left_Cursor.enabled = true;
-                ringMenu_Right_Cursor.enabled = true;
-                ringMenu_Up_Cursor.enabled = true;
-                ringMenu_Down_Cursor.enabled = true;
-
-                ringMenu_Left_Cursor_Big.enabled = false;
-                ringMenu_Right_Cursor_Big.enabled = false;
-                ringMenu_Up_Cursor_Big.enabled = false;
-                ringMenu_Down_Cursor_Big.enabled = false;
+                uIController_Overlay.ringMenu_Left_Cursor_Big.enabled = false;
+                uIController_Overlay.ringMenu_Right_Cursor_Big.enabled = false;
+                uIController_Overlay.ringMenu_Up_Cursor_Big.enabled = false;
+                uIController_Overlay.ringMenu_Down_Cursor_Big.enabled = false;
 
                 if (ringMenuState == RingMenuState.Shoot)
                 {
-                    ringMenu_Left_Cursor.enabled = ringMenu_Left_LMB_available;
-                    ringMenu_Right_Cursor.enabled = ringMenu_Right_LMB_available;
-                    ringMenu_Up_Cursor.enabled = ringMenu_Up_LMB_available;
-                    ringMenu_Down_Cursor.enabled = ringMenu_Down_LMB_available;
+                    uIController_Overlay.ringMenu_Left_Border.enabled = ringMenu_Left_LMB_available;
+                    uIController_Overlay.ringMenu_Right_Border.enabled = ringMenu_Right_LMB_available;
+                    uIController_Overlay.ringMenu_Up_Border.enabled  = ringMenu_Up_LMB_available;
+                    uIController_Overlay.ringMenu_Down_Border.enabled = ringMenu_Down_LMB_available;
 
                     if (shoot_skill_energy >= shoot_skill_Reload_Time)
                     {
+                        uIController_Overlay.ringMenu_Left_Border.color =
+                        uIController_Overlay.ringMenu_Right_Border.color =
+                        uIController_Overlay.ringMenu_Up_Border.color =
+                        uIController_Overlay.ringMenu_Down_Border.color =
 
-                        ringMenu_Left_Cursor.color =
-                        ringMenu_Right_Cursor.color =
-                        ringMenu_Up_Cursor.color =
-                        ringMenu_Down_Cursor.color =
+                        uIController_Overlay.ringMenu_Accum_Cursor.color =
+                            getRingMenuColor(true, true, false);
 
-                        ringMenu_Left_Cursor_Big.color =
-                        ringMenu_Right_Cursor_Big.color =
-                        ringMenu_Up_Cursor_Big.color =
-                        ringMenu_Down_Cursor_Big.color = getRingMenuColor(true, true);
+                        switch (ringMenuDir)
+                        {
+                            case RingMenuDir.Left:
+                                uIController_Overlay.ringMenu_Left_Border.color = uIController_Overlay.ringMenu_Accum_Cursor.color = getRingMenuColor(true, true, true);
+                                break;
+                            case RingMenuDir.Right:
+                                uIController_Overlay.ringMenu_Right_Border.color = uIController_Overlay.ringMenu_Accum_Cursor.color = getRingMenuColor(true, true, true);
+                                break;
+                            case RingMenuDir.Up:
+                                uIController_Overlay.ringMenu_Up_Border.color = uIController_Overlay.ringMenu_Accum_Cursor.color = getRingMenuColor(true, true, true);
+                                break;
+                            case RingMenuDir.Down:
+                                uIController_Overlay.ringMenu_Down_Border.color = uIController_Overlay.ringMenu_Accum_Cursor.color = getRingMenuColor(true, true, true);
+                                break;
+                        }
+
                     }
                     else
                     {
-                        ringMenu_Left_Cursor.color =
-                     ringMenu_Right_Cursor.color =
-                     ringMenu_Up_Cursor.color =
-                     ringMenu_Down_Cursor.color =
+                        uIController_Overlay.ringMenu_Left_Border.color =
+                        uIController_Overlay.ringMenu_Right_Border.color =
+                        uIController_Overlay.ringMenu_Up_Border.color =
+                        uIController_Overlay.ringMenu_Down_Border.color =
 
-                     ringMenu_Left_Cursor_Big.color =
-                     ringMenu_Right_Cursor_Big.color =
-                     ringMenu_Up_Cursor_Big.color =
-                     ringMenu_Down_Cursor_Big.color = //Color.red;
-                     new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                        uIController_Overlay.ringMenu_Accum_Cursor.color =
+                            getRingMenuColor(false, true, false);
                     }
                 }
                 else
                 {
-                 
-                    ringMenu_Left_Cursor.enabled = ringMenu_Left_RMB_available;
-                    ringMenu_Right_Cursor.enabled = ringMenu_Right_RMB_available;
-                    ringMenu_Up_Cursor.enabled = ringMenu_Up_RMB_available;
-                    ringMenu_Down_Cursor.enabled = ringMenu_Down_RMB_available;
+                    uIController_Overlay.ringMenu_Left_Border.enabled = ringMenu_Left_RMB_available;
+                    uIController_Overlay.ringMenu_Right_Border.enabled = ringMenu_Right_RMB_available;
+                    uIController_Overlay.ringMenu_Up_Border.enabled = ringMenu_Up_RMB_available;
+                    uIController_Overlay.ringMenu_Down_Border.enabled = ringMenu_Down_RMB_available;
 
                     if (slash_skill_energy >= slash_skill_Reload_Time)
                     {
+                        uIController_Overlay.ringMenu_Left_Border.color =
+                        uIController_Overlay.ringMenu_Right_Border.color =
+                        uIController_Overlay.ringMenu_Up_Border.color =
+                        uIController_Overlay.ringMenu_Down_Border.color =
 
-                        ringMenu_Left_Cursor.color =
-                        ringMenu_Right_Cursor.color =
-                        ringMenu_Up_Cursor.color =
-                        ringMenu_Down_Cursor.color =
+                        uIController_Overlay.ringMenu_Accum_Cursor.color = 
 
-                        ringMenu_Left_Cursor_Big.color =
-                        ringMenu_Right_Cursor_Big.color =
-                        ringMenu_Up_Cursor_Big.color =
-                        ringMenu_Down_Cursor_Big.color = getRingMenuColor(true, false);
+                        getRingMenuColor(true, false, false);
+
+                        switch (ringMenuDir)
+                        {
+                            case RingMenuDir.Left:
+                                uIController_Overlay.ringMenu_Left_Border.color = uIController_Overlay.ringMenu_Accum_Cursor.color = getRingMenuColor(true, false, true);
+                                break;
+                            case RingMenuDir.Right:
+                                uIController_Overlay.ringMenu_Right_Border.color = uIController_Overlay.ringMenu_Accum_Cursor.color = getRingMenuColor(true, false, true);
+                                break;
+                            case RingMenuDir.Up:
+                                uIController_Overlay.ringMenu_Up_Border.color = uIController_Overlay.ringMenu_Accum_Cursor.color = getRingMenuColor(true, false, true);
+                                break;
+                            case RingMenuDir.Down:
+                                uIController_Overlay.ringMenu_Down_Border.color = uIController_Overlay.ringMenu_Accum_Cursor.color = getRingMenuColor(true, false, true);
+                                break;
+                        }
+
                     }
                     else
                     {
-                        ringMenu_Left_Cursor.color =
-                     ringMenu_Right_Cursor.color =
-                     ringMenu_Up_Cursor.color =
-                     ringMenu_Down_Cursor.color =
+                        uIController_Overlay.ringMenu_Left_Border.color =
+                        uIController_Overlay.ringMenu_Right_Border.color =
+                        uIController_Overlay.ringMenu_Up_Border.color =
+                        uIController_Overlay.ringMenu_Down_Border.color =
 
-                     ringMenu_Left_Cursor_Big.color =
-                     ringMenu_Right_Cursor_Big.color =
-                     ringMenu_Up_Cursor_Big.color =
-                     ringMenu_Down_Cursor_Big.color = new Color(1.0f, 0.0f, 0.0f, 0.5f);
+                        uIController_Overlay.ringMenu_Accum_Cursor.color =
+
+                        getRingMenuColor(false, false, false);
                     }
                 }
 
-                switch (ringMenuDir)
-                {
-                    case RingMenuDir.Left:
-                        ringMenu_Left_Cursor_Big.enabled = true;
-                        ringMenu_Left_Cursor.enabled = false;
-                        break;
-                    case RingMenuDir.Right:
-                        ringMenu_Right_Cursor_Big.enabled = true;
-                        ringMenu_Right_Cursor.enabled = false;
-                        break;
-                    case RingMenuDir.Up:
-                        ringMenu_Up_Cursor_Big.enabled = true;
-                        ringMenu_Up_Cursor.enabled = false;
-                        break;
-                    case RingMenuDir.Down:
-                        ringMenu_Down_Cursor_Big.enabled = true;
-                        ringMenu_Down_Cursor.enabled = false;
-                        break;
-                }
+            
 
-                if (ringMenuAccum.x > 0.5f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Right_LMB_available)
+                if (ringMenuAccum.x >= 1.0f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Right_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Right_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Right;
                 }
-                else if (ringMenuAccum.x < -0.5f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Left_LMB_available)
+                else if (ringMenuAccum.x <= -1.0f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Left_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Left_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Left;
                 }
-                else if (ringMenuAccum.y > 0.5f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Down_LMB_available)
+                else if (ringMenuAccum.y >= 1.0f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Down_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Down_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Down;
                 }
-                else if (ringMenuAccum.y < -0.5f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Up_LMB_available)
+                else if (ringMenuAccum.y <= -1.0f && ((ringMenuState == RingMenuState.Shoot && ringMenu_Up_LMB_available)
                         || (ringMenuState == RingMenuState.Slash && ringMenu_Up_RMB_available)))
                 {
                         ringMenuDir = RingMenuDir.Up;
                 }
-                else
-                    stay = true;
 
-                if (!stay)
+               
+
+                switch (ringMenuDir)
                 {
-                    ringMenuAccum = Vector2.zero;
+                    case RingMenuDir.Left:
+                        if (_input.look.x > 0.0f && ringMenuAccum.x < 0.0f)
+                            ringMenuAccum.x = 0.0f;
+                            break;
+                    case RingMenuDir.Right:
+                        if (_input.look.x < 0.0f && ringMenuAccum.x > 0.0f)
+                            ringMenuAccum.x = 0.0f;
+                        break;
+                    case RingMenuDir.Up:
+                        if (_input.look.y > 0.0f && ringMenuAccum.y < 0.0f)
+                            ringMenuAccum.y = 0.0f;
+                        break;
+                    case RingMenuDir.Down:
+                        if (_input.look.y < 0.0f && ringMenuAccum.y > 0.0f)
+                            ringMenuAccum.y = 0.0f;
+                        break;
                 }
-                else
-                    ringMenuAccum += _input.look;
 
-             
+                ringMenuAccum.x = Mathf.Clamp(ringMenuAccum.x + _input.look.x, -1.0f, 1.0f);
+                ringMenuAccum.y = Mathf.Clamp(ringMenuAccum.y + _input.look.y, -1.0f, 1.0f);
+
+
+
+                uIController_Overlay.ringMenu_Accum_Cursor.rectTransform.localPosition =
+                    new Vector2(ringMenuAccum.x * 160.0f / 1.0f,-ringMenuAccum.y * 160.0f / 1.0f);
             }
         }
         else
