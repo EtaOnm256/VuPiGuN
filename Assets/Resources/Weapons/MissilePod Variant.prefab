@@ -208,6 +208,9 @@ MonoBehaviour:
   projectile_gravity: 0
   projectile_speed: 0
   missile_prefab: {fileID: 2382340260178283410, guid: 2218dca27e2b27940b04b35726aece96, type: 3}
+  beamemit_prefab: {fileID: 8961267772553168207, guid: 05108d9090bb8a24abb554fe75ab4df5, type: 3}
+  Max_Ammo: 6
+  Reload_Time: 600
   firePoints:
   - {fileID: 472082481735190456}
   - {fileID: 8187048451829469811}
@@ -216,7 +219,11 @@ MonoBehaviour:
   - {fileID: 1089861247653060337}
   - {fileID: 7915140691190912345}
   fire_interval: 5
-  disperse: 10
+  disperse: 5
+  disperse_min: 5
+  bundle: 1
+  MaxMagazine: 6
+  _forcehold: 0
 --- !u!1 &7328468115792352246
 GameObject:
   m_ObjectHideFlags: 0

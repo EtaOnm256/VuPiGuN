@@ -215,3 +215,9 @@ https://assetstore.unity.com/packages/vfx/shaders/shield-shader-free-349218
 
 ステージ9
 https://peritune.com/blog/2026/02/06/ancient_gust/
+
+マイクロミサイル発射
+https://soundeffect-lab.info/sound/battle/mp3/missile1.mp3
+
+小爆発
+https://soundeffect-lab.info/sound/anime/mp3/text-impact3.mp3

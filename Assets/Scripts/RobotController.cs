@@ -2977,9 +2977,9 @@ public class RobotController : Pausable
                     {
                         fire_followthrough--;
 
-                        if (shoulderWeapon.canHold && _input.subfire)
+                        if (shoulderWeapon.canHold && (_input.subfire || (shoulderWeapon.trigger && shoulderWeapon.forceHold)))
                         {
-                            shoulderWeapon_trigger_thisframe = _input.subfire;
+                            shoulderWeapon_trigger_thisframe = true;
                             fire_followthrough = shoulderWeapon.fire_followthrough;
                         }
                         else
