@@ -5,7 +5,7 @@ using static WorldManager;
 
 public class MissilePod : Weapon
 {
-    GameObject missile_prefab;
+    [SerializeField]GameObject missile_prefab;
     GameObject beamemit_prefab;
 
 
@@ -24,6 +24,9 @@ public class MissilePod : Weapon
 
     public List<GameObject> firePoints;
     int Duration_Time = 0;
+    [SerializeField] int fire_interval = 5;
+    [SerializeField] float disperse = 10.0f;
+    private int current_cycle = 0;
 
     override public int fire_followthrough
     {
@@ -66,7 +69,6 @@ public class MissilePod : Weapon
 
     protected override void OnAwake()
     {
-        missile_prefab = Resources.Load<GameObject>("Projectile/Missile Variant");
         beamemit_prefab = Resources.Load<GameObject>("Effects/MissileEmit");
 
         weaponPanelItem.iconImage.sprite = Resources.Load<Sprite>("UI/BeamRifle");
@@ -95,10 +97,12 @@ public class MissilePod : Weapon
                 GameObject beam_obj = GameObject.Instantiate(missile_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
 
                 Missile beam = beam_obj.GetComponent<Missile>();
-                Vector3 dir_rel = Quaternion.Euler(Random.value * 20.0f-10.0f, Random.value * 20.0f - 10.0f, 0.0f) * Vector3.forward;
-                
+                Vector3 dir_rel = Quaternion.Euler((Random.value * 2.0f-1.0f)*disperse, (Random.value * 2.0f - 1.0f)*disperse, 0.0f) * Vector3.forward;
 
-                beam.direction = firePoints[0].transform.rotation * dir_rel;
+                if (current_cycle >= firePoints.Count)
+                    current_cycle = 0;
+
+                beam.direction = firePoints[current_cycle++].transform.rotation * dir_rel;
                 beam.target = Target_Robot;
                 //beam.transform.localScale = Vector3.one;
                  GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
@@ -107,7 +111,7 @@ public class MissilePod : Weapon
                 beam.itemFlag = owner.robotParameter.itemFlag;
                 energy -= Reload_Time;
 
-                Duration_Time = 5;
+                Duration_Time = fire_interval;
             }
         }
 

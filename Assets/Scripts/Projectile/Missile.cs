@@ -58,7 +58,7 @@ public class Missile : Projectile
 
     [SerializeField] float homing_strength = 0.75f;
     [SerializeField] float homing_limit = 45.0f;
-   
+    [SerializeField] bool predict = false;
 
     public MeshRenderer meshRenderer;
     public Effekseer.EffekseerEmitter boostEmitter;
@@ -77,7 +77,14 @@ public class Missile : Projectile
             {
                 Quaternion qDirection = Quaternion.LookRotation(direction, Vector3.up);
 
-                Quaternion qTarget = Quaternion.LookRotation(target.GetCurrentTargetedPosition() - transform.position);
+                Vector3 targetPosition;
+
+                if (predict)
+                    targetPosition = target.GetPredictedTargetedPosition(position, speed);
+                else
+                    targetPosition = target.GetCurrentTargetedPosition();
+
+                Quaternion qTarget = Quaternion.LookRotation(targetPosition - transform.position);
 
                 float angle = Quaternion.Angle(qDirection, qTarget);
 
@@ -91,7 +98,7 @@ public class Missile : Projectile
 
                     if(cluster)
                     {
-                        float dot = Vector3.Dot(target.GetCurrentTargetedPosition() - transform.position, direction.normalized);
+                        float dot = Vector3.Dot(targetPosition - transform.position, direction.normalized);
 
                         if(dot < 25.0f)
                         {
@@ -164,8 +171,6 @@ public class Missile : Projectile
                         }
 
                         GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
-
-                        explode.transform.localScale = Vector3.one * 0.5f;
 
                         boostEmitter.SendTrigger(0);
                         dead = true;

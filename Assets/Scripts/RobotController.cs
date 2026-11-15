@@ -1741,6 +1741,9 @@ public class RobotController : Pausable
                     uIController_Overlay.ringMenu_Up_Border.enabled  = ringMenu_Up_LMB_available;
                     uIController_Overlay.ringMenu_Down_Border.enabled = ringMenu_Down_LMB_available;
 
+                    uIController_Overlay.ringMenu_Accum_Cursor.enabled
+                        = ringMenu_Left_LMB_available || ringMenu_Right_LMB_available || ringMenu_Up_LMB_available || ringMenu_Down_LMB_available;
+
                     if (shoot_skill_energy >= shoot_skill_Reload_Time)
                     {
                         uIController_Overlay.ringMenu_Left_Border.color =
@@ -1785,6 +1788,9 @@ public class RobotController : Pausable
                     uIController_Overlay.ringMenu_Right_Border.enabled = ringMenu_Right_RMB_available;
                     uIController_Overlay.ringMenu_Up_Border.enabled = ringMenu_Up_RMB_available;
                     uIController_Overlay.ringMenu_Down_Border.enabled = ringMenu_Down_RMB_available;
+
+                    uIController_Overlay.ringMenu_Accum_Cursor.enabled
+                        = ringMenu_Left_RMB_available || ringMenu_Right_RMB_available || ringMenu_Up_RMB_available || ringMenu_Down_RMB_available;
 
                     if (slash_skill_energy >= slash_skill_Reload_Time)
                     {
