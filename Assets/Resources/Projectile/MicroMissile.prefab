@@ -271,20 +271,20 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
-  speed: 1.6
+  speed: 1.4
   dead: 0
   owner: {fileID: 0}
   trajectory: 0
   itemFlag: 0
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   hitEffect_prefab: {fileID: 8961267772553168207, guid: 0a161b559627a1b48a33fd294ac4d75c, type: 3}
-  homing_strength: 2.5
-  homing_limit: 75
-  predict: 1
+  homing_strength: 2
+  homing_limit: 60
+  predict: 0
   meshRenderer: {fileID: 4183625972981328455}
   boostEmitter: {fileID: 1353318667735970768}
   shotModifier: 0
-  damage: 20
+  damage: 10
   cluster: 0
   cluster_prefab: {fileID: 0}
 --- !u!4 &3045582839001747752 stripped

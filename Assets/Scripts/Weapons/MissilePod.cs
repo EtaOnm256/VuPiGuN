@@ -33,6 +33,9 @@ public class MissilePod : Weapon
     int magazine;
     private int current_cycle = 0;
 
+    [SerializeField] GameObject[] cover_close;
+    [SerializeField] GameObject[] cover_open;
+
     override public int fire_followthrough
     {
         get { return 30; }
@@ -108,7 +111,7 @@ public class MissilePod : Weapon
         if (trigger && Duration_Time <= 30 - fire_interval)
         {
             bool fired = false;
-            
+
 
             for (int i = 0; i < bundle; i++)
             {
@@ -123,9 +126,9 @@ public class MissilePod : Weapon
                     GameObject beam_obj = GameObject.Instantiate(missile_prefab, firePoints[current_cycle].transform.position, firePoints[current_cycle].transform.rotation);
                     Missile beam = beam_obj.GetComponent<Missile>();
 
-                    Quaternion rotate = Quaternion.AngleAxis(((float)current_cycle) / firePoints.Count*360.0f, Vector3.forward);
+                    Quaternion rotate = Quaternion.AngleAxis(((float)current_cycle) / firePoints.Count * 360.0f, Vector3.forward);
 
-                    Vector3 dir_rel = rotate*Quaternion.Euler((Random.value) * disperse + disperse_min, 0.0f,0.0f ) * Vector3.forward;
+                    Vector3 dir_rel = rotate * Quaternion.Euler((Random.value) * disperse + disperse_min, 0.0f, 0.0f) * Vector3.forward;
 
 
                     beam.direction = firePoints[current_cycle++].transform.rotation * dir_rel;
@@ -146,8 +149,19 @@ public class MissilePod : Weapon
             Duration_Time = 30;
         }
 
-        if(Duration_Time > 0)
+        if (Duration_Time > 0)
+        {
             Duration_Time--;
+        }
+
+        foreach (var cover in cover_close)
+        {
+            cover.SetActive(Duration_Time <= 0);
+        }
+        foreach (var cover in cover_open)
+        {
+            cover.SetActive(Duration_Time > 0);
+        }
     }
 
     public override void ResetCycle()
