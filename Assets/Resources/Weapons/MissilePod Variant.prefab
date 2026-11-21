@@ -219,8 +219,8 @@ MonoBehaviour:
   - {fileID: 1089861247653060337}
   - {fileID: 7915140691190912345}
   fire_interval: 5
-  disperse: 5
-  disperse_min: 5
+  disperse: 0
+  disperse_min: 0
   bundle: 1
   MaxMagazine: 6
   _forcehold: 0

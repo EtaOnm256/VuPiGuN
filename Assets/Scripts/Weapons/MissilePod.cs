@@ -116,19 +116,17 @@ public class MissilePod : Weapon
                 {
                     if (!fired)
                     {
-                        GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
+                        GameObject beamemit_obj = GameObject.Instantiate(beamemit_prefab, firePoints[current_cycle].transform.position, firePoints[current_cycle].transform.rotation);
                         fired = true;
                     }
 
-                    GameObject beam_obj = GameObject.Instantiate(missile_prefab, firePoints[0].transform.position, firePoints[0].transform.rotation);
+                    GameObject beam_obj = GameObject.Instantiate(missile_prefab, firePoints[current_cycle].transform.position, firePoints[current_cycle].transform.rotation);
                     Missile beam = beam_obj.GetComponent<Missile>();
 
                     Quaternion rotate = Quaternion.AngleAxis(((float)current_cycle) / firePoints.Count*360.0f, Vector3.forward);
 
                     Vector3 dir_rel = rotate*Quaternion.Euler((Random.value) * disperse + disperse_min, 0.0f,0.0f ) * Vector3.forward;
 
-                    if (current_cycle >= firePoints.Count)
-                        current_cycle = 0;
 
                     beam.direction = firePoints[current_cycle++].transform.rotation * dir_rel;
                     beam.target = Target_Robot;
@@ -138,6 +136,10 @@ public class MissilePod : Weapon
                     beam.owner = owner;
                     beam.itemFlag = owner.robotParameter.itemFlag;
                     energy -= Reload_Time;
+
+
+                    if (current_cycle >= firePoints.Count)
+                        current_cycle = 0;
                 }
                 magazine--;
             }
