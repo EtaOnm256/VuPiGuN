@@ -221,3 +221,6 @@ https://soundeffect-lab.info/sound/battle/mp3/missile1.mp3
 
 小爆発
 https://soundeffect-lab.info/sound/anime/mp3/text-impact3.mp3
+
+ショットガン
+https://soundeffect-lab.info/sound/battle/mp3/handgun-firing1.mp3
