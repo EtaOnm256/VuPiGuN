@@ -63,11 +63,13 @@ public class Missile : Projectile
     public MeshRenderer meshRenderer;
     public Effekseer.EffekseerEmitter boostEmitter;
 
+    [SerializeField] TrailRenderer trailRenderer;
+
     [SerializeField]int damage = 100;
     [SerializeField] bool cluster = false;
     [SerializeField] GameObject cluster_prefab = null;
 
-    // Update is called once per frame
+        // Update is called once per frame
     protected override void OnFixedUpdate()
     {
         if (!dead)
@@ -171,7 +173,8 @@ public class Missile : Projectile
 
                         GameObject explode = GameObject.Instantiate(hitEffect_prefab, rayCastHit[i].point, Quaternion.identity);
 
-                        boostEmitter.SendTrigger(0);
+                        if(boostEmitter != null)
+                            boostEmitter.SendTrigger(0);
                         dead = true;
                     }
                 }
@@ -184,17 +187,27 @@ public class Missile : Projectile
                 if (time-- <= 0)
                 {
                     dead = true;
-                    boostEmitter.SendTrigger(0);
+                    if (boostEmitter != null)
+                        boostEmitter.SendTrigger(0);
                 }
             }
         }
         else
         {
             meshRenderer.enabled = false;
-            boostEmitter.SendTrigger(0);
+            if (boostEmitter != null)
+            {
+                boostEmitter.SendTrigger(0);
 
-            if (boostEmitter.instanceCount <= 0)
-                GameObject.Destroy(gameObject);
+                if (boostEmitter.instanceCount <= 0)
+                    GameObject.Destroy(gameObject);
+            }
+
+            if (trailRenderer != null)
+            {
+                if (trailRenderer.positionCount == 0)
+                    GameObject.Destroy(gameObject);
+            }
         }
 
         first = false;

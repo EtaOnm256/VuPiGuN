@@ -92,7 +92,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5230508680270427691}
-  - component: {fileID: 1353318667735970768}
   - component: {fileID: 6001190363912113047}
   m_Layer: 0
   m_Name: GameObject
@@ -117,24 +116,6 @@ Transform:
   - {fileID: 3236188483804194750}
   m_Father: {fileID: 3045582839001747752}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &1353318667735970768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3844228455134059379}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35d396bcb8480c24eb784eebe6096a99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TimingOfUpdate: 0
-  EmitterScale: 0
-  TimeScale: 0
-  effectAsset: {fileID: 11400000, guid: cfeb5f9fb508fe446aec1e3a7d22663b, type: 2}
-  playOnStart: 1
-  isLooping: 0
 --- !u!96 &6001190363912113047
 TrailRenderer:
   serializedVersion: 3
@@ -359,6 +340,7 @@ MonoBehaviour:
   dead: 0
   owner: {fileID: 0}
   trajectory: 0
+  shotModifier: 0
   itemFlag: 0
   initial_direction: {x: 0, y: 0, z: 0, w: 0}
   hitEffect_prefab: {fileID: 8961267772553168207, guid: 0a161b559627a1b48a33fd294ac4d75c, type: 3}
@@ -366,8 +348,8 @@ MonoBehaviour:
   homing_limit: 75
   predict: 1
   meshRenderer: {fileID: 4183625972981328455}
-  boostEmitter: {fileID: 1353318667735970768}
-  shotModifier: 0
+  boostEmitter: {fileID: 0}
+  trailRenderer: {fileID: 6001190363912113047}
   damage: 12
   cluster: 0
   cluster_prefab: {fileID: 0}
