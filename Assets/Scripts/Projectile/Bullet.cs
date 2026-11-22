@@ -15,7 +15,6 @@ public class Bullet : Projectile
 
     const int positionCount = 4;
 
-    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
 
     [SerializeField]int damage;
 

@@ -62,9 +62,10 @@ public class IntermissionButton : MonoBehaviour
     {
         new ShopItemWeapon{tier=1,name = "バズーカ",description="大口径のロケットランチャー。",price=1500,prefabname="Bazooka Variant" ,type=ShopItemWeapon.Type.Main},
         new ShopItemWeapon{tier=1,name = "ミサイルポッド",description="サブ武器。固定式のミサイル発射装置。ボタン押し続けで連射可能。",price=1000,prefabname="MissilePod Variant",type=ShopItemWeapon.Type.Shoulder },
-        new ShopItemWeapon{tier=1,name = "サブマシンガン",description="小型の機関銃。追加入力で連射可能。",price=1500,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{tier=1,name = "サブマシンガン",description="小型の機関銃。追加入力で連射可能。",price=1250,prefabname="SMG Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=1,name = "ソリッドライフル",description="コストの安い実弾兵器。",price=1000,prefabname="SolidRifle Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=1,name = "ハンドキャノン",description="手持ち式の榴弾砲。反動が大きい。",price=1000,prefabname="HandCannon Variant",type=ShopItemWeapon.Type.Main },
+        new ShopItemWeapon{tier=1,name = "ショットガン",description="近距離戦で効果的な散弾銃。",price=1500,prefabname="Shotgun",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=2,name = "ビームライフル",description="火力と取り回しを両立したビーム兵器。",price=5000,prefabname="BeamRifle Variant",type=ShopItemWeapon.Type.Main },
         new ShopItemWeapon{tier=2,name = "ドローン",description="サブ武器。子機を射出し、敵を攻撃させる。ボタン押し続けで追加射出。",price=5500,prefabname="DronePlatform Variant",type=ShopItemWeapon.Type.Back },
         new ShopItemWeapon{tier=2,name = "スプレービームポッド",description="サブ武器。肩に固定する拡散ビーム砲。",price=4500,prefabname="BeamSprayCannon",type=ShopItemWeapon.Type.Shoulder },

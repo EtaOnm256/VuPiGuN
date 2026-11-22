@@ -56,7 +56,6 @@ public class SprayBeam : Projectile
     int hitHistoryRCCount = 0;
 
 	int time = 23;
-    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
     int damage = 10;
     // Update is called once per frame
     protected override void OnFixedUpdate()

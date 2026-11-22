@@ -80,8 +80,6 @@ public class Beam : Projectile
 
 	int time = 120;
 
-    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
-
     [SerializeField] float homing_strength = 1.0f;
     [SerializeField] float homing_limit = 10.0f;
 

@@ -14,7 +14,6 @@ public class SMGBullet : Projectile
 
     const int positionCount = 4;
 
-    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
     [SerializeField] int damage = 10;
     // Start is called before the first frame update
     protected override void OnStart()

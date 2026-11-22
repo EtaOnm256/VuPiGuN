@@ -63,7 +63,6 @@ public class Missile : Projectile
     public MeshRenderer meshRenderer;
     public Effekseer.EffekseerEmitter boostEmitter;
 
-    public Weapon.ShotModifier shotModifier = Weapon.ShotModifier.NORMAL;
     [SerializeField]int damage = 100;
     [SerializeField] bool cluster = false;
     [SerializeField] GameObject cluster_prefab = null;

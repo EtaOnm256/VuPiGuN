@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static WorldManager;
 
 public class SolidRifle : Weapon
 {
@@ -22,6 +24,9 @@ public class SolidRifle : Weapon
 
     int _energy = 0;
 
+    [SerializeField] int bundle = 1;
+    [SerializeField] float disperse = 0.0f;
+    [SerializeField] float disperse_min = 0.0f;
     public GameObject firePoint;
     //public override bool dualwielded
     //{
@@ -96,21 +101,32 @@ public class SolidRifle : Weapon
 
         if ((shotModifier == ShotModifier.BURST3 || energy >= Reload_Time) && trigger)
         {
+            for (int i = 0; i < bundle; i++)
+            {
+                GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
-            GameObject bullet_obj = GameObject.Instantiate(bullet_prefab, firePoint.transform.position, firePoint.transform.rotation);
+                Projectile bullet = bullet_obj.GetComponent<Projectile>();
 
-            Bullet bullet = bullet_obj.GetComponent<Bullet>();
+                Quaternion rotate = Quaternion.AngleAxis(((float)i) / bundle * 360.0f, Vector3.forward);
 
-            bullet.direction = gameObject.transform.forward;
-            bullet.target = Target_Robot;
-            bullet.team = owner.team;
-            //bullet.worldManager = owner.worldManager;
-            bullet.owner = owner;
-            bullet.itemFlag = owner.robotParameter.itemFlag;
-            bullet.shotModifier = shotModifier;
-            bullet.barrel_origin = barrel_origin.transform.position;
+                Vector3 dir_rel = rotate * Quaternion.Euler((Random.value) * disperse + disperse_min, 0.0f, 0.0f) * Vector3.forward;
+
+                Quaternion dir_origin;
+
+                dir_origin = transform.rotation;
+
+                bullet.direction = dir_origin * dir_rel;
+                bullet.target = Target_Robot;
+                bullet.team = owner.team;
+                //bullet.worldManager = owner.worldManager;
+                bullet.owner = owner;
+                bullet.itemFlag = owner.robotParameter.itemFlag;
+                bullet.shotModifier = shotModifier;
+                bullet.barrel_origin = barrel_origin.transform.position;
+               
+            }
+
             GameObject solidemit_obj = GameObject.Instantiate(solidemit_prefab, firePoint.transform.position, firePoint.transform.rotation);
-
             solidemit_obj.transform.localScale = Vector3.one;
 
             if(shotModifier!=ShotModifier.BURST3)
