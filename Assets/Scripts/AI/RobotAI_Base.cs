@@ -349,7 +349,8 @@ public class RobotAI_Base : InputBase
                     || robot.upperBodyState == RobotController.UpperBodyState.STEADYFIRE
                     || robot.upperBodyState == RobotController.UpperBodyState.STEADYHEAVYFIRE) && !robot.fire_done)
                     || robot.upperBodyState == RobotController.UpperBodyState.ROLLINGFIRE
-                    || robot.upperBodyState == RobotController.UpperBodyState.ROLLINGHEAVYFIRE)
+                    || robot.upperBodyState == RobotController.UpperBodyState.ROLLINGHEAVYFIRE
+                    || robot.upperBodyState == RobotController.UpperBodyState.SUBFIRE)
                 {
                     float dist = (robot.GetCenter() - robotController.GetCenter()).magnitude;
 

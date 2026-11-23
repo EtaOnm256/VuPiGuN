@@ -3054,6 +3054,7 @@ public class RobotController : Pausable
 
                     chest_no_aim_smooth = true;
 
+                    aiming_factor = animator.GetCurrentAnimatorStateInfo(2).normalizedTime;
                     aiming_begin_aiming_factor_current = shoulderWeapon.aiming_begin_aiming_factor;
                     aiming_angle_speed_current = shoulderWeapon.aiming_angle_speed;
                     current_aiming = true;
@@ -3647,17 +3648,25 @@ public class RobotController : Pausable
 
             if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE && upperBodyState != UpperBodyState.STEADYHEAVYFIRE))
             {
-                result = Quaternion.LookRotation(GetFinalTargetingPosition(Target_Robot,using_weapon) - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
+                if(using_weapon == rightWeapon)
+                    result = Quaternion.LookRotation(GetFinalTargetingPosition(Target_Robot,using_weapon) - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
+                else
+                    result = Quaternion.LookRotation(virtual_targeting_position_forBody - LShoulder.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
             }
             else
             {
-                Vector3 relative = GetFinalTargetingPosition(Target_Robot, using_weapon) - GetCenter();
+                Vector3 relative;
+
+                if (using_weapon == rightWeapon)
+                    relative = GetFinalTargetingPosition(Target_Robot, using_weapon) - GetCenter();
+                else
+                    relative = virtual_targeting_position_forBody - LShoulder.transform.position;
 
                 float h = relative.y;
 
                 relative.y = 0.0f;
 
-                float v = rightWeapon.projectile_speed;
+                float v = rightWeapon.projectile_speed / Time.deltaTime;
 
                 if (upperBodyState == UpperBodyState.STEADYHEAVYFIRE)
                     v *= 1.3f;
@@ -3715,11 +3724,13 @@ public class RobotController : Pausable
             {
                 Vector3 relative = virtual_targeting_position_forBody - RHand.transform.position;
 
+
+
                 float h = relative.y;
 
                 relative.y = 0.0f;
 
-                float v = rightWeapon.projectile_speed;
+                float v = rightWeapon.projectile_speed / Time.deltaTime;
 
                 if (upperBodyState == UpperBodyState.STEADYHEAVYFIRE)
                     v *= 1.3f;
@@ -3736,7 +3747,6 @@ public class RobotController : Pausable
                 float rad = Mathf.Atan((-b - Mathf.Sqrt(b * b - 4 * a * c)) / (2 * a));
 
                 relative.y = relative.magnitude * Mathf.Tan(rad);
-
 
                 result = Quaternion.LookRotation(relative, new Vector3(0.0f, 1.0f, 0.0f));
 
@@ -4164,7 +4174,7 @@ public class RobotController : Pausable
 
                         if (Target_Robot != null)
                         {
-                            Vector3 target_dir = GetFinalTargetingPosition(Target_Robot,rightWeapon) - GetCenter();
+                            Vector3 target_dir = virtual_targeting_position_forBody - GetCenter();
 
                             _targetRotation = Mathf.Atan2(target_dir.x, target_dir.z) * Mathf.Rad2Deg;
 
@@ -6534,10 +6544,12 @@ public class RobotController : Pausable
                 shoulderWeapon.ResetCycle();
                 _animator.CrossFadeInFixedTime(_animIDSubFire, 0.25f, 0);
                 intend_animator_speed = 1.0f;
-
+                firing_multiplier = shoulderWeapon.firing_multiplier;
+                animator.SetFloat("FiringSpeed", firing_multiplier);
+                
                 animator.Play("SubFire", 2, 0.0f);
-
-                StartSeeking();
+                
+				StartSeeking(firing_multiplier);
             }
         }
     }

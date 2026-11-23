@@ -78,7 +78,7 @@ public class Beam : Projectile
     int hitHistoryCount = 0;
     int hitHistoryRCCount = 0;
 
-	int time = 120;
+    [SerializeField] int time = 120;
 
     [SerializeField] float homing_strength = 1.0f;
     [SerializeField] float homing_limit = 10.0f;

@@ -109,7 +109,9 @@ public class Missile : Projectile
 
                                 SMGBullet beam = beam_obj.GetComponent<SMGBullet>();
 
-                                Vector3 dir_rel = Quaternion.Euler(Random.value * 30.0f - 15.0f, Random.value * 30.0f - 15.0f, 0.0f) * Vector3.forward;
+                                Quaternion rotate = Quaternion.AngleAxis(((float)i) / 32 * 360.0f, Vector3.forward);
+
+                                Vector3 dir_rel = rotate * Quaternion.Euler((Random.value) * 15.0f + 0.0f, 0.0f, 0.0f) * Vector3.forward;
 
                                 Quaternion dir_origin;
 

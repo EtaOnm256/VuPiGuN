@@ -17,7 +17,7 @@ public class SprayBeamCannon : Weapon
             return Max_Ammo * Reload_Time;
         }
     }
-    private const int Reload_Time = 3000;
+    private const int Reload_Time = 1800;
 
     int _energy = 0;
 
@@ -25,8 +25,9 @@ public class SprayBeamCannon : Weapon
 
     override public float firing_multiplier
     {
-        get { return 1.3f; }
+        get { return 1.5f; }
     }
+
     override public float lockon_multiplier
     {
         get { return 1.3f; }
@@ -39,7 +40,7 @@ public class SprayBeamCannon : Weapon
 
     override public float limit_range_max
     {
-        get { return 40.0f; }
+        get { return 30.0f; }
     }
     public override int energy
     {
@@ -85,7 +86,7 @@ public class SprayBeamCannon : Weapon
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
 
-        SprayBeam beam = beam_prefab.GetComponent<SprayBeam>();
+        Beam beam = beam_prefab.GetComponent<Beam>();
         projectile_speed = beam.speed;
     }
 
@@ -100,9 +101,11 @@ public class SprayBeamCannon : Weapon
             {
                 GameObject beam_obj = GameObject.Instantiate(beam_prefab, firePoint.transform.position, firePoint.transform.rotation);
 
-                SprayBeam beam = beam_obj.GetComponent<SprayBeam>();
+                Beam beam = beam_obj.GetComponent<Beam>();
 
-                Vector3 dir_rel = Quaternion.Euler(Random.value * 30.0f - 15.0f, Random.value * 30.0f - 15.0f, 0.0f) * Vector3.forward;
+                Quaternion rotate = Quaternion.AngleAxis(((float)i) / 32 * 360.0f, Vector3.forward);
+
+                Vector3 dir_rel = rotate * Quaternion.Euler((Random.value) * 20.0f + 5.0f, 0.0f, 0.0f) * Vector3.forward;
 
                 Quaternion dir_origin;
 
