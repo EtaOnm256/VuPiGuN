@@ -8,7 +8,7 @@ public class CannonBall : Projectile
 
     Vector3 start_pos;
 
-    static public float Speed = 2.0f;
+    //static public float Speed = 2.0f;
 
     // Start is called before the first frame update
     protected override void OnStart()
@@ -19,7 +19,7 @@ public class CannonBall : Projectile
 
         initial_direction = Quaternion.LookRotation(direction);
 
-        speed = Speed;
+        //speed = Speed;
 
         switch (shotModifier)
         {
@@ -47,7 +47,7 @@ public class CannonBall : Projectile
 
 	int time = 180;
 
-    static public float Gravity = -0.5f;
+    public float gravity = -0.5f;
 
     public MeshRenderer meshRenderer;
 
@@ -55,7 +55,7 @@ public class CannonBall : Projectile
     // Update is called once per frame
     protected override void OnFixedUpdate()
     {
-        float Gravity_thisFrame = Gravity;
+        float Gravity_thisFrame = gravity;
         {
 
 
@@ -78,23 +78,23 @@ public class CannonBall : Projectile
                 
                 float t = l / velocity_h.magnitude;
 
-                float g = Gravity / Time.deltaTime;
+                float g = gravity / Time.deltaTime;
 
                 float hp = v*t+g * t * t / 2;
 
                 if (hp < h)
                 {
                     if (shotModifier == Weapon.ShotModifier.BURST2)
-                        Gravity_thisFrame = Gravity * 0.5f;
+                        Gravity_thisFrame = gravity * 0.5f;
                     else
                         Gravity_thisFrame = 0.0f;
                 }
                 else
                 {
                     if (shotModifier == Weapon.ShotModifier.BURST2)
-                        Gravity_thisFrame = Gravity * 1.5f;
+                        Gravity_thisFrame = gravity * 1.5f;
                     else
-                        Gravity_thisFrame = Gravity * 2;
+                        Gravity_thisFrame = gravity * 2;
                 }
 
                 Quaternion qDirection = Quaternion.LookRotation(velocity_h, Vector3.up);

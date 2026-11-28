@@ -3646,7 +3646,7 @@ public class RobotController : Pausable
                 using_weapon = rightWeapon;
             }
 
-            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE && upperBodyState != UpperBodyState.STEADYHEAVYFIRE))
+            if (using_weapon == null || using_weapon.trajectory != Weapon.Trajectory.Curved/* || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE && upperBodyState != UpperBodyState.STEADYHEAVYFIRE)*/)
             {
                 if(using_weapon == rightWeapon)
                     result = Quaternion.LookRotation(GetFinalTargetingPosition(Target_Robot,using_weapon) - GetCenter(), new Vector3(0.0f, 1.0f, 0.0f));
@@ -3712,7 +3712,7 @@ public class RobotController : Pausable
 
         if (aiming)
         {
-            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE && upperBodyState != UpperBodyState.STEADYHEAVYFIRE))
+            if (rightWeapon == null || rightWeapon.trajectory != Weapon.Trajectory.Curved/* || (upperBodyState != UpperBodyState.HEAVYFIRE && upperBodyState != UpperBodyState.ROLLINGHEAVYFIRE && upperBodyState != UpperBodyState.STEADYHEAVYFIRE)*/)
             {
                 result = Quaternion.LookRotation(virtual_targeting_position_forBody - RHand.transform.position, new Vector3(0.0f, 1.0f, 0.0f));
 

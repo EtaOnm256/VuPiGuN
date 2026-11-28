@@ -87,8 +87,22 @@ public class Bazooka : Weapon
     {
         weaponPanelItem.ammoSlider.maxValue = MaxEnergy;
         energy = MaxEnergy;
-        Missile beam = missile_prefab.GetComponent<Missile>();
-        projectile_speed = beam.speed;
+
+        if(trajectory == Trajectory.Curved)
+        {
+            CannonBall cannonball = missile_prefab.GetComponent<CannonBall>();
+
+            projectile_gravity = -cannonball.gravity / Time.deltaTime;
+            projectile_speed = cannonball.speed;
+        }
+        else
+        {
+            Projectile beam = missile_prefab.GetComponent<Projectile>();
+            projectile_speed = beam.speed;
+        }
+            
+
+
     }
 
     // Update is called once per frame
@@ -99,7 +113,7 @@ public class Bazooka : Weapon
         if ((shotModifier == ShotModifier.BURST3 || energy >= Reload_Time) && trigger)
         {
             GameObject beam_obj = GameObject.Instantiate(missile_prefab, firePoint.transform.position, firePoint.transform.rotation);
-            Missile beam = beam_obj.GetComponent<Missile>();
+            Projectile beam = beam_obj.GetComponent<Projectile>();
 
             beam.direction = gameObject.transform.forward;
             beam.target = Target_Robot;
